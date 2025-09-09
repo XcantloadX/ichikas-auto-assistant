@@ -14,10 +14,12 @@ def at_story_list():
     return image.find(R.Story.TextEventStory) is not None
 
 @action('进入剧情阅读')
-def enter_story():
+def enter_story(*, is_wl: bool = False):
     """
     前置：位于剧情列表界面\n
     结束：剧情阅读界面
+
+    :param is_wl: 是否是为 WorldLink 当期活动剧情
     """
     for _ in Loop():
         if image.find(R.Story.ButtonStoryMenu):
@@ -38,7 +40,10 @@ def enter_story():
             sleep(0.4)
         else:
             # 尝试点进最上面一话
-            device.click(R.Story.PointFirstEpisode)
+            if is_wl:
+                device.click(R.Story.PointFirstEpisodeWl)
+            else:
+                device.click(R.Story.PointFirstEpisode)
 
 @action('跳过剧情')
 def skip_stories(mode: SkipMode = 'skip'):

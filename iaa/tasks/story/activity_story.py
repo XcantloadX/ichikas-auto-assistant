@@ -43,9 +43,11 @@ def go_activity_story():
 @task('刷当期活动剧情')
 def activity_story():
     go_activity_story()
-    if has_red_dot(R.Activity.BoxLatestEpisodeBadge):
+    badge_wl = has_red_dot(R.Activity.BoxLatestEpisodeBadgeWl)
+    badge = has_red_dot(R.Activity.BoxLatestEpisodeBadge)
+    if badge_wl or badge:
         logger.info('Unread activity story found. Entering story.')
-        enter_story()
+        enter_story(is_wl=badge_wl)
         skip_stories(mode='skip')
     else:
         logger.info('No unread activity story found.')
