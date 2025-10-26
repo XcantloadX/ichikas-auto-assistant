@@ -88,6 +88,7 @@ class SchedulerService:
                                 self.on_error(e)
                             except Exception:
                                 logger.exception("Error handler raised an exception")
+                        break
                     finally:
                         self.current_task_id = None
                         self.current_task_name = None
