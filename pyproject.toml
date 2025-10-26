@@ -2,7 +2,7 @@
 name = "ichikas-auto-assistant"
 version = "25.09b1"
 description = """
-Ichika's Auto Assistant is a helper script 
+Ichika's Auto Assistant is a helper script
 for Project Sekai: Colorful Stage (JP server only)
 that automates dailies.
 """
@@ -27,4 +27,5 @@ dev = [
 dev = [
     "nuitka>=2.7.12",
     "pyinstaller>=6.15.0",
+    "click"
 ]
