@@ -1,10 +1,9 @@
 from kotonebot import action, task, Loop, device, image, sleep
 from kotonebot import logging
 
-from iaa.tasks.common import has_red_dot
+from iaa.tasks.common import has_red_dot, go_home
 
 from .. import R
-from ..start_game import go_home
 from .._fragments import handle_data_download
 from ._common import enter_story, skip_stories
 

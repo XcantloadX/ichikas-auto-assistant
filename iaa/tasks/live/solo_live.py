@@ -1,7 +1,7 @@
 from kotonebot import task
 
 from .live import solo_live as do_solo_live
-from iaa.tasks.start_game import go_home
+from iaa.tasks.common import go_home
 from iaa.context import conf
 
 

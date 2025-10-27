@@ -2,7 +2,7 @@ from kotonebot import logging
 from kotonebot import device, image, task, Loop, action, sleep
 
 from . import R
-from .start_game import go_home
+from .common import go_home
 from iaa.consts import PACKAGE_NAME_JP
 
 logger = logging.getLogger(__name__)

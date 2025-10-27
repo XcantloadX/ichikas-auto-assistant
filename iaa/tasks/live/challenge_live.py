@@ -1,7 +1,7 @@
 from kotonebot import task
 
 from iaa.context import conf
-from iaa.tasks.start_game import go_home
+from iaa.tasks.common import go_home
 from .live import challenge_live as do_challenge_live
 
 @task('挑战演出')

@@ -1,6 +1,6 @@
 from kotonebot import task
 
-from ..start_game import go_home
+from ..common import go_home
 from .live import solo_live
 
 @task('完成不同歌曲')
