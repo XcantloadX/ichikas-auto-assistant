@@ -18,7 +18,7 @@ def start_auto_live(
     auto_setting: Literal['all'] | Literal['once'] | int | None = 'all',
     back_to: Literal['home'] | Literal['select'] | None = 'home',
     finish_pre_check: Callable[[], tuple[bool, bool]] | None = None,
-):
+) -> bool:
     """
     前置：位于编队界面\n
     结束：首页、选歌界面或 LIVE CLEAR 画面
@@ -37,7 +37,8 @@ def start_auto_live(
         * `should_skip`: 如果 True，则跳过当前循环。
         * `should_break`: 如果 True，则结束循环。
         如果 `should_skip` 为 True，则 `should_break` 会被忽略。
-    :raises NotImplementedError: 如果未实现的功能被调用。\n
+    :raises NotImplementedError: 如果未实现的功能被调用。
+    :return: 若为 False，表示因为 AP 不足没有进行演出。
     """
     if auto_setting is None or isinstance(auto_setting, int):
         raise NotImplementedError('Not implemented yet.')
@@ -45,7 +46,13 @@ def start_auto_live(
     if auto_setting == 'all':
         chose = False
         for _ in Loop(interval=0.6):
-            if image.find(R.Live.ButtonAutoLiveSettings):
+            if image.find(R.Live.SwitchAutoLiveOn):
+                logger.debug('Auto live switch checked on.')
+                break
+            elif image.find(R.Live.TextAtLeastOneAp):
+                logger.info('No AP left to enable auto live. Exiting.')
+                return False
+            elif image.find(R.Live.ButtonAutoLiveSettings):
                 device.click()
                 logger.debug('Clicked auto live settings button.')
             elif not chose and image.find(R.Live.TextAutoLiveUntilInsufficient):
@@ -57,12 +64,14 @@ def start_auto_live(
                 device.click()
                 logger.debug('Clicked decide auto live button.')
                 sleep(0.3)
-                break
     elif auto_setting == 'once':
         for _ in Loop(interval=0.6):
             if image.find(R.Live.SwitchAutoLiveOn):
                 logger.debug('Auto live switch checked on.')
                 break
+            elif image.find(R.Live.TextAtLeastOneAp):
+                logger.info('No AP left to enable auto live. Exiting.')
+                return False
             elif image.find(R.Live.SwitchAutoLiveOff):
                 device.click()
                 logger.debug('Clicked auto live switch.')
@@ -94,7 +103,7 @@ def start_auto_live(
                 device.click_center()
                 break
     if back_to is None:
-        return
+        return True
     # 返回
     for _ in Loop(interval=0.5):
         if finish_pre_check:
@@ -122,6 +131,7 @@ def start_auto_live(
                 break
             else:
                 logger.debug('Waiting for reward screen finished.')
+    return True
 
 @action('选歌', screenshot_mode='manual')
 def enter_unit_select():

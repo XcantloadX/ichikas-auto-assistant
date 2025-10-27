@@ -1,0 +1,1 @@
+{"definitions":{"1453ab3f-aa0e-44bc-8018-bca5c4d06b5c":{"name":"Live.TextAtLeastOneAp","displayName":"最低1つ消費する","type":"template","annotationId":"1453ab3f-aa0e-44bc-8018-bca5c4d06b5c","useHintRect":false,"description":"当 AP 为 0 时开启 AUTO 的提示"}},"annotations":[{"id":"1453ab3f-aa0e-44bc-8018-bca5c4d06b5c","type":"rect","data":{"x1":716,"y1":348,"x2":882,"y2":373}}]}

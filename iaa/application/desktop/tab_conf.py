@@ -167,7 +167,7 @@ def build_live_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   # 完全清空体力
   row = tb.Frame(frame)
   row.pack(fill=tk.X, padx=8, pady=8)
-  tb.Checkbutton(row, text="完全清空体力", variable=store.fully_deplete_var, state="disabled").pack(side=tk.LEFT)
+  tb.Checkbutton(row, text="完全清空体力", variable=store.fully_deplete_var).pack(side=tk.LEFT)
 
 
 def build_challenge_live_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
