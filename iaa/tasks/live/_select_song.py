@@ -35,11 +35,13 @@ def next_song(ensure_unlocked: bool = True):
     logger.debug('Clicked next song button.')
     sleep(0.3)
     if ensure_unlocked:
-        for _ in Loop():
-            if image.find(R.Live.ButtonDecide, colored=True):
-                break
-            logger.debug('Current song is locked. Go next.')
-            device.click(R.Live.PointNextSong)
+        logger.warning('Ensure unlocked is not implemented yet.')
+    # if ensure_unlocked:
+    #     for _ in Loop():
+    #         if image.find(R.Live.ButtonDecide, colored=True):
+    #             break
+    #         logger.debug('Current song is locked. Go next.')
+    #         device.click(R.Live.PointNextSong)
             
     logger.info('Next song selected.')
 
