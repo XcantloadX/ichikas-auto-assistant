@@ -56,6 +56,20 @@ uv run tools/make_resources.py
 uv run iaa/main.py
 ```
 
+## Flask API + Flutter 界面
+项目已提供新的 Flask API 与 Flutter 界面（桌面友好，兼顾移动端），功能点来源于旧 Tkinter 界面，详见 `doc/gui_features.md`。
+
+1. 启动 API（默认 5000 端口）：
+   ```bash
+   uv run launch_api.py
+   ```
+2. 运行 Flutter 界面（需要本地安装 Flutter SDK）：
+   ```bash
+   cd flutter_client
+   flutter pub get
+   flutter run -d chrome --dart-define=IAA_API_BASE=http://localhost:5000/api
+   ```
+
 ## 开发
 TODO
 

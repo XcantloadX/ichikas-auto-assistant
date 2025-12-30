@@ -16,6 +16,8 @@ dependencies = [
     "psutil",
     "pydantic",
     "ttkbootstrap>=1.14.2",
+    "flask>=3.0.0",
+    "flask-cors>=4.0.0",
 ]
 
 [project.optional-dependencies]
