@@ -52,6 +52,12 @@ CONTROL_IMPL_OPTIONS = [
     {"value": "adb", "label": "ADB"},
     {"value": "uiautomator", "label": "UIAutomator2"},
 ]
+LINKS = [
+    {"text": "GitHub", "url": "https://github.com/XcantloadX/ichikas-auto-assistant"},
+    {"text": "Bilibili", "url": "https://space.bilibili.com/3546853903698457"},
+    {"text": "教程文档", "url": "https://p.kdocs.cn/s/AGBH56RBAAAFS"},
+    {"text": "QQ 群", "url": "https://qm.qq.com/q/Mu1SSfK1Gg"},
+]
 
 
 service = IaaService()
@@ -92,7 +98,7 @@ def _parse_characters(values: Iterable[str]) -> list[GameCharacter]:
     for raw in values:
         try:
             parsed.append(GameCharacter(raw))
-        except Exception as exc:  # noqa: BLE001
+        except ValueError as exc:
             raise ValueError(f"Unknown character: {raw}") from exc
     return parsed
 
@@ -124,7 +130,7 @@ def _apply_config_patch(conf: IaaConfig, payload: dict[str, Any]) -> None:
         if "award" in cl:
             try:
                 conf.challenge_live.award = ChallengeLiveAward(cl["award"])
-            except Exception as exc:  # noqa: BLE001
+            except ValueError as exc:
                 raise ValueError(f"Unknown challenge award: {cl['award']}") from exc
     if "scheduler" in payload:
         sched = payload["scheduler"] or {}
@@ -206,12 +212,7 @@ def create_app() -> Flask:
             "challenge_awards": [
                 {"value": aw.value, "label": label} for aw, label in ChallengeLiveAward.display_map_cn().items()
             ],
-            "links": [
-                {"text": "GitHub", "url": "https://github.com/XcantloadX/ichikas-auto-assistant"},
-                {"text": "Bilibili", "url": "https://space.bilibili.com/3546853903698457"},
-                {"text": "教程文档", "url": "https://p.kdocs.cn/s/AGBH56RBAAAFS"},
-                {"text": "QQ 群", "url": "https://qm.qq.com/q/Mu1SSfK1Gg"},
-            ],
+            "links": LINKS,
             "link_accounts": LINK_OPTIONS,
             "emulators": EMULATOR_OPTIONS,
             "servers": SERVER_OPTIONS,
@@ -224,12 +225,7 @@ def create_app() -> Flask:
         return jsonify({
             "version": service.version,
             "logo": logo_url if os.path.exists(service.assets.logo_path) else None,
-            "links": [
-                {"text": "GitHub", "url": "https://github.com/XcantloadX/ichikas-auto-assistant"},
-                {"text": "Bilibili", "url": "https://space.bilibili.com/3546853903698457"},
-                {"text": "教程文档", "url": "https://p.kdocs.cn/s/AGBH56RBAAAFS"},
-                {"text": "QQ 群", "url": "https://qm.qq.com/q/Mu1SSfK1Gg"},
-            ],
+            "links": LINKS,
         })
 
     @app.get("/api/assets/<path:filename>")
