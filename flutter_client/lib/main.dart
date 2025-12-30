@@ -78,6 +78,14 @@ class IaaFlutterApp extends StatefulWidget {
 }
 
 class _IaaFlutterAppState extends State<IaaFlutterApp> {
+  static const double _railBreakpoint = 900;
+
+  static const List<_NavDestination> _navDestinations = [
+    _NavDestination(label: '控制', icon: Icons.tune_outlined, selectedIcon: Icons.tune),
+    _NavDestination(label: '配置', icon: Icons.settings_outlined, selectedIcon: Icons.settings),
+    _NavDestination(label: '关于', icon: Icons.info_outline, selectedIcon: Icons.info),
+  ];
+
   final ApiClient api = ApiClient();
 
   Map<String, dynamic>? _status;
@@ -86,6 +94,7 @@ class _IaaFlutterAppState extends State<IaaFlutterApp> {
   Map<String, dynamic>? _about;
   bool _loading = true;
   String? _error;
+  int _selectedIndex = 0;
 
   // draft state
   String? _emulator;
@@ -248,31 +257,67 @@ class _IaaFlutterAppState extends State<IaaFlutterApp> {
     return MaterialApp(
       title: '一歌小助手',
       theme: ThemeData(colorScheme: colorScheme, useMaterial3: true),
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('一歌小助手'),
-            bottom: const TabBar(
-              tabs: [
-                Tab(text: '控制'),
-                Tab(text: '配置'),
-                Tab(text: '关于'),
-              ],
-            ),
-          ),
-          body: Center(
+      home: LayoutBuilder(
+        builder: (context, constraints) {
+          final useRail = constraints.maxWidth >= _railBreakpoint;
+          final body = Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 1200),
-              child: _buildBody(),
+              child: useRail ? _buildNavigationRailLayout() : _buildCurrentPage(),
             ),
-          ),
-        ),
+          );
+          return Scaffold(
+            appBar: AppBar(title: const Text('一歌小助手')),
+            body: body,
+            bottomNavigationBar: useRail
+                ? null
+                : NavigationBar(
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: (idx) => setState(() => _selectedIndex = idx),
+                    destinations: _navDestinations
+                        .map(
+                          (dest) => NavigationDestination(
+                            icon: Icon(dest.icon),
+                            selectedIcon: Icon(dest.selectedIcon),
+                            label: dest.label,
+                          ),
+                        )
+                        .toList(),
+                  ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildCurrentPage() {
+    return _buildPageForIndex(_selectedIndex);
+  }
+
+  Widget _buildNavigationRailLayout() {
+    return Row(
+      children: [
+        NavigationRail(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (idx) => setState(() => _selectedIndex = idx),
+          labelType: NavigationRailLabelType.selected,
+          destinations: _navDestinations
+              .map(
+                (dest) => NavigationRailDestination(
+                  icon: Icon(dest.icon),
+                  selectedIcon: Icon(dest.selectedIcon),
+                  label: Text(dest.label),
+                ),
+              )
+              .toList(),
+        ),
+        const VerticalDivider(width: 1),
+        Expanded(child: _buildCurrentPage()),
+      ],
+    );
+  }
+
+  Widget _buildPageForIndex(int index) {
     if (_loading) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -292,13 +337,16 @@ class _IaaFlutterAppState extends State<IaaFlutterApp> {
         ),
       );
     }
-    return TabBarView(
-      children: [
-        _buildControlTab(),
-        _buildConfigTab(),
-        _buildAboutTab(),
-      ],
-    );
+    switch (index) {
+      case 0:
+        return _buildControlTab();
+      case 1:
+        return _buildConfigTab();
+      case 2:
+        return _buildAboutTab();
+      default:
+        return _buildControlTab();
+    }
   }
 
   Widget _buildControlTab() {
@@ -733,4 +781,16 @@ class _LabeledTextField extends StatelessWidget {
       ],
     );
   }
+}
+
+class _NavDestination {
+  const _NavDestination({
+    required this.label,
+    required this.icon,
+    required this.selectedIcon,
+  });
+
+  final String label;
+  final IconData icon;
+  final IconData selectedIcon;
 }
