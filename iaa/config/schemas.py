@@ -3,7 +3,7 @@ from typing import Literal
 from pydantic import BaseModel
 from typing_extensions import assert_never
 
-LinkAccountOptions = Literal['no', 'google_play']
+LinkAccountOptions = Literal['no', 'google_play', 'google_email']
 EmulatorOptions = Literal['mumu', 'custom']
 
 
