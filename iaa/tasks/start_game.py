@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 def login(link_account: LinkAccountOptions):
     """执行登录流程。
     
-    :param link_account: 账号引继方式，目前支持 'google_play'
+    :param link_account: 账号引继方式，支持 'google_play'，'google_email'
     """
     for _ in Loop(interval=3):
         if image.find(R.Login.TextLinkFinished):
@@ -30,6 +30,13 @@ def login(link_account: LinkAccountOptions):
         elif link_account == 'google_play' and image.find(R.Login.ButtonLinkByGooglePlay):
             device.click()
             logger.debug('Clicked GooglePlayで連携')
+        elif link_account == 'google_email':
+            if image.find(R.Login.ButtonLinkByGoogle):
+                device.click()
+                logger.debug('Clicked Googleでサインイン')
+            elif image.find(R.Login.ButtonGmail):
+                device.click()
+                logger.debug('Clicked Gmail account')
         elif image.find(R.Login.ButtonMenu):
             device.click()
             logger.debug('Clicked 右上角菜单按钮')
