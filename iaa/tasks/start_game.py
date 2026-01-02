@@ -21,22 +21,29 @@ def login(link_account: LinkAccountOptions):
             logger.debug('Link finished')
             logger.info('Login finished')
             break
-        if image.find(R.Login.ButtonLink):
+        
+        # 先检查連携类别按钮，防止 'GooglePlayで連携' 匹配 '連携' 导致逻辑错误
+
+        if link_account == 'google_email' and image.find(R.Login.ButtonLinkByGoogle):
             device.click()
-            logger.debug('Clicked 連携')
-        elif image.find(R.Login.ButtonIconLink):
+            logger.debug('Clicked Googleでサインイン')
+            
+        elif link_account == 'google_email' and image.find(R.Login.ButtonGmail):
             device.click()
-            logger.debug('Clicked データ引き継ぎ')
+            logger.debug('Clicked Gmail account')
+
         elif link_account == 'google_play' and image.find(R.Login.ButtonLinkByGooglePlay):
             device.click()
             logger.debug('Clicked GooglePlayで連携')
-        elif link_account == 'google_email':
-            if image.find(R.Login.ButtonLinkByGoogle):
-                device.click()
-                logger.debug('Clicked Googleでサインイン')
-            elif image.find(R.Login.ButtonGmail):
-                device.click()
-                logger.debug('Clicked Gmail account')
+
+        elif image.find(R.Login.ButtonLink):
+            device.click()
+            logger.debug('Clicked 連携')
+
+        elif image.find(R.Login.ButtonIconLink):
+            device.click()
+            logger.debug('Clicked データ引き継ぎ')
+
         elif image.find(R.Login.ButtonMenu):
             device.click()
             logger.debug('Clicked 右上角菜单按钮')
