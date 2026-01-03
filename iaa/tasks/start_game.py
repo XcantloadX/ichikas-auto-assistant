@@ -22,15 +22,16 @@ def login(link_account: LinkAccountOptions):
             logger.info('Login finished')
             break
         
-        # 先检查連携类别按钮，防止 'GooglePlayで連携' 匹配 '連携' 导致逻辑错误
+        # 先检查連携类别按钮，防止GooglePlayで連携中存在連携字符导致逻辑错误
 
         if link_account == 'google_email' and image.find(R.Login.ButtonLinkByGoogle):
             device.click()
             logger.debug('Clicked Googleでサインイン')
             
-        elif link_account == 'google_email' and image.find(R.Login.ButtonGmail):
-            device.click()
-            logger.debug('Clicked Gmail account')
+        elif link_account == 'google_email' and (match := image.find(R.Login.IconGoogleDialogHeader)):
+            header_x, header_y = match.position
+            device.click(header_x, header_y + 200)
+            logger.debug(f'Clicked First Google Account at ({header_x}, {header_y + 200})')
 
         elif link_account == 'google_play' and image.find(R.Login.ButtonLinkByGooglePlay):
             device.click()
@@ -87,4 +88,3 @@ def start_game():
     else:
         logger.info('Already at game.')
         go_home()
-    
