@@ -28,10 +28,10 @@ def login(link_account: LinkAccountOptions):
             device.click()
             logger.debug('Clicked Googleでサインイン')
             
-        elif link_account == 'google_email' and (match := image.find(R.Login.IconGoogleDialogHeader)):
+        elif link_account == 'google_email' and (match := image.find(R.Login.TextContinueProseka)):
             header_x, header_y = match.position
-            device.click(header_x, header_y + 200)
-            logger.debug(f'Clicked First Google Account at ({header_x}, {header_y + 200})')
+            device.click(header_x, header_y + 80)
+            logger.debug(f'Clicked First Google Account at ({header_x}, {header_y + 80})')
 
         elif link_account == 'google_play' and image.find(R.Login.ButtonLinkByGooglePlay):
             device.click()
