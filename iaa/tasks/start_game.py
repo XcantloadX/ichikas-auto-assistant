@@ -22,7 +22,7 @@ def login(link_account: LinkAccountOptions):
             logger.info('Login finished')
             break
         
-        # 先检查連携类别按钮，防止GooglePlayで連携中存在連携字符导致逻辑错误
+        # 先检查連携类别按钮，防止 'GooglePlayで連携' 匹配 '連携' 导致逻辑错误
 
         if link_account == 'google_email' and image.find(R.Login.ButtonLinkByGoogle):
             device.click()
