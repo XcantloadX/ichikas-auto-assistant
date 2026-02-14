@@ -2,6 +2,7 @@ from typing import Callable, Literal
 from typing_extensions import assert_never
 
 from kotonebot import logging
+from kotonebot.core import AnyOf
 from kotonebot import device, Loop, action, sleep, color
 
 from .. import R
@@ -45,6 +46,15 @@ def start_auto_live(
     # 设置自动演出设置
     if auto_setting == 'all':
         chose = False
+        # 要先关掉自动，然后再走打开的逻辑
+        check = AnyOf[
+            R.Live.SwitchAutoLiveOff,
+            R.Live.SwitchAutoLiveOn
+        ].wait()
+        if check.prefab == R.Live.SwitchAutoLiveOn:
+            check.click()
+            logger.debug('Clicked auto live switch to turn off.')
+            sleep(0.3)
         for _ in Loop(interval=0.6):
             if R.Live.SwitchAutoLiveOn.find():
                 logger.debug('Auto live switch checked on.')

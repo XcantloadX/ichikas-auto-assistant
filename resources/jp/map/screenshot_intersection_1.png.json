@@ -42,7 +42,8 @@
           "y1": 626,
           "x2": 1247,
           "y2": 680
-        }
+        },
+        "fixed": true
       },
       "displayName": "工具栏 LIVE 按钮"
     },
