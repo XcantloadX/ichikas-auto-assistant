@@ -6,8 +6,8 @@ from kotonebot.core import AnyOf
 from kotonebot import device, Loop, action, sleep, color
 
 from .. import R
-from ..common import at_home
-from iaa.context import conf
+from ..common import at_home, go_home
+from iaa.context import conf, server
 from ._select_song import next_song
 from ._scene import at_song_select
 from iaa.config.schemas import ChallengeLiveAward, GameCharacter
@@ -123,6 +123,9 @@ def start_auto_live(
         if back_to == 'home':
             if at_home():
                 break
+            # 台服要点 OK 才行
+            if server() == 'tw' and R.Live.ButtonLiveCompletedOk.try_click():
+                logger.debug('Clicked live completed ok button.')
             device.click(1, 1)
             sleep(0.6)
         # 返回选歌界面要点“返回歌曲选择”按钮
@@ -337,3 +340,4 @@ def challenge_live(
                 return True, False
         return False, False
     start_auto_live('once', finish_pre_check=claim_reward)
+    go_home()
