@@ -313,10 +313,10 @@ def challenge_live(
 
     char, group = char_to_prefab(character)
     for _ in Loop(interval=0.6):
-        if group and group.try_click():
-            logger.debug('Clicked group for character.')
-        elif char.try_click():
+        if char.try_click():
             logger.debug('Clicked character.')
+        elif group and group.try_click():
+            logger.debug('Clicked group for character.')
         elif at_song_select():
             logger.debug('Now at song select.')
             break
