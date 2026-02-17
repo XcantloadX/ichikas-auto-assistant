@@ -47,7 +47,6 @@ def main():
     result = generate_resources(
         output_code_file=OUTPUT_CODE_FILE,
         output_img_dir=OUTPUT_IMG_DIR,
-        include_base_variant=False,
         generator_factory=lambda default_variant: IaaGenerator(
             production=args.production,
             ide_type=ide,
