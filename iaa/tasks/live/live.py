@@ -14,6 +14,16 @@ from iaa.config.schemas import ChallengeLiveAward, GameCharacter
 
 logger = logging.getLogger(__name__)
 
+def _skip():
+    if server() == 'jp':
+        device.click(1, 1)
+    elif server() == 'tw':
+        # 台服要点侧边，点左上角没用
+        device.click(6, 346)
+    else:
+        raise NotImplementedError(f'Unsupported server: {server()}')
+
+
 @action('演出', screenshot_mode='manual')
 def start_auto_live(
     auto_setting: Literal['all'] | Literal['once'] | int | None = 'all',
@@ -97,7 +107,7 @@ def start_auto_live(
             # 指定演出次数或直到 AP 不足
             # 结束条件是「已完成指定次数的演出」提示
             if R.Live.TextAutoLiveCompleted.find():
-                device.click(1, 1)
+                _skip()
                 logger.info('Auto lives all completed.')
                 sleep(0.3)
                 break
@@ -126,7 +136,7 @@ def start_auto_live(
             # 台服要点 OK 才行
             if server() == 'tw' and R.Live.ButtonLiveCompletedOk.try_click():
                 logger.debug('Clicked live completed ok button.')
-            device.click(1, 1)
+            _skip()
             sleep(0.6)
         # 返回选歌界面要点“返回歌曲选择”按钮
         elif back_to == 'select':
