@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Callable
 from typing_extensions import assert_never
 
 from kotonebot import action, Loop, device, sleep
@@ -9,9 +9,6 @@ from .. import R
 logger = logging.getLogger(__name__)
 
 SkipMode = Literal['skip', 'read']
-
-def at_story_list():
-    return R.Story.TextEventStory.find() is not None
 
 @action('进入剧情阅读')
 def enter_story(*, is_wl: bool = False):
@@ -45,7 +42,7 @@ def enter_story(*, is_wl: bool = False):
                 device.click(R.Story.PointFirstEpisode)
 
 @action('跳过剧情')
-def skip_stories(mode: SkipMode = 'skip'):
+def skip_stories(mode: SkipMode = 'skip', *, end_condition: Callable[[], bool]):
     """
     跳过剧情。同时支持单集阅读模式与连续阅读模式。
     
@@ -62,9 +59,8 @@ def skip_stories(mode: SkipMode = 'skip'):
             logger.debug('Found award claimed dialog.')
             if R.CommonDialog.ButtonAwardClaimedOk.try_click():
                 logger.debug('Clicked award claimed ok button.')
-        elif at_story_list():
-            # 位于剧情列表
-            logger.info('Now at story list.')
+        elif end_condition():
+            logger.info('Skip stories finished.')
             break
         else:
             # 跳过处理

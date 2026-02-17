@@ -6,6 +6,7 @@ from .live.ten_songs import ten_songs
 from .start_game import start_game
 from .story.activity_story import activity_story
 from .gift import gift
+from .area_convos import area_convos
 
 TaskRegistry = dict[str, Callable[[], None]]
 
@@ -16,6 +17,7 @@ REGULAR_TASKS: TaskRegistry = {
     'challenge_live': challenge_live,
     'activity_story': activity_story,
     'gift': gift,
+    'area_convos': area_convos,
 }
 
 MANUAL_TASKS: TaskRegistry = {
@@ -34,5 +36,6 @@ def name_from_id(task_id: str) -> str:
         'ten_songs': '刷歌曲首数',
         'gift': '领取礼物',
         'mission': '领取任务奖励',
+        'area_convos': '区域对话',
     }
     return mapping.get(task_id, task_id)

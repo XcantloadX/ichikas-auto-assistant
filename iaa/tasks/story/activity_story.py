@@ -9,6 +9,10 @@ from ._common import enter_story, skip_stories
 
 logger = logging.getLogger(__name__)
 
+def at_story_list():
+    logger.info('Now at story list.')
+    return R.Story.TextEventStory.find() is not None
+
 @action('前往活动剧情')
 def go_activity_story():
     """
@@ -20,7 +24,7 @@ def go_activity_story():
         # 新开活动，第一次进入，会弹出数据下载
         if handle_data_download():
             # 第一次进入会自动阅读第一话
-            skip_stories(mode='skip')
+            skip_stories(mode='skip', end_condition=at_story_list)
             continue
         if R.Hud.ButtonLive.try_click():
             logger.debug('Clicked live button.')
@@ -45,6 +49,6 @@ def activity_story():
     if badge_wl or badge:
         logger.info('Unread activity story found. Entering story.')
         enter_story(is_wl=badge_wl)
-        skip_stories(mode='skip')
+        skip_stories(mode='skip', end_condition=at_story_list)
     else:
         logger.info('No unread activity story found.')
