@@ -1,4 +1,5 @@
 import tkinter as tk
+import queue
 
 import ttkbootstrap as tb
 from tkinter import messagebox
@@ -7,6 +8,8 @@ import os
 import shutil
 
 from .index import DesktopApp
+from iaa.context import hub as progress_hub
+from iaa.progress import TaskProgressEvent
 
 
 def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
@@ -21,8 +24,6 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     bootstyle="success",  # type: ignore[call-arg]
     width=10,
   )
-
-  lbl_current = tb.Label(lf_power, text="正在执行：-")
 
   # 预定义单任务运行按钮（稍后创建）
   btn_run_start_game = None
@@ -64,12 +65,38 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     sch = app.service.scheduler
     is_transition = sch.is_starting or sch.is_stopping
     btn_toggle.configure(state=(tk.DISABLED if is_transition else tk.NORMAL))
-    if sch.running:
+    if sch.is_stopping:
+      status_state["stop_requested"] = True
+    if sch.is_starting:
+      btn_toggle.configure(text="启动中", bootstyle="secondary")  # type: ignore[call-arg]
+      progress_text_var.set("初始化脚本中...")
+    elif sch.is_stopping:
+      btn_toggle.configure(text="停止中", bootstyle="secondary")  # type: ignore[call-arg]
+      progress_text_var.set("正在尝试停止...")
+    elif sch.running:
       btn_toggle.configure(text="停止", bootstyle="danger")  # type: ignore[call-arg]
     else:
       btn_toggle.configure(text="启动", bootstyle="success")  # type: ignore[call-arg]
-    # 刷新当前任务
-    lbl_current.configure(text=f"正在执行：{sch.current_task_name or '-'}")
+      if status_state["stop_requested"] or status_state["stopped"]:
+        progress_text_var.set("已停止")
+        status_state["stop_requested"] = False
+        status_state["stopped"] = False
+      elif status_state["error_text"]:
+        progress_text_var.set(str(status_state["error_text"]))
+      else:
+        progress_text_var.set("就绪")
+
+    if is_transition:
+      if not progress_bar_state["indeterminate"]:
+        progress_bar.configure(mode="indeterminate")
+        progress_bar.start(10)
+        progress_bar_state["indeterminate"] = True
+    else:
+      if progress_bar_state["indeterminate"]:
+        progress_bar.stop()
+        progress_bar.configure(mode="determinate")
+        progress_bar_state["indeterminate"] = False
+
     # 刷新单任务运行按钮状态
     try:
       is_run_disabled = is_transition or sch.running
@@ -92,11 +119,99 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
 
   btn_toggle.configure(command=_on_toggle)
   btn_toggle.pack(side=tk.LEFT, padx=(12, 8), pady=10)
-  lbl_current.pack(side=tk.LEFT, padx=(8, 12))
   btn_export.pack(side=tk.RIGHT, padx=(12, 12), pady=10)
+
+  progress_text_var = tk.StringVar(value="就绪")
+  progress_percent_var = tk.IntVar(value=0)
+  status_state = {
+    "stop_requested": False,
+    "stopped": False,
+    "error_text": None,
+  }
+
+  progress_row = tb.Frame(lf_power)
+  progress_row.pack(side=tk.BOTTOM, fill=tk.X, padx=12, pady=(0, 10))
+  tb.Label(progress_row, textvariable=progress_text_var).pack(anchor=tk.W)
+  progress_bar = tb.Progressbar(progress_row, maximum=100, variable=progress_percent_var, mode="determinate")
+  progress_bar.pack(fill=tk.X, pady=(4, 2))
+  progress_bar_state = {"indeterminate": False}
+
+  progress_event_queue: queue.Queue[TaskProgressEvent] = queue.Queue()
+  unsubscribe_progress = progress_hub().subscribe(lambda event: progress_event_queue.put(event))
+
+  def _to_int(value: object) -> int | None:
+    try:
+      return int(value)  # type: ignore[arg-type]
+    except Exception:
+      return None
+
+  def _render_progress_event(event: TaskProgressEvent) -> None:
+    payload = event.payload or {}
+
+    current = _to_int(payload.get("current_steps"))
+    total = _to_int(payload.get("total_steps"))
+    percent = _to_int(payload.get("percent"))
+    if percent is None and current is not None and total is not None and total > 0:
+      percent = int(current * 100 / total)
+    if event.type == "task_started" and percent is None:
+      percent = 0
+    elif event.type == "task_finished" and percent is None:
+      percent = 100
+    if percent is not None:
+      progress_percent_var.set(max(0, min(100, percent)))
+
+    message = payload.get("message")
+    if not isinstance(message, str):
+      message = ""
+    phase_path = payload.get("phase_path")
+    phase_parts: list[str] = []
+    if isinstance(phase_path, list):
+      phase_parts = [str(p) for p in phase_path if isinstance(p, str) and p]
+
+    if event.type == "task_failed":
+      err = payload.get("error")
+      err_msg = str(err) if err is not None else ""
+      if err_msg.lower() == "keyboardinterrupt":
+        status_state["stopped"] = True
+        status_state["error_text"] = None
+        progress_text_var.set("已停止")
+      else:
+        error_text = f"执行「{event.task_name}」时出错：{err_msg or '未知错误'}"
+        status_state["error_text"] = error_text
+        status_state["stopped"] = False
+        progress_text_var.set(error_text)
+      return
+
+    if event.type == "task_started":
+      status_state["error_text"] = None
+      status_state["stopped"] = False
+
+    parts: list[str] = [event.task_name]
+    parts.extend(phase_parts)
+    if message:
+      parts.append(message)
+    display_text = " > ".join([p for p in parts if p])
+
+    if current is not None:
+      if total is not None:
+        display_text = f"{display_text} ({current}/{total})"
+      else:
+        display_text = f"{display_text} ({current})"
+
+    if display_text:
+      progress_text_var.set(display_text)
+
+  def _drain_progress_events() -> None:
+    while True:
+      try:
+        event = progress_event_queue.get_nowait()
+      except queue.Empty:
+        break
+      _render_progress_event(event)
 
   def _schedule_refresh_loop() -> None:
     try:
+      _drain_progress_events()
       _refresh_power_button()
       # 周期性刷新按钮状态（窗口仍存在时才继续）
       if parent.winfo_exists():
@@ -105,6 +220,16 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
       # 窗口销毁后可能触发异常，安全忽略
       pass
 
+  progress_unsubscribed = False
+  def _on_parent_destroy(event: tk.Event) -> None:
+    nonlocal progress_unsubscribed
+    if progress_unsubscribed:
+      return
+    if event.widget is parent:
+      unsubscribe_progress()
+      progress_unsubscribed = True
+
+  parent.bind("<Destroy>", _on_parent_destroy, add="+")
   _schedule_refresh_loop()
 
   # 任务区域

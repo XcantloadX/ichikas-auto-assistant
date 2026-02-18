@@ -5,7 +5,7 @@ from kotonebot import device, task, Loop, action, sleep
 from . import R
 from .common import go_home
 from iaa.consts import package_name
-from iaa.context import conf as get_conf
+from iaa.context import conf as get_conf, task_reporter
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +102,7 @@ def clear_common_cm():
     结束：位于交叉路口
     """
     logger.info('Clearing CM.') 
+    rep = task_reporter()
     d = device.of_android()
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
     wait_sec = get_conf().cm.watch_ad_wait_sec
@@ -113,6 +114,7 @@ def clear_common_cm():
                 sleep(1)
                 state = 2
             elif R.Cm.ButtonPlayCm.try_click():
+                rep.message('播放广告')
                 logger.debug('Clicked CM start button.')
                 sleep(0.2)
             # 没有剩余广告了
@@ -121,9 +123,11 @@ def clear_common_cm():
                 break
         elif state == 2:
             if R.Cm.ButtonPlayCm.find(threshold=0.7):
+                rep.message('等待广告载入')
                 logger.debug('Loading ad...')
                 sleep(0.2)
             else:
+                rep.message('等待广告结束')
                 logger.info(f'Ad loaded. Wait {wait_sec} sec.')
                 state = 3
         elif state == 3:
@@ -150,9 +154,11 @@ def clear_common_cm():
             ].find():
                 logger.info('Ad award claimed.')
                 device.click_center() # 关闭奖励领取提示
+                rep.message('奖励已领取')
                 state = 1
             # 还在加载
             else:
+                rep.message('等待结果')
                 logger.debug('Waiting for result...')
 
 @task('看广告', screenshot_mode='manual')
@@ -161,7 +167,10 @@ def cm():
     看广告并领取奖励。包括演出积分/心愿结晶、活动货币、两次 AP 恢复、两次礼物、水晶、音乐商店。
     """
     go_home()
+    rep = task_reporter()
+    rep.message('正在前往交叉路口')
     go_intersection()
+    rep.message('正在打开 CM 界面')
     if open_cm():
         clear_common_cm()
     else:

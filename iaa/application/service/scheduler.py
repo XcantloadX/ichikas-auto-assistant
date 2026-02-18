@@ -1,7 +1,8 @@
-﻿import time
+import time
 import logging
 import threading
 import os
+import uuid
 from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device
@@ -11,6 +12,8 @@ if TYPE_CHECKING:
 from iaa.tasks.registry import REGULAR_TASKS, name_from_id
 from iaa.tasks.registry import MANUAL_TASKS
 from iaa.context import init as init_config_context
+from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
+from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +63,7 @@ class SchedulerService:
         self.is_starting = True
 
         def _runner() -> None:
+            run_id = uuid.uuid4().hex
             try:
                 logger.info("Preparing context...")
                 self.__prepare_context()
@@ -74,14 +78,63 @@ class SchedulerService:
                 for task_id, func in tasks:
                     self.current_task_id = task_id
                     self.current_task_name = name_from_id(task_id)
+                    task_name = self.current_task_name
+                    progress_hub().publish(
+                        TaskProgressEvent(
+                            run_id=run_id,
+                            task_id=task_id,
+                            task_name=task_name,
+                            timestamp=time.time(),
+                            type='task_started',
+                            payload={'message': '开始执行'},
+                        )
+                    )
+                    token = set_task_reporter(
+                        TaskReporter(
+                            hub=progress_hub(),
+                            run_id=run_id,
+                            task_id=task_id,
+                            task_name=task_name,
+                        )
+                    )
                     try:
-                        logger.info(f"Running task: {task_id} ({self.current_task_name})")
+                        logger.info(f"Running task: {task_id} ({task_name})")
                         func()
-                        logger.info(f"Task finished: {task_id} ({self.current_task_name})")
+                        logger.info(f"Task finished: {task_id} ({task_name})")
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_finished',
+                                payload={'message': '执行完成', 'percent': 100},
+                            )
+                        )
                     except KeyboardInterrupt:
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_failed',
+                                payload={'message': f'任务中断：{task_name}', 'error': 'KeyboardInterrupt'},
+                            )
+                        )
                         logger.info("KeyboardInterrupt received. Stopping scheduler.")
                         break
                     except Exception as e:  # noqa: BLE001
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_failed',
+                                payload={'message': f'执行失败：{task_name}', 'error': str(e)},
+                            )
+                        )
                         logger.exception(f"Task '{task_id}' raised an exception: {e}")
                         if self.on_error:
                             try:
@@ -90,6 +143,7 @@ class SchedulerService:
                                 logger.exception("Error handler raised an exception")
                         break
                     finally:
+                        reset_task_reporter(token)
                         self.current_task_id = None
                         self.current_task_name = None
             except Exception as e:  # noqa: BLE001
@@ -280,3 +334,5 @@ class SchedulerService:
             if conf.scheduler.is_enabled(name):
                 tasks.append((name, func))
         return tasks
+
+

@@ -7,7 +7,7 @@ from kotonebot import device, Loop, action, sleep, color
 
 from .. import R
 from ..common import at_home, go_home
-from iaa.context import conf, server
+from iaa.context import conf, server, task_reporter
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_core import RhythmGameAnalyzer
@@ -57,6 +57,8 @@ def start_auto_live(
     """
     if auto_setting is None or isinstance(auto_setting, int):
         raise NotImplementedError('Not implemented yet.')
+    rep = task_reporter()
+    rep.message('准备开始演出')
     # 等待进入编队界面
     check = AnyOf[
         R.Live.SwitchAutoLiveOff,
@@ -79,6 +81,7 @@ def start_auto_live(
                 break
             elif R.Live.TextAtLeastOneAp.find():
                 logger.info('No AP left to enable auto live. Exiting.')
+                rep.message('AP 不足，正在退出')
                 return False
             elif R.Live.ButtonAutoLiveSettings.try_click():
                 logger.debug('Clicked auto live settings button.')
@@ -107,6 +110,7 @@ def start_auto_live(
         # 先关掉游戏 AUTO
         _turn_off_auto()
     logger.info('Auto live setting finished.')
+    rep.message('演出中')
 
     # 开始演出
     logger.debug('Clicking start live button.')
@@ -130,6 +134,7 @@ def start_auto_live(
             # 结束条件是「已完成指定次数的演出」提示
             if R.Live.TextAutoLiveCompleted.exists():
                 _skip()
+                rep.message('AP 不足，正在退出')
                 logger.info('Auto lives all completed.')
                 sleep(0.3)
                 break
@@ -144,6 +149,7 @@ def start_auto_live(
     if back_to is None:
         return True
     # 返回
+    rep.message('结算中')
     for _ in Loop(interval=0.5):
         if finish_pre_check:
             should_skip, should_break = finish_pre_check()
@@ -210,6 +216,8 @@ def solo_live(
     """
     if loop_count is not None and loop_count <= 0:
         raise ValueError('loop_count must be positive.')
+    reporter = task_reporter()
+    reporter.message('进入单人演出')
     # 进入单人演出
     for _ in Loop(interval=0.6):
         if R.Hud.ButtonLive.find(threshold=0.55):
@@ -226,40 +234,54 @@ def solo_live(
     max_count = loop_count or float('inf')
     match songs:
         case None:
-            enter_unit_select()
-            start_auto_live('once', back_to='home')
+            with reporter.phase('单次演出', total=1) as phase:
+                enter_unit_select()
+                start_auto_live('once', back_to='home')
+                phase.step('单次演出完成')
         # 单曲循环
         case 'single-loop':
             # 游戏内 AUTO
             if auto_mode == 'game':
+                reporter.message('开始单曲循环（游戏自动）')
                 enter_unit_select()
                 start_auto_live('all', back_to='home')
+                reporter.message('单曲循环完成，返回首页')
             # 脚本自动
             else:
                 count = 0
-                while True:
-                    enter_unit_select()
-                    if not start_auto_live('script', back_to='select', debug_enabled=debug_enabled):
-                        break
-                    count += 1
-                    if count >= max_count:
-                        logger.info(f'Completed {count} loops.')
-                        break
+                total = (int(max_count) if max_count != float('inf') else None)
+                reporter.message('开始单曲循环（脚本自动）')
+                with reporter.phase('单曲循环', total=total) as phase:
+                    while True:
+                        enter_unit_select()
+                        if not start_auto_live('script', back_to='select', debug_enabled=debug_enabled):
+                            break
+                        count += 1
+                        phase.step(f'已完成 {count} 次单曲循环')
+                        if count >= max_count:
+                            logger.info(f'Completed {count} loops.')
+                            break
                 go_home()
+                reporter.message('单曲循环完成，返回首页')
         # 列表循环
         case 'list-loop':
-            for _ in Loop():
-                next_song()
-                enter_unit_select()
-                start_auto_live(
-                    'once' if auto_mode == 'game' else 'script',
-                    back_to='select',
-                    debug_enabled=debug_enabled,
-                )
-                logger.info(f'Song looped. {count}/{max_count}')
-                count += 1
-                if count >= max_count:
-                    break
+            total = (int(max_count) if max_count != float('inf') else None)
+            reporter.message('开始列表循环')
+            with reporter.phase('列表循环', total=total) as phase:
+                for _ in Loop():
+                    next_song()
+                    enter_unit_select()
+                    start_auto_live(
+                        'once' if auto_mode == 'game' else 'script',
+                        back_to='select',
+                        debug_enabled=debug_enabled,
+                    )
+                    count += 1
+                    logger.info(f'Song looped. {count}/{max_count}')
+                    phase.step(f'已完成 {count} 次列表循环')
+                    if count >= max_count:
+                        break
+            reporter.message('列表循环完成')
         case songs if isinstance(songs, list):
             raise NotImplementedError('Not implemented yet.')
         case _:
@@ -269,6 +291,8 @@ def solo_live(
 def challenge_live(
     character: GameCharacter
 ):
+    rep = task_reporter()
+    rep.message('进入挑战演出')
     # 进入挑战演出
     for _ in Loop(interval=0.6):
         if R.Hud.ButtonLive.try_click(threshold=0.55):
@@ -290,6 +314,7 @@ def challenge_live(
             logger.debug('Clicked group virtual singer.')
 
     # 选择角色
+    rep.message(f'选择角色：{character.value}')
     logger.info(f'Selecting character: {character.value}')
     def char_to_prefab(ch: GameCharacter):
         """返回 (角色贴图, 分组贴图或 None)。"""
@@ -396,5 +421,7 @@ def challenge_live(
                 sleep(0.3)
                 return True, False
         return False, False
+    rep.message('开始挑战演出')
     start_auto_live('once', finish_pre_check=claim_reward)
+    rep.message('挑战演出完成，返回首页')
     go_home()

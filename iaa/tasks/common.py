@@ -1,10 +1,10 @@
-from kotonebot import device, Loop, action, color
 from kotonebot import logging
+from kotonebot.backend.core import HintBox
+from kotonebot import device, Loop, action, color
 from kotonebot.util import Throttler, Countdown
 
-from kotonebot.backend.core import HintBox
-
 from . import R
+from iaa.context import task_reporter
 
 logger = logging.getLogger(__name__)
 
@@ -14,6 +14,8 @@ def at_home() -> bool:
 
 @action('返回首页', screenshot_mode='manual')
 def go_home(threshold_timeout: float = 0):
+    rep = task_reporter()
+    rep.message('正在返回首页')
     logger.info('Try to go home.')
     th = Throttler(1)
     cd = Countdown(threshold_timeout)
