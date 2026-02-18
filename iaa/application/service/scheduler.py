@@ -161,15 +161,41 @@ class SchedulerService:
         """
         # 因为导入 kotonebot 开销较大，这里延迟导入
         from kotonebot.backend.context.context import init_context
-        from kotonebot.client.host import Mumu12Host
+        from kotonebot.client.host import Mumu12Host, Mumu12V5Host
+        from kotonebot.client.host.protocol import Instance
         impl = self.iaa.config.conf.game.control_impl
         emulator = self.iaa.config.conf.game.emulator
+        check_emulator = bool(self.iaa.config.conf.game.check_emulator)
+
+        def _maybe_start(instance: Instance) -> None:
+            if check_emulator and not instance.running():
+                logger.info('Emulator is not running, starting: %s', instance)
+                instance.start()
+                instance.wait_available()
 
         if emulator == 'mumu':
             hosts = Mumu12Host.list()
             if not hosts:
                 raise RuntimeError("No MuMu host found.")
             host = hosts[0]
+            _maybe_start(host)
+            if impl == 'nemu_ipc':
+                from kotonebot.client.host.mumu12_host import MuMu12HostConfig
+                device = host.create_device('nemu_ipc', MuMu12HostConfig())
+            elif impl == 'adb':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'uiautomator':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('uiautomator2', AdbHostConfig())
+            else:
+                raise ValueError(f"Unknown control implementation: {impl}")
+        elif emulator == 'mumu_v5':
+            hosts = Mumu12V5Host.list()
+            if not hosts:
+                raise RuntimeError("No MuMu v5 host found.")
+            host = hosts[0]
+            _maybe_start(host)
             if impl == 'nemu_ipc':
                 from kotonebot.client.host.mumu12_host import MuMu12HostConfig
                 device = host.create_device('nemu_ipc', MuMu12HostConfig())
@@ -188,16 +214,21 @@ class SchedulerService:
             if data is None:
                 adb_ip = '127.0.0.1'
                 adb_port = 5555
+                emulator_path = ''
+                emulator_args = ''
             else:
                 adb_ip = data.adb_ip or '127.0.0.1'
                 adb_port = data.adb_port or 5555
+                emulator_path = data.emulator_path or ''
+                emulator_args = data.emulator_args or ''
             instance = create_custom(
                 adb_ip=adb_ip,
                 adb_port=adb_port,
                 adb_name="",
-                exe_path="",
-                emulator_args="",
+                exe_path=emulator_path,
+                emulator_args=emulator_args,
             )
+            _maybe_start(instance)
             if impl == 'adb':
                 device = instance.create_device('adb', AdbHostConfig())
             elif impl == 'uiautomator':

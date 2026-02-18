@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from typing_extensions import assert_never
 
 LinkAccountOptions = Literal['no', 'google_play']
-EmulatorOptions = Literal['mumu', 'custom']
+EmulatorOptions = Literal['mumu', 'mumu_v5', 'custom']
 
 
 class GameCharacter(str, Enum):
@@ -275,6 +275,8 @@ class ChallengeLiveAward(str, Enum):
 class CustomEmulatorData(BaseModel):
     adb_ip: str = '127.0.0.1'
     adb_port: int = 5555
+    emulator_path: str = ''
+    emulator_args: str = ''
 
 
 class GameConfig(BaseModel):
@@ -282,6 +284,7 @@ class GameConfig(BaseModel):
     link_account: LinkAccountOptions = 'no'
     emulator: EmulatorOptions = 'mumu'
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator'] = 'nemu_ipc'
+    check_emulator: bool = False
     emulator_data: CustomEmulatorData | None = None
     """
     是否引继账号。
