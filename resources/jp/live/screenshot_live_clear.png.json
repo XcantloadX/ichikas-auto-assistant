@@ -12,7 +12,8 @@
           "y1": 449,
           "x2": 1169,
           "y2": 488
-        }
+        },
+        "fixed": true
       },
       "displayName": "SCORERANK"
     }

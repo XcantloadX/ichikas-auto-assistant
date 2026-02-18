@@ -29,6 +29,23 @@
         }
       },
       "displayName": "任务页面 左侧红色角标范围"
+    },
+    "99f3571f-47ca-477b-97c8-ae1ba787ea13": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonGoBack",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 26.601137060286973,
+          "y1": 25.554697980158487,
+          "x2": 61.3608626286895,
+          "y2": 59.7586303996389
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "左上角返回按钮"
     }
   }
 }

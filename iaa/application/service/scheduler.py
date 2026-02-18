@@ -2,7 +2,7 @@
 import logging
 import threading
 import os
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device
 
@@ -142,14 +142,27 @@ class SchedulerService:
             self._thread.join()
         self._thread = None
 
-    def run_single(self, task_id: str, run_in_thread: bool = True) -> None:
+    def run_single(
+        self,
+        task_id: str,
+        run_in_thread: bool = True,
+        args: tuple[Any, ...] | None = None,
+        kwargs: dict[str, Any] | None = None,
+    ) -> None:
         """运行单个任务。"""
         tasks = MANUAL_TASKS.copy()
         tasks.update(REGULAR_TASKS)
         if task_id not in tasks:
             raise ValueError(f"Unknown manual task: {task_id}")
+        task_func = tasks[task_id]
+        call_args = args or ()
+        call_kwargs = kwargs or {}
+
+        def _call() -> None:
+            task_func(*call_args, **call_kwargs)
+
         def _get() -> list[tuple[str, Callable[[], None]]]:
-            return [(task_id, tasks[task_id])]
+            return [(task_id, _call)]
         self.__start_tasks(_get, thread_name="IAA-Scheduler-Manual", run_in_thread=run_in_thread)
 
     def __prepare_context(self) -> None:

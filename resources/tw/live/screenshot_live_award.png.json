@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "definitions": {
+    "f7651eb5-7228-4f5d-ac97-c38ba59d183d": {
+      "type": "prefab",
+      "name": "Live.TextScoreRankReward",
+      "variant": "tw",
+      "props": {}
+    },
+    "45d56f50-66ae-4298-bc64-a840dc786286": {
+      "type": "prefab",
+      "name": "Live.ButtonCloseScoreRankReward",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

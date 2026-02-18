@@ -26,6 +26,8 @@ def go_home(threshold_timeout: float = 0):
             if cd.expired():
                 logger.info('Now at home.')
                 break
+        elif R.Hud.ButtonGoBack.try_click():
+            logger.debug('Go back button found and clicked.')
         else:
             cd.reset()
 

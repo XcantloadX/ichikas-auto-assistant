@@ -6,6 +6,7 @@ import ttkbootstrap as tb
 from ..service.iaa_service import IaaService
 from tkinter import messagebox
 
+
 @dataclass
 class Store:
     var_start_game: tk.BooleanVar | None = None

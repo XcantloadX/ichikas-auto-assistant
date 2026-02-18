@@ -66,6 +66,8 @@ class ConfStore:
     self.song_display_to_value: dict[str, int] = {}
     # 奖励显示到值映射
     self.challenge_award_display_to_value: dict[str, ChallengeLiveAward] = {}
+    # CM 设置
+    self.cm_watch_ad_wait_sec_var = tk.StringVar()
 
 
 def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
@@ -260,6 +262,18 @@ def build_challenge_live_config_group(parent: tk.Misc, conf: IaaConfig, store: C
   tb.Combobox(row, state="readonly", textvariable=store.challenge_award_var, values=list(store.challenge_award_display_to_value.keys()), width=28).pack(side=tk.LEFT)
 
 
+def build_cm_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
+  frame = tb.Labelframe(parent, text="CM 设置")
+  frame.pack(fill=tk.X, padx=16, pady=8)
+
+  store.cm_watch_ad_wait_sec_var.set(str(int(conf.cm.watch_ad_wait_sec)))
+
+  row = tb.Frame(frame)
+  row.pack(fill=tk.X, padx=8, pady=8)
+  tb.Label(row, text="广告等待秒数", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  tb.Entry(row, textvariable=store.cm_watch_ad_wait_sec_var, width=30).pack(side=tk.LEFT)
+
+
 def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG001
   # 可滚动容器
   container = tb.Frame(parent)
@@ -336,6 +350,7 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
   build_game_config_group(inner, conf, store)
   build_live_config_group(inner, conf, store)
   build_challenge_live_config_group(inner, conf, store)
+  build_cm_config_group(inner, conf, store)
 
   def on_save() -> None:
     try:
@@ -377,6 +392,15 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
       conf.challenge_live.characters = selected_chars
       award_display = store.challenge_award_var.get()
       conf.challenge_live.award = store.challenge_award_display_to_value.get(award_display, ChallengeLiveAward.Crystal)
+      
+      # CM 设置
+      raw_wait_sec = (store.cm_watch_ad_wait_sec_var.get() or '').strip()
+      if not raw_wait_sec:
+        raise ValueError("CM 广告等待秒数不能为空")
+      wait_sec = int(raw_wait_sec)
+      if wait_sec <= 0:
+        raise ValueError("CM 广告等待秒数必须大于 0")
+      conf.cm.watch_ad_wait_sec = wait_sec
 
       app.service.config.save()
       show_toast(app.root, "保存成功", kind="success")

@@ -10,9 +10,11 @@ from ..common import at_home, go_home
 from iaa.context import conf, server
 from ._select_song import next_song
 from ._scene import at_song_select
+from .auto_live_core import RhythmGameAnalyzer
 from iaa.config.schemas import ChallengeLiveAward, GameCharacter
 
 logger = logging.getLogger(__name__)
+AutoMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None
 
 def _skip():
     if server() == 'jp':
@@ -26,9 +28,10 @@ def _skip():
 
 @action('演出', screenshot_mode='manual')
 def start_auto_live(
-    auto_setting: Literal['all'] | Literal['once'] | int | None = 'all',
+    auto_setting: AutoMode = 'all',
     back_to: Literal['home'] | Literal['select'] | None = 'home',
     finish_pre_check: Callable[[], tuple[bool, bool]] | None = None,
+    debug_enabled: bool = False,
 ) -> bool:
     """
     前置：位于编队界面\n
@@ -38,6 +41,7 @@ def start_auto_live(
         * `"all"`: 自动演出直到 AP 不足
         * 任意整数: 自动演出指定次数
         * `"once"`: 自动演出一次
+        * `"script"`: 脚本自动演出一次
         * `None`: 不自动演出
     :param back_to: 返回位置。\n
         * `"home"`: 返回首页
@@ -53,18 +57,22 @@ def start_auto_live(
     """
     if auto_setting is None or isinstance(auto_setting, int):
         raise NotImplementedError('Not implemented yet.')
-    # 设置自动演出设置
-    if auto_setting == 'all':
-        chose = False
-        # 要先关掉自动，然后再走打开的逻辑
-        check = AnyOf[
-            R.Live.SwitchAutoLiveOff,
-            R.Live.SwitchAutoLiveOn
-        ].wait()
+    # 等待进入编队界面
+    check = AnyOf[
+        R.Live.SwitchAutoLiveOff,
+        R.Live.SwitchAutoLiveOn
+    ].wait()
+    def _turn_off_auto():
         if check.prefab == R.Live.SwitchAutoLiveOn:
             check.click()
             logger.debug('Clicked auto live switch to turn off.')
             sleep(0.3)
+    # 设置自动演出设置
+    # 消耗全部 AP
+    if auto_setting == 'all':
+        chose = False
+        # 要先关掉自动，然后再走打开的逻辑
+        _turn_off_auto()
         for _ in Loop(interval=0.6):
             if R.Live.SwitchAutoLiveOn.find():
                 logger.debug('Auto live switch checked on.')
@@ -82,6 +90,7 @@ def start_auto_live(
             elif R.Live.ButtonDecideAutoLive.try_click():
                 logger.debug('Clicked decide auto live button.')
                 sleep(0.3)
+    # 进行一次 AUTO
     elif auto_setting == 'once':
         for _ in Loop(interval=0.6):
             if R.Live.SwitchAutoLiveOn.find():
@@ -93,12 +102,25 @@ def start_auto_live(
             elif R.Live.SwitchAutoLiveOff.try_click():
                 logger.debug('Clicked auto live switch.')
                 sleep(0.3)
+    # 脚本自动演出
+    elif auto_setting == 'script':
+        # 先关掉游戏 AUTO
+        _turn_off_auto()
     logger.info('Auto live setting finished.')
 
-    # 开始并等待完成
+    # 开始演出
     logger.debug('Clicking start live button.')
     R.Live.ButtonStartLive.wait().click()
-    sleep(74.8 + 5) # 孑然妒火（最短曲） + 5s 缓冲
+    if auto_setting == 'script':
+        analyzer = RhythmGameAnalyzer(
+            device,
+            R.Live.TextLife.template.pixels,
+            debug=debug_enabled,
+            stop_check=R.Live.TextScoreRank.exists
+        )
+        analyzer.run()
+    else:
+        sleep(74.8 + 5) # 孑然妒火（最短曲） + 5s 缓冲
 
     is_mutiple_auto = (auto_setting == 'all' or isinstance(auto_setting, int))
     for _ in Loop():
@@ -106,7 +128,7 @@ def start_auto_live(
         if is_mutiple_auto:
             # 指定演出次数或直到 AP 不足
             # 结束条件是「已完成指定次数的演出」提示
-            if R.Live.TextAutoLiveCompleted.find():
+            if R.Live.TextAutoLiveCompleted.exists():
                 _skip()
                 logger.info('Auto lives all completed.')
                 sleep(0.3)
@@ -114,7 +136,7 @@ def start_auto_live(
         else:
             # 单次演出
             # 结束条件是「SCORERANK」提示
-            if R.Live.TextScoreRank.find():
+            if R.Live.TextScoreRank.exists():
                 logger.debug('Waiting for SCORERANK')
                 sleep(1) # 等待 SCORERANK 动画完成
                 device.click_center()
@@ -147,6 +169,10 @@ def start_auto_live(
             elif at_song_select():
                 logger.debug('Now at song select.')
                 break
+            # 处理歌曲 RANK 奖励
+            elif R.Live.TextScoreRankReward.exists():
+                if R.Live.ButtonCloseScoreRankReward.try_click():
+                    logger.debug('Clicked claim score rank reward button.')
             else:
                 logger.debug('Waiting for reward screen finished.')
     return True
@@ -168,6 +194,8 @@ def enter_unit_select():
 def solo_live(
     songs: list[str] | Literal['single-loop'] | Literal['list-loop'] | None = None,
     loop_count: int | None = None,
+    auto_mode: Literal['script'] | Literal['game'] = 'game',
+    debug_enabled: bool = False,
 ):
     """
     
@@ -200,15 +228,34 @@ def solo_live(
         case None:
             enter_unit_select()
             start_auto_live('once', back_to='home')
+        # 单曲循环
         case 'single-loop':
-            enter_unit_select()
-            start_auto_live('all', back_to='home')
+            # 游戏内 AUTO
+            if auto_mode == 'game':
+                enter_unit_select()
+                start_auto_live('all', back_to='home')
+            # 脚本自动
+            else:
+                count = 0
+                while True:
+                    enter_unit_select()
+                    if not start_auto_live('script', back_to='select', debug_enabled=debug_enabled):
+                        break
+                    count += 1
+                    if count >= max_count:
+                        logger.info(f'Completed {count} loops.')
+                        break
+                go_home()
         # 列表循环
         case 'list-loop':
             for _ in Loop():
                 next_song()
                 enter_unit_select()
-                start_auto_live('once', back_to='select')
+                start_auto_live(
+                    'once' if auto_mode == 'game' else 'script',
+                    back_to='select',
+                    debug_enabled=debug_enabled,
+                )
                 logger.info(f'Song looped. {count}/{max_count}')
                 count += 1
                 if count >= max_count:
