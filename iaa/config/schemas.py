@@ -4,7 +4,7 @@ from typing import Literal
 from pydantic import BaseModel
 from typing_extensions import assert_never
 
-LinkAccountOptions = Literal['no', 'google_play']
+LinkAccountOptions = Literal['no', 'google', 'google_play']
 EmulatorOptions = Literal['mumu', 'mumu_v5', 'custom']
 
 
@@ -290,6 +290,7 @@ class GameConfig(BaseModel):
     是否引继账号。
     
     * `"no"`： 不引继账号
+    * `"google"`： 引继 Google 账号
     * `"google_play"`： 引继 Google Play 账号
     """
 

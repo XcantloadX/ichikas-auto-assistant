@@ -25,6 +25,7 @@ SERVER_VALUE_MAP: dict[str, Literal['jp', 'tw']] = {v: k for k, v in SERVER_DISP
 
 LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
   'no': '不引继账号',
+  'google': 'Google 账号',
   'google_play': 'Google Play',
 }
 LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {v: k for k, v in LINK_DISPLAY_MAP.items()}
