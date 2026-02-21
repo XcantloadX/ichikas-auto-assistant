@@ -17,8 +17,8 @@ def is_at_intersection() -> bool:
     #     R.Scene.Intersection.IconCm
     # ].find(threshold=0.8) is not None
     return (
-        R.Scene.Intersection.BuildingLogo.find(threshold=0.8) is not None or
-        R.Scene.Intersection.IconCm.find(threshold=0.8) is not None
+        R.Scene.Intersection.BuildingLogo.find(threshold=0.9) is not None or
+        R.Scene.Intersection.IconCm.find(threshold=0.9) is not None
     )
 
 @action('前往交叉路口', screenshot_mode='manual')
@@ -81,18 +81,19 @@ def open_cm() -> bool:
                 logger.debug('CM icon is in the detection area.')
                 device.click(x, y)
                 logger.debug('Clicked CM icon.')
+                continue
             sleep(0.4)
         elif R.Cm.ButtonPlayCm.find():
             logger.debug('Now at CM.')
             return True
-        else:
-            # 向左滑
-            device.swipe_scaled(x1=0.7, x2=0.4, y1=0.5, y2=0.5)
-            logger.debug('Swiped left.')
-            swipe_count += 1
-            if swipe_count >= MAX_SWIPE_COUNT:
-                logger.debug('Reached max swipe count but still not found. Stop.')
-                return False
+        
+        # 向左滑
+        device.swipe_scaled(x1=0.7, x2=0.4, y1=0.5, y2=0.5)
+        logger.debug('Swiped left.')
+        swipe_count += 1
+        if swipe_count >= MAX_SWIPE_COUNT:
+            logger.debug('Reached max swipe count but still not found. Stop.')
+            return False
     return False
 
 @action('看广告', screenshot_mode='manual')
