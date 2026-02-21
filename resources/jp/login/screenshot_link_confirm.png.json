@@ -1,1 +1,21 @@
-{"definitions":{"ece2e23d-8bb4-4d5f-b533-779daf5d1ceb":{"name":"Login.ButtonLink","displayName":"連携","type":"template","annotationId":"ece2e23d-8bb4-4d5f-b533-779daf5d1ceb","useHintRect":false}},"annotations":[{"id":"ece2e23d-8bb4-4d5f-b533-779daf5d1ceb","type":"rect","data":{"x1":732,"y1":526,"x2":790,"y2":558}}]}
+{
+  "version": 2,
+  "definitions": {
+    "ece2e23d-8bb4-4d5f-b533-779daf5d1ceb": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.ButtonLink",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 732,
+          "y1": 526,
+          "x2": 790,
+          "y2": 558
+        },
+        "fixed": true
+      },
+      "displayName": "連携"
+    }
+  }
+}

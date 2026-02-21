@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "definitions": {
+    "5d249c98-078c-42b1-a8f1-ffa72102d7cc": {
+      "type": "prefab",
+      "name": "Cm.ButtonCmStart",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

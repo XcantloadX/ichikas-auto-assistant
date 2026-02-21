@@ -6,6 +6,7 @@ import ttkbootstrap as tb
 from ..service.iaa_service import IaaService
 from tkinter import messagebox
 
+
 @dataclass
 class Store:
     var_start_game: tk.BooleanVar | None = None
@@ -14,6 +15,7 @@ class Store:
     var_activity_story: tk.BooleanVar | None = None
     var_auto_cm: tk.BooleanVar | None = None
     var_gift: tk.BooleanVar | None = None
+    var_area_convos: tk.BooleanVar | None = None
     logo_image: tk.PhotoImage | None = None # LOGO 组件图片。防止被 GC
 
 class DesktopApp:
@@ -94,6 +96,8 @@ class DesktopApp:
             tasks.append("自动 CM")
         if self.store.var_gift and self.store.var_gift.get():
             tasks.append("领取礼物")
+        if self.store.var_area_convos and self.store.var_area_convos.get():
+            tasks.append("区域对话")
         return tasks
 
     def _on_close(self) -> None:

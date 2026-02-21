@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "definitions": {
+    "cf35db62-eb92-493b-a620-77897740d9f6": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.StoryList.ButtonConfirmFilter",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 728.1145,
+          "y1": 643.3966644295795,
+          "x2": 793.1145,
+          "y2": 670.3736887675128
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "故事列表 筛选弹窗 确认按钮"
+    },
+    "9b2c08fb-f2ff-4598-8974-819caac34249": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.StoryList.RadioUnread",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 626.1145,
+          "y1": 212.33794884874249,
+          "x2": 913.1145,
+          "y2": 265.2928484750561
+        },
+        "fixed": true
+      },
+      "displayName": "故事列表 筛选弹窗 未读/跳过 单选",
+      "variant_inherit": false
+    }
+  }
+}

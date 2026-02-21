@@ -1,1 +1,20 @@
-{"definitions":{"0efb0404-ea27-4a21-bdf7-6916484a7e12":{"name":"Scene.Intersection.IconCm","displayName":"看广告提示图标","type":"template","annotationId":"0efb0404-ea27-4a21-bdf7-6916484a7e12","useHintRect":false}},"annotations":[{"id":"0efb0404-ea27-4a21-bdf7-6916484a7e12","type":"rect","data":{"x1":689,"y1":188,"x2":737,"y2":214}}]}
+{
+  "version": 2,
+  "definitions": {
+    "0efb0404-ea27-4a21-bdf7-6916484a7e12": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Scene.Intersection.IconCm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 689,
+          "y1": 188,
+          "x2": 737,
+          "y2": 214
+        }
+      },
+      "displayName": "看广告提示图标"
+    }
+  }
+}

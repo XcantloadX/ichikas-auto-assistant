@@ -1,1 +1,116 @@
-{"definitions":{"248c62fd-ac66-4a55-8439-53974274d42c":{"name":"Scene.Intersection.BuildingLogo","displayName":"交叉口 背景大楼 100 红色 LOGO","type":"template","annotationId":"248c62fd-ac66-4a55-8439-53974274d42c","useHintRect":false},"8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50":{"name":"Map.ButtonOpenMap","displayName":"打开地图 按钮","type":"template","annotationId":"8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50","useHintRect":false},"1429f33a-8793-401e-b937-39974e1501f1":{"name":"Hud.ButtonLive","displayName":"工具栏 LIVE 按钮","type":"template","annotationId":"1429f33a-8793-401e-b937-39974e1501f1","useHintRect":false},"5df90065-4f75-4f85-a9d2-2d9f8c418394":{"name":"Cm.BoxCmIconDetectRect","displayName":"交叉路口 广告图标 检测范围","type":"hint-box","annotationId":"5df90065-4f75-4f85-a9d2-2d9f8c418394","useHintRect":false},"31f32641-d7ed-418f-9d15-bb673cc8f230":{"name":"Daily.ButtonGift","displayName":"首页 礼物按钮","type":"template","annotationId":"31f32641-d7ed-418f-9d15-bb673cc8f230","useHintRect":false},"e153dec8-abf8-42c5-9a08-b8f7e16c7792":{"name":"Daily.ButtonMission","displayName":"首页 任务按钮","type":"template","annotationId":"e153dec8-abf8-42c5-9a08-b8f7e16c7792","useHintRect":false}},"annotations":[{"id":"248c62fd-ac66-4a55-8439-53974274d42c","type":"rect","data":{"x1":635,"y1":110,"x2":684,"y2":139}},{"id":"8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50","type":"rect","data":{"x1":23,"y1":22,"x2":62,"y2":61}},{"id":"1429f33a-8793-401e-b937-39974e1501f1","type":"rect","data":{"x1":1112,"y1":626,"x2":1247,"y2":680}},{"id":"5df90065-4f75-4f85-a9d2-2d9f8c418394","type":"rect","data":{"x1":187,"y1":165,"x2":1137,"y2":499}},{"id":"31f32641-d7ed-418f-9d15-bb673cc8f230","type":"rect","data":{"x1":1217,"y1":134,"x2":1258,"y2":168}},{"id":"e153dec8-abf8-42c5-9a08-b8f7e16c7792","type":"rect","data":{"x1":1218,"y1":217,"x2":1257,"y2":265}}]}
+{
+  "version": 2,
+  "definitions": {
+    "248c62fd-ac66-4a55-8439-53974274d42c": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Scene.Intersection.BuildingLogo",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 635,
+          "y1": 110,
+          "x2": 684,
+          "y2": 139
+        }
+      },
+      "displayName": "交叉口 背景大楼 100 红色 LOGO"
+    },
+    "8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Map.ButtonOpenMap",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 23,
+          "y1": 22,
+          "x2": 62,
+          "y2": 61
+        }
+      },
+      "displayName": "打开地图 按钮",
+      "variant_inherit": true
+    },
+    "1429f33a-8793-401e-b937-39974e1501f1": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1112,
+          "y1": 626,
+          "x2": 1247,
+          "y2": 680
+        },
+        "fixed": true
+      },
+      "displayName": "工具栏 LIVE 按钮",
+      "variant_inherit": false
+    },
+    "5df90065-4f75-4f85-a9d2-2d9f8c418394": {
+      "type": "hint-box",
+      "name": "Cm.BoxCmIconDetectRect",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 187,
+          "y1": 165,
+          "x2": 1137,
+          "y2": 499
+        }
+      },
+      "displayName": "交叉路口 广告图标 检测范围"
+    },
+    "31f32641-d7ed-418f-9d15-bb673cc8f230": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Daily.ButtonGift",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1217,
+          "y1": 134,
+          "x2": 1258,
+          "y2": 168
+        }
+      },
+      "displayName": "首页 礼物按钮",
+      "variant_inherit": true
+    },
+    "e153dec8-abf8-42c5-9a08-b8f7e16c7792": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Daily.ButtonMission",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1218,
+          "y1": 217,
+          "x2": 1257,
+          "y2": 265
+        }
+      },
+      "displayName": "首页 任务按钮",
+      "variant_inherit": true
+    },
+    "e6e9b497-82e4-4721-8b52-cfa6c80f8cea": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonStory",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 711.5346563131203,
+          "y1": 625.3137283032431,
+          "x2": 869.0741986099472,
+          "y2": 680.6992710094248
+        },
+        "fixed": true
+      },
+      "displayName": "工具栏 STORY 按钮",
+      "variant_inherit": false
+    }
+  }
+}

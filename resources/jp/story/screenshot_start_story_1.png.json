@@ -1,1 +1,50 @@
-{"definitions":{"20b8f830-f77e-4b94-934e-9e8e6a7b120a":{"name":"Story.CheckboxContinuousReading","displayName":"次のスト一リーを連続で読む","type":"template","annotationId":"20b8f830-f77e-4b94-934e-9e8e6a7b120a","useHintRect":false},"abbfd906-7b6d-4d5c-81ef-52a7d1cf460e":{"name":"Story.ButtonWithoutVoice","displayName":"ボイスなし","type":"template","annotationId":"abbfd906-7b6d-4d5c-81ef-52a7d1cf460e","useHintRect":false},"052adf6d-e689-44ff-8fb0-f0d1f7239548":{"name":"Story.TextVoiceDataDownload","displayName":"ボイステータをブウニロートしてストーリーを読みますか？","type":"template","annotationId":"052adf6d-e689-44ff-8fb0-f0d1f7239548","useHintRect":false}},"annotations":[{"id":"20b8f830-f77e-4b94-934e-9e8e6a7b120a","type":"rect","data":{"x1":459,"y1":442,"x2":828,"y2":501}},{"id":"abbfd906-7b6d-4d5c-81ef-52a7d1cf460e","type":"rect","data":{"x1":572,"y1":524,"x2":705,"y2":560}},{"id":"052adf6d-e689-44ff-8fb0-f0d1f7239548","type":"rect","data":{"x1":332,"y1":161,"x2":951,"y2":205}}]}
+{
+  "version": 2,
+  "definitions": {
+    "20b8f830-f77e-4b94-934e-9e8e6a7b120a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.CheckboxContinuousReading",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 459,
+          "y1": 442,
+          "x2": 828,
+          "y2": 501
+        }
+      },
+      "displayName": "次のスト一リーを連続で読む"
+    },
+    "abbfd906-7b6d-4d5c-81ef-52a7d1cf460e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonWithoutVoice",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 572,
+          "y1": 524,
+          "x2": 705,
+          "y2": 560
+        }
+      },
+      "displayName": "ボイスなし"
+    },
+    "052adf6d-e689-44ff-8fb0-f0d1f7239548": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.TextVoiceDataDownload",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 332,
+          "y1": 161,
+          "x2": 951,
+          "y2": 205
+        }
+      },
+      "displayName": "ボイステータをブウニロートしてストーリーを読みますか？"
+    }
+  }
+}

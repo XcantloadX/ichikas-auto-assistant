@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "definitions": {
+    "2af3a46b-41fe-4cca-a7ed-5c4eeec0c4bd": {
+      "type": "prefab",
+      "name": "Story.TextEventStory",
+      "variant": "tw",
+      "props": {}
+    },
+    "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
+      "type": "prefab",
+      "name": "Story.TextEpisode8",
+      "variant": "tw",
+      "props": {}
+    },
+    "f7b052bd-4ff3-4d13-b36f-bdae7e9c8f44": {
+      "type": "hint-point",
+      "name": "Story.PointFirstEpisode",
+      "displayName": "剧情列表 第一话 位置",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 874,
+          "y": 199
+        }
+      }
+    }
+  }
+}

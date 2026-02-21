@@ -1,1 +1,20 @@
-{"definitions":{"b390d0a0-595b-437a-9b30-2392144c6dce":{"name":"Login.TextLinkFinished","displayName":"プレイヤーデータの連携が完了しました。","type":"template","annotationId":"b390d0a0-595b-437a-9b30-2392144c6dce","useHintRect":false}},"annotations":[{"id":"b390d0a0-595b-437a-9b30-2392144c6dce","type":"rect","data":{"x1":437,"y1":347,"x2":834,"y2":373}}]}
+{
+  "version": 2,
+  "definitions": {
+    "b390d0a0-595b-437a-9b30-2392144c6dce": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.TextLinkFinished",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 437,
+          "y1": 347,
+          "x2": 834,
+          "y2": 373
+        }
+      },
+      "displayName": "プレイヤーデータの連携が完了しました。"
+    }
+  }
+}

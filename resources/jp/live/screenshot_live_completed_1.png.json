@@ -1,1 +1,20 @@
-{"definitions":{"ec8cc294-859b-4c56-b4e5-bf2ad58d68bb":{"name":"Live.ButtonLiveCompletedNext","displayName":"次へ","type":"template","annotationId":"ec8cc294-859b-4c56-b4e5-bf2ad58d68bb","useHintRect":false}},"annotations":[{"id":"ec8cc294-859b-4c56-b4e5-bf2ad58d68bb","type":"rect","data":{"x1":1095,"y1":649,"x2":1163,"y2":682}}]}
+{
+  "version": 2,
+  "definitions": {
+    "ec8cc294-859b-4c56-b4e5-bf2ad58d68bb": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonLiveCompletedNext",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1095,
+          "y1": 649,
+          "x2": 1163,
+          "y2": 682
+        }
+      },
+      "displayName": "次へ"
+    }
+  }
+}

@@ -1,1 +1,20 @@
-{"definitions":{"3d9202a2-6881-42f2-bcb3-58c761db76cf":{"name":"Login.ButtonIconLink","displayName":"「データ引き継ぎ」的图标","type":"template","annotationId":"3d9202a2-6881-42f2-bcb3-58c761db76cf","useHintRect":false}},"annotations":[{"id":"3d9202a2-6881-42f2-bcb3-58c761db76cf","type":"rect","data":{"x1":348,"y1":259,"x2":406,"y2":307}}]}
+{
+  "version": 2,
+  "definitions": {
+    "3d9202a2-6881-42f2-bcb3-58c761db76cf": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.ButtonIconLink",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 348,
+          "y1": 259,
+          "x2": 406,
+          "y2": 307
+        }
+      },
+      "displayName": "「データ引き継ぎ」的图标"
+    }
+  }
+}

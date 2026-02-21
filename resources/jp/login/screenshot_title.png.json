@@ -1,1 +1,20 @@
-{"definitions":{"4b69a1f3-c410-44fb-bbda-bc10c974f847":{"name":"Login.ButtonMenu","displayName":"右上角菜单按钮","type":"template","annotationId":"4b69a1f3-c410-44fb-bbda-bc10c974f847","useHintRect":false}},"annotations":[{"id":"4b69a1f3-c410-44fb-bbda-bc10c974f847","type":"rect","data":{"x1":1220,"y1":27,"x2":1255,"y2":58}}]}
+{
+  "version": 2,
+  "definitions": {
+    "4b69a1f3-c410-44fb-bbda-bc10c974f847": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.ButtonMenu",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1220,
+          "y1": 27,
+          "x2": 1255,
+          "y2": 58
+        }
+      },
+      "displayName": "右上角菜单按钮"
+    }
+  }
+}

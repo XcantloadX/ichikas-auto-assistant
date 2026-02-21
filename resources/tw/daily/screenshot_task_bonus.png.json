@@ -1,0 +1,25 @@
+{
+  "version": 2,
+  "definitions": {
+    "fd1624c2-3231-4ec6-9d04-72752c8df040": {
+      "type": "prefab",
+      "name": "Hud.ButtonClaimAll",
+      "variant": "tw",
+      "props": {}
+    },
+    "5f4b378f-0b97-4721-aad5-a4f2bb6f4a21": {
+      "type": "hint-box",
+      "name": "Daily.BoxMissionBadgeArea",
+      "displayName": "任务页面 左侧红色角标范围",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 140,
+          "y1": 82,
+          "x2": 167,
+          "y2": 632
+        }
+      }
+    }
+  }
+}

@@ -1,1 +1,148 @@
-{"definitions":{"9a4dc8be-ed9d-4860-bfc9-70169617351d":{"name":"Hud.IconCrystal","displayName":"画面上方水晶数量图标","type":"template","annotationId":"9a4dc8be-ed9d-4860-bfc9-70169617351d","useHintRect":false},"e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf":{"name":"Hud.BoxCrystalCount","displayName":"水晶数量 区域","type":"hint-box","annotationId":"e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf","useHintRect":false},"70934e96-c132-4bca-be3e-d211db2eb422":{"name":"Hud.BoxApCount","displayName":"体力数量 区域","type":"hint-box","annotationId":"70934e96-c132-4bca-be3e-d211db2eb422","useHintRect":false},"a8c38077-8a38-479b-b7e8-74d32382c796":{"name":"Live.ButtonSoloLive","displayName":"单人演出 按钮","type":"template","annotationId":"a8c38077-8a38-479b-b7e8-74d32382c796","useHintRect":false},"e01b6a1d-be60-4323-8152-94b56bf9488a":{"name":"Live.ButtonMultiLive","displayName":"多人演出 按钮","type":"template","annotationId":"e01b6a1d-be60-4323-8152-94b56bf9488a","useHintRect":false},"db8c1d40-9e04-43b9-affe-70c9d0ffd89d":{"name":"Live.ButtonChallengeLive","displayName":"挑战演出 按钮","type":"template","annotationId":"db8c1d40-9e04-43b9-affe-70c9d0ffd89d","useHintRect":false},"e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393":{"name":"Live.ButtonVirtualLive","displayName":"虚拟演唱会 按钮","type":"template","annotationId":"e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393","useHintRect":false},"76c00bd4-0a0e-454e-be4f-76aea6d737d2":{"name":"Live.PointEventButton","displayName":"活动按钮 位置","type":"hint-point","annotationId":"76c00bd4-0a0e-454e-be4f-76aea6d737d2","useHintRect":false},"8e980855-aff6-4a54-908c-2ca21213a859":{"name":"Live.BoxVirtualLiveOpenTip","displayName":"虚拟演唱会开演提示 区域","type":"hint-box","annotationId":"8e980855-aff6-4a54-908c-2ca21213a859","useHintRect":false},"f832c0d6-64a2-4687-8191-c967761b634a":{"name":"Live.BoxChallengeLiveRedDot","displayName":"挑战演出 红点提示 区域","type":"hint-box","annotationId":"f832c0d6-64a2-4687-8191-c967761b634a","useHintRect":false}},"annotations":[{"id":"9a4dc8be-ed9d-4860-bfc9-70169617351d","type":"rect","data":{"x1":852,"y1":30,"x2":873,"y2":55}},{"id":"e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf","type":"rect","data":{"x1":874,"y1":30,"x2":974,"y2":56}},{"id":"70934e96-c132-4bca-be3e-d211db2eb422","type":"rect","data":{"x1":1056,"y1":32,"x2":1129,"y2":54}},{"id":"a8c38077-8a38-479b-b7e8-74d32382c796","type":"rect","data":{"x1":728,"y1":174,"x2":812,"y2":260}},{"id":"e01b6a1d-be60-4323-8152-94b56bf9488a","type":"rect","data":{"x1":1013,"y1":181,"x2":1126,"y2":272}},{"id":"db8c1d40-9e04-43b9-affe-70c9d0ffd89d","type":"rect","data":{"x1":626,"y1":362,"x2":710,"y2":411}},{"id":"e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393","type":"rect","data":{"x1":716,"y1":535,"x2":785,"y2":582}},{"id":"76c00bd4-0a0e-454e-be4f-76aea6d737d2","type":"point","data":{"x":1106,"y":601}},{"id":"8e980855-aff6-4a54-908c-2ca21213a859","type":"rect","data":{"x1":754,"y1":495,"x2":904,"y2":529}},{"id":"f832c0d6-64a2-4687-8191-c967761b634a","type":"rect","data":{"x1":891,"y1":344,"x2":910,"y2":367}}]}
+{
+  "version": 2,
+  "definitions": {
+    "9a4dc8be-ed9d-4860-bfc9-70169617351d": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.IconCrystal",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 852,
+          "y1": 30,
+          "x2": 873,
+          "y2": 55
+        }
+      },
+      "displayName": "画面上方水晶数量图标"
+    },
+    "e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf": {
+      "type": "hint-box",
+      "name": "Hud.BoxCrystalCount",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 874,
+          "y1": 30,
+          "x2": 974,
+          "y2": 56
+        }
+      },
+      "displayName": "水晶数量 区域"
+    },
+    "70934e96-c132-4bca-be3e-d211db2eb422": {
+      "type": "hint-box",
+      "name": "Hud.BoxApCount",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 1056,
+          "y1": 32,
+          "x2": 1129,
+          "y2": 54
+        }
+      },
+      "displayName": "体力数量 区域"
+    },
+    "a8c38077-8a38-479b-b7e8-74d32382c796": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonSoloLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 728,
+          "y1": 174,
+          "x2": 812,
+          "y2": 260
+        }
+      },
+      "displayName": "单人演出 按钮"
+    },
+    "e01b6a1d-be60-4323-8152-94b56bf9488a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonMultiLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1013,
+          "y1": 181,
+          "x2": 1126,
+          "y2": 272
+        }
+      },
+      "displayName": "多人演出 按钮"
+    },
+    "db8c1d40-9e04-43b9-affe-70c9d0ffd89d": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonChallengeLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 626,
+          "y1": 362,
+          "x2": 710,
+          "y2": 411
+        }
+      },
+      "displayName": "挑战演出 按钮"
+    },
+    "e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonVirtualLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 716,
+          "y1": 535,
+          "x2": 785,
+          "y2": 582
+        }
+      },
+      "displayName": "虚拟演唱会 按钮"
+    },
+    "76c00bd4-0a0e-454e-be4f-76aea6d737d2": {
+      "type": "hint-point",
+      "name": "Live.PointEventButton",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 1106,
+          "y": 601
+        }
+      },
+      "displayName": "活动按钮 位置"
+    },
+    "8e980855-aff6-4a54-908c-2ca21213a859": {
+      "type": "hint-box",
+      "name": "Live.BoxVirtualLiveOpenTip",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 754,
+          "y1": 495,
+          "x2": 904,
+          "y2": 529
+        }
+      },
+      "displayName": "虚拟演唱会开演提示 区域"
+    },
+    "f832c0d6-64a2-4687-8191-c967761b634a": {
+      "type": "hint-box",
+      "name": "Live.BoxChallengeLiveRedDot",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 891,
+          "y1": 344,
+          "x2": 910,
+          "y2": 367
+        }
+      },
+      "displayName": "挑战演出 红点提示 区域"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "definitions": {
+    "45e8ae05-fe00-4644-8f13-4e2c53f417a0": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.TextMvPausedDialog",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 503,
+          "y1": 301.1608768744717,
+          "x2": 770,
+          "y2": 373.0996084422939
+        },
+        "fixed": true
+      },
+      "displayName": "MV 播放已暂停文本",
+      "variant_inherit": false
+    },
+    "306ef78a-cf2c-4e29-8361-cff97e42c4ef": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonSkipMv",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 472,
+          "y1": 406.07152707754574,
+          "x2": 569,
+          "y2": 442.0408928614569
+        },
+        "fixed": true
+      },
+      "displayName": "MV 播放已暂停 跳过按钮",
+      "variant_inherit": false
+    }
+  }
+}

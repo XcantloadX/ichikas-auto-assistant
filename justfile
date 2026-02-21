@@ -6,3 +6,6 @@ default:
 
 res:
     uv run .\tools\make_resources.py
+
+build:
+    uv run build.py build

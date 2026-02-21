@@ -1,1 +1,20 @@
-{"definitions":{"fff9420f-5fb4-4231-b6b4-4a45f83b33ed":{"name":"Story.ButtonReadNext","displayName":"次を読む","type":"template","annotationId":"fff9420f-5fb4-4231-b6b4-4a45f83b33ed","useHintRect":false}},"annotations":[{"id":"fff9420f-5fb4-4231-b6b4-4a45f83b33ed","type":"rect","data":{"x1":592,"y1":413,"x2":690,"y2":445}}]}
+{
+  "version": 2,
+  "definitions": {
+    "fff9420f-5fb4-4231-b6b4-4a45f83b33ed": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonReadNext",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 592,
+          "y1": 413,
+          "x2": 690,
+          "y2": 445
+        }
+      },
+      "displayName": "次を読む"
+    }
+  }
+}

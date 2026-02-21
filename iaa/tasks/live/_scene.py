@@ -1,4 +1,4 @@
-from kotonebot import image, action
+from kotonebot import action
 
 from .. import R
 
@@ -10,4 +10,4 @@ def at_song_select():
     前置：位于选歌界面
     结束：-
     """
-    return image.find(R.Live.ButtonDecide) 
+    return R.Live.ButtonDecide.find() 

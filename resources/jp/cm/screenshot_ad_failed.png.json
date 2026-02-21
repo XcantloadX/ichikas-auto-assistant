@@ -1,1 +1,35 @@
-{"definitions":{"51e50b5a-a32a-45c4-adea-013d44241ef6":{"name":"Cm.TextCmFailed","displayName":"","type":"template","annotationId":"51e50b5a-a32a-45c4-adea-013d44241ef6","useHintRect":false},"55658b39-fc12-401f-b3b2-9d2f8cfad57f":{"name":"Cm.ButtonClose","displayName":"","type":"template","annotationId":"55658b39-fc12-401f-b3b2-9d2f8cfad57f","useHintRect":false}},"annotations":[{"id":"51e50b5a-a32a-45c4-adea-013d44241ef6","type":"rect","data":{"x1":294,"y1":299,"x2":995,"y2":366}},{"id":"55658b39-fc12-401f-b3b2-9d2f8cfad57f","type":"rect","data":{"x1":988,"y1":256,"x2":1023,"y2":288}}]}
+{
+  "version": 2,
+  "definitions": {
+    "51e50b5a-a32a-45c4-adea-013d44241ef6": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.TextCmFailed",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 294,
+          "y1": 299,
+          "x2": 995,
+          "y2": 366
+        }
+      },
+      "displayName": ""
+    },
+    "55658b39-fc12-401f-b3b2-9d2f8cfad57f": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.ButtonClose",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 988,
+          "y1": 256,
+          "x2": 1023,
+          "y2": 288
+        }
+      },
+      "displayName": ""
+    }
+  }
+}

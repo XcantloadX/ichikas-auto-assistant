@@ -1,1 +1,21 @@
-{"definitions":{"427678a5-fcbc-4b11-bfbd-5e4453c4d8fc":{"name":"Live.TextScoreRank","displayName":"SCORERANK","type":"template","annotationId":"427678a5-fcbc-4b11-bfbd-5e4453c4d8fc","useHintRect":false}},"annotations":[{"id":"427678a5-fcbc-4b11-bfbd-5e4453c4d8fc","type":"rect","data":{"x1":1041,"y1":449,"x2":1169,"y2":488}}]}
+{
+  "version": 2,
+  "definitions": {
+    "427678a5-fcbc-4b11-bfbd-5e4453c4d8fc": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.TextScoreRank",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1041,
+          "y1": 449,
+          "x2": 1169,
+          "y2": 488
+        },
+        "fixed": true
+      },
+      "displayName": "SCORERANK"
+    }
+  }
+}

@@ -1,1 +1,35 @@
-{"definitions":{"e495bb87-2218-4639-94e6-46ca004610b3":{"name":"Activity.ButtonIconRanking","displayName":"ランキニグ 按钮图标","type":"template","annotationId":"e495bb87-2218-4639-94e6-46ca004610b3","useHintRect":false},"e951831d-be2a-4501-b39c-b60c8804a7f5":{"name":"Activity.ButtonIconEventStory","displayName":"イベントストーリー 按钮图标","type":"template","annotationId":"e951831d-be2a-4501-b39c-b60c8804a7f5","useHintRect":false}},"annotations":[{"id":"e495bb87-2218-4639-94e6-46ca004610b3","type":"rect","data":{"x1":63,"y1":642,"x2":89,"y2":668}},{"id":"e951831d-be2a-4501-b39c-b60c8804a7f5","type":"rect","data":{"x1":845,"y1":645,"x2":896,"y2":686}}]}
+{
+  "version": 2,
+  "definitions": {
+    "e495bb87-2218-4639-94e6-46ca004610b3": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Activity.ButtonIconRanking",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 63,
+          "y1": 642,
+          "x2": 89,
+          "y2": 668
+        }
+      },
+      "displayName": "ランキニグ 按钮图标"
+    },
+    "e951831d-be2a-4501-b39c-b60c8804a7f5": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Activity.ButtonIconEventStory",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 845,
+          "y1": 645,
+          "x2": 896,
+          "y2": 686
+        }
+      },
+      "displayName": "イベントストーリー 按钮图标"
+    }
+  }
+}

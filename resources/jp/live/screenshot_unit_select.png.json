@@ -1,1 +1,50 @@
-{"definitions":{"95eff75b-a3e0-4693-a7b2-463f8092d5ce":{"name":"Live.ButtonStartLive","displayName":"开始演出 按钮","type":"template","annotationId":"95eff75b-a3e0-4693-a7b2-463f8092d5ce","useHintRect":false},"c6abf269-d131-45f6-983c-5f0d911a987a":{"name":"Live.ButtonAutoLiveSettings","displayName":"自动演出 设置按钮","type":"template","annotationId":"c6abf269-d131-45f6-983c-5f0d911a987a","useHintRect":false},"564d2236-f9d6-4d4b-9c10-8c8b31143a81":{"name":"Live.SwitchAutoLiveOn","displayName":"自动演出 ON","type":"template","annotationId":"564d2236-f9d6-4d4b-9c10-8c8b31143a81","useHintRect":false}},"annotations":[{"id":"95eff75b-a3e0-4693-a7b2-463f8092d5ce","type":"rect","data":{"x1":986,"y1":516,"x2":1045,"y2":577}},{"id":"c6abf269-d131-45f6-983c-5f0d911a987a","type":"rect","data":{"x1":642,"y1":653,"x2":668,"y2":677}},{"id":"564d2236-f9d6-4d4b-9c10-8c8b31143a81","type":"rect","data":{"x1":521,"y1":647,"x2":628,"y2":686}}]}
+{
+  "version": 2,
+  "definitions": {
+    "95eff75b-a3e0-4693-a7b2-463f8092d5ce": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonStartLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 986,
+          "y1": 516,
+          "x2": 1045,
+          "y2": 577
+        }
+      },
+      "displayName": "开始演出 按钮"
+    },
+    "c6abf269-d131-45f6-983c-5f0d911a987a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonAutoLiveSettings",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 642,
+          "y1": 653,
+          "x2": 668,
+          "y2": 677
+        }
+      },
+      "displayName": "自动演出 设置按钮"
+    },
+    "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.SwitchAutoLiveOn",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 521,
+          "y1": 647,
+          "x2": 628,
+          "y2": 686
+        }
+      },
+      "displayName": "自动演出 ON"
+    }
+  }
+}

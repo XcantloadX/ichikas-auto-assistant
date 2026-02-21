@@ -1,10 +1,11 @@
+# ruff: noqa: E701
 from enum import Enum
 from typing import Literal
 from pydantic import BaseModel
 from typing_extensions import assert_never
 
-LinkAccountOptions = Literal['no', 'google_play']
-EmulatorOptions = Literal['mumu', 'custom']
+LinkAccountOptions = Literal['no', 'google', 'google_play']
+EmulatorOptions = Literal['mumu', 'mumu_v5', 'custom']
 
 
 class GameCharacter(str, Enum):
@@ -274,18 +275,22 @@ class ChallengeLiveAward(str, Enum):
 class CustomEmulatorData(BaseModel):
     adb_ip: str = '127.0.0.1'
     adb_port: int = 5555
+    emulator_path: str = ''
+    emulator_args: str = ''
 
 
 class GameConfig(BaseModel):
-    server: Literal['jp'] = 'jp'
+    server: Literal['jp', 'tw'] = 'jp'
     link_account: LinkAccountOptions = 'no'
-    emulator: EmulatorOptions = 'mumu'
+    emulator: EmulatorOptions = 'mumu_v5'
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator'] = 'nemu_ipc'
+    check_emulator: bool = False
     emulator_data: CustomEmulatorData | None = None
     """
     是否引继账号。
     
     * `"no"`： 不引继账号
+    * `"google"`： 引继 Google 账号
     * `"google_play"`： 引继 Google Play 账号
     """
 
@@ -314,6 +319,10 @@ class ChallengeLiveConfig(BaseModel):
     award: ChallengeLiveAward = ChallengeLiveAward.Crystal
 
 
+class CmConfig(BaseModel):
+    watch_ad_wait_sec: int = 70
+
+
 class SchedulerConfig(BaseModel):
     start_game_enabled: bool = True
     solo_live_enabled: bool = True
@@ -321,6 +330,7 @@ class SchedulerConfig(BaseModel):
     activity_story_enabled: bool = True
     cm_enabled: bool = True
     gift_enabled: bool = True
+    area_convos_enabled: bool = True
 
     def is_enabled(self, task_id: str) -> bool:
         """根据任务标识判断是否启用。
@@ -332,6 +342,7 @@ class SchedulerConfig(BaseModel):
         - "challenge_live"
         - "activity_story"
         - "gift"
+        - "area_convos"
         """
         if task_id == 'start_game':
             return bool(self.start_game_enabled)
@@ -345,4 +356,6 @@ class SchedulerConfig(BaseModel):
             return bool(self.activity_story_enabled)
         if task_id == 'gift':
             return bool(self.gift_enabled)
+        if task_id == 'area_convos':
+            return bool(self.area_convos_enabled)
         return False

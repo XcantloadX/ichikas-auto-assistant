@@ -3,7 +3,7 @@
 """
 import logging
 
-from kotonebot import task, device, image, Loop, sleep
+from kotonebot import task, device, Loop, sleep
 
 from . import R
 from .common import go_home
@@ -16,15 +16,14 @@ def gift():
     go_home()
     logger.debug('Entering gift ui')
     for _ in Loop():
-        if image.find(R.Hud.ButtonClaimAll):
+        if R.Hud.ButtonClaimAll.find():
             logger.info('Now at gift ui')
             break
-        elif image.find(R.Daily.ButtonGift):
-            device.click()
+        elif R.Daily.ButtonGift.try_click():
             logger.debug('Clicked gift button')
             sleep(0.5)
     # 领取礼物
-    if image.find(R.Hud.ButtonClaimAll, colored=True):
+    if R.Hud.ButtonClaimAll.find(colored=True):
         device.click()
         sleep(0.5)
     else:

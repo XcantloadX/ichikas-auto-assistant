@@ -2,22 +2,36 @@ from typing import Callable, Literal
 from typing_extensions import assert_never
 
 from kotonebot import logging
-from kotonebot import device, image, Loop, action, sleep, color
+from kotonebot.core import AnyOf
+from kotonebot import device, Loop, action, sleep, color
 
 from .. import R
-from ..common import at_home
-from iaa.context import conf
+from ..common import at_home, go_home
+from iaa.context import conf, server, task_reporter
 from ._select_song import next_song
 from ._scene import at_song_select
+from .auto_live_core import RhythmGameAnalyzer
 from iaa.config.schemas import ChallengeLiveAward, GameCharacter
 
 logger = logging.getLogger(__name__)
+AutoMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None
+
+def _skip():
+    if server() == 'jp':
+        device.click(1, 1)
+    elif server() == 'tw':
+        # 台服要点侧边，点左上角没用
+        device.click(6, 346)
+    else:
+        raise NotImplementedError(f'Unsupported server: {server()}')
+
 
 @action('演出', screenshot_mode='manual')
 def start_auto_live(
-    auto_setting: Literal['all'] | Literal['once'] | int | None = 'all',
+    auto_setting: AutoMode = 'all',
     back_to: Literal['home'] | Literal['select'] | None = 'home',
     finish_pre_check: Callable[[], tuple[bool, bool]] | None = None,
+    debug_enabled: bool = False,
 ) -> bool:
     """
     前置：位于编队界面\n
@@ -27,6 +41,7 @@ def start_auto_live(
         * `"all"`: 自动演出直到 AP 不足
         * 任意整数: 自动演出指定次数
         * `"once"`: 自动演出一次
+        * `"script"`: 脚本自动演出一次
         * `None`: 不自动演出
     :param back_to: 返回位置。\n
         * `"home"`: 返回首页
@@ -42,46 +57,74 @@ def start_auto_live(
     """
     if auto_setting is None or isinstance(auto_setting, int):
         raise NotImplementedError('Not implemented yet.')
+    rep = task_reporter()
+    rep.message('准备开始演出')
+    # 等待进入编队界面
+    check = AnyOf[
+        R.Live.SwitchAutoLiveOff,
+        R.Live.SwitchAutoLiveOn
+    ].wait()
+    def _turn_off_auto():
+        if check.prefab == R.Live.SwitchAutoLiveOn:
+            check.click()
+            logger.debug('Clicked auto live switch to turn off.')
+            sleep(0.3)
     # 设置自动演出设置
+    # 消耗全部 AP
     if auto_setting == 'all':
         chose = False
+        # 要先关掉自动，然后再走打开的逻辑
+        _turn_off_auto()
         for _ in Loop(interval=0.6):
-            if image.find(R.Live.SwitchAutoLiveOn):
+            if R.Live.SwitchAutoLiveOn.find():
                 logger.debug('Auto live switch checked on.')
                 break
-            elif image.find(R.Live.TextAtLeastOneAp):
+            elif R.Live.TextAtLeastOneAp.find():
                 logger.info('No AP left to enable auto live. Exiting.')
+                rep.message('AP 不足，正在退出')
                 return False
-            elif image.find(R.Live.ButtonAutoLiveSettings):
-                device.click()
+            elif R.Live.ButtonAutoLiveSettings.try_click():
                 logger.debug('Clicked auto live settings button.')
-            elif not chose and image.find(R.Live.TextAutoLiveUntilInsufficient):
+            elif not chose and R.Live.TextAutoLiveUntilInsufficient.find():
                 device.click()
                 logger.debug('Chose auto live until insufficient AP.')
                 sleep(0.3)
                 chose = True
-            elif image.find(R.Live.ButtonDecideAutoLive):
-                device.click()
+            elif R.Live.ButtonDecideAutoLive.try_click():
                 logger.debug('Clicked decide auto live button.')
                 sleep(0.3)
+    # 进行一次 AUTO
     elif auto_setting == 'once':
         for _ in Loop(interval=0.6):
-            if image.find(R.Live.SwitchAutoLiveOn):
+            if R.Live.SwitchAutoLiveOn.find():
                 logger.debug('Auto live switch checked on.')
                 break
-            elif image.find(R.Live.TextAtLeastOneAp):
+            elif R.Live.TextAtLeastOneAp.find():
                 logger.info('No AP left to enable auto live. Exiting.')
                 return False
-            elif image.find(R.Live.SwitchAutoLiveOff):
-                device.click()
+            elif R.Live.SwitchAutoLiveOff.try_click():
                 logger.debug('Clicked auto live switch.')
                 sleep(0.3)
+    # 脚本自动演出
+    elif auto_setting == 'script':
+        # 先关掉游戏 AUTO
+        _turn_off_auto()
     logger.info('Auto live setting finished.')
+    rep.message('演出中')
 
-    # 开始并等待完成
+    # 开始演出
     logger.debug('Clicking start live button.')
-    device.click(image.expect_wait(R.Live.ButtonStartLive))
-    sleep(74.8 + 5) # 孑然妒火（最短曲） + 5s 缓冲
+    R.Live.ButtonStartLive.wait().click()
+    if auto_setting == 'script':
+        analyzer = RhythmGameAnalyzer(
+            device,
+            R.Live.TextLife.template.pixels,
+            debug=debug_enabled,
+            stop_check=R.Live.TextScoreRank.exists
+        )
+        analyzer.run()
+    else:
+        sleep(74.8 + 5) # 孑然妒火（最短曲） + 5s 缓冲
 
     is_mutiple_auto = (auto_setting == 'all' or isinstance(auto_setting, int))
     for _ in Loop():
@@ -89,15 +132,16 @@ def start_auto_live(
         if is_mutiple_auto:
             # 指定演出次数或直到 AP 不足
             # 结束条件是「已完成指定次数的演出」提示
-            if image.find(R.Live.TextAutoLiveCompleted):
-                device.click(1, 1)
+            if R.Live.TextAutoLiveCompleted.exists():
+                _skip()
+                rep.message('AP 不足，正在退出')
                 logger.info('Auto lives all completed.')
                 sleep(0.3)
                 break
         else:
             # 单次演出
             # 结束条件是「SCORERANK」提示
-            if image.find(R.Live.TextScoreRank):
+            if R.Live.TextScoreRank.exists():
                 logger.debug('Waiting for SCORERANK')
                 sleep(1) # 等待 SCORERANK 动画完成
                 device.click_center()
@@ -105,6 +149,7 @@ def start_auto_live(
     if back_to is None:
         return True
     # 返回
+    rep.message('结算中')
     for _ in Loop(interval=0.5):
         if finish_pre_check:
             should_skip, should_break = finish_pre_check()
@@ -116,19 +161,24 @@ def start_auto_live(
         if back_to == 'home':
             if at_home():
                 break
-            device.click(1, 1)
+            # 台服要点 OK 才行
+            if server() == 'tw' and R.Live.ButtonLiveCompletedOk.try_click():
+                logger.debug('Clicked live completed ok button.')
+            _skip()
             sleep(0.6)
         # 返回选歌界面要点“返回歌曲选择”按钮
         elif back_to == 'select':
-            if image.find(R.Live.ButtonLiveCompletedNext):
-                device.click()
+            if R.Live.ButtonLiveCompletedNext.try_click():
                 logger.debug('Clicked live completed ok button.')
-            elif image.find(R.Live.ButtonGoSongSelect):
-                device.click()
+            elif R.Live.ButtonGoSongSelect.try_click():
                 logger.debug('Clicked select song button.')
             elif at_song_select():
                 logger.debug('Now at song select.')
                 break
+            # 处理歌曲 RANK 奖励
+            elif R.Live.TextScoreRankReward.exists():
+                if R.Live.ButtonCloseScoreRankReward.try_click():
+                    logger.debug('Clicked claim score rank reward button.')
             else:
                 logger.debug('Waiting for reward screen finished.')
     return True
@@ -150,6 +200,8 @@ def enter_unit_select():
 def solo_live(
     songs: list[str] | Literal['single-loop'] | Literal['list-loop'] | None = None,
     loop_count: int | None = None,
+    auto_mode: Literal['script'] | Literal['game'] = 'game',
+    debug_enabled: bool = False,
 ):
     """
     
@@ -164,14 +216,15 @@ def solo_live(
     """
     if loop_count is not None and loop_count <= 0:
         raise ValueError('loop_count must be positive.')
+    reporter = task_reporter()
+    reporter.message('进入单人演出')
     # 进入单人演出
     for _ in Loop(interval=0.6):
-        if image.find(R.Hud.ButtonLive, threshold=0.55):
+        if R.Hud.ButtonLive.find(threshold=0.55):
             device.click()
             logger.debug('Clicked home LIVE button.')
             sleep(1)
-        elif image.find(R.Live.ButtonSoloLive):
-            device.click()
+        elif R.Live.ButtonSoloLive.try_click():
             logger.debug('Clicked SoloLive button.')
         elif at_song_select():
             logger.debug('Now at song select.')
@@ -181,21 +234,54 @@ def solo_live(
     max_count = loop_count or float('inf')
     match songs:
         case None:
-            enter_unit_select()
-            start_auto_live('once', back_to='home')
+            with reporter.phase('单次演出', total=1) as phase:
+                enter_unit_select()
+                start_auto_live('once', back_to='home')
+                phase.step('单次演出完成')
+        # 单曲循环
         case 'single-loop':
-            enter_unit_select()
-            start_auto_live('all', back_to='home')
+            # 游戏内 AUTO
+            if auto_mode == 'game':
+                reporter.message('开始单曲循环（游戏自动）')
+                enter_unit_select()
+                start_auto_live('all', back_to='home')
+                reporter.message('单曲循环完成，返回首页')
+            # 脚本自动
+            else:
+                count = 0
+                total = (int(max_count) if max_count != float('inf') else None)
+                reporter.message('开始单曲循环（脚本自动）')
+                with reporter.phase('单曲循环', total=total) as phase:
+                    while True:
+                        enter_unit_select()
+                        if not start_auto_live('script', back_to='select', debug_enabled=debug_enabled):
+                            break
+                        count += 1
+                        phase.step(f'已完成 {count} 次单曲循环')
+                        if count >= max_count:
+                            logger.info(f'Completed {count} loops.')
+                            break
+                go_home()
+                reporter.message('单曲循环完成，返回首页')
         # 列表循环
         case 'list-loop':
-            for _ in Loop():
-                next_song()
-                enter_unit_select()
-                start_auto_live('once', back_to='select')
-                logger.info(f'Song looped. {count}/{max_count}')
-                count += 1
-                if count >= max_count:
-                    break
+            total = (int(max_count) if max_count != float('inf') else None)
+            reporter.message('开始列表循环')
+            with reporter.phase('列表循环', total=total) as phase:
+                for _ in Loop():
+                    next_song()
+                    enter_unit_select()
+                    start_auto_live(
+                        'once' if auto_mode == 'game' else 'script',
+                        back_to='select',
+                        debug_enabled=debug_enabled,
+                    )
+                    count += 1
+                    logger.info(f'Song looped. {count}/{max_count}')
+                    phase.step(f'已完成 {count} 次列表循环')
+                    if count >= max_count:
+                        break
+            reporter.message('列表循环完成')
         case songs if isinstance(songs, list):
             raise NotImplementedError('Not implemented yet.')
         case _:
@@ -205,31 +291,32 @@ def solo_live(
 def challenge_live(
     character: GameCharacter
 ):
+    rep = task_reporter()
+    rep.message('进入挑战演出')
     # 进入挑战演出
     for _ in Loop(interval=0.6):
-        if image.find(R.Hud.ButtonLive, threshold=0.55):
-            device.click()
+        if R.Hud.ButtonLive.try_click(threshold=0.55):
             logger.debug('Clicked home LIVE button.')
             sleep(1)
-        elif image.find(R.Live.ButtonChallengeLive):
+        elif btn := R.Live.ButtonChallengeLive.find():
             if not color.find('#ff5589', rect=R.Live.BoxChallengeLiveRedDot):
                 logger.info("Today's challenge live already cleared.")
                 return
-            device.click()
+            device.click(btn)
             logger.debug('Clicked ChallengeLive button.')
-        elif image.find(R.Live.ChallengeLive.TextSelectCharacter):
+        elif R.Live.ChallengeLive.TextSelectCharacter.find():
             logger.debug('Now at character select.')
             break
-        elif image.find(R.Live.ChallengeLive.GroupVirtualSinger):
+        elif R.Live.ChallengeLive.GroupVirtualSinger.try_click():
             # 为了防止误触某个角色，导致次数不够提示弹出来，挡住 TextSelectCharacter
             # 文本，结果一直卡在 TextSelectCharacter 识别上。
             # 加上这个点击用于取消次数不足提示。
-            device.click()
             logger.debug('Clicked group virtual singer.')
 
     # 选择角色
+    rep.message(f'选择角色：{character.value}')
     logger.info(f'Selecting character: {character.value}')
-    def char_to_res(ch: GameCharacter):
+    def char_to_prefab(ch: GameCharacter):
         """返回 (角色贴图, 分组贴图或 None)。"""
         match ch:
             case GameCharacter.Miku:
@@ -292,7 +379,7 @@ def challenge_live(
             case _ as impossible:
                 assert_never(impossible)
 
-    def award_to_res(award: ChallengeLiveAward):
+    def award_to_prefab(award: ChallengeLiveAward):
         match award:
             case ChallengeLiveAward.Crystal:
                 return R.Live.ChallengeLive.Award.Crystal
@@ -309,14 +396,12 @@ def challenge_live(
             case _ as impossible:
                 assert_never(impossible)
 
-    char_img, group_img = char_to_res(character)
+    char, group = char_to_prefab(character)
     for _ in Loop(interval=0.6):
-        if group_img and image.find(group_img):
-            device.click()
-            logger.debug('Clicked group for character.')
-        elif image.find(char_img):
-            device.click()
+        if char.try_click():
             logger.debug('Clicked character.')
+        elif group and group.try_click():
+            logger.debug('Clicked group for character.')
         elif at_song_select():
             logger.debug('Now at song select.')
             break
@@ -324,18 +409,19 @@ def challenge_live(
     # 处理奖励
     def claim_reward():
         # 选择奖励
-        if image.find(R.Live.ChallengeLive.TextWeeklyAward):
-            if image.find(award_to_res(conf().challenge_live.award)):
-                device.click()
+        if R.Live.ChallengeLive.TextWeeklyAward.find():
+            if award_to_prefab(conf().challenge_live.award).try_click():
                 logger.debug('Clicked award.')
                 sleep(0.3)
                 return True, False
         # 确认领取提示
-        elif image.find(R.Live.ChallengeLive.TextAwardClaimConfirm):
-            if image.find(R.Live.ChallengeLive.ButtonConfirm):
-                device.click()
+        elif R.Live.ChallengeLive.TextAwardClaimConfirm.find():
+            if R.Live.ChallengeLive.ButtonConfirm.try_click():
                 logger.debug('Clicked confirm award claim.')
                 sleep(0.3)
                 return True, False
         return False, False
+    rep.message('开始挑战演出')
     start_auto_live('once', finish_pre_check=claim_reward)
+    rep.message('挑战演出完成，返回首页')
+    go_home()

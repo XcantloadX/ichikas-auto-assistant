@@ -1,1 +1,20 @@
-{"definitions":{"1ffe2072-0f7b-4ee3-a3c2-5df169c728c4":{"name":"Story.ButtonStoryMenu","displayName":"剧情阅读 右上角菜单按钮","type":"template","annotationId":"1ffe2072-0f7b-4ee3-a3c2-5df169c728c4","useHintRect":false}},"annotations":[{"id":"1ffe2072-0f7b-4ee3-a3c2-5df169c728c4","type":"rect","data":{"x1":1214,"y1":30,"x2":1260,"y2":58}}]}
+{
+  "version": 2,
+  "definitions": {
+    "1ffe2072-0f7b-4ee3-a3c2-5df169c728c4": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonStoryMenu",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1214,
+          "y1": 30,
+          "x2": 1260,
+          "y2": 58
+        }
+      },
+      "displayName": "剧情阅读 右上角菜单按钮"
+    }
+  }
+}

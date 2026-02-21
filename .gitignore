@@ -8,6 +8,8 @@ dist/
 dist_app/
 iaa_v*.zip
 iaa_v*.7z
+.kotonebot/cache/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

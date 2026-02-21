@@ -1,74 +1,65 @@
 {
-    "definitions": {
-        "823b7f96-b813-4282-8610-ae18ad799fb7": {
-            "name": "Live.ChallengeLive.CharaKohane",
-            "displayName": "小豆沢",
-            "type": "template",
-            "annotationId": "823b7f96-b813-4282-8610-ae18ad799fb7",
-            "useHintRect": false
-        },
-        "c65119a1-435d-4cda-92b5-f526c6cd770b": {
-            "name": "Live.ChallengeLive.CharaAn",
-            "displayName": "白石杏",
-            "type": "template",
-            "annotationId": "c65119a1-435d-4cda-92b5-f526c6cd770b",
-            "useHintRect": false
-        },
-        "85bb0359-de82-427b-83b9-bd8abfc99ab6": {
-            "name": "Live.ChallengeLive.CharaAkito",
-            "displayName": "東雲彰人",
-            "type": "template",
-            "annotationId": "85bb0359-de82-427b-83b9-bd8abfc99ab6",
-            "useHintRect": false
-        },
-        "ec3b566a-e8f1-42a8-9ea6-88e4c38b3e63": {
-            "name": "Live.ChallengeLive.CharaToya",
-            "displayName": "青柳冬弥",
-            "type": "template",
-            "annotationId": "ec3b566a-e8f1-42a8-9ea6-88e4c38b3e63",
-            "useHintRect": false
+  "version": 2,
+  "definitions": {
+    "823b7f96-b813-4282-8610-ae18ad799fb7": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaKohane",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 262,
+          "y1": 136,
+          "x2": 340,
+          "y2": 204
         }
+      },
+      "displayName": "小豆沢"
     },
-    "annotations": [
-        {
-            "id": "823b7f96-b813-4282-8610-ae18ad799fb7",
-            "type": "rect",
-            "data": {
-                "x1": 262,
-                "y1": 136,
-                "x2": 340,
-                "y2": 204
-            }
-        },
-        {
-            "id": "c65119a1-435d-4cda-92b5-f526c6cd770b",
-            "type": "rect",
-            "data": {
-                "x1": 531,
-                "y1": 134,
-                "x2": 609,
-                "y2": 203
-            }
-        },
-        {
-            "id": "85bb0359-de82-427b-83b9-bd8abfc99ab6",
-            "type": "rect",
-            "data": {
-                "x1": 802,
-                "y1": 135,
-                "x2": 874,
-                "y2": 200
-            }
-        },
-        {
-            "id": "ec3b566a-e8f1-42a8-9ea6-88e4c38b3e63",
-            "type": "rect",
-            "data": {
-                "x1": 1074,
-                "y1": 137,
-                "x2": 1150,
-                "y2": 201
-            }
+    "c65119a1-435d-4cda-92b5-f526c6cd770b": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaAn",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 531,
+          "y1": 134,
+          "x2": 609,
+          "y2": 203
         }
-    ]
+      },
+      "displayName": "白石杏"
+    },
+    "85bb0359-de82-427b-83b9-bd8abfc99ab6": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaAkito",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 802,
+          "y1": 135,
+          "x2": 874,
+          "y2": 200
+        }
+      },
+      "displayName": "東雲彰人"
+    },
+    "ec3b566a-e8f1-42a8-9ea6-88e4c38b3e63": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaToya",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1074,
+          "y1": 137,
+          "x2": 1150,
+          "y2": 201
+        }
+      },
+      "displayName": "青柳冬弥"
+    }
+  }
 }

@@ -1,1 +1,35 @@
-{"definitions":{"7eedd753-3dca-459c-be36-3d43a40031b4":{"name":"Live.TextAutoLiveUntilInsufficient","displayName":"自动演出直到耗尽 AP","type":"template","annotationId":"7eedd753-3dca-459c-be36-3d43a40031b4","useHintRect":false},"04e53290-fc0d-4c03-acfa-f8f482deb54e":{"name":"Live.ButtonDecideAutoLive","displayName":"确定自动演出设置","type":"template","annotationId":"04e53290-fc0d-4c03-acfa-f8f482deb54e","useHintRect":false}},"annotations":[{"id":"7eedd753-3dca-459c-be36-3d43a40031b4","type":"rect","data":{"x1":190,"y1":110,"x2":502,"y2":147}},{"id":"04e53290-fc0d-4c03-acfa-f8f482deb54e","type":"rect","data":{"x1":728,"y1":641,"x2":781,"y2":672}}]}
+{
+  "version": 2,
+  "definitions": {
+    "7eedd753-3dca-459c-be36-3d43a40031b4": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.TextAutoLiveUntilInsufficient",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 190,
+          "y1": 110,
+          "x2": 502,
+          "y2": 147
+        }
+      },
+      "displayName": "自动演出直到耗尽 AP"
+    },
+    "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonDecideAutoLive",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 728,
+          "y1": 641,
+          "x2": 781,
+          "y2": 672
+        }
+      },
+      "displayName": "确定自动演出设置"
+    }
+  }
+}

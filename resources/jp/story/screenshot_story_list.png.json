@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "definitions": {
+    "a00cac55-974b-44ee-b4c9-163f5c11343d": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.StoryList.ButtonFilter",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1002.5462058602554,
+          "y1": 31.739034403322762,
+          "x2": 1023.5830202854996,
+          "y2": 56.511324888110025
+        },
+        "fixed": true
+      },
+      "displayName": "故事列表 筛选按钮",
+      "variant_inherit": true
+    },
+    "8f2149e7-d32c-45e2-b60f-b8b5f681b29b": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.StoryList.ButtonEnter",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1098.9791050269791,
+          "y1": 648.6690994277319,
+          "x2": 1161.1333294652004,
+          "y2": 682.7907116657309
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "故事列表 进入按钮"
+    },
+    "e710ba9f-22f3-4f2b-978f-5d385b91787f": {
+      "type": "hint-point",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 250.67639346356177,
+          "y": 501.8880457438272
+        }
+      },
+      "name": "Story.StoryList.PointNext",
+      "displayName": "故事列表 下个故事点击位置"
+    },
+    "f7bad0cd-a60c-4d69-9db6-1e5731e69a58": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.StoryList.ButtonExpandUnit",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 9.750476557115462,
+          "y1": 311.17154371608035,
+          "x2": 79.29366473974082,
+          "y2": 412.29559453051377
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "故事列表 左侧展开按队查看按钮"
+    }
+  }
+}

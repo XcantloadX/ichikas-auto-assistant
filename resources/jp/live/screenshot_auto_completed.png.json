@@ -1,1 +1,20 @@
-{"definitions":{"23410eba-b645-4547-86f2-2ef49867723e":{"name":"Live.TextAutoLiveCompleted","displayName":"指定された回数のオートライプが完了しました。","type":"template","annotationId":"23410eba-b645-4547-86f2-2ef49867723e","useHintRect":false}},"annotations":[{"id":"23410eba-b645-4547-86f2-2ef49867723e","type":"rect","data":{"x1":399,"y1":403,"x2":861,"y2":429}}]}
+{
+  "version": 2,
+  "definitions": {
+    "23410eba-b645-4547-86f2-2ef49867723e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.TextAutoLiveCompleted",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 399,
+          "y1": 403,
+          "x2": 861,
+          "y2": 429
+        }
+      },
+      "displayName": "指定された回数のオートライプが完了しました。"
+    }
+  }
+}

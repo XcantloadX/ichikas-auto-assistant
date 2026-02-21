@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "definitions": {
+    "59dcf6cd-475f-4144-b75a-042caecb2fb6": {
+      "type": "hint-box",
+      "name": "Activity.BoxLatestEpisodeBadge",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 1172,
+          "y1": 166,
+          "x2": 1185,
+          "y2": 185
+        }
+      },
+      "displayName": "活动剧情 最新一话 角标"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "definitions": {
+    "fd8739a7-bd80-45cd-a0f5-aff6380c4753": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.TextLife",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1012.0553797148896,
+          "y1": 15.412787772004988,
+          "x2": 1057.5403298902775,
+          "y2": 34.72001592812291
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "演出界面 右上角 LIFE 文本"
+    }
+  }
+}

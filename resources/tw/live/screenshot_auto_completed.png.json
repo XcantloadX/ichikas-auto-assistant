@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "definitions": {
+    "23410eba-b645-4547-86f2-2ef49867723e": {
+      "type": "prefab",
+      "name": "Live.TextAutoLiveCompleted",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

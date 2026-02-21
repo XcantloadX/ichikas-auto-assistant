@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "definitions": {
+    "47b3886b-b28f-4730-9391-c34e6190e909": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ImageMainStory",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 473.25858000000017,
+          "y1": 136.53915169731548,
+          "x2": 848.3585800000002,
+          "y2": 402.5126286883472
+        },
+        "fixed": true
+      },
+      "displayName": "主线剧情按钮 右侧的预览图片",
+      "variant_inherit": true
+    }
+  }
+}

@@ -1,1 +1,51 @@
-{"definitions":{"fd1624c2-3231-4ec6-9d04-72752c8df040":{"name":"Hud.ButtonClaimAll","displayName":"一括受け取り","type":"template","annotationId":"fd1624c2-3231-4ec6-9d04-72752c8df040","useHintRect":false},"5f4b378f-0b97-4721-aad5-a4f2bb6f4a21":{"name":"Daily.BoxMissionBadgeArea","displayName":"任务页面 左侧红色角标范围","type":"hint-box","annotationId":"5f4b378f-0b97-4721-aad5-a4f2bb6f4a21","useHintRect":false}},"annotations":[{"id":"fd1624c2-3231-4ec6-9d04-72752c8df040","type":"rect","data":{"x1":1056,"y1":646,"x2":1231,"y2":681}},{"id":"5f4b378f-0b97-4721-aad5-a4f2bb6f4a21","type":"rect","data":{"x1":140,"y1":82,"x2":167,"y2":632}}]}
+{
+  "version": 2,
+  "definitions": {
+    "fd1624c2-3231-4ec6-9d04-72752c8df040": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonClaimAll",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1056,
+          "y1": 646,
+          "x2": 1231,
+          "y2": 681
+        }
+      },
+      "displayName": "一括受け取り"
+    },
+    "5f4b378f-0b97-4721-aad5-a4f2bb6f4a21": {
+      "type": "hint-box",
+      "name": "Daily.BoxMissionBadgeArea",
+      "props": {
+        "region": {
+          "kind": "rect",
+          "x1": 140,
+          "y1": 82,
+          "x2": 167,
+          "y2": 632
+        }
+      },
+      "displayName": "任务页面 左侧红色角标范围"
+    },
+    "99f3571f-47ca-477b-97c8-ae1ba787ea13": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonGoBack",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 26.601137060286973,
+          "y1": 25.554697980158487,
+          "x2": 61.3608626286895,
+          "y2": 59.7586303996389
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "左上角返回按钮"
+    }
+  }
+}

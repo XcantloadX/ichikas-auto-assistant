@@ -1,1 +1,36 @@
-{"definitions":{"57799e00-8036-483a-beb5-3212d3858680":{"name":"Live.ChallengeLive.TextAwardClaimConfirm","displayName":"この報酬を受け取ります。よろしいですか？","type":"template","annotationId":"57799e00-8036-483a-beb5-3212d3858680","useHintRect":false},"efb7440d-3b59-4973-9da2-1c1dfffae2c1":{"name":"Live.ChallengeLive.ButtonConfirm","displayName":"決定","type":"template","annotationId":"efb7440d-3b59-4973-9da2-1c1dfffae2c1","useHintRect":false,"description":"挑战演出领取奖励弹窗"}},"annotations":[{"id":"57799e00-8036-483a-beb5-3212d3858680","type":"rect","data":{"x1":420,"y1":411,"x2":857,"y2":447}},{"id":"efb7440d-3b59-4973-9da2-1c1dfffae2c1","type":"rect","data":{"x1":733,"y1":525,"x2":787,"y2":557}}]}
+{
+  "version": 2,
+  "definitions": {
+    "57799e00-8036-483a-beb5-3212d3858680": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.TextAwardClaimConfirm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 420,
+          "y1": 411,
+          "x2": 857,
+          "y2": 447
+        }
+      },
+      "displayName": "この報酬を受け取ります。よろしいですか？"
+    },
+    "efb7440d-3b59-4973-9da2-1c1dfffae2c1": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.ButtonConfirm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 733,
+          "y1": 525,
+          "x2": 787,
+          "y2": 557
+        }
+      },
+      "displayName": "決定",
+      "description": "挑战演出领取奖励弹窗"
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "definitions": {
+    "7eedd753-3dca-459c-be36-3d43a40031b4": {
+      "type": "prefab",
+      "name": "Live.TextAutoLiveUntilInsufficient",
+      "variant": "tw",
+      "props": {}
+    },
+    "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
+      "type": "prefab",
+      "name": "Live.ButtonDecideAutoLive",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

@@ -1,7 +1,7 @@
 from typing import Literal
 from pydantic import BaseModel
 
-from .schemas import GameConfig, LiveConfig, SchedulerConfig, ChallengeLiveConfig
+from .schemas import GameConfig, LiveConfig, SchedulerConfig, ChallengeLiveConfig, CmConfig
 
 CONFIG_VERSION_CODE = 1
 
@@ -15,4 +15,5 @@ class IaaConfig(BaseModel):
     game: GameConfig
     live: LiveConfig
     challenge_live: ChallengeLiveConfig = ChallengeLiveConfig()
+    cm: CmConfig = CmConfig()
     scheduler: SchedulerConfig = SchedulerConfig()

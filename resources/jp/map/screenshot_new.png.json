@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "definitions": {
+    "0b702c10-d067-437a-bd7d-2f964e932b91": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Map.IconNewAreaConvo",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 343.5803601731238,
+          "y1": 527.0655287827973,
+          "x2": 362.15653684563756,
+          "y2": 549.4753737168504
+        },
+        "region": {
+          "kind": "rect",
+          "x1": 197.9451281095279,
+          "y1": 266.51213192935904,
+          "x2": 1205.4318688095284,
+          "y2": 613.0472178948323
+        }
+      },
+      "variant_inherit": true,
+      "displayName": "区域未读对话 NEW 标志"
+    },
+    "2bcdac90-5adc-4137-a491-8bbeae113f92": {
+      "type": "hint-box",
+      "props": {
+        "rect": {
+          "kind": "rect",
+          "x1": 232.29501904381073,
+          "y1": 188.06987277036342,
+          "x2": 1171.3522100758578,
+          "y2": 507.8761920617838
+        }
+      },
+      "name": "Map.BoxDetectSame",
+      "displayName": "用于检测是否滑到底的范围"
+    }
+  }
+}

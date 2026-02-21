@@ -1,1 +1,37 @@
-{"definitions":{"b34e62d0-3932-4058-9927-e4bb660a1d5a":{"name":"Login.ButtonLinkByGooglePlay","displayName":"GooglePlayで連携","type":"template","annotationId":"b34e62d0-3932-4058-9927-e4bb660a1d5a","useHintRect":false}},"annotations":[{"id":"b34e62d0-3932-4058-9927-e4bb660a1d5a","type":"rect","data":{"x1":706,"y1":240,"x2":907,"y2":268}}]}
+{
+  "version": 2,
+  "definitions": {
+    "2ec0cf90-8f64-4cc7-9ec2-a5e53e5e2b9f": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.ButtonLinkByGoogle",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 387,
+          "y1": 240,
+          "x2": 596,
+          "y2": 268
+        },
+        "fixed": true
+      },
+      "displayName": "Googleアカウントで連携"
+    },
+    "b34e62d0-3932-4058-9927-e4bb660a1d5a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Login.ButtonLinkByGooglePlay",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 704,
+          "y1": 239.99999999999997,
+          "x2": 905,
+          "y2": 268
+        },
+        "fixed": false
+      },
+      "displayName": "GooglePlayで連携"
+    }
+  }
+}

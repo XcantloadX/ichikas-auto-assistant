@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "definitions": {
+    "587370d6-25ac-441d-beeb-a5dcfdabccd3": {
+      "type": "prefab",
+      "name": "Cm.ButtonPlayCm",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

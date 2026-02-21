@@ -1,1 +1,20 @@
-{"definitions":{"587370d6-25ac-441d-beeb-a5dcfdabccd3":{"name":"Cm.ButtonPlayCm","displayName":"播放广告 按钮","type":"template","annotationId":"587370d6-25ac-441d-beeb-a5dcfdabccd3","useHintRect":false}},"annotations":[{"id":"587370d6-25ac-441d-beeb-a5dcfdabccd3","type":"rect","data":{"x1":151,"y1":315,"x2":285,"y2":340}}]}
+{
+  "version": 2,
+  "definitions": {
+    "587370d6-25ac-441d-beeb-a5dcfdabccd3": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.ButtonPlayCm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 151,
+          "y1": 315,
+          "x2": 285,
+          "y2": 340
+        }
+      },
+      "displayName": "播放广告 按钮"
+    }
+  }
+}

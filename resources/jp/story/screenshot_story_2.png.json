@@ -1,1 +1,35 @@
-{"definitions":{"f0c7585d-98a6-4539-afaa-e9435e98ed60":{"name":"Story.ButtonIconSkip","displayName":"スキップ 按钮图标","type":"template","annotationId":"f0c7585d-98a6-4539-afaa-e9435e98ed60","useHintRect":false},"686db7b7-bca3-4c11-96af-25d1142f6c23":{"name":"Story.ButtonIconFastforward","displayName":"早送り 按钮图标","type":"template","annotationId":"686db7b7-bca3-4c11-96af-25d1142f6c23","useHintRect":false}},"annotations":[{"id":"f0c7585d-98a6-4539-afaa-e9435e98ed60","type":"rect","data":{"x1":1074,"y1":283,"x2":1124,"y2":318}},{"id":"686db7b7-bca3-4c11-96af-25d1142f6c23","type":"rect","data":{"x1":1071,"y1":353,"x2":1121,"y2":390}}]}
+{
+  "version": 2,
+  "definitions": {
+    "f0c7585d-98a6-4539-afaa-e9435e98ed60": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonIconSkip",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1074,
+          "y1": 283,
+          "x2": 1124,
+          "y2": 318
+        }
+      },
+      "displayName": "スキップ 按钮图标"
+    },
+    "686db7b7-bca3-4c11-96af-25d1142f6c23": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonIconFastforward",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1071,
+          "y1": 353,
+          "x2": 1121,
+          "y2": 390
+        }
+      },
+      "displayName": "早送り 按钮图标"
+    }
+  }
+}

@@ -1,1 +1,83 @@
-{"definitions":{"74ae5b01-869d-423a-bd67-b4100bd92bdb":{"name":"Live.ButtonDecide","displayName":"決定","type":"template","annotationId":"74ae5b01-869d-423a-bd67-b4100bd92bdb","useHintRect":false},"6446c387-cacf-4147-a310-bdee6160e3c3":{"name":"Live.PointNextSong","displayName":"","type":"hint-point","annotationId":"6446c387-cacf-4147-a310-bdee6160e3c3","useHintRect":false},"c0ada5e7-da35-46bc-9a58-eb6f2bd18e44":{"name":"Live.PointPrevSong","displayName":"","type":"hint-point","annotationId":"c0ada5e7-da35-46bc-9a58-eb6f2bd18e44","useHintRect":false},"aa917d01-d177-494a-b945-5379122eeab0":{"name":"Live.ButtonToJacketView","displayName":"切换到封面视图","type":"template","annotationId":"aa917d01-d177-494a-b945-5379122eeab0","useHintRect":false},"e6d1216a-3594-44fb-aa13-efd9320cec45":{"name":"Live.PointSearchBox","displayName":"选歌页面搜索框 位置","type":"hint-point","annotationId":"e6d1216a-3594-44fb-aa13-efd9320cec45","useHintRect":false},"fbe75727-58a4-436f-936f-48add3f0fa41":{"name":"Live.PointRandomSong","displayName":"随机歌曲按钮 位置","type":"hint-point","annotationId":"fbe75727-58a4-436f-936f-48add3f0fa41","useHintRect":false}},"annotations":[{"id":"74ae5b01-869d-423a-bd67-b4100bd92bdb","type":"rect","data":{"x1":982,"y1":571,"x2":1039,"y2":601}},{"id":"6446c387-cacf-4147-a310-bdee6160e3c3","type":"point","data":{"x":433,"y":484}},{"id":"c0ada5e7-da35-46bc-9a58-eb6f2bd18e44","type":"point","data":{"x":429,"y":236}},{"id":"aa917d01-d177-494a-b945-5379122eeab0","type":"rect","data":{"x1":660,"y1":30,"x2":768,"y2":57}},{"id":"e6d1216a-3594-44fb-aa13-efd9320cec45","type":"point","data":{"x":346,"y":42}},{"id":"fbe75727-58a4-436f-936f-48add3f0fa41","type":"point","data":{"x":941,"y":650}}]}
+{
+  "version": 2,
+  "definitions": {
+    "74ae5b01-869d-423a-bd67-b4100bd92bdb": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonDecide",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 982,
+          "y1": 571,
+          "x2": 1039,
+          "y2": 601
+        }
+      },
+      "displayName": "決定"
+    },
+    "6446c387-cacf-4147-a310-bdee6160e3c3": {
+      "type": "hint-point",
+      "name": "Live.PointNextSong",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 433,
+          "y": 484
+        }
+      },
+      "displayName": ""
+    },
+    "c0ada5e7-da35-46bc-9a58-eb6f2bd18e44": {
+      "type": "hint-point",
+      "name": "Live.PointPrevSong",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 429,
+          "y": 236
+        }
+      },
+      "displayName": ""
+    },
+    "aa917d01-d177-494a-b945-5379122eeab0": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonToJacketView",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 660,
+          "y1": 30,
+          "x2": 768,
+          "y2": 57
+        }
+      },
+      "displayName": "切换到封面视图"
+    },
+    "e6d1216a-3594-44fb-aa13-efd9320cec45": {
+      "type": "hint-point",
+      "name": "Live.PointSearchBox",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 346,
+          "y": 42
+        }
+      },
+      "displayName": "选歌页面搜索框 位置"
+    },
+    "fbe75727-58a4-436f-936f-48add3f0fa41": {
+      "type": "hint-point",
+      "name": "Live.PointRandomSong",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 941,
+          "y": 650
+        }
+      },
+      "displayName": "随机歌曲按钮 位置"
+    }
+  }
+}

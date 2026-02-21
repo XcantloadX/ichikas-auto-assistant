@@ -1,8 +1,9 @@
-﻿import time
+import time
 import logging
 import threading
 import os
-from typing import TYPE_CHECKING, Callable
+import uuid
+from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device
 
@@ -11,6 +12,8 @@ if TYPE_CHECKING:
 from iaa.tasks.registry import REGULAR_TASKS, name_from_id
 from iaa.tasks.registry import MANUAL_TASKS
 from iaa.context import init as init_config_context
+from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
+from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +63,7 @@ class SchedulerService:
         self.is_starting = True
 
         def _runner() -> None:
+            run_id = uuid.uuid4().hex
             try:
                 logger.info("Preparing context...")
                 self.__prepare_context()
@@ -71,17 +75,90 @@ class SchedulerService:
                 self.__running = True
                 # 启动阶段结束
                 self.is_starting = False
-                for task_id, func in tasks:
+                total_tasks = len(tasks)
+                for index, (task_id, func) in enumerate(tasks):
                     self.current_task_id = task_id
                     self.current_task_name = name_from_id(task_id)
+                    task_name = self.current_task_name
+                    progress_hub().publish(
+                        TaskProgressEvent(
+                            run_id=run_id,
+                            task_id=task_id,
+                            task_name=task_name,
+                            timestamp=time.time(),
+                            type='task_started',
+                            payload={
+                                'message': '开始执行',
+                                'run_total_tasks': total_tasks,
+                                'run_completed_tasks': index,
+                                'run_current_task_index': index + 1,
+                            },
+                        )
+                    )
+                    token = set_task_reporter(
+                        TaskReporter(
+                            hub=progress_hub(),
+                            run_id=run_id,
+                            task_id=task_id,
+                            task_name=task_name,
+                        )
+                    )
                     try:
-                        logger.info(f"Running task: {task_id} ({self.current_task_name})")
+                        logger.info(f"Running task: {task_id} ({task_name})")
                         func()
-                        logger.info(f"Task finished: {task_id} ({self.current_task_name})")
+                        logger.info(f"Task finished: {task_id} ({task_name})")
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_finished',
+                                payload={
+                                    'message': '执行完成',
+                                    'percent': 100,
+                                    'run_total_tasks': total_tasks,
+                                    'run_completed_tasks': index + 1,
+                                    'run_current_task_index': index + 1,
+                                },
+                            )
+                        )
                     except KeyboardInterrupt:
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_failed',
+                                payload={
+                                    'message': f'任务中断：{task_name}',
+                                    'error': 'KeyboardInterrupt',
+                                    'run_total_tasks': total_tasks,
+                                    'run_completed_tasks': index,
+                                    'run_current_task_index': index + 1,
+                                },
+                            )
+                        )
                         logger.info("KeyboardInterrupt received. Stopping scheduler.")
                         break
                     except Exception as e:  # noqa: BLE001
+                        progress_hub().publish(
+                            TaskProgressEvent(
+                                run_id=run_id,
+                                task_id=task_id,
+                                task_name=task_name,
+                                timestamp=time.time(),
+                                type='task_failed',
+                                payload={
+                                    'message': f'执行失败：{task_name}',
+                                    'error': str(e),
+                                    'run_total_tasks': total_tasks,
+                                    'run_completed_tasks': index,
+                                    'run_current_task_index': index + 1,
+                                },
+                            )
+                        )
                         logger.exception(f"Task '{task_id}' raised an exception: {e}")
                         if self.on_error:
                             try:
@@ -90,6 +167,7 @@ class SchedulerService:
                                 logger.exception("Error handler raised an exception")
                         break
                     finally:
+                        reset_task_reporter(token)
                         self.current_task_id = None
                         self.current_task_name = None
             except Exception as e:  # noqa: BLE001
@@ -142,14 +220,27 @@ class SchedulerService:
             self._thread.join()
         self._thread = None
 
-    def run_single(self, task_id: str, run_in_thread: bool = True) -> None:
+    def run_single(
+        self,
+        task_id: str,
+        run_in_thread: bool = True,
+        args: tuple[Any, ...] | None = None,
+        kwargs: dict[str, Any] | None = None,
+    ) -> None:
         """运行单个任务。"""
         tasks = MANUAL_TASKS.copy()
         tasks.update(REGULAR_TASKS)
         if task_id not in tasks:
             raise ValueError(f"Unknown manual task: {task_id}")
+        task_func = tasks[task_id]
+        call_args = args or ()
+        call_kwargs = kwargs or {}
+
+        def _call() -> None:
+            task_func(*call_args, **call_kwargs)
+
         def _get() -> list[tuple[str, Callable[[], None]]]:
-            return [(task_id, tasks[task_id])]
+            return [(task_id, _call)]
         self.__start_tasks(_get, thread_name="IAA-Scheduler-Manual", run_in_thread=run_in_thread)
 
     def __prepare_context(self) -> None:
@@ -161,15 +252,41 @@ class SchedulerService:
         """
         # 因为导入 kotonebot 开销较大，这里延迟导入
         from kotonebot.backend.context.context import init_context
-        from kotonebot.client.host import Mumu12Host
+        from kotonebot.client.host import Mumu12Host, Mumu12V5Host
+        from kotonebot.client.host.protocol import Instance
         impl = self.iaa.config.conf.game.control_impl
         emulator = self.iaa.config.conf.game.emulator
+        check_emulator = bool(self.iaa.config.conf.game.check_emulator)
+
+        def _maybe_start(instance: Instance) -> None:
+            if check_emulator and not instance.running():
+                logger.info('Emulator is not running, starting: %s', instance)
+                instance.start()
+                instance.wait_available()
 
         if emulator == 'mumu':
             hosts = Mumu12Host.list()
             if not hosts:
                 raise RuntimeError("No MuMu host found.")
             host = hosts[0]
+            _maybe_start(host)
+            if impl == 'nemu_ipc':
+                from kotonebot.client.host.mumu12_host import MuMu12HostConfig
+                device = host.create_device('nemu_ipc', MuMu12HostConfig())
+            elif impl == 'adb':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'uiautomator':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('uiautomator2', AdbHostConfig())
+            else:
+                raise ValueError(f"Unknown control implementation: {impl}")
+        elif emulator == 'mumu_v5':
+            hosts = Mumu12V5Host.list()
+            if not hosts:
+                raise RuntimeError("No MuMu v5 host found.")
+            host = hosts[0]
+            _maybe_start(host)
             if impl == 'nemu_ipc':
                 from kotonebot.client.host.mumu12_host import MuMu12HostConfig
                 device = host.create_device('nemu_ipc', MuMu12HostConfig())
@@ -188,16 +305,21 @@ class SchedulerService:
             if data is None:
                 adb_ip = '127.0.0.1'
                 adb_port = 5555
+                emulator_path = ''
+                emulator_args = ''
             else:
                 adb_ip = data.adb_ip or '127.0.0.1'
                 adb_port = data.adb_port or 5555
+                emulator_path = data.emulator_path or ''
+                emulator_args = data.emulator_args or ''
             instance = create_custom(
                 adb_ip=adb_ip,
                 adb_port=adb_port,
                 adb_name="",
-                exe_path="",
-                emulator_args="",
+                exe_path=emulator_path,
+                emulator_args=emulator_args,
             )
+            _maybe_start(instance)
             if impl == 'adb':
                 device = instance.create_device('adb', AdbHostConfig())
             elif impl == 'uiautomator':
@@ -213,7 +335,20 @@ class SchedulerService:
         self.device = device
         init_context(target_device=device)
 
+        # 初始化框架全局配置
+        from kotonebot.config import conf
+        from iaa.tasks.globals import data_download
+        conf().loop.loop_callbacks = [
+            data_download,
+        ]
+
+        # 初始 contextvars
+        logger.debug("Initializing configuration context...")
         init_config_context(self.iaa.config.conf)
+        server = self.iaa.config.conf.game.server
+        logger.debug("Setting game server to %s", server)
+        from iaa.tasks import R
+        R.current_variant.set(server)
 
     def _get_enabled_tasks(self) -> list[tuple[str, Callable[[], None]]]:
         """根据配置返回启用的任务列表，顺序与 REGULAR_TASKS 保持一致。"""
@@ -223,3 +358,5 @@ class SchedulerService:
             if conf.scheduler.is_enabled(name):
                 tasks.append((name, func))
         return tasks
+
+

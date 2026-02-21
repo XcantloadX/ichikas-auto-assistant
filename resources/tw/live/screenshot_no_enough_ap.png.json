@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "definitions": {
+    "1453ab3f-aa0e-44bc-8018-bca5c4d06b5c": {
+      "type": "prefab",
+      "name": "Live.TextAtLeastOneAp",
+      "variant": "tw",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 590.0044530144291,
+          "y1": 348.34688685485816,
+          "x2": 710.5103448617443,
+          "y2": 373.34688685485816
+        }
+      }
+    }
+  }
+}

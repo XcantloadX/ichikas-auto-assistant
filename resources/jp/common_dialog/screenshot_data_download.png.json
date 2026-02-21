@@ -1,1 +1,35 @@
-{"definitions":{"3e64b08b-0fcf-4609-a0c0-97b8be73f8d1":{"name":"CommonDialog.TextRecommendDownloadViaWifi","displayName":"建议 Wifi 环境下载文本","type":"template","annotationId":"3e64b08b-0fcf-4609-a0c0-97b8be73f8d1","useHintRect":false},"73b4fbe5-7a86-49d0-90e6-4792e1cda085":{"name":"CommonDialog.ButtonDownload","displayName":"ダウンロード","type":"template","annotationId":"73b4fbe5-7a86-49d0-90e6-4792e1cda085","useHintRect":false}},"annotations":[{"id":"3e64b08b-0fcf-4609-a0c0-97b8be73f8d1","type":"rect","data":{"x1":428,"y1":355,"x2":856,"y2":423}},{"id":"73b4fbe5-7a86-49d0-90e6-4792e1cda085","type":"rect","data":{"x1":691,"y1":526,"x2":830,"y2":557}}]}
+{
+  "version": 2,
+  "definitions": {
+    "3e64b08b-0fcf-4609-a0c0-97b8be73f8d1": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "CommonDialog.TextRecommendDownloadViaWifi",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 428,
+          "y1": 355,
+          "x2": 856,
+          "y2": 423
+        }
+      },
+      "displayName": "建议 Wifi 环境下载文本"
+    },
+    "73b4fbe5-7a86-49d0-90e6-4792e1cda085": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "CommonDialog.ButtonDownload",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 691,
+          "y1": 526,
+          "x2": 830,
+          "y2": 557
+        }
+      },
+      "displayName": "ダウンロード"
+    }
+  }
+}

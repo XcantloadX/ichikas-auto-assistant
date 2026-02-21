@@ -1,1 +1,20 @@
-{"definitions":{"abfeac6b-8b92-45d1-9c74-4601d44a5da0":{"name":"Map.ButtonGoToReality","displayName":"現実世界へ","type":"template","annotationId":"abfeac6b-8b92-45d1-9c74-4601d44a5da0","useHintRect":false}},"annotations":[{"id":"abfeac6b-8b92-45d1-9c74-4601d44a5da0","type":"rect","data":{"x1":1133,"y1":576,"x2":1209,"y2":638}}]}
+{
+  "version": 2,
+  "definitions": {
+    "abfeac6b-8b92-45d1-9c74-4601d44a5da0": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Map.ButtonGoToReality",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1133,
+          "y1": 576,
+          "x2": 1209,
+          "y2": 638
+        }
+      },
+      "displayName": "現実世界へ"
+    }
+  }
+}

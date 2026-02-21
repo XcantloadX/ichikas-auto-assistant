@@ -1,74 +1,65 @@
 {
-    "definitions": {
-        "0ec2d74a-eab9-4387-9b47-d7f2f5e41ab8": {
-            "name": "Live.ChallengeLive.CharaMinori",
-            "displayName": "花里みのり",
-            "type": "template",
-            "annotationId": "0ec2d74a-eab9-4387-9b47-d7f2f5e41ab8",
-            "useHintRect": false
-        },
-        "71c61e81-b14e-4017-99a5-53e3ce0e394b": {
-            "name": "Live.ChallengeLive.CharaHaruka",
-            "displayName": "桐谷遥",
-            "type": "template",
-            "annotationId": "71c61e81-b14e-4017-99a5-53e3ce0e394b",
-            "useHintRect": false
-        },
-        "733b46d4-6030-4769-b2cf-ce0dd85bc923": {
-            "name": "Live.ChallengeLive.CharaAiri",
-            "displayName": "桃井愛莉",
-            "type": "template",
-            "annotationId": "733b46d4-6030-4769-b2cf-ce0dd85bc923",
-            "useHintRect": false
-        },
-        "ba15954f-a44f-4f33-a638-1db5dc409e48": {
-            "name": "Live.ChallengeLive.CharaShizuku",
-            "displayName": "日野森雫",
-            "type": "template",
-            "annotationId": "ba15954f-a44f-4f33-a638-1db5dc409e48",
-            "useHintRect": false
+  "version": 2,
+  "definitions": {
+    "0ec2d74a-eab9-4387-9b47-d7f2f5e41ab8": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaMinori",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 268,
+          "y1": 131,
+          "x2": 346,
+          "y2": 199
         }
+      },
+      "displayName": "花里みのり"
     },
-    "annotations": [
-        {
-            "id": "0ec2d74a-eab9-4387-9b47-d7f2f5e41ab8",
-            "type": "rect",
-            "data": {
-                "x1": 268,
-                "y1": 131,
-                "x2": 346,
-                "y2": 199
-            }
-        },
-        {
-            "id": "71c61e81-b14e-4017-99a5-53e3ce0e394b",
-            "type": "rect",
-            "data": {
-                "x1": 513,
-                "y1": 134,
-                "x2": 591,
-                "y2": 203
-            }
-        },
-        {
-            "id": "733b46d4-6030-4769-b2cf-ce0dd85bc923",
-            "type": "rect",
-            "data": {
-                "x1": 810,
-                "y1": 136,
-                "x2": 882,
-                "y2": 201
-            }
-        },
-        {
-            "id": "ba15954f-a44f-4f33-a638-1db5dc409e48",
-            "type": "rect",
-            "data": {
-                "x1": 1087,
-                "y1": 131,
-                "x2": 1163,
-                "y2": 195
-            }
+    "71c61e81-b14e-4017-99a5-53e3ce0e394b": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaHaruka",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 513,
+          "y1": 134,
+          "x2": 591,
+          "y2": 203
         }
-    ]
+      },
+      "displayName": "桐谷遥"
+    },
+    "733b46d4-6030-4769-b2cf-ce0dd85bc923": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaAiri",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 810,
+          "y1": 136,
+          "x2": 882,
+          "y2": 201
+        }
+      },
+      "displayName": "桃井愛莉"
+    },
+    "ba15954f-a44f-4f33-a638-1db5dc409e48": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaShizuku",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1087,
+          "y1": 131,
+          "x2": 1163,
+          "y2": 195
+        }
+      },
+      "displayName": "日野森雫"
+    }
+  }
 }

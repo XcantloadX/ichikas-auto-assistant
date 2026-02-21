@@ -1,0 +1,83 @@
+{
+  "version": 2,
+  "definitions": {
+    "6e6fb421-9ef0-4645-a125-1027d2d0945f": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.TextSelectCharacter",
+      "variant": "tw",
+      "props": {}
+    },
+    "59294cc5-bbb5-4568-bf81-24bd6cbb8dd5": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaMiku",
+      "variant": "tw",
+      "props": {}
+    },
+    "82997d1e-1f73-440a-82fb-88246e48ee2a": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaRin",
+      "variant": "tw",
+      "props": {}
+    },
+    "e3883fd0-5b36-4e2e-b657-f40c32a94216": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaLen",
+      "variant": "tw",
+      "props": {}
+    },
+    "5c660ff2-7f22-4968-8845-50bfc7ecc000": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaLuka",
+      "variant": "tw",
+      "props": {}
+    },
+    "0c8d55ec-5774-4b16-b019-5dc04d0f4dcc": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaMeiko",
+      "variant": "tw",
+      "props": {}
+    },
+    "e55d6310-79ab-4f2d-b6b3-2441fa6dbe66": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaKaito",
+      "variant": "tw",
+      "props": {}
+    },
+    "a93d25b7-1025-4cb4-89da-44fa172ae19a": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupVirtualSinger",
+      "variant": "tw",
+      "props": {}
+    },
+    "3cec98a5-e17e-4a31-9afc-5ac75a7cd16f": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupLeoneed",
+      "variant": "tw",
+      "props": {}
+    },
+    "d10b9d2a-b562-420c-b3a5-09e4f651f89e": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupMoreMoreJump",
+      "variant": "tw",
+      "props": {}
+    },
+    "95d2af7d-b475-466a-b435-9a79215a6eaf": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupVividBadSquad",
+      "variant": "tw",
+      "props": {}
+    },
+    "654adfab-df80-4a7f-9183-d6d27f0c40f3": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupWonderlandsShowtime",
+      "variant": "tw",
+      "props": {}
+    },
+    "7f0c09b8-bf28-469d-84a4-dd6e188b5ecf": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.Group25AtNightcord",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

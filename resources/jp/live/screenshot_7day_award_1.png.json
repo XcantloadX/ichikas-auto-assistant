@@ -1,1 +1,140 @@
-{"definitions":{"fe2e8e2f-c600-44fa-9b18-25613ee88801":{"name":"Live.ChallengeLive.TextWeeklyAward","displayName":"今週のチャレニメスラニブ報動","type":"template","annotationId":"fe2e8e2f-c600-44fa-9b18-25613ee88801","useHintRect":false},"df78dcea-eed2-49ca-95d0-67066f5507ca":{"name":"Live.ChallengeLive.Award.Crystal","displayName":"挑战演出 每周奖励 水晶","type":"template","annotationId":"df78dcea-eed2-49ca-95d0-67066f5507ca","useHintRect":false},"d34fa417-e8da-4a14-9b83-c4e385863096":{"name":"Live.ChallengeLive.Award.MusicCard","displayName":"挑战演出 每周奖励 音乐卡","type":"template","annotationId":"d34fa417-e8da-4a14-9b83-c4e385863096","useHintRect":false},"d80c55a0-15ca-45a9-a24a-3cdc6a57c0d6":{"name":"Live.ChallengeLive.Award.MiracleGem","displayName":"挑战演出 每周奖励 奇迹晶石","type":"template","annotationId":"d80c55a0-15ca-45a9-a24a-3cdc6a57c0d6","useHintRect":false},"875d9bca-2870-43c3-9531-92b040bfc590":{"name":"Live.ChallengeLive.Award.MagicCloth","displayName":"挑战演出 每周奖励 魔法之布","type":"template","annotationId":"875d9bca-2870-43c3-9531-92b040bfc590","useHintRect":false},"f90392bc-b7d4-491e-b2d3-ae216003d17a":{"name":"Live.ChallengeLive.Award.Coin","displayName":"挑战演出 每周奖励 硬币","type":"template","annotationId":"f90392bc-b7d4-491e-b2d3-ae216003d17a","useHintRect":false},"1f7662e4-53e0-43f9-9dab-839ca88ff9ad":{"name":"Live.ChallengeLive.Award.IntermediatePracticeScore","displayName":"挑战演出 每周奖励 中级练习乐谱","type":"template","annotationId":"1f7662e4-53e0-43f9-9dab-839ca88ff9ad","useHintRect":false},"23b1762d-e0f5-4230-b20f-4cfc4c6d511e":{"name":"Live.ChallengeLive.Award.MysteriousSeed","displayName":"挑战演出 每周奖励 奇异种子","type":"template","annotationId":"23b1762d-e0f5-4230-b20f-4cfc4c6d511e","useHintRect":false},"0588ed35-9d61-439a-bd8e-2997713634a3":{"name":"Live.ChallengeLive.Award.MagicThread","displayName":"挑战演出 每周奖励 魔法之线","type":"template","annotationId":"0588ed35-9d61-439a-bd8e-2997713634a3","useHintRect":false}},"annotations":[{"id":"fe2e8e2f-c600-44fa-9b18-25613ee88801","type":"rect","data":{"x1":485,"y1":180,"x2":797,"y2":210}},{"id":"df78dcea-eed2-49ca-95d0-67066f5507ca","type":"rect","data":{"x1":408,"y1":313,"x2":450,"y2":355}},{"id":"d34fa417-e8da-4a14-9b83-c4e385863096","type":"rect","data":{"x1":549,"y1":323,"x2":586,"y2":355}},{"id":"d80c55a0-15ca-45a9-a24a-3cdc6a57c0d6","type":"rect","data":{"x1":693,"y1":325,"x2":729,"y2":359}},{"id":"875d9bca-2870-43c3-9531-92b040bfc590","type":"rect","data":{"x1":833,"y1":325,"x2":871,"y2":353}},{"id":"f90392bc-b7d4-491e-b2d3-ae216003d17a","type":"rect","data":{"x1":830,"y1":455,"x2":872,"y2":489}},{"id":"1f7662e4-53e0-43f9-9dab-839ca88ff9ad","type":"rect","data":{"x1":695,"y1":448,"x2":733,"y2":475}},{"id":"23b1762d-e0f5-4230-b20f-4cfc4c6d511e","type":"rect","data":{"x1":542,"y1":461,"x2":593,"y2":506}},{"id":"0588ed35-9d61-439a-bd8e-2997713634a3","type":"rect","data":{"x1":403,"y1":459,"x2":455,"y2":496}}]}
+{
+  "version": 2,
+  "definitions": {
+    "fe2e8e2f-c600-44fa-9b18-25613ee88801": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.TextWeeklyAward",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 485,
+          "y1": 180,
+          "x2": 797,
+          "y2": 210
+        }
+      },
+      "displayName": "今週のチャレニメスラニブ報動"
+    },
+    "df78dcea-eed2-49ca-95d0-67066f5507ca": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.Crystal",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 408,
+          "y1": 313,
+          "x2": 450,
+          "y2": 355
+        }
+      },
+      "displayName": "挑战演出 每周奖励 水晶"
+    },
+    "d34fa417-e8da-4a14-9b83-c4e385863096": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.MusicCard",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 549,
+          "y1": 323,
+          "x2": 586,
+          "y2": 355
+        }
+      },
+      "displayName": "挑战演出 每周奖励 音乐卡"
+    },
+    "d80c55a0-15ca-45a9-a24a-3cdc6a57c0d6": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.MiracleGem",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 693,
+          "y1": 325,
+          "x2": 729,
+          "y2": 359
+        }
+      },
+      "displayName": "挑战演出 每周奖励 奇迹晶石"
+    },
+    "875d9bca-2870-43c3-9531-92b040bfc590": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.MagicCloth",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 833,
+          "y1": 325,
+          "x2": 871,
+          "y2": 353
+        }
+      },
+      "displayName": "挑战演出 每周奖励 魔法之布"
+    },
+    "f90392bc-b7d4-491e-b2d3-ae216003d17a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.Coin",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 830,
+          "y1": 455,
+          "x2": 872,
+          "y2": 489
+        }
+      },
+      "displayName": "挑战演出 每周奖励 硬币"
+    },
+    "1f7662e4-53e0-43f9-9dab-839ca88ff9ad": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.IntermediatePracticeScore",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 695,
+          "y1": 448,
+          "x2": 733,
+          "y2": 475
+        }
+      },
+      "displayName": "挑战演出 每周奖励 中级练习乐谱"
+    },
+    "23b1762d-e0f5-4230-b20f-4cfc4c6d511e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.MysteriousSeed",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 542,
+          "y1": 461,
+          "x2": 593,
+          "y2": 506
+        }
+      },
+      "displayName": "挑战演出 每周奖励 奇异种子"
+    },
+    "0588ed35-9d61-439a-bd8e-2997713634a3": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Award.MagicThread",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 403,
+          "y1": 459,
+          "x2": 455,
+          "y2": 496
+        }
+      },
+      "displayName": "挑战演出 每周奖励 魔法之线"
+    }
+  }
+}

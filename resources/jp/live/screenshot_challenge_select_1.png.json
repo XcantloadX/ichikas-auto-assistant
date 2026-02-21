@@ -1,1 +1,200 @@
-{"definitions":{"6e6fb421-9ef0-4645-a125-1027d2d0945f":{"name":"Live.ChallengeLive.TextSelectCharacter","displayName":"キャラクラーを選択レてください","type":"template","annotationId":"6e6fb421-9ef0-4645-a125-1027d2d0945f","useHintRect":false},"59294cc5-bbb5-4568-bf81-24bd6cbb8dd5":{"name":"Live.ChallengeLive.CharaMiku","displayName":"初音ミク","type":"template","annotationId":"59294cc5-bbb5-4568-bf81-24bd6cbb8dd5","useHintRect":false},"82997d1e-1f73-440a-82fb-88246e48ee2a":{"name":"Live.ChallengeLive.CharaRin","displayName":"鏡音リン","type":"template","annotationId":"82997d1e-1f73-440a-82fb-88246e48ee2a","useHintRect":false},"e3883fd0-5b36-4e2e-b657-f40c32a94216":{"name":"Live.ChallengeLive.CharaLen","displayName":"鏡音レン","type":"template","annotationId":"e3883fd0-5b36-4e2e-b657-f40c32a94216","useHintRect":false},"5c660ff2-7f22-4968-8845-50bfc7ecc000":{"name":"Live.ChallengeLive.CharaLuka","displayName":"巡音ルカ","type":"template","annotationId":"5c660ff2-7f22-4968-8845-50bfc7ecc000","useHintRect":false},"0c8d55ec-5774-4b16-b019-5dc04d0f4dcc":{"name":"Live.ChallengeLive.CharaMeiko","displayName":"MEIKO","type":"template","annotationId":"0c8d55ec-5774-4b16-b019-5dc04d0f4dcc","useHintRect":false},"e55d6310-79ab-4f2d-b6b3-2441fa6dbe66":{"name":"Live.ChallengeLive.CharaKaito","displayName":"KAITO","type":"template","annotationId":"e55d6310-79ab-4f2d-b6b3-2441fa6dbe66","useHintRect":false},"a93d25b7-1025-4cb4-89da-44fa172ae19a":{"name":"Live.ChallengeLive.GroupVirtualSinger","displayName":"组合「VIRTUAL SINGER」","type":"template","annotationId":"a93d25b7-1025-4cb4-89da-44fa172ae19a","useHintRect":false},"3cec98a5-e17e-4a31-9afc-5ac75a7cd16f":{"name":"Live.ChallengeLive.GroupLeoneed","displayName":"组合「Leo/need」","type":"template","annotationId":"3cec98a5-e17e-4a31-9afc-5ac75a7cd16f","useHintRect":false},"d10b9d2a-b562-420c-b3a5-09e4f651f89e":{"name":"Live.ChallengeLive.GroupMoreMoreJump","displayName":"组合「MORE MORE JUMP!」","type":"template","annotationId":"d10b9d2a-b562-420c-b3a5-09e4f651f89e","useHintRect":false},"95d2af7d-b475-466a-b435-9a79215a6eaf":{"name":"Live.ChallengeLive.GroupVividBadSquad","displayName":"组合「Vivid BAD SQUAD」","type":"template","annotationId":"95d2af7d-b475-466a-b435-9a79215a6eaf","useHintRect":false},"654adfab-df80-4a7f-9183-d6d27f0c40f3":{"name":"Live.ChallengeLive.GroupWonderlandsShowtime","displayName":"组合「ワンダーランズｘショウタイム」","type":"template","annotationId":"654adfab-df80-4a7f-9183-d6d27f0c40f3","useHintRect":false},"7f0c09b8-bf28-469d-84a4-dd6e188b5ecf":{"name":"Live.ChallengeLive.Group25AtNightcord","displayName":"组合「25時ナイトコードで」","type":"template","annotationId":"7f0c09b8-bf28-469d-84a4-dd6e188b5ecf","useHintRect":false}},"annotations":[{"id":"6e6fb421-9ef0-4645-a125-1027d2d0945f","type":"rect","data":{"x1":535,"y1":651,"x2":912,"y2":693}},{"id":"59294cc5-bbb5-4568-bf81-24bd6cbb8dd5","type":"rect","data":{"x1":205,"y1":499,"x2":329,"y2":537}},{"id":"82997d1e-1f73-440a-82fb-88246e48ee2a","type":"rect","data":{"x1":386,"y1":500,"x2":512,"y2":535}},{"id":"e3883fd0-5b36-4e2e-b657-f40c32a94216","type":"rect","data":{"x1":566,"y1":499,"x2":697,"y2":535}},{"id":"5c660ff2-7f22-4968-8845-50bfc7ecc000","type":"rect","data":{"x1":750,"y1":499,"x2":872,"y2":534}},{"id":"0c8d55ec-5774-4b16-b019-5dc04d0f4dcc","type":"rect","data":{"x1":939,"y1":501,"x2":1044,"y2":535}},{"id":"e55d6310-79ab-4f2d-b6b3-2441fa6dbe66","type":"rect","data":{"x1":1122,"y1":501,"x2":1223,"y2":533}},{"id":"a93d25b7-1025-4cb4-89da-44fa172ae19a","type":"rect","data":{"x1":31,"y1":111,"x2":124,"y2":163}},{"id":"3cec98a5-e17e-4a31-9afc-5ac75a7cd16f","type":"rect","data":{"x1":26,"y1":194,"x2":137,"y2":250}},{"id":"d10b9d2a-b562-420c-b3a5-09e4f651f89e","type":"rect","data":{"x1":25,"y1":288,"x2":133,"y2":337}},{"id":"95d2af7d-b475-466a-b435-9a79215a6eaf","type":"rect","data":{"x1":22,"y1":372,"x2":135,"y2":426}},{"id":"654adfab-df80-4a7f-9183-d6d27f0c40f3","type":"rect","data":{"x1":23,"y1":463,"x2":139,"y2":514}},{"id":"7f0c09b8-bf28-469d-84a4-dd6e188b5ecf","type":"rect","data":{"x1":23,"y1":545,"x2":140,"y2":600}}]}
+{
+  "version": 2,
+  "definitions": {
+    "6e6fb421-9ef0-4645-a125-1027d2d0945f": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.TextSelectCharacter",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 535,
+          "y1": 651,
+          "x2": 912,
+          "y2": 693
+        }
+      },
+      "displayName": "キャラクラーを選択レてください"
+    },
+    "59294cc5-bbb5-4568-bf81-24bd6cbb8dd5": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaMiku",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 205,
+          "y1": 499,
+          "x2": 329,
+          "y2": 537
+        }
+      },
+      "displayName": "初音ミク"
+    },
+    "82997d1e-1f73-440a-82fb-88246e48ee2a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaRin",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 386,
+          "y1": 500,
+          "x2": 512,
+          "y2": 535
+        }
+      },
+      "displayName": "鏡音リン"
+    },
+    "e3883fd0-5b36-4e2e-b657-f40c32a94216": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaLen",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 566,
+          "y1": 499,
+          "x2": 697,
+          "y2": 535
+        }
+      },
+      "displayName": "鏡音レン"
+    },
+    "5c660ff2-7f22-4968-8845-50bfc7ecc000": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaLuka",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 750,
+          "y1": 499,
+          "x2": 872,
+          "y2": 534
+        }
+      },
+      "displayName": "巡音ルカ"
+    },
+    "0c8d55ec-5774-4b16-b019-5dc04d0f4dcc": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaMeiko",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 939,
+          "y1": 501,
+          "x2": 1044,
+          "y2": 535
+        }
+      },
+      "displayName": "MEIKO"
+    },
+    "e55d6310-79ab-4f2d-b6b3-2441fa6dbe66": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaKaito",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1122,
+          "y1": 501,
+          "x2": 1223,
+          "y2": 533
+        }
+      },
+      "displayName": "KAITO"
+    },
+    "a93d25b7-1025-4cb4-89da-44fa172ae19a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.GroupVirtualSinger",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 31,
+          "y1": 111,
+          "x2": 124,
+          "y2": 163
+        }
+      },
+      "displayName": "组合「VIRTUAL SINGER」"
+    },
+    "3cec98a5-e17e-4a31-9afc-5ac75a7cd16f": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.GroupLeoneed",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 26,
+          "y1": 194,
+          "x2": 137,
+          "y2": 250
+        }
+      },
+      "displayName": "组合「Leo/need」"
+    },
+    "d10b9d2a-b562-420c-b3a5-09e4f651f89e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.GroupMoreMoreJump",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 25,
+          "y1": 288,
+          "x2": 133,
+          "y2": 337
+        }
+      },
+      "displayName": "组合「MORE MORE JUMP!」"
+    },
+    "95d2af7d-b475-466a-b435-9a79215a6eaf": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.GroupVividBadSquad",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 22,
+          "y1": 372,
+          "x2": 135,
+          "y2": 426
+        }
+      },
+      "displayName": "组合「Vivid BAD SQUAD」"
+    },
+    "654adfab-df80-4a7f-9183-d6d27f0c40f3": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.GroupWonderlandsShowtime",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 23,
+          "y1": 463,
+          "x2": 139,
+          "y2": 514
+        }
+      },
+      "displayName": "组合「ワンダーランズｘショウタイム」"
+    },
+    "7f0c09b8-bf28-469d-84a4-dd6e188b5ecf": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.Group25AtNightcord",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 23,
+          "y1": 545,
+          "x2": 140,
+          "y2": 600
+        }
+      },
+      "displayName": "组合「25時ナイトコードで」"
+    }
+  }
+}

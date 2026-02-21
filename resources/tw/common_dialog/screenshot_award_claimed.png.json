@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "definitions": {
+    "adfea069-b853-4d61-93e1-a1ee2fcbb21f": {
+      "type": "prefab",
+      "name": "CommonDialog.TextAwardClaimedOk",
+      "variant": "tw",
+      "props": {}
+    },
+    "86a9a7e4-e2c3-49d3-872c-c0d9b9c74b3c": {
+      "type": "prefab",
+      "name": "CommonDialog.ButtonAwardClaimedOk",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

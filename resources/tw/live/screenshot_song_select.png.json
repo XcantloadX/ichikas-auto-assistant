@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "definitions": {
+    "74ae5b01-869d-423a-bd67-b4100bd92bdb": {
+      "type": "prefab",
+      "name": "Live.ButtonDecide",
+      "variant": "tw",
+      "props": {}
+    },
+    "aa917d01-d177-494a-b945-5379122eeab0": {
+      "type": "prefab",
+      "name": "Live.ButtonToJacketView",
+      "variant": "tw",
+      "props": {}
+    }
+  }
+}

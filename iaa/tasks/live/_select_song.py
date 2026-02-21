@@ -14,8 +14,7 @@ def ensure_list_view():
     前置：位于选歌界面
     结束：位于选歌界面的列表视图
     """
-    if image.find(R.Live.ButtonToListView):
-        device.click()
+    if R.Live.ButtonToListView.try_click():
         logger.info('Switched to list view.')
 
 @action('选曲.下一首', screenshot_mode='manual')

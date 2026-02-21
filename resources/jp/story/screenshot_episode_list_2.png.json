@@ -1,0 +1,81 @@
+{
+  "version": 2,
+  "definitions": {
+    "2af3a46b-41fe-4cca-a7ed-5c4eeec0c4bd": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.TextEventStory",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 722,
+          "y1": 88,
+          "x2": 901,
+          "y2": 120
+        }
+      },
+      "displayName": "イベントストーリー"
+    },
+    "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.TextEpisode8",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 687,
+          "y1": 190,
+          "x2": 754,
+          "y2": 219
+        }
+      },
+      "displayName": "第8話"
+    },
+    "f7b052bd-4ff3-4d13-b36f-bdae7e9c8f44": {
+      "type": "hint-point",
+      "name": "Story.PointFirstEpisode",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 874,
+          "y": 199
+        }
+      },
+      "displayName": "剧情列表 第一话 位置"
+    },
+    "0f04012a-b093-48d3-8e5e-73eb785927fe": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonBookmark",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1124.8420422851527,
+          "y1": 26.18001135636165,
+          "x2": 1158.1973199701488,
+          "y2": 59.50690535290461
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "剧情分集列表 右上角书签按钮"
+    },
+    "7438ba2d-1971-482c-bd87-62e0ecdc7c53": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Story.ButtonGoBack",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 24.599528890058934,
+          "y1": 25.706769461610726,
+          "x2": 59.16000973153149,
+          "y2": 60.98851651570168
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "分集列表 左上角返回按钮"
+    }
+  }
+}

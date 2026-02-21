@@ -1,74 +1,65 @@
 {
-    "definitions": {
-        "806a3a0b-1b46-4dca-a833-bc4f5e225b84": {
-            "name": "Live.ChallengeLive.CharaTsukasa",
-            "displayName": "天馬司",
-            "type": "template",
-            "annotationId": "806a3a0b-1b46-4dca-a833-bc4f5e225b84",
-            "useHintRect": false
-        },
-        "6cd7b225-ef84-4219-9d6a-961b3abedffb": {
-            "name": "Live.ChallengeLive.CharaEmu",
-            "displayName": "鳳えむ",
-            "type": "template",
-            "annotationId": "6cd7b225-ef84-4219-9d6a-961b3abedffb",
-            "useHintRect": false
-        },
-        "101c74a1-cde5-41fa-b2e9-26e7e476d55e": {
-            "name": "Live.ChallengeLive.CharaNene",
-            "displayName": "草薙寧々",
-            "type": "template",
-            "annotationId": "101c74a1-cde5-41fa-b2e9-26e7e476d55e",
-            "useHintRect": false
-        },
-        "bbd3e850-7227-4f38-b1d3-14d97a10b239": {
-            "name": "Live.ChallengeLive.CharaRui",
-            "displayName": "神代類",
-            "type": "template",
-            "annotationId": "bbd3e850-7227-4f38-b1d3-14d97a10b239",
-            "useHintRect": false
+  "version": 2,
+  "definitions": {
+    "806a3a0b-1b46-4dca-a833-bc4f5e225b84": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaTsukasa",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 268,
+          "y1": 131,
+          "x2": 346,
+          "y2": 199
         }
+      },
+      "displayName": "天馬司"
     },
-    "annotations": [
-        {
-            "id": "806a3a0b-1b46-4dca-a833-bc4f5e225b84",
-            "type": "rect",
-            "data": {
-                "x1": 268,
-                "y1": 131,
-                "x2": 346,
-                "y2": 199
-            }
-        },
-        {
-            "id": "6cd7b225-ef84-4219-9d6a-961b3abedffb",
-            "type": "rect",
-            "data": {
-                "x1": 521,
-                "y1": 134,
-                "x2": 599,
-                "y2": 203
-            }
-        },
-        {
-            "id": "101c74a1-cde5-41fa-b2e9-26e7e476d55e",
-            "type": "rect",
-            "data": {
-                "x1": 828,
-                "y1": 137,
-                "x2": 900,
-                "y2": 202
-            }
-        },
-        {
-            "id": "bbd3e850-7227-4f38-b1d3-14d97a10b239",
-            "type": "rect",
-            "data": {
-                "x1": 1087,
-                "y1": 131,
-                "x2": 1163,
-                "y2": 195
-            }
+    "6cd7b225-ef84-4219-9d6a-961b3abedffb": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaEmu",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 521,
+          "y1": 134,
+          "x2": 599,
+          "y2": 203
         }
-    ]
+      },
+      "displayName": "鳳えむ"
+    },
+    "101c74a1-cde5-41fa-b2e9-26e7e476d55e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaNene",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 828,
+          "y1": 137,
+          "x2": 900,
+          "y2": 202
+        }
+      },
+      "displayName": "草薙寧々"
+    },
+    "bbd3e850-7227-4f38-b1d3-14d97a10b239": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ChallengeLive.CharaRui",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1087,
+          "y1": 131,
+          "x2": 1163,
+          "y2": 195
+        }
+      },
+      "displayName": "神代類"
+    }
+  }
 }

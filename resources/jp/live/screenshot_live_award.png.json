@@ -1,0 +1,39 @@
+{
+  "version": 2,
+  "definitions": {
+    "f7651eb5-7228-4f5d-ac97-c38ba59d183d": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.TextScoreRankReward",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 292,
+          "y1": 57.19831869413585,
+          "x2": 431,
+          "y2": 86.17364113117537
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "演出 RANK 奖励对话框标题"
+    },
+    "45d56f50-66ae-4298-bc64-a840dc786286": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonCloseScoreRankReward",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 596.2257999999999,
+          "y1": 639.9138156576407,
+          "x2": 682.6076999999999,
+          "y2": 672.0966063735557
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "演出 RANK 奖励对话框 关闭按钮"
+    }
+  }
+}

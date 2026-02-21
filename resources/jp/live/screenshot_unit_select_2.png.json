@@ -1,1 +1,20 @@
-{"definitions":{"5cf9e05f-5d1e-49d5-a88e-0d881260f201":{"name":"Live.SwitchAutoLiveOff","displayName":"自动演出 OFF","type":"template","annotationId":"5cf9e05f-5d1e-49d5-a88e-0d881260f201","useHintRect":false}},"annotations":[{"id":"5cf9e05f-5d1e-49d5-a88e-0d881260f201","type":"rect","data":{"x1":571,"y1":647,"x2":673,"y2":686}}]}
+{
+  "version": 2,
+  "definitions": {
+    "5cf9e05f-5d1e-49d5-a88e-0d881260f201": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.SwitchAutoLiveOff",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 571,
+          "y1": 647,
+          "x2": 673,
+          "y2": 686
+        }
+      },
+      "displayName": "自动演出 OFF"
+    }
+  }
+}

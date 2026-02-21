@@ -1,1 +1,20 @@
-{"definitions":{"5d249c98-078c-42b1-a8f1-ffa72102d7cc":{"name":"Cm.ButtonCmStart","displayName":"視聴開始 按钮","type":"template","annotationId":"5d249c98-078c-42b1-a8f1-ffa72102d7cc","useHintRect":false}},"annotations":[{"id":"5d249c98-078c-42b1-a8f1-ffa72102d7cc","type":"rect","data":{"x1":714,"y1":527,"x2":810,"y2":557}}]}
+{
+  "version": 2,
+  "definitions": {
+    "5d249c98-078c-42b1-a8f1-ffa72102d7cc": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.ButtonCmStart",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 714,
+          "y1": 527,
+          "x2": 810,
+          "y2": 557
+        }
+      },
+      "displayName": "視聴開始 按钮"
+    }
+  }
+}

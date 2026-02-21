@@ -1,1 +1,20 @@
-{"definitions":{"9092a991-9d25-49d1-8c17-4cf7129249a2":{"name":"Cm.TextAwardClaimed","displayName":"報酬を獲得しました","type":"template","annotationId":"9092a991-9d25-49d1-8c17-4cf7129249a2","useHintRect":false}},"annotations":[{"id":"9092a991-9d25-49d1-8c17-4cf7129249a2","type":"rect","data":{"x1":524,"y1":402,"x2":744,"y2":436}}]}
+{
+  "version": 2,
+  "definitions": {
+    "9092a991-9d25-49d1-8c17-4cf7129249a2": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.TextAwardClaimed",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 524,
+          "y1": 402,
+          "x2": 744,
+          "y2": 436
+        }
+      },
+      "displayName": "報酬を獲得しました"
+    }
+  }
+}
