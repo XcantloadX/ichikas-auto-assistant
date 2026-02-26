@@ -4,6 +4,9 @@ set shell := ["pwsh", "-c"]
 default:
     @just --list
 
+setup:
+    uv sync --group dev
+
 res:
     uv run .\tools\make_resources.py
 

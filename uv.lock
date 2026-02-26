@@ -471,7 +471,7 @@ wheels = [
 
 [[package]]
 name = "ichikas-auto-assistant"
-version = "26.2b1"
+version = "26.2b2"
 source = { virtual = "." }
 dependencies = [
     { name = "kotonebot", extra = ["android", "windows"] },
@@ -482,14 +482,10 @@ dependencies = [
     { name = "ttkbootstrap" },
 ]
 
-[package.optional-dependencies]
-dev = [
-    { name = "kotonebot", extra = ["dev"] },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "click" },
+    { name = "kotonebot", extra = ["dev"] },
     { name = "nuitka" },
     { name = "pyinstaller" },
     { name = "ruff" },
@@ -497,19 +493,18 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "kotonebot", extras = ["android", "windows"], specifier = "==0.8.0" },
-    { name = "kotonebot", extras = ["dev"], marker = "extra == 'dev'" },
+    { name = "kotonebot", extras = ["android", "windows"], specifier = "==0.9.0" },
     { name = "numpy", specifier = "<2.0" },
     { name = "onnxruntime", specifier = "==1.14.0" },
     { name = "psutil" },
     { name = "pydantic" },
     { name = "ttkbootstrap", specifier = ">=1.14.2" },
 ]
-provides-extras = ["dev"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "click" },
+    { name = "kotonebot", extras = ["dev"] },
     { name = "nuitka", specifier = ">=2.7.12" },
     { name = "pyinstaller", specifier = ">=6.15.0" },
     { name = "ruff" },
@@ -638,7 +633,7 @@ wheels = [
 
 [[package]]
 name = "kotonebot"
-version = "0.8.0"
+version = "0.9.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ksaa-res" },
@@ -649,13 +644,14 @@ dependencies = [
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "rapidocr-onnxruntime" },
+    { name = "rich" },
     { name = "scikit-image" },
     { name = "thefuzz" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/41/e9/23f425b8b71a5b63292dce3ca60f82b329c886e3ec4e5ec9eb6af2d04a29/kotonebot-0.8.0.tar.gz", hash = "sha256:def480e8b77d72b4b154e462d5fc7a5b9924d2a19cdeffa6eade6e0dc4d87806", size = 1016930, upload-time = "2026-02-05T04:17:51.116Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/12/d7/9b6b787af4c36114160adbe10587eb14743ceafc750316efe2eddabbaf28/kotonebot-0.9.0.tar.gz", hash = "sha256:5dcc249d5fc4d576c1dec1c29a12b3f9816d58f3aca1877d2d54f1f1add8096a", size = 1530011, upload-time = "2026-02-21T03:31:29.406Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/92/89/5ca8fa44b5ed6e9b9157fc875b7778479dc963fc695ffb4698c07e0831df/kotonebot-0.8.0-py3-none-any.whl", hash = "sha256:655d7f2378dd81bd6aa2db30d9bfe9cbc345918b78e4b4d587fb04eae44e6e3c", size = 1051362, upload-time = "2026-02-05T04:17:48.983Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/82/89413cbfecc10cb8f5d57a49b0ffdb22fe40b3a82101d3623a1359635a10/kotonebot-0.9.0-py3-none-any.whl", hash = "sha256:2043f365b59aa4eb06c67a45a1abc21b10472f8bb7e5db584035bb76b73e588e", size = 1575102, upload-time = "2026-02-21T03:31:25.465Z" },
 ]
 
 [package.optional-dependencies]
@@ -1627,15 +1623,16 @@ wheels = [
 
 [[package]]
 name = "rich"
-version = "14.1.0"
+version = "13.9.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown-it-py" },
     { name = "pygments" },
+    { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/fe/75/af448d8e52bf1d8fa6a9d089ca6c07ff4453d86c65c145d0a300bb073b9b/rich-14.1.0.tar.gz", hash = "sha256:e497a48b844b0320d45007cdebfeaeed8db2a4f4bcf49f15e455cfc4af11eaa8", size = 224441, upload-time = "2025-07-25T07:32:58.125Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ab/3a/0316b28d0761c6734d6bc14e770d85506c986c85ffb239e688eeaab2c2bc/rich-13.9.4.tar.gz", hash = "sha256:439594978a49a09530cff7ebc4b5c7103ef57baf48d5ea3184f21d9a2befa098", size = 223149, upload-time = "2024-11-01T16:43:57.873Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e3/30/3c4d035596d3cf444529e0b2953ad0466f6049528a879d27534700580395/rich-14.1.0-py3-none-any.whl", hash = "sha256:536f5f1785986d6dbdea3c75205c473f970777b4a0d6c6dd1b696aa05a3fa04f", size = 243368, upload-time = "2025-07-25T07:32:56.73Z" },
+    { url = "https://files.pythonhosted.org/packages/19/71/39c7c0d87f8d4e6c020a393182060eaefeeae6c01dab6a84ec346f2567df/rich-13.9.4-py3-none-any.whl", hash = "sha256:6049d5e6ec054bf2779ab3358186963bac2ea89175919d699e378b99738c2a90", size = 242424, upload-time = "2024-11-01T16:43:55.817Z" },
 ]
 
 [[package]]

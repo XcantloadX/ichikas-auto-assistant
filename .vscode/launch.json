@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Server",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "iaa.application.server.index"
+        },
+        {
             "name": "main",
             "type": "debugpy",
             "request": "launch",
@@ -31,6 +37,7 @@
             "type": "debugpy",
             "request": "launch",
             "module": "iaa.main",
+            "justMyCode": false,
             "args": [
                 "--task",
                 "${fileBasenameNoExtension}"

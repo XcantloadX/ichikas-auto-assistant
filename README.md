@@ -57,9 +57,19 @@ uv run iaa/main.py
 ```
 
 ## 开发
-TODO
+首先安装 just，然后：
+```powershell
+# 配置 Python 环境
+just setup
+# 构建资源文件
+just res
 
-（暂时可以参考 琴音小助手 的开发文档）
+# 启动
+uv run launch_desktop.py
+# 或使用 VSCode 启动 「main (GUI)」
+```
+
+（后续文档暂时可以参考 琴音小助手 的开发文档）
 
 ## 贡献
 TODO
