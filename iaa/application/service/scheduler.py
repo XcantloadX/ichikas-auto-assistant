@@ -5,7 +5,8 @@ import os
 import uuid
 from typing import TYPE_CHECKING, Callable, Any
 
-from kotonebot.client.device import Device
+from kotonebot.client.device import Device, Size
+from kotonebot.client.scaler import ProportionalScaler
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -330,7 +331,6 @@ class SchedulerService:
                 raise ValueError(f"Unknown control implementation: {impl}")
         else:
             raise ValueError(f"Unknown emulator: {emulator}")
-        device.target_resolution = (1280, 720)
         device.orientation = 'landscape'
         self.device = device
         init_context(target_device=device)
@@ -341,6 +341,8 @@ class SchedulerService:
         conf().loop.loop_callbacks = [
             data_download,
         ]
+        conf().device.default_logic_resolution = Size(1280, 720)
+        conf().device.default_scaler_factory = ProportionalScaler
 
         # 初始 contextvars
         logger.debug("Initializing configuration context...")
