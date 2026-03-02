@@ -12,6 +12,9 @@ from kotonebot.client import Device
 logger = logging.getLogger(__name__)
 
 class RhythmGameAnalyzer:
+    BASE_WIDTH = 1280
+    BASE_HEIGHT = 720
+
     def __init__(self, device: Device, life_img, num_lanes=6, debug_frame=None, stop_check=None, debug=False):
         self.device = device
         self.debug_frame = debug_frame
@@ -29,6 +32,7 @@ class RhythmGameAnalyzer:
         self.box_height = 40
         self.lookahead_gap_px = 0      # 判定线上方 look 区域的像素偏移
         self.lookahead_box_height = 25   # look 区域高度，可独立调节
+        self.lane_inner_padding = 10
         
         # === 阈值设置 ===
         # 1. 触发阈值 (严格，用于按下)
@@ -60,17 +64,28 @@ class RhythmGameAnalyzer:
         lane_width = total_valid_width / self.num_lanes
         start_x = frame_width * self.margin_side_ratio
         base_y = int(frame_height * self.judgement_line_y_ratio)
+        lane_inner_padding = self.lane_inner_padding
+        lane_width_reduction = lane_inner_padding * 2
+        box_height = self.box_height
+        lookahead_gap_px = self.lookahead_gap_px
+        lookahead_box_height = self.lookahead_box_height
         
         for i in range(self.num_lanes):
             lane_x = int(start_x + i * lane_width)
             # 主判定区
-            main_rect = (lane_x + 10, base_y, int(lane_width) - 20, self.box_height)
+            main_rect = (lane_x + lane_inner_padding, base_y, int(lane_width) - lane_width_reduction, box_height)
             # 前视区 (用于判断是否是 Hold)
             # gap 以主判定框的上边为基准：主框顶到 look 框底部的垂直距离为 lookahead_gap_px
-            look_y = max(0, base_y - self.lookahead_gap_px - self.lookahead_box_height)
-            look_rect = (lane_x + 10, look_y, int(lane_width) - 20, self.lookahead_box_height)
+            look_y = max(0, base_y - lookahead_gap_px - lookahead_box_height)
+            look_rect = (lane_x + lane_inner_padding, look_y, int(lane_width) - lane_width_reduction, lookahead_box_height)
             regions.append((main_rect, look_rect))
         return regions, int(base_y)
+
+    def logic_to_physical_touch_point(self, x: int, y: int) -> tuple[int, int]:
+        if not self.device:
+            return x, y
+        px, py = self.device.scaler.logic_to_physical((x, y))
+        return int(px), int(py)
 
     def analyze_region(self, gray_img, rect):
         x, y, w, h = rect
@@ -83,10 +98,12 @@ class RhythmGameAnalyzer:
     def process_screenshot(self):
         # 1. 获取图像
         if self.debug_frame is not None:
-            frame = self.debug_frame.copy()
+            original_frame = self.debug_frame.copy()
         else:
-            frame = self.device.screenshot()
-            if frame is None: return None
+            original_frame = self.device.screenshot()
+            if original_frame is None: return None
+
+        frame = cv2.resize(original_frame, (self.BASE_WIDTH, self.BASE_HEIGHT))
 
         # 检查是否在 live 界面
         if not find(frame, self.LIFE, rect=Rect(1010, 14, 50, 30)):
@@ -131,8 +148,9 @@ class RhythmGameAnalyzer:
                 if is_active:
                     # 状态：空 -> 有
                     if self.device:
-                        self.device.multi_touch.multi_touch_down(center_x, center_y, touch_id)
-                        print('down', i, center_x, center_y)
+                        tx, ty = self.logic_to_physical_touch_point(center_x, center_y)
+                        self.device.multi_touch.multi_touch_down(tx, ty, touch_id)
+                        print('down', i, tx, ty, f'(base:{center_x},{center_y})')
                     self.lane_states[i] = True
                     self.lane_empty_counters[i] = 0
                     # self.lookahead_empty_counters[i] = 0
@@ -145,8 +163,9 @@ class RhythmGameAnalyzer:
 
                 if not look_active:
                     if self.device:
-                        self.device.multi_touch.multi_touch_up(center_x, center_y, touch_id)
-                        print('  up', i)
+                        tx, ty = self.logic_to_physical_touch_point(center_x, center_y)
+                        self.device.multi_touch.multi_touch_up(tx, ty, touch_id)
+                        print('  up', i, tx, ty, f'(base:{center_x},{center_y})')
                     self.lane_states[i] = False
                     self.lane_empty_counters[i] = 0
             
