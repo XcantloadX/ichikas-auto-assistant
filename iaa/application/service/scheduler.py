@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
+from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -254,10 +255,11 @@ class SchedulerService:
         # 因为导入 kotonebot 开销较大，这里延迟导入
         from kotonebot.backend.context.context import init_context
         from kotonebot.client.host import Mumu12Host, Mumu12V5Host
-        from kotonebot.client.host.protocol import Instance
+        from kotonebot.client.host.protocol import HostProtocol, Instance
         impl = self.iaa.config.conf.game.control_impl
         emulator = self.iaa.config.conf.game.emulator
         check_emulator = bool(self.iaa.config.conf.game.check_emulator)
+        emulator_data = self.iaa.config.conf.game.emulator_data
 
         def _maybe_start(instance: Instance) -> None:
             if check_emulator and not instance.running():
@@ -265,11 +267,21 @@ class SchedulerService:
                 instance.start()
                 instance.wait_available()
 
-        if emulator == 'mumu':
-            hosts = Mumu12Host.list()
+        def _resolve_mumu_instance(host_cls: type[HostProtocol], host_name: str) -> Instance:
+            instance_id = emulator_data.instance_id if isinstance(emulator_data, MuMuEmulatorData) else None
+            if instance_id is not None:
+                instance = host_cls.query(id=instance_id)
+                if instance is None:
+                    raise RuntimeError(f'{host_name} instance not found: {instance_id}')
+                return instance
+
+            hosts = host_cls.list()
             if not hosts:
-                raise RuntimeError("No MuMu host found.")
-            host = hosts[0]
+                raise RuntimeError(f'No {host_name} host found.')
+            return hosts[0]
+
+        if emulator == 'mumu':
+            host = _resolve_mumu_instance(Mumu12Host, 'MuMu')
             _maybe_start(host)
             if impl == 'nemu_ipc':
                 from kotonebot.client.host.mumu12_host import MuMu12HostConfig
@@ -283,10 +295,7 @@ class SchedulerService:
             else:
                 raise ValueError(f"Unknown control implementation: {impl}")
         elif emulator == 'mumu_v5':
-            hosts = Mumu12V5Host.list()
-            if not hosts:
-                raise RuntimeError("No MuMu v5 host found.")
-            host = hosts[0]
+            host = _resolve_mumu_instance(Mumu12V5Host, 'MuMu v5')
             _maybe_start(host)
             if impl == 'nemu_ipc':
                 from kotonebot.client.host.mumu12_host import MuMu12HostConfig
@@ -302,17 +311,13 @@ class SchedulerService:
         elif emulator == 'custom':
             from kotonebot.client.host import create_custom
             from kotonebot.client.host import AdbHostConfig
-            data = self.iaa.config.conf.game.emulator_data
+            data = emulator_data if isinstance(emulator_data, CustomEmulatorData) else None
             if data is None:
-                adb_ip = '127.0.0.1'
-                adb_port = 5555
-                emulator_path = ''
-                emulator_args = ''
-            else:
-                adb_ip = data.adb_ip or '127.0.0.1'
-                adb_port = data.adb_port or 5555
-                emulator_path = data.emulator_path or ''
-                emulator_args = data.emulator_args or ''
+                raise RuntimeError('Custom emulator data is required when emulator is set to custom.')
+            adb_ip = data.adb_ip or '127.0.0.1'
+            adb_port = data.adb_port or 5555
+            emulator_path = data.emulator_path or ''
+            emulator_args = data.emulator_args or ''
             instance = create_custom(
                 adb_ip=adb_ip,
                 adb_port=adb_port,

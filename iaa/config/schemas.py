@@ -1,7 +1,7 @@
 # ruff: noqa: E701
 from enum import Enum
 from typing import Literal
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing_extensions import assert_never
 
 LinkAccountOptions = Literal['no', 'google', 'google_play']
@@ -272,7 +272,15 @@ class ChallengeLiveAward(str, Enum):
         }
 
 
+class MuMuEmulatorData(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
+    instance_id: str | None = None
+
+
 class CustomEmulatorData(BaseModel):
+    model_config = ConfigDict(extra='forbid')
+
     adb_ip: str = '127.0.0.1'
     adb_port: int = 5555
     emulator_path: str = ''
@@ -285,7 +293,7 @@ class GameConfig(BaseModel):
     emulator: EmulatorOptions = 'mumu_v5'
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator'] = 'nemu_ipc'
     check_emulator: bool = False
-    emulator_data: CustomEmulatorData | None = None
+    emulator_data: MuMuEmulatorData | CustomEmulatorData | None = None
     """
     是否引继账号。
     

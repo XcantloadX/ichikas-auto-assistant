@@ -3,8 +3,15 @@ import tkinter as tk
 import ttkbootstrap as tb
 
 from .index import DesktopApp
-from typing import cast, Literal, Optional
-from iaa.config.schemas import LinkAccountOptions, EmulatorOptions, GameCharacter, ChallengeLiveAward, CustomEmulatorData
+from typing import Literal, Optional
+from iaa.config.schemas import (
+  LinkAccountOptions,
+  EmulatorOptions,
+  GameCharacter,
+  ChallengeLiveAward,
+  CustomEmulatorData,
+  MuMuEmulatorData,
+)
 from .toast import show_toast
 from .advance_select import AdvanceSelect
 from iaa.config.base import IaaConfig
@@ -36,6 +43,13 @@ CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator'], str] =
   'uiautomator': 'UIAutomator2',
 }
 CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator']] = {v: k for k, v in CONTROL_IMPL_DISPLAY_MAP.items()}
+DEFAULT_MUMU_INSTANCE_LABEL = '默认'
+
+
+def get_selected_mumu_instance_id(store: 'ConfStore') -> str | None:
+  if store.mumu_instance_var.get() == DEFAULT_MUMU_INSTANCE_LABEL:
+    return None
+  return store.mumu_instance_display_to_id.get(store.mumu_instance_var.get())
 
 
 class ConfStore:
@@ -46,11 +60,17 @@ class ConfStore:
     self.link_var = tk.StringVar()
     self.control_impl_var = tk.StringVar()
     self.check_emulator_var = tk.BooleanVar()
+    self.mumu_instance_var = tk.StringVar()
+    self.mumu_instance_status_var = tk.StringVar()
     # 自定义模拟器设置
     self.custom_adb_ip_var = tk.StringVar()
     self.custom_adb_port_var = tk.StringVar()
     self.custom_emulator_path_var = tk.StringVar()
     self.custom_emulator_args_var = tk.StringVar()
+    self.mumu_instance_display_to_id: dict[str, str] = {}
+    self.mumu_instance_id_to_display: dict[str, str] = {}
+    self.mumu_instance_row: Optional[tb.Frame] = None
+    self.mumu_instance_combo: Optional[tb.Combobox] = None
     self.custom_ip_row: Optional[tb.Frame] = None
     self.custom_port_row: Optional[tb.Frame] = None
     self.custom_emulator_path_row: Optional[tb.Frame] = None
@@ -85,8 +105,17 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   store.link_var.set(LINK_DISPLAY_MAP.get(link_key, '不引继账号'))
   store.control_impl_var.set(CONTROL_IMPL_DISPLAY_MAP.get(control_impl_key, 'Nemu IPC'))
   store.check_emulator_var.set(bool(conf.game.check_emulator))
+  emulator_data = conf.game.emulator_data
+  initial_mumu_instance_id = None
+  if emulator_key in {'mumu', 'mumu_v5'} and isinstance(emulator_data, MuMuEmulatorData):
+    initial_mumu_instance_id = emulator_data.instance_id
+  store.mumu_instance_var.set(DEFAULT_MUMU_INSTANCE_LABEL)
+  store.mumu_instance_status_var.set('点击刷新以载入实例列表')
   # 初始化自定义 ADB 设置
-  custom_data = conf.game.emulator_data
+  if emulator_key in {'mumu', 'mumu_v5'} and isinstance(emulator_data, MuMuEmulatorData) and emulator_data.instance_id:
+    store.mumu_instance_status_var.set(f"当前配置实例 ID: {emulator_data.instance_id}")
+
+  custom_data = emulator_data if isinstance(emulator_data, CustomEmulatorData) else None
   if emulator_key == 'custom' and custom_data is not None:
     store.custom_adb_ip_var.set(custom_data.adb_ip or '127.0.0.1')
     store.custom_adb_port_var.set(str(custom_data.adb_port or 5555))
@@ -103,6 +132,80 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   row.pack(fill=tk.X, padx=8, pady=8)
   tb.Label(row, text="模拟器类型", width=16, anchor=tk.W).pack(side=tk.LEFT)
   tb.Combobox(row, state="readonly", textvariable=store.emulator_var, values=list(EMULATOR_VALUE_MAP.keys()), width=28).pack(side=tk.LEFT)
+
+  mumu_instance_row = tb.Frame(frame)
+  store.mumu_instance_row = mumu_instance_row
+  tb.Label(mumu_instance_row, text="多开实例", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  initial_mumu_values = [DEFAULT_MUMU_INSTANCE_LABEL]
+  if initial_mumu_instance_id is not None:
+    initial_label = f'[{initial_mumu_instance_id}] 实例 {initial_mumu_instance_id} (点击刷新查看名称)'
+    store.mumu_instance_display_to_id[initial_label] = initial_mumu_instance_id
+    store.mumu_instance_id_to_display[initial_mumu_instance_id] = initial_label
+    store.mumu_instance_var.set(initial_label)
+    initial_mumu_values.append(initial_label)
+
+  mumu_instance_combo = tb.Combobox(
+    mumu_instance_row,
+    state="readonly",
+    textvariable=store.mumu_instance_var,
+    values=initial_mumu_values,
+    width=28,
+  )
+  mumu_instance_combo.pack(side=tk.LEFT)
+  store.mumu_instance_combo = mumu_instance_combo
+
+  def _selected_mumu_instance_id() -> str | None:
+    return get_selected_mumu_instance_id(store)
+
+  def _set_mumu_choices(instance_pairs: list[tuple[str, str]], selected_id: str | None) -> None:
+    displays = [f'[{instance_id}] {name}' for instance_id, name in instance_pairs]
+    store.mumu_instance_display_to_id = {display: instance_id for display, (instance_id, _) in zip(displays, instance_pairs)}
+    store.mumu_instance_id_to_display = {instance_id: display for display, instance_id in store.mumu_instance_display_to_id.items()}
+    if store.mumu_instance_combo:
+      store.mumu_instance_combo.configure(values=[DEFAULT_MUMU_INSTANCE_LABEL, *displays])
+
+    if selected_id is None:
+      store.mumu_instance_var.set(DEFAULT_MUMU_INSTANCE_LABEL)
+      return
+
+    if selected_id is not None and selected_id in store.mumu_instance_id_to_display:
+      store.mumu_instance_var.set(store.mumu_instance_id_to_display[selected_id])
+      return
+
+    store.mumu_instance_var.set(DEFAULT_MUMU_INSTANCE_LABEL)
+
+  def _refresh_mumu_instances() -> None:
+    emu_val = EMULATOR_VALUE_MAP.get(store.emulator_var.get(), 'mumu')
+    if emu_val not in {'mumu', 'mumu_v5'}:
+      store.mumu_instance_status_var.set('当前模拟器无需选择实例')
+      _set_mumu_choices([], None)
+      return
+
+    try:
+      from kotonebot.client.host import Mumu12Host, Mumu12V5Host
+
+      host_cls = Mumu12Host if emu_val == 'mumu' else Mumu12V5Host
+      instances = host_cls.list()
+      instance_pairs = [(str(instance.id), instance.name) for instance in instances]
+      saved_id = None
+      if conf.game.emulator == emu_val and isinstance(conf.game.emulator_data, MuMuEmulatorData):
+        saved_id = conf.game.emulator_data.instance_id
+      selected_id = _selected_mumu_instance_id() or saved_id
+      _set_mumu_choices(instance_pairs, selected_id)
+      if instance_pairs:
+        current_id = _selected_mumu_instance_id()
+        if current_id is None:
+          store.mumu_instance_status_var.set('已载入实例列表')
+        else:
+          store.mumu_instance_status_var.set(f'已载入 {len(instance_pairs)} 个实例，当前选择 ID: {current_id}')
+      else:
+        store.mumu_instance_status_var.set('未找到可用实例')
+    except Exception as e:
+      _set_mumu_choices([], None)
+      store.mumu_instance_status_var.set(f'刷新失败：{e}')
+
+  tb.Button(mumu_instance_row, text="刷新", command=_refresh_mumu_instances).pack(side=tk.LEFT, padx=(8, 0))
+  tb.Label(mumu_instance_row, textvariable=store.mumu_instance_status_var, anchor=tk.W).pack(side=tk.LEFT, padx=(8, 0))
 
   # 自定义 ADB IP（仅在选择“自定义”时显示）
   custom_ip_row = tb.Frame(frame)
@@ -128,8 +231,15 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   tb.Label(custom_emulator_args_row, text="启动参数", width=16, anchor=tk.W).pack(side=tk.LEFT)
   tb.Entry(custom_emulator_args_row, textvariable=store.custom_emulator_args_var, width=30).pack(side=tk.LEFT)
 
-  def _update_custom_rows(*_args) -> None:
+  def _update_emulator_rows(*_args) -> None:
     emu_val = EMULATOR_VALUE_MAP.get(store.emulator_var.get(), 'mumu')
+    if emu_val in {'mumu', 'mumu_v5'}:
+      if store.mumu_instance_row:
+        store.mumu_instance_row.pack(fill=tk.X, padx=8, pady=8)
+    else:
+      if store.mumu_instance_row:
+        store.mumu_instance_row.pack_forget()
+
     if emu_val == 'custom':
       if store.custom_ip_row:
         store.custom_ip_row.pack(fill=tk.X, padx=8, pady=8)
@@ -151,10 +261,10 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
 
   # 监听选择变化并初始化显示
   try:
-    store.emulator_var.trace_add('write', lambda *_: _update_custom_rows())
+    store.emulator_var.trace_add('write', lambda *_: _update_emulator_rows())
   except Exception:
     pass
-  _update_custom_rows()
+  _update_emulator_rows()
 
   # 服务器
   row = tb.Frame(frame)
@@ -365,8 +475,12 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
       conf.game.link_account = link_val
       conf.game.control_impl = control_impl_val
       conf.game.check_emulator = bool(store.check_emulator_var.get())
-      # 自定义模拟器数据
-      if emulator_val == 'custom':
+      # 模拟器附加数据
+      if emulator_val in {'mumu', 'mumu_v5'}:
+        conf.game.emulator_data = MuMuEmulatorData(
+          instance_id=get_selected_mumu_instance_id(store),
+        )
+      elif emulator_val == 'custom':
         ip = (store.custom_adb_ip_var.get() or '').strip() or '127.0.0.1'
         try:
           port = int((store.custom_adb_port_var.get() or '').strip() or '5555')
