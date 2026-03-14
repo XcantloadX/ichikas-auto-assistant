@@ -78,6 +78,7 @@ class ConfStore:
     # 演出设置
     self.song_var = tk.StringVar()
     self.auto_set_unit_var = tk.BooleanVar()
+    self.ap_multiplier_var = tk.StringVar()
     self.fully_deplete_var = tk.BooleanVar()
     # 挑战演出设置
     self.challenge_char_vars: dict[GameCharacter, tk.BooleanVar] = {}
@@ -320,6 +321,7 @@ def build_live_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   current_song_display = song_value_to_display[song_id] if isinstance(song_id, int) and song_id in song_value_to_display else '保持不变'
   store.song_var.set(current_song_display)
   store.auto_set_unit_var.set(bool(conf.live.auto_set_unit))
+  store.ap_multiplier_var.set('保持现状' if conf.live.ap_multiplier is None else str(conf.live.ap_multiplier))
   store.fully_deplete_var.set(bool(conf.live.fully_deplete))
 
   # 歌曲下拉
@@ -328,7 +330,18 @@ def build_live_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   tb.Label(row, text="歌曲", width=16, anchor=tk.W).pack(side=tk.LEFT)
   tb.Combobox(row, state="disabled", textvariable=store.song_var, values=list(store.song_display_to_value.keys()), width=28).pack(side=tk.LEFT)
 
-  # 完全清空体力
+  row = tb.Frame(frame)
+  row.pack(fill=tk.X, padx=8, pady=8)
+  tb.Label(row, text="AP 倍率", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  tb.Combobox(
+    row,
+    state="readonly",
+    textvariable=store.ap_multiplier_var,
+    values=['保持现状', *[str(i) for i in range(0, 11)]],
+    width=28,
+  ).pack(side=tk.LEFT)
+
+  # 自动编队
   row = tb.Frame(frame)
   row.pack(fill=tk.X, padx=8, pady=8)
   tb.Checkbutton(row, text="自动编队", variable=store.auto_set_unit_var).pack(side=tk.LEFT)
@@ -508,6 +521,8 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
       song_display = store.song_var.get()
       conf.live.song_id = store.song_display_to_value.get(song_display, -1)
       conf.live.auto_set_unit = bool(store.auto_set_unit_var.get())
+      ap_multiplier_display = store.ap_multiplier_var.get()
+      conf.live.ap_multiplier = None if ap_multiplier_display == '保持现状' else int(ap_multiplier_display)
       conf.live.fully_deplete = bool(store.fully_deplete_var.get())
 
       # 挑战演出设置

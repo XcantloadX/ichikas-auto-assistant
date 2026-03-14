@@ -3,7 +3,7 @@ from typing_extensions import assert_never
 
 from kotonebot import logging
 from kotonebot.core import AnyOf
-from kotonebot import device, Loop, action, sleep, color
+from kotonebot import device, Loop, action, sleep, color, ocr
 
 from .. import R
 from ..common import at_home, go_home
@@ -78,6 +78,58 @@ def start_auto_live(
             check.click()
             logger.debug('Clicked auto live switch to turn off.')
             sleep(0.3)
+    
+    # AP 倍率设置
+    if ap_multiplier is not None:
+        logger.info(f'Setting AP multiplier to {ap_multiplier}.')
+        rep.message('设置 AP 倍率')
+        # 打开 AP 倍率设置
+        for _ in Loop():
+            if R.Live.ApMultiplierDialog.TextTip.find():
+                logger.debug('AP multiplier dialog opened.')
+                sleep(1)
+                break
+            elif R.Live.ButtonApMultiplierSettings.try_click():
+                logger.debug('Clicked AP multiplier settings button.')
+        def _set_multiplier():
+            # 设置 AP 倍率
+            current_multiplier = ocr.ocr(R.Live.ApMultiplierDialog.BoxApNumber).squash().numbers()
+            if not current_multiplier:
+                raise RuntimeError('Failed to read current AP multiplier.')
+            current_multiplier = int(current_multiplier[0])
+            logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
+            # 计算点击方向与次数
+            if current_multiplier < ap_multiplier:
+                button = R.Live.ApMultiplierDialog.PointPlus
+                times = ap_multiplier - current_multiplier
+            elif current_multiplier > ap_multiplier:
+                button = R.Live.ApMultiplierDialog.PointMinus
+                times = current_multiplier - ap_multiplier
+            else:
+                logger.debug('Current AP multiplier already at target.')
+                return True
+            # 执行
+            for i in range(times):
+                device.click(button)
+                logger.debug(f'Clicked AP multiplier {"plus" if button == R.Live.ApMultiplierDialog.PointPlus else "minus"} button. ({i + 1}/{times})')
+                sleep(0.3)
+            return False
+        retry_count = 0
+        while True:
+            device.screenshot()
+            try:
+                if _set_multiplier():
+                    break
+            except Exception:
+                logger.exception('Error setting AP multiplier')
+            sleep(0.5)
+            retry_count += 1
+            if retry_count >= 5:
+                raise RuntimeError('Failed to set AP multiplier after 5 attempts.')
+        # 然后关闭弹窗
+        R.Live.ApMultiplierDialog.ButtonConfirm.wait().click()
+        sleep(0.5)
+    
     # 设置自动演出设置
     # 消耗全部 AP
     if auto_setting == 'all':
@@ -143,7 +195,7 @@ def start_auto_live(
         logger.debug('Closed auto set unit dialog.')
     logger.info('Auto live setting finished.')
     rep.message('演出中')
-
+    
     # 开始演出
     logger.debug('Clicking start live button.')
     R.Live.ButtonStartLive.wait().click()
@@ -242,6 +294,7 @@ def solo_live(
     loop_count: int | None = None,
     auto_mode: Literal['script'] | Literal['game'] = 'game',
     debug_enabled: bool = False,
+    ap_multiplier: int | None = None,
 ):
     """
     
@@ -256,6 +309,8 @@ def solo_live(
     """
     if loop_count is not None and loop_count <= 0:
         raise ValueError('loop_count must be positive.')
+    if ap_multiplier is not None and not (0 <= ap_multiplier <= 10):
+        raise ValueError('ap_multiplier must be between 0 and 10.')
     reporter = task_reporter()
     auto_set_unit = conf().live.auto_set_unit
     def enter_solo_song_select():
@@ -279,7 +334,7 @@ def solo_live(
             with reporter.phase('单次演出', total=1) as phase:
                 enter_solo_song_select()
                 enter_unit_select()
-                start_auto_live('once', back_to='home', auto_set_unit=auto_set_unit)
+                start_auto_live('once', back_to='home', auto_set_unit=auto_set_unit, ap_multiplier=ap_multiplier)
                 phase.step('单次演出完成')
         # 单曲循环
         case 'single-loop':
@@ -288,7 +343,7 @@ def solo_live(
                 reporter.message('开始单曲循环（游戏自动）')
                 enter_solo_song_select()
                 enter_unit_select()
-                start_auto_live('all', back_to='home', auto_set_unit=auto_set_unit)
+                start_auto_live('all', back_to='home', auto_set_unit=auto_set_unit, ap_multiplier=ap_multiplier)
                 reporter.message('单曲循环完成，返回首页')
             # 脚本自动
             else:
@@ -299,7 +354,13 @@ def solo_live(
                     while True:
                         enter_solo_song_select()
                         enter_unit_select()
-                        if not start_auto_live('script', back_to='home', debug_enabled=debug_enabled, auto_set_unit=auto_set_unit):
+                        if not start_auto_live(
+                            'script',
+                            back_to='home',
+                            debug_enabled=debug_enabled,
+                            auto_set_unit=auto_set_unit,
+                            ap_multiplier=ap_multiplier,
+                        ):
                             break
                         count += 1
                         phase.step(f'已完成 {count} 次单曲循环')
@@ -321,6 +382,7 @@ def solo_live(
                         back_to='home',
                         debug_enabled=debug_enabled,
                         auto_set_unit=auto_set_unit,
+                        ap_multiplier=ap_multiplier,
                     )
                     count += 1
                     logger.info(f'Song looped. {count}/{max_count}')
@@ -468,6 +530,6 @@ def challenge_live(
                 return True, False
         return False, False
     rep.message('开始挑战演出')
-    start_auto_live('once', finish_pre_check=claim_reward, auto_set_unit=conf().live.auto_set_unit)
+    start_auto_live('once', finish_pre_check=claim_reward, auto_set_unit=False, ap_multiplier=None)
     rep.message('挑战演出完成，返回首页')
     go_home()

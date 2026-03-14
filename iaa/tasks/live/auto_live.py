@@ -14,9 +14,12 @@ def auto_live(
     loop_mode: Literal['single', 'list'] = 'list',
     auto_mode: Literal['none', 'game_auto', 'script_auto'] = 'game_auto',
     debug_enabled: bool = False,
+    ap_multiplier: int | None = None,
 ) -> None:
     reporter = task_reporter()
     reporter.message('准备自动演出参数')
+    if ap_multiplier is not None and not (0 <= ap_multiplier <= 10):
+        raise ValueError('ap_multiplier 必须在 0 到 10 之间。')
     if count_mode == 'specify':
         if count is None or count <= 0:
             raise ValueError('count 必须为正整数。')
@@ -36,4 +39,5 @@ def auto_live(
         loop_count=loop_count,
         auto_mode=inner_auto_mode,
         debug_enabled=debug_enabled,
+        ap_multiplier=ap_multiplier,
     )

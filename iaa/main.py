@@ -56,6 +56,12 @@ def add_auto_live_args(parser: argparse.ArgumentParser) -> None:
         action='store_true',
         help='auto_live only: show script auto debug overlay',
     )
+    parser.add_argument(
+        '--ap-multiplier',
+        type=int,
+        choices=range(0, 11),
+        help='auto_live only: set AP multiplier to 0-10 before starting; omit to keep current',
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -99,6 +105,7 @@ def build_auto_live_kwargs(args: argparse.Namespace) -> dict[str, object]:
         'loop_mode': args.loop_mode,
         'auto_mode': args.auto_mode,
         'debug_enabled': bool(args.debug_enabled),
+        'ap_multiplier': args.ap_multiplier,
     }
 
 

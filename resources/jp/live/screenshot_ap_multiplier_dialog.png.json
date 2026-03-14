@@ -1,0 +1,74 @@
+{
+  "version": 2,
+  "definitions": {
+    "822c41b1-bcfa-4ea9-add4-6788bcca7009": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ApMultiplierDialog.TextTip",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 440,
+          "y1": 151.680301461828,
+          "x2": 840,
+          "y2": 202.64760203942197
+        },
+        "fixed": true
+      },
+      "variant_inherit": false,
+      "displayName": "ライフホーナスの消費量を設定します。"
+    },
+    "b6d937ba-7b8a-4908-9f2a-5e3c42c799c6": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ApMultiplierDialog.ButtonConfirm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 723,
+          "y1": 634.4988517257318,
+          "x2": 796,
+          "y2": 676.4719227896327
+        },
+        "fixed": true
+      },
+      "displayName": "AP 倍率 决定 按钮",
+      "variant_inherit": false
+    },
+    "2d6efdb5-633a-4251-ae5c-5d2b16638b9d": {
+      "type": "hint-point",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 440,
+          "y": 319.70081874647497
+        }
+      },
+      "name": "Live.ApMultiplierDialog.PointMinus"
+    },
+    "43d64469-284d-41fd-b8ed-2fe7a6853367": {
+      "type": "hint-point",
+      "props": {
+        "point": {
+          "kind": "point",
+          "x": 837,
+          "y": 318.6373433970985
+        }
+      },
+      "name": "Live.ApMultiplierDialog.PointPlus"
+    },
+    "ab7705f7-d074-4907-b461-bc943586b0bf": {
+      "type": "hint-box",
+      "props": {
+        "rect": {
+          "kind": "rect",
+          "x1": 637,
+          "y1": 242.68607194813495,
+          "x2": 707,
+          "y2": 287.6572195166002
+        }
+      },
+      "name": "Live.ApMultiplierDialog.BoxApNumber"
+    }
+  }
+}

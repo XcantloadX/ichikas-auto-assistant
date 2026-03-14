@@ -8,7 +8,11 @@ from iaa.context import conf
 @task('单人演出')
 def solo_live():
     go_home()
-    do_solo_live('single-loop', auto_mode='game')
+    do_solo_live(
+        'single-loop',
+        auto_mode='game',
+        ap_multiplier=conf().live.ap_multiplier,
+    )
     # if not do_solo_live('single-loop'):
     #     return
     # if conf().live.fully_deplete:

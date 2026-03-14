@@ -320,6 +320,9 @@ class LiveConfig(BaseModel):
     指定次数。
     """
     auto_set_unit: bool = False
+    """演出前是否自动编队"""
+    ap_multiplier: int | None = 10
+    """AP 倍率。None 表示保持现状。"""
     fully_deplete: bool = False
 
 

@@ -62,6 +62,23 @@
       },
       "variant_inherit": false,
       "displayName": "おすすめ編成"
+    },
+    "a7d4c0eb-9a52-4df2-b3d3-2e79da8c6216": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Live.ButtonApMultiplierSettings",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1136.420991841248,
+          "y1": 30.16604043243403,
+          "x2": 1163.1052139892447,
+          "y2": 54.78183719073701
+        },
+        "fixed": true
+      },
+      "variant_inherit": true,
+      "displayName": "AP 条右侧设置按钮"
     }
   }
 }

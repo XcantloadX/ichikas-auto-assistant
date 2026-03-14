@@ -338,6 +338,9 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     loop_mode_var = tk.StringVar(value="list")
     auto_mode_var = tk.StringVar(value="game_auto")
     debug_enabled_var = tk.BooleanVar(value=False)
+    ap_multiplier_var = tk.StringVar(
+      value=("保持现状" if conf.live.ap_multiplier is None else str(conf.live.ap_multiplier))
+    )
 
     def _center_window() -> None:
       win.update_idletasks()
@@ -362,6 +365,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
       count_var.set("10")
       loop_mode_var.set("list")
       auto_mode_var.set("game_auto")
+      ap_multiplier_var.set("1")
       _sync_count_state()
 
     def _apply_preset_fc() -> None:
@@ -369,6 +373,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
       count_var.set("10")
       loop_mode_var.set("single")
       auto_mode_var.set("script_auto")
+      ap_multiplier_var.set("0")
       _sync_count_state()
 
     def _apply_preset_leader() -> None:
@@ -376,6 +381,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
       count_var.set("30")
       loop_mode_var.set("single")
       auto_mode_var.set("script_auto")
+      ap_multiplier_var.set("0")
       _sync_count_state()
 
     row_preset = tb.Frame(body)
@@ -418,12 +424,24 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     tb.Radiobutton(row_auto, text="游戏自动", value="game_auto", variable=auto_mode_var).pack(side=tk.LEFT, padx=(0, 12))
     tb.Radiobutton(row_auto, text="脚本自动", value="script_auto", variable=auto_mode_var).pack(side=tk.LEFT)
 
+    row_ap = tb.Frame(body)
+    row_ap.grid(row=6, column=0, sticky=tk.W, pady=(0, 12))
+    tb.Label(row_ap, text="AP 倍率：", width=8, anchor=tk.W).pack(side=tk.LEFT)
+    cmb_ap_multiplier = tb.Combobox(
+      row_ap,
+      state="readonly",
+      textvariable=ap_multiplier_var,
+      values=["保持现状", *[str(i) for i in range(0, 11)]],
+      width=24,
+    )
+    cmb_ap_multiplier.pack(side=tk.LEFT, padx=(8, 0))
+
     row_debug = tb.Frame(body)
-    row_debug.grid(row=6, column=0, sticky=tk.W, pady=(0, 12))
+    row_debug.grid(row=7, column=0, sticky=tk.W, pady=(0, 12))
     tb.Checkbutton(row_debug, text="调试显示（脚本自动）", variable=debug_enabled_var).pack(side=tk.LEFT)
 
     btn_bar = tb.Frame(body)
-    btn_bar.grid(row=7, column=0, sticky=tk.E)
+    btn_bar.grid(row=8, column=0, sticky=tk.E)
 
     def _sync_count_state() -> None:
       if count_mode_var.get() == "specify":
@@ -442,6 +460,11 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
           "使用“脚本自动”时必须满足：\n1.当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3.使用 MuMu 模拟器且控制方法选择「nemu_ipc」\n4.分辨率为 16:9，支持 1280x720 及其等比例缩放（如 1600x900、1920x1080）\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担",
           parent=win,
         )
+      if current == "script_auto":
+        ap_multiplier_var.set("0")
+        cmb_ap_multiplier.configure(state="disabled")
+      else:
+        cmb_ap_multiplier.configure(state="readonly")
       last_auto_mode = current
 
     auto_mode_var.trace_add("write", _on_auto_mode_change)
@@ -464,6 +487,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
           else ("script_auto" if auto_mode_var.get() == "script_auto" else "game_auto")
         ),
         "debug_enabled": bool(debug_enabled_var.get()),
+        "ap_multiplier": (None if ap_multiplier_var.get() == "保持现状" else int(ap_multiplier_var.get())),
       }
       win.destroy()
       sch.run_single("auto_live", run_in_thread=True, kwargs=kwargs)
@@ -473,6 +497,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     tb.Button(btn_bar, text="取消", command=win.destroy).pack(side=tk.LEFT)
 
     _sync_count_state()
+    _on_auto_mode_change()
     _center_window()
 
   def _on_main_story() -> None:
