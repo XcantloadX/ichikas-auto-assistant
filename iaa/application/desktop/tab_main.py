@@ -33,6 +33,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   btn_run_cm = None
   btn_run_gift = None
   btn_run_area_convos = None
+  btn_run_mission_rewards = None
   btn_run_ten_songs = None
   btn_run_main_story = None
 
@@ -100,7 +101,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     # 刷新单任务运行按钮状态
     try:
       is_run_disabled = is_transition or sch.running
-      for b in (btn_run_start_game, btn_run_single_live, btn_run_challenge_live, btn_run_activity_story, btn_run_cm, btn_run_gift, btn_run_area_convos, btn_run_ten_songs, btn_run_main_story):
+      for b in (btn_run_start_game, btn_run_single_live, btn_run_challenge_live, btn_run_activity_story, btn_run_cm, btn_run_gift, btn_run_area_convos, btn_run_mission_rewards, btn_run_ten_songs, btn_run_main_story):
         if b is not None:
           b.configure(state=(tk.DISABLED if is_run_disabled else tk.NORMAL))
     except Exception:
@@ -256,6 +257,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   var_auto_cm = tk.BooleanVar(value=bool(conf.scheduler.cm_enabled))
   var_gift = tk.BooleanVar(value=bool(getattr(conf.scheduler, 'gift_enabled', True)))
   var_area_convos = tk.BooleanVar(value=bool(getattr(conf.scheduler, 'area_convos_enabled', True)))
+  var_mission_rewards = tk.BooleanVar(value=bool(getattr(conf.scheduler, 'mission_rewards_enabled', True)))
   app.store.var_start_game = var_start_game
   app.store.var_single_live = var_single_live
   app.store.var_challenge_live = var_challenge_live
@@ -263,6 +265,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   app.store.var_auto_cm = var_auto_cm
   app.store.var_gift = var_gift
   app.store.var_area_convos = var_area_convos
+  app.store.var_mission_rewards = var_mission_rewards
 
   def _save_scheduler() -> None:
     conf.scheduler.start_game_enabled = bool(var_start_game.get())
@@ -272,6 +275,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     conf.scheduler.cm_enabled = bool(var_auto_cm.get())
     conf.scheduler.gift_enabled = bool(var_gift.get())
     conf.scheduler.area_convos_enabled = bool(var_area_convos.get())
+    conf.scheduler.mission_rewards_enabled = bool(var_mission_rewards.get())
     app.service.config.save()
 
   def _on_run(task_id: str) -> None:
@@ -288,6 +292,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   cb_cm = tb.Checkbutton(lf_tasks, text="自动 CM", variable=var_auto_cm, command=_save_scheduler)
   cb_gift = tb.Checkbutton(lf_tasks, text="领取礼物", variable=var_gift, command=_save_scheduler)
   cb_area_convos = tb.Checkbutton(lf_tasks, text="区域对话", variable=var_area_convos, command=_save_scheduler)
+  cb_mission_rewards = tb.Checkbutton(lf_tasks, text="任务奖励", variable=var_mission_rewards, command=_save_scheduler)
 
   # 将每个复选框与其后的“▶”按钮并排放置
   cb_start_game.grid(row=0, column=0, sticky=tk.W, padx=20, pady=(16, 8))
@@ -317,6 +322,10 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   cb_area_convos.grid(row=1, column=2, sticky=tk.W, padx=20, pady=(8, 8))
   btn_run_area_convos = tb.Button(lf_tasks, text="▶", width=2, padding=0, bootstyle="secondary-toolbutton", command=lambda: _on_run("area_convos"))  # type: ignore[call-arg]
   btn_run_area_convos.grid(row=1, column=3, sticky=tk.W, padx=(4, 12), pady=(8, 8))
+
+  cb_mission_rewards.grid(row=1, column=4, sticky=tk.W, padx=20, pady=(8, 8))
+  btn_run_mission_rewards = tb.Button(lf_tasks, text="▶", width=2, padding=0, bootstyle="secondary-toolbutton", command=lambda: _on_run("mission_rewards"))  # type: ignore[call-arg]
+  btn_run_mission_rewards.grid(row=1, column=5, sticky=tk.W, padx=(4, 12), pady=(8, 8))
 
   def _on_auto_live() -> None:
     sch = app.service.scheduler

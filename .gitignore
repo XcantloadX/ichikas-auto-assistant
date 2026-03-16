@@ -6,6 +6,7 @@ conf/
 build/
 dist/
 dist_app/
+logs/
 iaa_v*.zip
 iaa_v*.7z
 .kotonebot/cache/

@@ -343,6 +343,7 @@ class SchedulerConfig(BaseModel):
     cm_enabled: bool = True
     gift_enabled: bool = True
     area_convos_enabled: bool = True
+    mission_rewards_enabled: bool = True
 
     def is_enabled(self, task_id: str) -> bool:
         """根据任务标识判断是否启用。
@@ -355,6 +356,7 @@ class SchedulerConfig(BaseModel):
         - "activity_story"
         - "gift"
         - "area_convos"
+        - "mission_rewards"
         """
         if task_id == 'start_game':
             return bool(self.start_game_enabled)
@@ -370,4 +372,6 @@ class SchedulerConfig(BaseModel):
             return bool(self.gift_enabled)
         if task_id == 'area_convos':
             return bool(self.area_convos_enabled)
+        if task_id == 'mission_rewards':
+            return bool(self.mission_rewards_enabled)
         return False

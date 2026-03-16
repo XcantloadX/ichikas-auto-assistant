@@ -12,6 +12,7 @@ from .story.main_story import farm_story
 from .gift import gift
 from .area_convos import area_convos
 from .live.auto_live import auto_live
+from .mission_rewards import collect_mission_rewards
 
 TaskRegistry = dict[str, Callable[[], None]]
 
@@ -36,6 +37,7 @@ REGULAR_TASKS: TaskRegistry = {
 MANUAL_TASKS: TaskRegistry = {
     'main_story': farm_story,
     'auto_live': auto_live,
+    'mission_rewards': collect_mission_rewards,
 }
 
 
@@ -48,10 +50,10 @@ def name_from_id(task_id: str) -> str:
         'challenge_live': '挑战演出',
         'activity_story': '活动剧情',
         'gift': '领取礼物',
-        'mission': '领取任务奖励',
         'area_convos': '区域对话',
         'main_story': '刷主线剧情',
         'auto_live': '自动演出',
+        'mission_rewards': '任务奖励',
     }
     return mapping.get(task_id, task_id)
 
@@ -66,6 +68,7 @@ TASK_INFOS: dict[str, TaskInfo] = {
     'area_convos': TaskInfo('area_convos', '区域对话', 'regular'),
     'main_story': TaskInfo('main_story', '刷主线剧情', 'manual'),
     'auto_live': TaskInfo('auto_live', '自动演出', 'manual', supports_kwargs=True),
+    'mission_rewards': TaskInfo('mission_rewards', '任务奖励', 'manual'),
 }
 
 
