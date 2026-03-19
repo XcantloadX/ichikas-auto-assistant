@@ -189,6 +189,13 @@ class SchedulerService:
                 vars.flow.clear_interrupt()
                 # 若在准备阶段失败，也需要复位启动标记
                 self.is_starting = False
+                # 清理设备资源
+                if self.device:
+                    try:
+                        self.device.stop()
+                    except Exception:
+                        logger.exception("Failed to stop device")
+                    self.device = None
                 logger.info("Scheduler stopped.")
 
         if run_in_thread:
@@ -220,6 +227,9 @@ class SchedulerService:
         vars.flow.request_interrupt()
         if block:
             self._thread.join()
+        if self.device:
+            self.device.stop()
+        self.device = None
         self._thread = None
 
     def run_single(
@@ -337,8 +347,9 @@ class SchedulerService:
         else:
             raise ValueError(f"Unknown emulator: {emulator}")
         device.orientation = 'landscape'
+        device.start()
+        init_context(target_device=device, force=True)
         self.device = device
-        init_context(target_device=device)
 
         # 初始化框架全局配置
         from kotonebot.config import conf
