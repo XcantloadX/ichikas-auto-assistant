@@ -3,16 +3,15 @@ from typing import Literal
 from kotonebot import task
 
 from iaa.tasks.common import go_home
-from iaa.context import task_reporter
-from .live import solo_live as do_solo_live
+from iaa.context import conf, task_reporter
+from .live import ListLoopPlan, SingleLoopPlan, solo_live as do_solo_live
 
 
 @task('自动演出')
 def auto_live(
-    count_mode: Literal['specify', 'all'] = 'specify',
-    count: int | None = 10,
-    loop_mode: Literal['single', 'list'] = 'list',
-    auto_mode: Literal['none', 'game_auto', 'script_auto'] = 'game_auto',
+    run_count: int | None = 10,
+    cycle_mode: Literal['single', 'list'] = 'list',
+    play_mode: Literal['game_auto', 'script_auto'] = 'game_auto',
     debug_enabled: bool = False,
     ap_multiplier: int | None = None,
     song_name: str | None = None,
@@ -21,25 +20,31 @@ def auto_live(
     reporter.message('准备自动演出参数')
     if ap_multiplier is not None and not (0 <= ap_multiplier <= 10):
         raise ValueError('ap_multiplier 必须在 0 到 10 之间。')
-    if count_mode == 'specify':
-        if count is None or count <= 0:
-            raise ValueError('count 必须为正整数。')
-        loop_count = count
-    else:
-        loop_count = None
+    if run_count is not None and run_count <= 0:
+        raise ValueError('run_count 必须为正整数或 None。')
+    if cycle_mode == 'list' and song_name:
+        raise ValueError('list cycle mode does not support song_name.')
 
-    songs_mode: Literal['single-loop', 'list-loop'] = 'single-loop' if loop_mode == 'single' else 'list-loop'
-    # 目前任务层仅支持 game/script 两种自动模式；none 按 game_auto 处理。
-    inner_auto_mode: Literal['game', 'script'] = 'script' if auto_mode == 'script_auto' else 'game'
+    if cycle_mode == 'single':
+        plan = SingleLoopPlan(
+            loop_count=run_count,
+            play_mode=play_mode,
+            debug_enabled=debug_enabled,
+            ap_multiplier=ap_multiplier,
+            song_name=song_name,
+            auto_set_unit=conf().live.auto_set_unit,
+            song_select_mode='specified' if song_name else 'current',
+        )
+    else:
+        plan = ListLoopPlan(
+            loop_count=run_count,
+            play_mode=play_mode,
+            debug_enabled=debug_enabled,
+            ap_multiplier=ap_multiplier,
+            auto_set_unit=conf().live.auto_set_unit,
+        )
 
     reporter.message('返回首页准备进入演出')
     go_home()
     reporter.message('进入自动演出流程')
-    do_solo_live(
-        songs=songs_mode,
-        loop_count=loop_count,
-        auto_mode=inner_auto_mode,
-        debug_enabled=debug_enabled,
-        ap_multiplier=ap_multiplier,
-        song_name=song_name,
-    )
+    do_solo_live(plan)

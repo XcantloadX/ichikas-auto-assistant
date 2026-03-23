@@ -28,28 +28,27 @@ def add_common_args(parser: argparse.ArgumentParser) -> None:
 
 def add_auto_live_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument(
-        '--count-mode',
-        choices=['specify', 'all'],
-        default='specify',
-        help='auto_live only: number of runs or until AP is exhausted',
-    )
-    parser.add_argument(
-        '--count',
+        '--run-count',
         type=int,
         default=10,
-        help='auto_live only: required when --count-mode=specify',
+        help='auto_live only: number of runs; omit value with --run-until-exhausted to loop until AP is exhausted',
     )
     parser.add_argument(
-        '--loop-mode',
+        '--run-until-exhausted',
+        action='store_true',
+        help='auto_live only: ignore --run-count and loop until AP is exhausted',
+    )
+    parser.add_argument(
+        '--cycle-mode',
         choices=['single', 'list'],
         default='list',
         help='auto_live only: loop current song or cycle the song list',
     )
     parser.add_argument(
-        '--auto-mode',
-        choices=['none', 'game_auto', 'script_auto'],
+        '--play-mode',
+        choices=['game_auto', 'script_auto'],
         default='game_auto',
-        help='auto_live only: none currently behaves the same as game_auto',
+        help='auto_live only: use in-game auto or script auto',
     )
     parser.add_argument(
         '--debug-enabled',
@@ -97,13 +96,12 @@ def validate_task_ids(
 
 
 def build_auto_live_kwargs(args: argparse.Namespace) -> dict[str, object]:
-    if args.count_mode == 'specify' and (args.count is None or args.count <= 0):
-        raise ValueError('--count must be a positive integer when --count-mode=specify')
+    if not args.run_until_exhausted and (args.run_count is None or args.run_count <= 0):
+        raise ValueError('--run-count must be a positive integer unless --run-until-exhausted is set')
     return {
-        'count_mode': args.count_mode,
-        'count': args.count if args.count_mode == 'specify' else None,
-        'loop_mode': args.loop_mode,
-        'auto_mode': args.auto_mode,
+        'run_count': None if args.run_until_exhausted else args.run_count,
+        'cycle_mode': args.cycle_mode,
+        'play_mode': args.play_mode,
         'debug_enabled': bool(args.debug_enabled),
         'ap_multiplier': args.ap_multiplier,
     }

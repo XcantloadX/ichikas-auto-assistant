@@ -425,8 +425,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     row_auto = tb.Frame(body)
     row_auto.grid(row=4, column=0, sticky=tk.W, pady=(0, 10))
     tb.Label(row_auto, text="自动模式：", width=8, anchor=tk.W).pack(side=tk.LEFT)
-    tb.Radiobutton(row_auto, text="无", value="none", variable=auto_mode_var).pack(side=tk.LEFT, padx=(8, 12))
-    tb.Radiobutton(row_auto, text="游戏自动", value="game_auto", variable=auto_mode_var).pack(side=tk.LEFT, padx=(0, 12))
+    tb.Radiobutton(row_auto, text="游戏自动", value="game_auto", variable=auto_mode_var).pack(side=tk.LEFT, padx=(8, 12))
     tb.Radiobutton(row_auto, text="脚本自动", value="script_auto", variable=auto_mode_var).pack(side=tk.LEFT)
 
     row_ap = tb.Frame(body)
@@ -507,14 +506,9 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
           return
         count = int(value)
       kwargs = {
-        "count_mode": ("specify" if count_mode_var.get() == "specify" else "all"),
-        "count": count,
-        "loop_mode": ("single" if loop_mode_var.get() == "single" else "list"),
-        "auto_mode": (
-          "none"
-          if auto_mode_var.get() == "none"
-          else ("script_auto" if auto_mode_var.get() == "script_auto" else "game_auto")
-        ),
+        "run_count": (count if count_mode_var.get() == "specify" else None),
+        "cycle_mode": ("single" if loop_mode_var.get() == "single" else "list"),
+        "play_mode": ("script_auto" if auto_mode_var.get() == "script_auto" else "game_auto"),
         "debug_enabled": bool(debug_enabled_var.get()),
         "ap_multiplier": (None if ap_multiplier_var.get() == "保持现状" else int(ap_multiplier_var.get())),
         "song_name": normalize_song_name_input(song_name_var.get()),
