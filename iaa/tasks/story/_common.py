@@ -23,7 +23,7 @@ def enter_story(*, is_wl: bool = False):
             # 位于剧情画面
             logger.info('Now at story.')
             break
-        elif R.Story.CheckboxContinuousReading.find(threshold=0.98):
+        elif R.Story.CheckboxContinuousReading.q(threshold=0.98).find():
             # threshold 0.98 是因为更低会命中未选中状态
             # TODO: 需要一个更好的区别方式
             # 勾选连续阅读

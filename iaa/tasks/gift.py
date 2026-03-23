@@ -23,7 +23,7 @@ def gift():
             logger.debug('Clicked gift button')
             sleep(0.5)
     # 领取礼物
-    if R.Hud.ButtonClaimAll.find(colored=True):
+    if R.Hud.ButtonClaimAll.q(colored=True).find():
         device.click()
         sleep(0.5)
     else:

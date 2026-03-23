@@ -33,8 +33,8 @@ def is_at_intersection() -> bool:
     #     R.Scene.Intersection.IconCm
     # ].find(threshold=0.8) is not None
     return (
-        R.Scene.Intersection.BuildingLogo.find(threshold=0.9) is not None or
-        R.Scene.Intersection.IconCm.find(threshold=0.9) is not None
+        R.Scene.Intersection.BuildingLogo.q(threshold=0.9).find() is not None or
+        R.Scene.Intersection.IconCm.q(threshold=0.9).find() is not None
     )
 
 @action('前往交叉路口', screenshot_mode='manual')
@@ -89,7 +89,7 @@ def open_cm() -> bool:
     swipe_count = 0
     MAX_SWIPE_COUNT = 5
     for _ in Loop(interval=0.6):
-        if ret := R.Scene.Intersection.IconCm.find(threshold=0.6):
+        if ret := R.Scene.Intersection.IconCm.q(threshold=0.6).find():
             # TODO: 改用 image.find 的 rect 参数重构
             x1, y1, x2, y2 = R.Cm.BoxCmIconDetectRect.xyxy
             x, y = ret.rect.center
@@ -126,7 +126,7 @@ def clear_common_cm():
     for _ in Loop(interval=0.6):
         if state == 1:
             # 开始看
-            if R.Cm.ButtonCmStart.try_click(threshold=0.7):
+            if R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
                 logger.debug('Clicked 視聴開始 button.')
                 sleep(1)
                 state = 2
@@ -139,7 +139,7 @@ def clear_common_cm():
                 logger.info('All ads cleared.')
                 break
         elif state == 2:
-            if R.Cm.ButtonPlayCm.find(threshold=0.7):
+            if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
                 rep.message('等待广告载入')
                 logger.debug('Loading ad...')
                 sleep(0.2)

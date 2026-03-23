@@ -317,7 +317,7 @@ def solo_live(
         reporter.message('进入单人演出')
         # 进入单人演出
         for _ in Loop(interval=0.6):
-            if R.Hud.ButtonLive.find(threshold=0.55):
+            if R.Hud.ButtonLive.q(threshold=0.55).find():
                 device.click()
                 logger.debug('Clicked home LIVE button.')
                 sleep(1)
@@ -403,7 +403,7 @@ def challenge_live(
     rep.message('进入挑战演出')
     # 进入挑战演出
     for _ in Loop(interval=0.6):
-        if R.Hud.ButtonLive.try_click(threshold=0.55):
+        if R.Hud.ButtonLive.q(threshold=0.55).try_click():
             logger.debug('Clicked home LIVE button.')
             sleep(1)
         elif btn := R.Live.ButtonChallengeLive.find():
