@@ -90,6 +90,7 @@ class Scrollable:
     :param drag_delay: 拖拽后等待界面稳定的时间，单位秒。
     """
 
+    # Thumb detection
     THUMB_HSV_LOWER: ClassVar[tuple[int, int, int]] = (100, 30, 60)
     THUMB_HSV_UPPER: ClassVar[tuple[int, int, int]] = (140, 180, 170)
     MIN_THUMB_HEIGHT: ClassVar[int] = 24
@@ -98,11 +99,26 @@ class Scrollable:
     DEFAULT_THUMB_MAX_WIDTH: ClassVar[int] = 32
     DEFAULT_THUMB_MIN_AREA: ClassVar[int] = 60
     DEFAULT_MORPHOLOGY_KERNEL: ClassVar[tuple[int, int]] = (3, 3)
-    DEFAULT_ITER_STOP_DELTA: ClassVar[float] = 0.005
+
+    # Generic drag tuning
     DEFAULT_PROGRESS_TOLERANCE: ClassVar[float] = ScrollProgress.DEFAULT_TOLERANCE
+    DEFAULT_DRAG_DURATION_SCALE_MAX: ClassVar[float] = 2.4
+    DEFAULT_EDGE_DRAG_DURATION_BOOST: ClassVar[float] = 1.35
+
+    # Measurement tuning
     DEFAULT_MEASUREMENT_STEP: ClassVar[float] = 3.0
+    DEFAULT_MEASUREMENT_EDGE_DRAG_BOOST: ClassVar[float] = 1.45
+    DEFAULT_MEASUREMENT_DRAG_DELAY: ClassVar[float] = 0.45
     DEFAULT_EDGE_STALL_DELTA: ClassVar[int] = 2
     DEFAULT_EDGE_STALL_REPEAT: ClassVar[int] = 1
+    DEFAULT_EDGE_OVERDRAG_DISTANCE: ClassVar[int] = 72
+
+    # Edge settle
+    DEFAULT_EDGE_CONTENT_SWIPE_X_OFFSET: ClassVar[int] = 16
+    DEFAULT_EDGE_CONTENT_SWIPE_START_RATIO: ClassVar[float] = 0.80
+    DEFAULT_EDGE_CONTENT_SWIPE_END_RATIO: ClassVar[float] = 0.64
+    DEFAULT_EDGE_CONTENT_SWIPE_DURATION: ClassVar[float] = 0.20
+    DEFAULT_EDGE_CONTENT_SWIPE_DELAY: ClassVar[float] = 0.80
 
     def __init__(
         self,
@@ -255,11 +271,12 @@ class Scrollable:
         baseline = current.progress if current.progress is not None else current.raw_progress
         if baseline is None:
             return None
-        return self._drag_to_progress(
+        updated = self._drag_to_progress(
             target=baseline + delta,
             duration=duration,
             drag_delay=drag_delay,
         )
+        return self._maybe_settle_edge(updated)
 
     def up(
         self,
@@ -283,11 +300,12 @@ class Scrollable:
         baseline = current.progress if current.progress is not None else current.raw_progress
         if baseline is None:
             return None
-        return self._drag_to_progress(
+        updated = self._drag_to_progress(
             target=baseline - delta,
             duration=duration,
             drag_delay=drag_delay,
         )
+        return self._maybe_settle_edge(updated)
 
     def to_top(self, *, max_steps: int = 12) -> ScrollProgress | None:
         """
@@ -300,6 +318,7 @@ class Scrollable:
             measured = self.measure_bounds(max_steps=max_steps, return_to_top=True)
             if measured is None:
                 return None
+            return measured
         return self._seek_edge('up', max_steps=max_steps)
 
     def to_bottom(self, *, max_steps: int = 12) -> ScrollProgress | None:
@@ -313,6 +332,7 @@ class Scrollable:
             measured = self.measure_bounds(max_steps=max_steps, return_to_top=False)
             if measured is None:
                 return None
+            return measured
         return self._seek_edge('down', max_steps=max_steps)
 
     @property
@@ -345,6 +365,7 @@ class Scrollable:
                 'up',
                 max_steps=max_steps,
                 step=self.DEFAULT_MEASUREMENT_STEP,
+                settle_edge=False,
             )
             if top is None:
                 return None
@@ -354,6 +375,7 @@ class Scrollable:
             'down',
             max_steps=max_steps,
             step=self.DEFAULT_MEASUREMENT_STEP,
+            settle_edge=False,
         )
         if bottom is None:
             self.measured_top_y1 = None
@@ -365,6 +387,7 @@ class Scrollable:
                 'up',
                 max_steps=max_steps,
                 step=self.DEFAULT_MEASUREMENT_STEP,
+                settle_edge=True,
             )
         return bottom
 
@@ -426,6 +449,39 @@ class Scrollable:
         progress = self.parse_progress(image) if image is not None else (self.progress or self.refresh())
         return progress.is_bottom() if progress is not None else False
 
+    def _maybe_settle_edge(self, progress: ScrollProgress | None) -> ScrollProgress | None:
+        # PJSK 的滚动条有一个 bug，如果仅通过拖拽滚动条而不是拖拽内容，
+        # 拖到最上面或者最下面后，此时内容全部展示，但是容器内上边缘或内下边缘
+        # 的渐变效果依旧存在，导致后续识别可能出现问题。
+        # 解决方法就是此时再拖拽一下内容即可。
+        
+        if progress is None:
+            return None
+
+        direction: str | None = None
+        if progress.is_top():
+            direction = 'top'
+        elif progress.is_bottom():
+            direction = 'bottom'
+        if direction is None:
+            return progress
+
+        x = self.scrollbar_rect.x1 - self.DEFAULT_EDGE_CONTENT_SWIPE_X_OFFSET
+        x = max(1, x)
+        start_y = self.scrollbar_rect.y1 + int(round(self.scrollbar_rect.h * self.DEFAULT_EDGE_CONTENT_SWIPE_START_RATIO))
+        end_y = self.scrollbar_rect.y1 + int(round(self.scrollbar_rect.h * self.DEFAULT_EDGE_CONTENT_SWIPE_END_RATIO))
+        start_y = max(self.scrollbar_rect.y1 + 8, min(start_y, self.scrollbar_rect.y2 - 8))
+        end_y = max(self.scrollbar_rect.y1 + 8, min(end_y, self.scrollbar_rect.y2 - 8))
+
+        if direction == 'top':
+            device.swipe(x, end_y, x, start_y, self.DEFAULT_EDGE_CONTENT_SWIPE_DURATION)
+        else:
+            device.swipe(x, start_y, x, end_y, self.DEFAULT_EDGE_CONTENT_SWIPE_DURATION)
+
+        sleep(self.DEFAULT_EDGE_CONTENT_SWIPE_DELAY)
+        refreshed = self.refresh()
+        return refreshed if refreshed is not None else progress
+
     def _measured_progress_from_y1(self, thumb_y1: int) -> float | None:
         if not self.has_measured_bounds:
             return None
@@ -455,6 +511,7 @@ class Scrollable:
         *,
         max_steps: int,
         step: float | None = None,
+        settle_edge: bool = True,
     ) -> ScrollProgress | None:
         current = self.progress or self.refresh()
         if current is None:
@@ -465,6 +522,8 @@ class Scrollable:
         stall = 0
         last = current
         for _ in range(max_steps):
+            if self._is_effectively_at_edge(last, direction):
+                return self._maybe_settle_edge(last) if settle_edge else last
             last = self._step_by_multiplier(direction, multiplier)
             if last is None:
                 return None
@@ -475,8 +534,8 @@ class Scrollable:
                 stall = 0
             prev_y = y
             if stall >= self.DEFAULT_EDGE_STALL_REPEAT:
-                return last
-        return last
+                return self._maybe_settle_edge(last) if settle_edge else last
+        return self._maybe_settle_edge(last) if settle_edge else last
 
     def _step_by_multiplier(self, direction: str, multiplier: float) -> ScrollProgress | None:
         current = self.progress or self.refresh()
@@ -487,7 +546,103 @@ class Scrollable:
         if baseline is None:
             return None
         target = baseline - delta if direction == 'up' else baseline + delta
-        return self._drag_to_progress(target=target)
+        duration: float | None = None
+        drag_delay: float | None = None
+        if multiplier >= self.DEFAULT_MEASUREMENT_STEP:
+            drag_delay = self.DEFAULT_MEASUREMENT_DRAG_DELAY
+            if target <= 0.0 or target >= 1.0:
+                duration = self.drag_duration * self.DEFAULT_MEASUREMENT_EDGE_DRAG_BOOST
+                return self._drag_beyond_edge(direction, duration=duration, drag_delay=drag_delay)
+        return self._drag_to_progress(target=target, duration=duration, drag_delay=drag_delay)
+
+    def _drag_beyond_edge(
+        self,
+        direction: str,
+        *,
+        duration: float | None = None,
+        drag_delay: float | None = None,
+    ) -> ScrollProgress | None:
+        current = self.progress or self.refresh()
+        if current is None:
+            return None
+
+        track = current.track_rect
+        thumb = current.thumb_rect
+        x = max(track.x1 + 1, thumb.x2 - 2)
+        start_y = thumb.center[1]
+        overdrag = self.DEFAULT_EDGE_OVERDRAG_DISTANCE
+        if direction == 'up':
+            end_y = track.y1 - overdrag
+        else:
+            end_y = track.y2 + overdrag
+
+        base_duration = duration or self.drag_duration
+        distance_ratio = abs(end_y - start_y) / max(track.h, 1)
+        duration_scale = (1.0 + distance_ratio) * self.DEFAULT_EDGE_DRAG_DURATION_BOOST
+        swipe_duration = base_duration * _clamp(duration_scale, 1.2, self.DEFAULT_DRAG_DURATION_SCALE_MAX)
+
+        before_progress = current.progress if current.progress is not None else current.raw_progress
+        updated = self._swipe_and_refresh(
+            x,
+            start_y,
+            end_y,
+            duration=swipe_duration,
+            drag_delay=drag_delay,
+        )
+        if updated is None:
+            return None
+        if self._is_effectively_at_edge(updated, direction):
+            return updated
+        updated_progress = updated.progress if updated.progress is not None else updated.raw_progress
+        if (
+            updated_progress is not None
+            and before_progress is not None
+            and abs(updated_progress - before_progress) <= 0.01
+        ):
+            retry_duration = min(swipe_duration * 1.2, base_duration * self.DEFAULT_DRAG_DURATION_SCALE_MAX)
+            updated = self._swipe_and_refresh(
+                x,
+                start_y,
+                end_y,
+                duration=retry_duration,
+                drag_delay=drag_delay,
+            )
+        return updated
+
+    def _is_effectively_at_edge(self, progress: ScrollProgress, direction: str) -> bool:
+        if direction == 'up':
+            if progress.is_top():
+                return True
+            return progress.raw_progress is not None and progress.raw_progress <= self.DEFAULT_PROGRESS_TOLERANCE
+        if progress.is_bottom():
+            return True
+        return progress.raw_progress is not None and progress.raw_progress >= 1.0 - self.DEFAULT_PROGRESS_TOLERANCE
+
+    def _resolve_target_center_y(self, track: Rect, thumb: Rect, target: float) -> int:
+        if self.has_measured_bounds:
+            top_y1, bottom_y1 = self._measured_bounds
+            target_thumb_y1 = int(round(top_y1 + target * (bottom_y1 - top_y1)))
+            min_center_y = top_y1 + thumb.h / 2
+            max_center_y = bottom_y1 + thumb.h / 2
+            return int(_clamp(target_thumb_y1 + thumb.h / 2, min_center_y, max_center_y))
+
+        travel = max(track.h - thumb.h, 1)
+        target_thumb_y1 = int(round(track.y1 + target * travel))
+        return int(_clamp(target_thumb_y1 + thumb.h / 2, track.y1 + thumb.h / 2, track.y2 - thumb.h / 2))
+
+    def _swipe_and_refresh(
+        self,
+        x: int,
+        start_y: int,
+        end_y: int,
+        *,
+        duration: float,
+        drag_delay: float | None = None,
+    ) -> ScrollProgress | None:
+        wait_time = self.drag_delay if drag_delay is None else drag_delay
+        device.swipe(x, start_y, x, end_y, duration)
+        sleep(wait_time)
+        return self.refresh()
 
     def _drag_to_progress(
         self,
@@ -503,27 +658,24 @@ class Scrollable:
         target = _clamp(target, 0.0, 1.0)
         track = current.track_rect
         thumb = current.thumb_rect
-        if self.has_measured_bounds:
-            top_y1, bottom_y1 = self._measured_bounds
-            target_thumb_y1 = int(round(
-                top_y1 + target * (bottom_y1 - top_y1)
-            ))
-            min_center_y = top_y1 + thumb.h / 2
-            max_center_y = bottom_y1 + thumb.h / 2
-            end_y = int(_clamp(target_thumb_y1 + thumb.h / 2, min_center_y, max_center_y))
-        else:
-            travel = max(track.h - thumb.h, 1)
-            target_thumb_y1 = int(round(track.y1 + target * travel))
-            end_y = int(_clamp(target_thumb_y1 + thumb.h / 2, track.y1 + thumb.h / 2, track.y2 - thumb.h / 2))
-
         x = max(track.x1 + 1, thumb.x2 - 2)
         start_y = thumb.center[1]
-        wait_time = self.drag_delay if drag_delay is None else drag_delay
+        end_y = self._resolve_target_center_y(track, thumb, target)
+        base_duration = duration or self.drag_duration
+        distance_ratio = abs(end_y - start_y) / max(track.h, 1)
+        duration_scale = 1.0 + distance_ratio
+        if target <= self.DEFAULT_PROGRESS_TOLERANCE or target >= 1.0 - self.DEFAULT_PROGRESS_TOLERANCE:
+            duration_scale *= self.DEFAULT_EDGE_DRAG_DURATION_BOOST
+        swipe_duration = base_duration * _clamp(duration_scale, 1.0, self.DEFAULT_DRAG_DURATION_SCALE_MAX)
 
         before_progress = current.progress if current.progress is not None else current.raw_progress
-        device.swipe(x, start_y, x, end_y, duration or self.drag_duration)
-        sleep(wait_time)
-        updated = self.refresh()
+        updated = self._swipe_and_refresh(
+            x,
+            start_y,
+            end_y,
+            duration=swipe_duration,
+            drag_delay=drag_delay,
+        )
         if updated is None:
             return None
         updated_progress = updated.progress if updated.progress is not None else updated.raw_progress
@@ -538,21 +690,19 @@ class Scrollable:
             track = updated.track_rect
             x = max(track.x1 + 1, thumb.x2 - 2)
             start_y = thumb.center[1]
-            if self.has_measured_bounds:
-                top_y1, bottom_y1 = self._measured_bounds
-                target_thumb_y1 = int(round(
-                    top_y1 + target * (bottom_y1 - top_y1)
-                ))
-                min_center_y = top_y1 + thumb.h / 2
-                max_center_y = bottom_y1 + thumb.h / 2
-                end_y = int(_clamp(target_thumb_y1 + thumb.h / 2, min_center_y, max_center_y))
-            else:
-                travel = max(track.h - thumb.h, 1)
-                target_thumb_y1 = int(round(track.y1 + target * travel))
-                end_y = int(_clamp(target_thumb_y1 + thumb.h / 2, track.y1 + thumb.h / 2, track.y2 - thumb.h / 2))
-            device.swipe(x, start_y, x, end_y, (duration or self.drag_duration) * 1.4)
-            sleep(wait_time)
-            updated = self.refresh()
+            end_y = self._resolve_target_center_y(track, thumb, target)
+            retry_distance_ratio = abs(end_y - start_y) / max(track.h, 1)
+            retry_duration_scale = 1.4 + retry_distance_ratio
+            if target <= self.DEFAULT_PROGRESS_TOLERANCE or target >= 1.0 - self.DEFAULT_PROGRESS_TOLERANCE:
+                retry_duration_scale *= self.DEFAULT_EDGE_DRAG_DURATION_BOOST
+            retry_duration = base_duration * _clamp(retry_duration_scale, 1.4, self.DEFAULT_DRAG_DURATION_SCALE_MAX)
+            updated = self._swipe_and_refresh(
+                x,
+                start_y,
+                end_y,
+                duration=retry_duration,
+                drag_delay=drag_delay,
+            )
         return updated
 
     def _build_thumb_mask(self, roi: MatLike) -> MatLike:
