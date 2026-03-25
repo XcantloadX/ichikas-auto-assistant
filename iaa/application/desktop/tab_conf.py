@@ -15,6 +15,8 @@ from iaa.config.schemas import (
 from .toast import show_toast
 from .advance_select import AdvanceSelect
 from iaa.config.base import IaaConfig
+from iaa.config.schemas import ShopItem
+from .widgets.shuttle import Shuttle
 
 # 显示与值映射
 EMULATOR_DISPLAY_MAP: dict[EmulatorOptions, str] = {
@@ -71,6 +73,7 @@ class ConfStore:
     self.mumu_instance_id_to_display: dict[str, str] = {}
     self.mumu_instance_row: Optional[tb.Frame] = None
     self.mumu_instance_combo: Optional[tb.Combobox] = None
+    # 自定义行占位（在 UI 构建中会赋值 Frame）
     self.custom_ip_row: Optional[tb.Frame] = None
     self.custom_port_row: Optional[tb.Frame] = None
     self.custom_emulator_path_row: Optional[tb.Frame] = None
@@ -91,6 +94,47 @@ class ConfStore:
     self.challenge_award_display_to_value: dict[str, ChallengeLiveAward] = {}
     # CM 设置
     self.cm_watch_ad_wait_sec_var = tk.StringVar()
+    # 活动商店设置
+    self.event_shop_purchase_items_text: Optional[tk.Text] = None
+    self.event_shop_available_listbox: Optional[tk.Listbox] = None
+    self.event_shop_selected_listbox: Optional[tk.Listbox] = None
+
+
+def build_event_shop_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
+  frame = tb.Labelframe(parent, text="活动商店设置")
+  frame.pack(fill=tk.X, padx=16, pady=8)
+
+  row = tb.Frame(frame)
+  row.pack(fill=tk.BOTH, padx=8, pady=8)
+  tb.Label(row, text="购买物品", width=16, anchor=tk.NW).pack(side=tk.LEFT, pady=(4, 0))
+
+  box_row = tb.Frame(row)
+  box_row.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+  # 使用可复用的 Shuttle 组件来承载穿梭框逻辑
+  shuttle = Shuttle(box_row)
+  shuttle.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+  # 填充初始数据：左侧为 conf 中已有项，右侧为未选的枚举项
+  selected_ids: list[str] = list(conf.event_shop.purchase_items)
+  selected_display: list[str] = []
+  known_selected_values = set()
+  for item_id in selected_ids:
+    try:
+      si = ShopItem(item_id)
+      selected_display.append(si.display('cn'))
+      known_selected_values.add(si.value)
+    except Exception:
+      selected_display.append(item_id)
+
+  shuttle.set_selected(selected_display)
+
+  avail = [si.display('cn') for si in ShopItem if si.value not in known_selected_values]
+  shuttle.set_available(avail)
+
+  # 保持向后兼容：暴露原来的 Listbox 引用
+  store.event_shop_available_listbox = shuttle.available_lb
+  store.event_shop_selected_listbox = shuttle.selected_lb
 
 
 def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
@@ -482,6 +526,7 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
   build_live_config_group(inner, conf, store)
   build_challenge_live_config_group(inner, conf, store)
   build_cm_config_group(inner, conf, store)
+  build_event_shop_config_group(inner, conf, store)
 
   def on_save() -> None:
     try:
@@ -539,6 +584,32 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
       if wait_sec <= 0:
         raise ValueError("CM 广告等待秒数必须大于 0")
       conf.cm.watch_ad_wait_sec = wait_sec
+
+      # 活动商店设置（从已选列表读取；回退到文本框如果存在）
+      ids: list[ShopItem] = []
+
+      def add_shop_item(text: str) -> None:
+        if any(text == e.value for e in ShopItem):
+          ids.append(ShopItem(text))
+          return
+        member = ShopItem.from_display('cn', text)
+        if member is not None:
+          ids.append(member)
+          return
+
+      if store.event_shop_selected_listbox is not None:
+        lb = store.event_shop_selected_listbox
+        for i in range(lb.size()):
+          disp = lb.get(i)
+          add_shop_item(disp)
+      else:
+        purchase_items_text = store.event_shop_purchase_items_text.get("1.0", tk.END) if store.event_shop_purchase_items_text else ""
+        for line in purchase_items_text.splitlines():
+          s = line.strip()
+          if not s:
+            continue
+          add_shop_item(s)
+      conf.event_shop.purchase_items = ids
 
       app.service.config.save()
       show_toast(app.root, "保存成功", kind="success")

@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "definitions": {
+    "e2b9c2b9-6c3e-4b9b-8bbf-7a5f5e5b4b1e": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.ButtonExchange",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 887,
+          "y1": 113.97561458445523,
+          "x2": 960,
+          "y2": 180
+        },
+        "fixed": true
+      },
+      "displayName": "交换所",
+      "variant_inherit": true
+    }
+  }
+}

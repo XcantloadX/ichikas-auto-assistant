@@ -1,0 +1,68 @@
+{
+  "version": 2,
+  "definitions": {
+    "b505324a-ab4c-4945-9d43-765d305d4677": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "Shop.AmountDialog.ButtonMinus",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 365.94983181499254,
+          "y1": 464.95736550270937,
+          "x2": 408.8498504990796,
+          "y2": 511.1971975850115
+        },
+        "fixed": true,
+        "button_type": "normal"
+      },
+      "variant_inherit": true
+    },
+    "b6a87f73-79ed-491e-b7c3-9fa584680827": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "Shop.AmountDialog.ButtonPlus",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 776.3223789640883,
+          "y1": 464.39346511146175,
+          "x2": 821.4802933683904,
+          "y2": 511.1971975850115
+        },
+        "fixed": true,
+        "button_type": "normal"
+      },
+      "variant_inherit": true
+    },
+    "5755f9a0-cf33-4372-bc21-8aea136efb02": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.AmountDialog.ButtonCancel",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 455.00000000000006,
+          "y1": 636.7707227035436,
+          "x2": 579.5454545454546,
+          "y2": 677.6382475634105
+        }
+      }
+    },
+    "c9ee51d4-2cf0-454d-b2e7-7657a61994f9": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "Shop.AmountDialog.ButtonConfirm",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 720.4545454545455,
+          "y1": 634.9543882653272,
+          "x2": 798.6363636363637,
+          "y2": 678.5464147825186
+        },
+        "button_type": "primary"
+      }
+    }
+  }
+}

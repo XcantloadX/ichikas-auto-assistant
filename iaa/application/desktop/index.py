@@ -16,6 +16,7 @@ class Store:
     var_auto_cm: tk.BooleanVar | None = None
     var_gift: tk.BooleanVar | None = None
     var_area_convos: tk.BooleanVar | None = None
+    var_event_shop: tk.BooleanVar | None = None
     logo_image: tk.PhotoImage | None = None # LOGO 组件图片。防止被 GC
 
 class DesktopApp:
@@ -98,6 +99,8 @@ class DesktopApp:
             tasks.append("领取礼物")
         if self.store.var_area_convos and self.store.var_area_convos.get():
             tasks.append("区域对话")
+        if self.store.var_event_shop and self.store.var_event_shop.get():
+            tasks.append("活动商店")
         return tasks
 
     def _on_close(self) -> None:
