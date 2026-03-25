@@ -14,8 +14,10 @@ class IaaGenerator(EntityGenerator):
         super().__init__(production, ide_type, path_transformer, default_variant=default_variant)
 
     def render_header(self):
+        self.writer.write('# ruff: noqa')
         super().render_header()
         self.writer.write("from iaa.utils import sprite_path")
+        self.writer.write("from iaa.game_ui.elements import *")
 
 
 def ide_type_detection() -> str:

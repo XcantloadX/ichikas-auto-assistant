@@ -86,11 +86,24 @@ class ListViewItemHash:
 class ListViewItem:
     index: int
     rect: Rect
-    icon_rect: Rect | None
+    icon_rect: Rect
     price_rect: Rect | None
-    image: MatLike | None = None
+    image: MatLike
+    """卡片的完整截图。"""
     page_index: int | None = None
     item_hash: ListViewItemHash | None = None
+
+    @property
+    def icon_image(self) -> MatLike:
+        """卡片图标的截图。"""
+        x1 = self.icon_rect.x1 - self.rect.x1
+        y1 = self.icon_rect.y1 - self.rect.y1
+        x2 = self.icon_rect.x2 - self.rect.x1
+        y2 = self.icon_rect.y2 - self.rect.y1
+        return self.image[y1:y2, x1:x2]
+
+    def __repr__(self) -> str:
+        return f"ListViewItem(index={self.index}, rect={self.rect}, icon_rect={self.icon_rect}, price_rect={self.price_rect}, page_index={self.page_index})"
 
 
 @dataclass(slots=True)
@@ -187,6 +200,11 @@ class ListViewPage:
             if any(_rect_iou(item_rect, existing) >= self.CARD_DEDUP_IOU for existing in item_rects):
                 continue
             icon_rect = self._find_icon_rect(screenshot, item_rect)
+            if icon_rect is None:
+                raise RuntimeError(f"failed to detect icon_rect for item_rect={item_rect.xyxy}")
+            image_patch = _extract_patch(screenshot, item_rect)
+            if image_patch is None:
+                raise RuntimeError(f"failed to extract item image for item_rect={item_rect.xyxy}")
             item_rects.append(item_rect)
             items.append(
                 ListViewItem(
@@ -194,7 +212,7 @@ class ListViewPage:
                     rect=item_rect,
                     icon_rect=icon_rect,
                     price_rect=self._find_price_rect(screenshot, item_rect) or price_rect,
-                    image=_extract_patch(screenshot, item_rect),
+                    image=image_patch,
                 )
             )
 
@@ -435,20 +453,17 @@ class ListView:
     DEFAULT_STEP = 0.5
     DEFAULT_MAX_PAGES = 20
     DEFAULT_DUPLICATE_SCORE_THRESHOLD = 20
-
     def __init__(
         self,
         list_rect: Rect | None = None,
         *,
         scrollbar_rect: Rect | tuple[int, int, int, int] | None = None,
-        page: ListViewPage | None = None,
-        scrollable: Scrollable | None = None,
         step: float = DEFAULT_STEP,
         max_pages: int = DEFAULT_MAX_PAGES,
         duplicate_score_threshold: int = DEFAULT_DUPLICATE_SCORE_THRESHOLD,
     ) -> None:
-        self.page = page or ListViewPage(list_rect=list_rect)
-        self.scrollable = scrollable or (Scrollable(scrollbar_rect) if scrollbar_rect is not None else None)
+        self.page = ListViewPage(list_rect=list_rect)
+        self.scrollable = Scrollable(scrollbar_rect) if scrollbar_rect is not None else None
         self.step = step
         self.max_pages = max_pages
         self.duplicate_score_threshold = duplicate_score_threshold
@@ -484,6 +499,7 @@ class ListView:
 
         pages: list[ListViewPageState] = []
         collected: list[ListViewItem] = []
+        settled_bottom = False
 
         for page_index in range(max_pages):
             screenshot = device.screenshot()
@@ -497,6 +513,9 @@ class ListView:
                 yield item
 
             if progress is not None and progress.is_bottom():
+                if not settled_bottom:
+                    settled_bottom = True
+                    continue
                 break
 
             moved = self.scrollable.down(step=step)
@@ -550,15 +569,18 @@ class ListView:
         return [self._clone_item(item, page_index=page_index, screenshot=screenshot) for item in items]
 
     def _clone_item(self, item: ListViewItem, *, page_index: int, screenshot: MatLike) -> ListViewItem:
+        icon_patch = _extract_patch(screenshot, item.icon_rect)
+        if icon_patch is None:
+            raise RuntimeError(f"failed to extract icon patch for item_rect={item.rect.xyxy}, icon_rect={item.icon_rect.xyxy}")
         return ListViewItem(
             index=item.index,
             rect=item.rect,
             icon_rect=item.icon_rect,
             price_rect=item.price_rect,
-            image=None if item.image is None else item.image.copy(),
+            image=item.image.copy(),
             page_index=page_index,
             item_hash=ListViewItemHash(
-                icon_hash=_ahash(_extract_patch(screenshot, item.icon_rect)),
+                icon_hash=_ahash(icon_patch),
                 price_hash=_ahash(_extract_patch(screenshot, item.price_rect)),
             ),
         )
@@ -609,7 +631,7 @@ def render_debug_image(image: MatLike, state: ListViewPageState) -> MatLike:
 
 
 def render_item_gallery(items: list[ListViewItem]) -> MatLike:
-    valid_items = [item for item in items if item.image is not None and item.image.size > 0]
+    valid_items = [item for item in items if item.image.size > 0]
     if not valid_items:
         return np.full((120, 320, 3), 32, dtype=np.uint8)
 
@@ -625,10 +647,9 @@ def render_item_gallery(items: list[ListViewItem]) -> MatLike:
         col = index % columns
         x1 = col * cell_width
         y1 = row * cell_height
-        cell = canvas[y1:y1 + cell_height, x1:x1 + cell_width]
+        # slice intentionally unused here; write directly into `canvas`
 
         image = item.image
-        assert image is not None
         scale = min(
             (cell_width - 16) / max(image.shape[1], 1),
             (cell_height - title_height - 16) / max(image.shape[0], 1),
@@ -691,9 +712,7 @@ if __name__ == "__main__":
     debug_device.orientation = "landscape"
     init_context(target_device=debug_device, force=True)
 
-    page = ListViewPage()
     list_view = ListView(
-        page=page,
         scrollbar_rect=(1247, 60, 8, 650),
     )
     with manual_context("manual"):

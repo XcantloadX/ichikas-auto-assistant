@@ -59,9 +59,9 @@ from iaa.context import conf as get_conf, task_reporter
 logger = logging.getLogger(__name__)
 
 @task('活动商店', screenshot_mode='manual')
-def event_store() -> None:
+def event_shop() -> None:
     rep = task_reporter()
-    items = list(get_conf().event_store.purchase_items)
+    items = list(get_conf().event_shop.purchase_items)
     rep.message('活动商店功能暂未实现')
     logger.info('Placeholder invoked. purchase_items=%s', items)
 ```
@@ -81,9 +81,9 @@ If one of these is missed, the task often becomes runnable in one surface but in
 Split config into two concepts:
 
 - scheduler enable flag
-  Example: `event_store_enabled: bool = True`
+  Example: `event_shop_enabled: bool = True`
 - task-specific config section
-  Example: `event_store: EventStoreConfig = EventStoreConfig()`
+  Example: `event_shop: EventStoreConfig = EventStoreConfig()`
 
 Typical files:
 

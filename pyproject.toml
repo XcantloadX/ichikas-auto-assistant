@@ -9,7 +9,7 @@ that automates dailies.
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "kotonebot[android,windows]==0.10.0",
+    "kotonebot[android,windows]==0.11.0",
     "numpy<2.0",
     "onnxruntime==1.14.0",
     "psutil",

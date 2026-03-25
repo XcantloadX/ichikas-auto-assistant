@@ -1,0 +1,21 @@
+{
+  "version": 2,
+  "definitions": {
+    "3af77b0b-b8de-47fa-afb9-9568736ab500": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.TextExchangeDone",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 527,
+          "y1": 400.58476785519076,
+          "x2": 752,
+          "y2": 438.56040357967254
+        },
+        "fixed": true
+      },
+      "displayName": "交換が完了しました"
+    }
+  }
+}

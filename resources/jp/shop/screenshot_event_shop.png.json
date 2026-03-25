@@ -1,0 +1,87 @@
+{
+  "version": 2,
+  "definitions": {
+    "1a5a0d64-9980-4b76-a9cf-f961ebe4f43d": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.TextLv1",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 286.42526799448564,
+          "y1": 225.19513790733703,
+          "x2": 326.64313228850506,
+          "y2": 242.41385243811084
+        },
+        "fixed": false
+      },
+      "variant_inherit": true,
+      "displayName": "卡片商品 Lv1 文本"
+    },
+    "c9269644-b1e1-430e-b4a6-8696175d3c90": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.Icon5000EventCoin",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 291.9068243345487,
+          "y1": 312.5070510801148,
+          "x2": 373.023138583604,
+          "y2": 338.0210491535129
+        },
+        "fixed": true
+      },
+      "variant_inherit": true
+    },
+    "af2fa909-5a1c-4253-b4e6-e223f82773c2": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.Icon15000EventCoin",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 546.4251777938666,
+          "y1": 310.74700462029557,
+          "x2": 642.6607816402703,
+          "y2": 337.5316716681659
+        },
+        "fixed": true
+      },
+      "variant_inherit": true
+    },
+    "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Shop.TextEndTimeUntil",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 816.6381403343862,
+          "y1": 655.5114244564751,
+          "x2": 870.2864890585056,
+          "y2": 684.8715274718453
+        },
+        "fixed": true
+      },
+      "variant_inherit": null,
+      "displayName": "活动商店最下方的まで"
+    },
+    "8dec26b6-85a8-4ece-afbb-6f2fb610fbe9": {
+      "type": "prefab",
+      "prefab_id": "PjskListViewPrefab",
+      "name": "Shop.EventShopListView",
+      "props": {
+        "list_rect": {
+          "kind": "rect",
+          "x1": 185,
+          "y1": 86.78609371078872,
+          "x2": 1253.7907867694084,
+          "y2": 623.4417880278074
+        }
+      },
+      "variant_inherit": true,
+      "displayName": "活动商店 列表"
+    }
+  }
+}
