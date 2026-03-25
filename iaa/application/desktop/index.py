@@ -17,6 +17,8 @@ class Store:
     var_gift: tk.BooleanVar | None = None
     var_area_convos: tk.BooleanVar | None = None
     var_event_shop: tk.BooleanVar | None = None
+    var_mission_rewards: tk.BooleanVar | None = None
+    task_infos: list[object] | None = None
     logo_image: tk.PhotoImage | None = None # LOGO 组件图片。防止被 GC
 
 class DesktopApp:
@@ -71,9 +73,9 @@ class DesktopApp:
         self.notebook.add(self.tab_about, text="关于")
 
         # 延迟导入避免循环导入
-        from .tab_main import build_control_tab
-        from .tab_conf import build_settings_tab
-        from .tab_about import build_about_tab
+        from .schema.tabs import build_control_tab
+        from .schema.tabs import build_settings_tab
+        from .schema.tabs import build_about_tab
         build_control_tab(self, self.tab_control)
         build_settings_tab(self, self.tab_settings)
         build_about_tab(self, self.tab_about)
@@ -101,6 +103,8 @@ class DesktopApp:
             tasks.append("区域对话")
         if self.store.var_event_shop and self.store.var_event_shop.get():
             tasks.append("活动商店")
+        if self.store.var_mission_rewards and self.store.var_mission_rewards.get():
+            tasks.append("任务奖励")
         return tasks
 
     def _on_close(self) -> None:

@@ -24,7 +24,7 @@ class CliParseTests(unittest.TestCase):
             parse_cli_action(['invoke', 'auto-liv'])
 
     def test_auto_live_flags_without_command_show_help(self) -> None:
-        action = parse_cli_action(['--count-mode', 'all'])
+        action = parse_cli_action(['--run-until-exhausted'])
         self.assertEqual(action.kind, 'show_help')
 
 
@@ -36,10 +36,9 @@ class CliExecuteTests(unittest.TestCase):
 
         action = parse_cli_action([
             'invoke', 'auto_live',
-            '--count-mode', 'specify',
-            '--count', '3',
-            '--loop-mode', 'list',
-            '--auto-mode', 'game_auto',
+            '--run-count', '3',
+            '--cycle-mode', 'list',
+            '--play-mode', 'game_auto',
         ])
         code = execute_cli_action(action)
 
@@ -48,11 +47,11 @@ class CliExecuteTests(unittest.TestCase):
             'auto_live',
             run_in_thread=False,
             kwargs={
-                'count_mode': 'specify',
-                'count': 3,
-                'loop_mode': 'list',
-                'auto_mode': 'game_auto',
+                'run_count': 3,
+                'cycle_mode': 'list',
+                'play_mode': 'game_auto',
                 'debug_enabled': False,
+                'ap_multiplier': None,
             },
         )
 
