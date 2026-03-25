@@ -486,6 +486,7 @@ dependencies = [
     { name = "onnxruntime" },
     { name = "psutil" },
     { name = "pydantic" },
+    { name = "thefuzz" },
     { name = "ttkbootstrap" },
 ]
 
@@ -499,11 +500,12 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "kotonebot", extras = ["android", "windows"], specifier = "==0.10.0" },
+    { name = "kotonebot", extras = ["android", "windows"], specifier = "==0.11.0" },
     { name = "numpy", specifier = "<2.0" },
     { name = "onnxruntime", specifier = "==1.14.0" },
     { name = "psutil" },
     { name = "pydantic" },
+    { name = "thefuzz", specifier = ">=0.22.1" },
     { name = "ttkbootstrap", specifier = ">=1.14.2" },
 ]
 
@@ -625,7 +627,7 @@ wheels = [
 
 [[package]]
 name = "kotonebot"
-version = "0.10.0"
+version = "0.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ksaa-res" },
@@ -640,9 +642,9 @@ dependencies = [
     { name = "thefuzz" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/08/7e/95feb3b8ee33f82549b688319461e49d55f712d318933dd2fb2ce8ece85d/kotonebot-0.10.0.tar.gz", hash = "sha256:a1ff3bf1cbdfdca5da8099b715a74f4faa7e98b4cb17cea4ca3393b8e5b270f2", size = 1552145, upload-time = "2026-03-19T14:10:37.83Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/23/29/647d7bebd78fa03e56abb36b3832d771da83fb070241a96835bc96ba3e79/kotonebot-0.11.0.tar.gz", hash = "sha256:5f256e5fada8f63f13ba1548dbd338c84c96ec63baca4c9f8d2736cd89ef23bb", size = 1557892, upload-time = "2026-03-25T02:11:24.243Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/80/b4/185e580846bef0d140d08feda0f32d7683785951ee546d533f73ee00a44a/kotonebot-0.10.0-py3-none-any.whl", hash = "sha256:f80425456d0bcec9b4f9e6e9db4326900e1a2db18162afd3980c203a4d81ce00", size = 1599938, upload-time = "2026-03-19T14:10:33.759Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/be/1e82f7ef9a7f6a7d73ab76005ee55efd704ad89d063a6a303091d6ffebe5/kotonebot-0.11.0-py3-none-any.whl", hash = "sha256:2efc9400d9b7c35ed7b14c364a3caa989f5a291cc6bd7da5ae6e59b634f6d1ff", size = 1606164, upload-time = "2026-03-25T02:11:21.201Z" },
 ]
 
 [package.optional-dependencies]
