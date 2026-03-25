@@ -18,8 +18,8 @@ from iaa.config.schemas import (
     ShopItem,
 )
 
-from .dsl import SettingsRegistry
-from .reactive import Signal, state_from_config, to_config
+from .dsl import SectionBuilder, SettingsRegistry
+from .reactive import Signal, of, signal, watch
 from .renderer import RenderContext, TkSettingsRenderer
 
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'
@@ -40,6 +40,49 @@ class _SettingsExtras:
     custom_adb_port: Signal[int]
     custom_emulator_path: Signal[str]
     custom_emulator_args: Signal[str]
+
+
+@dataclass
+class _GameSignals:
+    emulator: Signal[str]
+    server: Signal[str]
+    link_account: Signal[str]
+    control_impl: Signal[str]
+    check_emulator: Signal[bool]
+
+
+@dataclass
+class _LiveSignals:
+    song_name: Signal[str | None]
+    auto_set_unit: Signal[bool]
+    ap_multiplier: Signal[int | None]
+    append_fc: Signal[bool]
+    prepend_random: Signal[bool]
+
+
+@dataclass
+class _ChallengeLiveSignals:
+    characters: Signal[list[GameCharacter]]
+    award: Signal[ChallengeLiveAward]
+
+
+@dataclass
+class _CmSignals:
+    watch_ad_wait_sec: Signal[int]
+
+
+@dataclass
+class _EventShopSignals:
+    purchase_items: Signal[list[ShopItem]]
+
+
+@dataclass
+class _ConfigSignals:
+    game: _GameSignals
+    live: _LiveSignals
+    challenge_live: _ChallengeLiveSignals
+    cm: _CmSignals
+    event_shop: _EventShopSignals
 
 
 def _normalize_song_name_input(value: str) -> str | None:
@@ -88,12 +131,41 @@ def _make_extras(conf: IaaConfig) -> _SettingsExtras:
     )
 
 
-def _bind_server_link_rule(state: Any) -> None:
+def _make_config_signals(conf: IaaConfig) -> _ConfigSignals:
+    return _ConfigSignals(
+        game=_GameSignals(
+            emulator=signal(of(conf).game.emulator),
+            server=signal(of(conf).game.server),
+            link_account=signal(of(conf).game.link_account),
+            control_impl=signal(of(conf).game.control_impl),
+            check_emulator=signal(of(conf).game.check_emulator),
+        ),
+        live=_LiveSignals(
+            song_name=signal(of(conf).live.song_name),
+            auto_set_unit=signal(of(conf).live.auto_set_unit),
+            ap_multiplier=signal(of(conf).live.ap_multiplier),
+            append_fc=signal(of(conf).live.append_fc),
+            prepend_random=signal(of(conf).live.prepend_random),
+        ),
+        challenge_live=_ChallengeLiveSignals(
+            characters=signal(of(conf).challenge_live.characters),
+            award=signal(of(conf).challenge_live.award),
+        ),
+        cm=_CmSignals(
+            watch_ad_wait_sec=signal(of(conf).cm.watch_ad_wait_sec),
+        ),
+        event_shop=_EventShopSignals(
+            purchase_items=signal(of(conf).event_shop.purchase_items),
+        ),
+    )
+
+
+def _bind_server_link_rule(state: _ConfigSignals) -> None:
     def _sync(server: str) -> None:
         if server == 'tw':
             state.game.link_account.set('no')
 
-    state.game.server.subscribe(_sync)
+    watch(state.game.server, _sync)
     _sync(state.game.server.get())
 
 
@@ -200,11 +272,11 @@ def _render_event_shop_shuttle(*, row: tk.Misc, field: Any, context: RenderConte
     shuttle.available_lb.bind('<<ListboxSelect>>', _sync)
 
 
-def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
+def _build_screen_spec(*, state: _ConfigSignals, extras: _SettingsExtras) -> Any:
     registry = SettingsRegistry()
 
     @registry.section('game', '游戏设置')
-    def make_game(ui) -> None:
+    def make_game(ui: SectionBuilder) -> None:
         ui.select('emulator', '模拟器类型', bind=state.game.emulator, options=['mumu', 'mumu_v5', 'custom'])
         ui.custom(
             'mumu_instance',
@@ -214,36 +286,21 @@ def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
             visible_if=lambda: state.game.emulator.get() in {'mumu', 'mumu_v5'},
             depends_on=[state.game.emulator],
         )
-        ui.text_input(
-            'custom_adb_ip',
-            'ADB IP',
-            bind=extras.custom_adb_ip,
+        with ui.fragment(
+            'custom_emulator',
             visible_if=lambda: state.game.emulator.get() == 'custom',
             depends_on=[state.game.emulator],
-        )
-        ui.text_input(
-            'custom_adb_port',
-            'ADB 端口',
-            bind=extras.custom_adb_port,
-            parser=lambda text: int(text),
-            formatter=lambda value: str(int(value)),
-            visible_if=lambda: state.game.emulator.get() == 'custom',
-            depends_on=[state.game.emulator],
-        )
-        ui.text_input(
-            'custom_emulator_path',
-            '模拟器路径',
-            bind=extras.custom_emulator_path,
-            visible_if=lambda: state.game.emulator.get() == 'custom',
-            depends_on=[state.game.emulator],
-        )
-        ui.text_input(
-            'custom_emulator_args',
-            '启动参数',
-            bind=extras.custom_emulator_args,
-            visible_if=lambda: state.game.emulator.get() == 'custom',
-            depends_on=[state.game.emulator],
-        )
+        ) as custom_fragment:
+            custom_fragment.text_input('custom_adb_ip', 'ADB IP', bind=extras.custom_adb_ip)
+            custom_fragment.text_input(
+                'custom_adb_port',
+                'ADB 端口',
+                bind=extras.custom_adb_port,
+                parser=lambda text: int(text),
+                formatter=lambda value: str(int(value)),
+            )
+            custom_fragment.text_input('custom_emulator_path', '模拟器路径', bind=extras.custom_emulator_path)
+            custom_fragment.text_input('custom_emulator_args', '启动参数', bind=extras.custom_emulator_args)
         ui.select('server', '服务器', bind=state.game.server, options=['jp', 'tw'])
         ui.select(
             'link_account',
@@ -257,7 +314,7 @@ def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
         ui.checkbox('check_emulator', '检查并启动模拟器', bind=state.game.check_emulator)
 
     @registry.section('live', '演出设置')
-    def make_live(ui) -> None:
+    def make_live(ui: SectionBuilder) -> None:
         ui.select(
             'song_name',
             '歌曲名称',
@@ -279,7 +336,7 @@ def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
         ui.checkbox('prepend_random', '追加一首随机歌曲', bind=state.live.prepend_random)
 
     @registry.section('challenge_live', '挑战演出设置')
-    def make_challenge(ui) -> None:
+    def make_challenge(ui: SectionBuilder) -> None:
         ui.custom('characters', '角色', bind=state.challenge_live.characters, renderer=_render_challenge_characters)
         award_options = list(ChallengeLiveAward)
         ui.select(
@@ -295,7 +352,7 @@ def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
         )
 
     @registry.section('cm', 'CM 设置')
-    def make_cm(ui) -> None:
+    def make_cm(ui: SectionBuilder) -> None:
         ui.text_input(
             'watch_ad_wait_sec',
             '广告等待秒数',
@@ -305,13 +362,13 @@ def _build_screen_spec(*, state: Any, extras: _SettingsExtras) -> Any:
         )
 
     @registry.section('event_shop', '活动商店设置')
-    def make_event_shop(ui) -> None:
+    def make_event_shop(ui: SectionBuilder) -> None:
         ui.custom('purchase_items', '购买物品', bind=state.event_shop.purchase_items, renderer=_render_event_shop_shuttle)
 
     return registry.build(screen_key='settings', screen_title='配置')
 
 
-def _apply_extras_to_config(*, conf: IaaConfig, state: Any, extras: _SettingsExtras) -> None:
+def _apply_extras_to_config(*, conf: IaaConfig, state: _ConfigSignals, extras: _SettingsExtras) -> None:
     emulator = state.game.emulator.get()
     if emulator in {'mumu', 'mumu_v5'}:
         conf.game.emulator_data = MuMuEmulatorData(instance_id=extras.mumu_instance_id.get())
@@ -352,7 +409,7 @@ def build_settings_tab(parent: tk.Misc, *, context: RenderContext) -> None:
     vscroll.pack(side=tk.RIGHT, fill=tk.Y)
 
     conf = app.service.config.conf
-    state = state_from_config(conf)
+    state = _make_config_signals(conf)
     extras = _make_extras(conf)
 
     _bind_server_link_rule(state)
@@ -366,12 +423,11 @@ def build_settings_tab(parent: tk.Misc, *, context: RenderContext) -> None:
 
     def _on_save() -> None:
         try:
-            new_conf = to_config(state, IaaConfig)
-            if new_conf.game.server == 'tw':
-                new_conf.game.link_account = 'no'
-            _apply_extras_to_config(conf=new_conf, state=state, extras=extras)
-
-            app.service.config.conf = new_conf
+            if conf.game.server == 'tw':
+                conf.game.link_account = 'no'
+            _apply_extras_to_config(conf=conf, state=state, extras=extras)
+            validated = IaaConfig.model_validate(conf.model_dump())
+            app.service.config.conf = validated
             app.service.config.save()
             show_toast(app.root, '保存成功', kind='success')
         except Exception as error:  # noqa: BLE001

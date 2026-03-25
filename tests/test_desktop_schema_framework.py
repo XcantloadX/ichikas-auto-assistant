@@ -1,7 +1,7 @@
 import unittest
 
-from iaa.application.desktop.schema.dsl import SettingsRegistry
-from iaa.application.desktop.schema.reactive import Signal, state_from_config, to_config
+from iaa.application.desktop.schema.dsl import SectionBuilder, SettingsRegistry
+from iaa.application.desktop.schema.reactive import Signal, of, signal, watch
 from iaa.config.base import IaaConfig
 from iaa.config.schemas import EventStoreConfig, ShopItem
 
@@ -20,7 +20,7 @@ class SignalTests(unittest.TestCase):
         self.assertEqual(called, [2])
 
 
-class ReactiveAdapterTests(unittest.TestCase):
+class PathSignalTests(unittest.TestCase):
     def _make_config(self) -> IaaConfig:
         return IaaConfig(
             name='default',
@@ -46,19 +46,28 @@ class ReactiveAdapterTests(unittest.TestCase):
             scheduler={},
         )
 
-    def test_state_roundtrip(self) -> None:
+    def test_signal_of_path_read_write(self) -> None:
         conf = self._make_config()
-        state = state_from_config(conf)
+        song_name = signal(of(conf).live.song_name)
+        wait_sec = signal(of(conf).cm.watch_ad_wait_sec)
 
-        state.live.song_name.set('独りんぼエンヴィー')
-        state.game.check_emulator.set(False)
-        state.cm.watch_ad_wait_sec.set(88)
+        song_name.set('独りんぼエンヴィー')
+        wait_sec.set(88)
 
-        rebuilt = to_config(state, IaaConfig)
+        self.assertEqual(conf.live.song_name, '独りんぼエンヴィー')
+        self.assertEqual(conf.cm.watch_ad_wait_sec, 88)
+        self.assertEqual(song_name.get(), '独りんぼエンヴィー')
 
-        self.assertEqual(rebuilt.live.song_name, '独りんぼエンヴィー')
-        self.assertFalse(rebuilt.game.check_emulator)
-        self.assertEqual(rebuilt.cm.watch_ad_wait_sec, 88)
+    def test_watch_notifies_subscriber(self) -> None:
+        conf = self._make_config()
+        server = signal(of(conf).game.server)
+        called: list[str] = []
+        unwatch = watch(server, lambda value: called.append(value))
+        server.set('tw')
+        unwatch()
+        server.set('jp')
+
+        self.assertEqual(called, ['tw'])
 
 
 class DslRegistryTests(unittest.TestCase):
@@ -67,7 +76,7 @@ class DslRegistryTests(unittest.TestCase):
         fake_signal = Signal('x')
 
         @registry.section('live', '演出设置')
-        def make_live(ui) -> None:
+        def make_live(ui: SectionBuilder) -> None:
             ui.select('song_name', '歌曲名称', bind=fake_signal, options=['保持不变', 'メルト'])
 
         spec = registry.build(screen_key='settings', screen_title='配置')
@@ -75,7 +84,41 @@ class DslRegistryTests(unittest.TestCase):
         self.assertEqual(spec.key, 'settings')
         self.assertEqual(len(spec.sections), 1)
         self.assertEqual(spec.sections[0].key, 'live')
-        self.assertEqual(spec.sections[0].fields[0].key, 'song_name')
+        self.assertEqual(spec.sections[0].items[0].key, 'song_name')
+
+    def test_build_fragment_spec(self) -> None:
+        registry = SettingsRegistry()
+        fake_signal = Signal('x')
+        switch_signal = Signal('custom')
+
+        @registry.section('game', '游戏设置')
+        def make_game(ui: SectionBuilder) -> None:
+            fragment = ui.fragment('custom_emulator', visible_if=lambda: switch_signal.get() == 'custom', depends_on=[switch_signal])
+            fragment.text_input('adb_ip', 'ADB IP', bind=fake_signal)
+            fragment.commit()
+
+        spec = registry.build(screen_key='settings', screen_title='配置')
+        self.assertEqual(len(spec.sections[0].items), 1)
+        fragment = spec.sections[0].items[0]
+        self.assertEqual(fragment.key, 'custom_emulator')
+        self.assertEqual(len(fragment.fields), 1)
+        self.assertEqual(fragment.fields[0].key, 'adb_ip')
+
+    def test_build_fragment_spec_with_context_manager(self) -> None:
+        registry = SettingsRegistry()
+        fake_signal = Signal('x')
+        switch_signal = Signal('custom')
+
+        @registry.section('game', '游戏设置')
+        def make_game(ui: SectionBuilder) -> None:
+            with ui.fragment('custom_emulator', visible_if=lambda: switch_signal.get() == 'custom', depends_on=[switch_signal]) as frag:
+                frag.text_input('adb_ip', 'ADB IP', bind=fake_signal)
+
+        spec = registry.build(screen_key='settings', screen_title='配置')
+        self.assertEqual(len(spec.sections[0].items), 1)
+        fragment = spec.sections[0].items[0]
+        self.assertEqual(fragment.key, 'custom_emulator')
+        self.assertEqual(fragment.fields[0].key, 'adb_ip')
 
 
 if __name__ == '__main__':

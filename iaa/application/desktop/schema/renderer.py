@@ -6,7 +6,7 @@ from typing import Any
 
 import ttkbootstrap as tb
 
-from .dsl import FieldSpec, ScreenSpec
+from .dsl import FieldSpec, FragmentSpec, ScreenSpec
 
 
 @dataclass
@@ -32,8 +32,14 @@ class TkSettingsRenderer:
         for section in screen.sections:
             frame = tb.Labelframe(parent, text=section.title)
             frame.pack(fill=tk.X, padx=16, pady=8)
-            for field in section.fields:
-                self._render_field(frame, field)
+            for item in section.items:
+                self._render_item(frame, item)
+
+    def _render_item(self, section_frame: tk.Misc, item: FieldSpec | FragmentSpec) -> None:
+        if isinstance(item, FieldSpec):
+            self._render_field(section_frame, item)
+            return
+        self._render_fragment(section_frame, item)
 
     def _render_field(self, section_frame: tk.Misc, field: FieldSpec) -> None:
         row = tb.Frame(section_frame)
@@ -61,6 +67,37 @@ class TkSettingsRenderer:
         _apply_visibility()
         for dep in field.depends_on:
             dep.subscribe(lambda _value, apply=_apply_visibility: apply())
+
+    def _render_fragment(self, section_frame: tk.Misc, fragment: FragmentSpec) -> None:
+        container = tb.Frame(section_frame)
+        container.pack(fill=tk.X, padx=0, pady=0)
+        for field in fragment.fields:
+            self._render_field(container, field)
+
+        def _apply_fragment_visibility(*_args: object) -> None:
+            if fragment.visible_if is None or fragment.visible_if():
+                container.pack(fill=tk.X, padx=0, pady=0)
+            else:
+                container.pack_forget()
+
+        def _apply_fragment_enabled(*_args: object) -> None:
+            enabled = True if fragment.enabled_if is None else bool(fragment.enabled_if())
+            state = tk.NORMAL if enabled else tk.DISABLED
+            self._set_child_widget_state(container, state)
+
+        _apply_fragment_visibility()
+        _apply_fragment_enabled()
+        for dep in fragment.depends_on:
+            dep.subscribe(lambda _value, apply=_apply_fragment_visibility: apply())
+            dep.subscribe(lambda _value, apply=_apply_fragment_enabled: apply())
+
+    def _set_child_widget_state(self, widget: tk.Misc, state: str) -> None:
+        for child in widget.winfo_children():
+            try:
+                child.configure(state=state)
+            except Exception:
+                pass
+            self._set_child_widget_state(child, state)
 
     def _apply_enabled_if(self, widget: tk.Misc, field: FieldSpec) -> None:
         def _refresh(*_args: object) -> None:

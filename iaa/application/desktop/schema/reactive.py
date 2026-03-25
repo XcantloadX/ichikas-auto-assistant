@@ -1,41 +1,123 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Callable, Generic, TypeVar, get_args, get_origin
-
-from pydantic import BaseModel
+from typing import Any, Callable, Generic, Optional, TypeVar, cast
 
 T = TypeVar('T')
 
 
-class Signal(Generic[T]):
-    """A tiny reactive signal.
+class PathRecorder:
+    """Record attribute/item access path.
 
-    :param value: Initial value.
+    The recorder itself is intentionally minimal and only used as an
+    implementation detail behind :func:`of` and :func:`signal`.
     """
 
-    def __init__(self, value: T):
-        self._value = value
+    def __init__(self, root: Any = None, path: Optional[list[tuple[str, Any]]] = None):
+        self._root = root
+        self._path: list[tuple[str, Any]] = path if path is not None else []
+
+    def __getattr__(self, name: str) -> 'PathRecorder':
+        return PathRecorder(self._root, self._path + [('attr', name)])
+
+    def __getitem__(self, key: Any) -> 'PathRecorder':
+        return PathRecorder(self._root, self._path + [('item', key)])
+
+    def _get_recorder_info(self) -> tuple[Any, list[tuple[str, Any]]]:
+        return self._root, self._path
+
+
+def of(obj: T) -> T:
+    """Create typed proxy root for path capture.
+
+    :param obj: Real root object.
+    :return: A typed proxy value for chaining.
+    """
+    return cast(T, PathRecorder(root=obj))
+
+
+def _resolve(target: Any, path: list[tuple[str, Any]]) -> Any:
+    current = target
+    for op_type, key in path:
+        if op_type == 'attr':
+            current = getattr(current, key)
+        elif op_type == 'item':
+            current = current[key]
+        else:
+            raise ValueError(f'Unknown path operation: {op_type}')
+    return current
+
+
+def _resolve_parent(target: Any, path: list[tuple[str, Any]]) -> tuple[Any, str, Any]:
+    if not path:
+        raise ValueError('Path is empty.')
+
+    current = target
+    for op_type, key in path[:-1]:
+        if op_type == 'attr':
+            current = getattr(current, key)
+        elif op_type == 'item':
+            current = current[key]
+        else:
+            raise ValueError(f'Unknown path operation: {op_type}')
+
+    last_op, last_key = path[-1]
+    return current, last_op, last_key
+
+
+class Signal(Generic[T]):
+    """A lightweight signal abstraction.
+
+    Signal supports both local values and reference-backed values.
+    Reference-backed signals are created by :func:`signal`.
+
+    :param value: Local initial value.
+    :param getter: Optional read function for ref mode.
+    :param setter: Optional write function for ref mode.
+    """
+
+    def __init__(
+        self,
+        value: T | None = None,
+        *,
+        getter: Callable[[], T] | None = None,
+        setter: Callable[[T], None] | None = None,
+    ):
         self._subscribers: list[Callable[[T], None]] = []
+        self._getter = getter
+        self._setter = setter
+        self._value = value
 
     def get(self) -> T:
-        """Return the current value."""
-        return self._value
+        """Return current value."""
+        if self._getter is not None:
+            return self._getter()
+        return cast(T, self._value)
+
+    @property
+    def value(self) -> T:
+        """Property-style getter."""
+        return self.get()
+
+    @value.setter
+    def value(self, new_value: T) -> None:
+        self.set(new_value)
 
     def set(self, value: T) -> None:
         """Set value and notify subscribers when changed."""
-        if value == self._value:
+        old_value = self.get()
+        if value == old_value:
             return
-        self._value = value
+
+        if self._setter is not None:
+            self._setter(value)
+        else:
+            self._value = value
+
         for callback in tuple(self._subscribers):
             callback(value)
 
     def subscribe(self, callback: Callable[[T], None]) -> Callable[[], None]:
-        """Register callback and return an unsubscribe function.
-
-        :param callback: Subscriber callback.
-        :return: Function that removes the callback.
-        """
+        """Register callback and return an unsubscribe function."""
         self._subscribers.append(callback)
 
         def _unsubscribe() -> None:
@@ -47,62 +129,41 @@ class Signal(Generic[T]):
         return _unsubscribe
 
 
-@dataclass
-class ReactiveObject:
-    """Runtime container for nested reactive state."""
+def signal(proxy: T) -> Signal[T]:
+    """Create a reference-backed signal from a typed proxy path.
 
-
-def state_from_config(config: BaseModel) -> ReactiveObject:
-    """Build a reactive tree from pydantic config.
-
-    :param config: Source config model.
-    :return: Reactive object tree.
+    :param proxy: Path expression based on :func:`of`.
+    :return: Signal bound to the real object path.
     """
+    if not isinstance(proxy, PathRecorder):
+        raise TypeError('signal argument must be a proxy value created by of().')
 
-    def _build(value: Any) -> Any:
-        if isinstance(value, BaseModel):
-            container = ReactiveObject()
-            for field_name in value.__class__.model_fields:
-                setattr(container, field_name, _build(getattr(value, field_name)))
-            return container
-        return Signal(value)
+    root, path = proxy._get_recorder_info()
 
-    return _build(config)
+    if not path:
+        return Signal(getter=lambda: cast(T, root), setter=lambda new_value: None)
+
+    def _getter() -> T:
+        return cast(T, _resolve(root, path))
+
+    def _setter(value: T) -> None:
+        parent, last_op, last_key = _resolve_parent(root, path)
+        if last_op == 'attr':
+            setattr(parent, last_key, value)
+            return
+        if last_op == 'item':
+            parent[last_key] = value
+            return
+        raise ValueError(f'Unknown path operation: {last_op}')
+
+    return Signal(getter=_getter, setter=_setter)
 
 
-def to_config(state: ReactiveObject, config_type: type[BaseModel]) -> BaseModel:
-    """Materialize reactive state into a validated config model.
+def watch(source: Signal[T], callback: Callable[[T], None]) -> Callable[[], None]:
+    """Subscribe to signal updates.
 
-    :param state: Reactive tree built by :func:`state_from_config`.
-    :param config_type: Root pydantic model type.
-    :return: Validated pydantic model.
+    :param source: Signal instance.
+    :param callback: Callback on value change.
+    :return: Unsubscribe callback.
     """
-
-    def _unwrap(value: Any, expected_type: Any | None = None) -> Any:
-        if isinstance(value, Signal):
-            return value.get()
-
-        if isinstance(value, ReactiveObject):
-            if isinstance(expected_type, type) and issubclass(expected_type, BaseModel):
-                payload: dict[str, Any] = {}
-                for field_name, field_info in expected_type.model_fields.items():
-                    payload[field_name] = _unwrap(getattr(value, field_name), field_info.annotation)
-                return payload
-            payload = {}
-            for key, attr in value.__dict__.items():
-                payload[key] = _unwrap(attr)
-            return payload
-
-        origin = get_origin(expected_type)
-        if origin is list:
-            item_type = get_args(expected_type)[0] if get_args(expected_type) else None
-            return [_unwrap(item, item_type) for item in value]
-
-        if origin is dict:
-            value_type = get_args(expected_type)[1] if len(get_args(expected_type)) > 1 else None
-            return {k: _unwrap(v, value_type) for k, v in value.items()}
-
-        return value
-
-    payload = _unwrap(state, config_type)
-    return config_type.model_validate(payload)
+    return source.subscribe(callback)

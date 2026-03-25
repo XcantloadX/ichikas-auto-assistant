@@ -1,15 +1,15 @@
 """Schema-driven desktop UI helpers."""
 
 from .dsl import FieldSpec, ScreenSpec, SectionSpec, SettingsRegistry
-from .reactive import ReactiveObject, Signal, state_from_config, to_config
+from .reactive import Signal, of, signal, watch
 
 __all__ = [
     'FieldSpec',
     'ScreenSpec',
     'SectionSpec',
     'SettingsRegistry',
-    'ReactiveObject',
     'Signal',
-    'state_from_config',
-    'to_config',
+    'of',
+    'signal',
+    'watch',
 ]
