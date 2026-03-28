@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "1453ab3f-aa0e-44bc-8018-bca5c4d06b5c": {
       "type": "prefab",
@@ -15,7 +15,10 @@
         }
       },
       "displayName": "最低1つ消費する",
-      "description": "当 AP 为 0 时开启 AUTO 的提示"
+      "description": "当 AP 为 0 时开启 AUTO 的提示",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

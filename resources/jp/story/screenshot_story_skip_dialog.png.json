@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "fff9420f-5fb4-4231-b6b4-4a45f83b33ed": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 445
         }
       },
-      "displayName": "次を読む"
+      "displayName": "次を読む",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "abfeac6b-8b92-45d1-9c74-4601d44a5da0": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 638
         }
       },
-      "displayName": "現実世界へ"
+      "displayName": "現実世界へ",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "47b3886b-b28f-4730-9391-c34e6190e909": {
       "type": "prefab",
@@ -16,7 +16,9 @@
         "fixed": true
       },
       "displayName": "主线剧情按钮 右侧的预览图片",
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

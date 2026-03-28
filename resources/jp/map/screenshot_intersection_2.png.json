@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "0efb0404-ea27-4a21-bdf7-6916484a7e12": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 214
         }
       },
-      "displayName": "看广告提示图标"
+      "displayName": "看广告提示图标",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

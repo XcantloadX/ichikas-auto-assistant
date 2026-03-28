@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "adfea069-b853-4d61-93e1-a1ee2fcbb21f": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 94
         }
       },
-      "displayName": ""
+      "displayName": "",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "86a9a7e4-e2c3-49d3-872c-c0d9b9c74b3c": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 673
         }
       },
-      "displayName": "OK"
+      "displayName": "OK",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

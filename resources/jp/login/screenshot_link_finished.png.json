@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "b390d0a0-595b-437a-9b30-2392144c6dce": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 373
         }
       },
-      "displayName": "プレイヤーデータの連携が完了しました。"
+      "displayName": "プレイヤーデータの連携が完了しました。",
+      "variant_policy": {
+        "tw": "exclude"
+      }
     }
   }
 }

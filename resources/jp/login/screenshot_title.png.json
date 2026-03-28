@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "4b69a1f3-c410-44fb-bbda-bc10c974f847": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 58
         }
       },
-      "displayName": "右上角菜单按钮"
+      "displayName": "右上角菜单按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

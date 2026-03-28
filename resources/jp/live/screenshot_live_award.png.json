@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "f7651eb5-7228-4f5d-ac97-c38ba59d183d": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "演出 RANK 奖励对话框标题"
+      "displayName": "演出 RANK 奖励对话框标题",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "45d56f50-66ae-4298-bc64-a840dc786286": {
       "type": "prefab",
@@ -32,8 +34,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "演出 RANK 奖励对话框 关闭按钮"
+      "displayName": "演出 RANK 奖励对话框 关闭按钮",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

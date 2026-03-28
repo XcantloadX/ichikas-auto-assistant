@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "7eedd753-3dca-459c-be36-3d43a40031b4": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 147
         }
       },
-      "displayName": "自动演出直到耗尽 AP"
+      "displayName": "自动演出直到耗尽 AP",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 672
         }
       },
-      "displayName": "确定自动演出设置"
+      "displayName": "确定自动演出设置",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

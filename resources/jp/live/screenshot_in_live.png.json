@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "fd8739a7-bd80-45cd-a0f5-aff6380c4753": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "演出界面 右上角 LIFE 文本"
+      "displayName": "演出界面 右上角 LIFE 文本",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "42acd55e-68b9-479f-ab20-454762eb0d35": {
       "type": "prefab",
@@ -16,7 +16,9 @@
         "fixed": true
       },
       "displayName": "工具栏 LIVE 按钮（台服活动变体）",
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

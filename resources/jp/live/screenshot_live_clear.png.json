@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "427678a5-fcbc-4b11-bfbd-5e4453c4d8fc": {
       "type": "prefab",
@@ -15,7 +15,10 @@
         },
         "fixed": true
       },
-      "displayName": "SCORERANK"
+      "displayName": "SCORERANK",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "806a3a0b-1b46-4dca-a833-bc4f5e225b84": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 199
         }
       },
-      "displayName": "天馬司"
+      "displayName": "天馬司",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "6cd7b225-ef84-4219-9d6a-961b3abedffb": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 203
         }
       },
-      "displayName": "鳳えむ"
+      "displayName": "鳳えむ",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "101c74a1-cde5-41fa-b2e9-26e7e476d55e": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 202
         }
       },
-      "displayName": "草薙寧々"
+      "displayName": "草薙寧々",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "bbd3e850-7227-4f38-b1d3-14d97a10b239": {
       "type": "prefab",
@@ -59,7 +68,10 @@
           "y2": 195
         }
       },
-      "displayName": "神代類"
+      "displayName": "神代類",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "822c41b1-bcfa-4ea9-add4-6788bcca7009": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "ライフホーナスの消費量を設定します。"
+      "displayName": "ライフホーナスの消費量を設定します。",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "b6d937ba-7b8a-4908-9f2a-5e3c42c799c6": {
       "type": "prefab",
@@ -33,7 +35,9 @@
         "fixed": true
       },
       "displayName": "AP 倍率 决定 按钮",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "2d6efdb5-633a-4251-ae5c-5d2b16638b9d": {
       "type": "hint-point",

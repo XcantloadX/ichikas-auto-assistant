@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "ac6f1577-9a32-4eb8-8fd9-cfd2ce716919": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "通知弹窗 左上角图标"
+      "displayName": "通知弹窗 左上角图标",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

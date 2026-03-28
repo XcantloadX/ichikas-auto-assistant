@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "fd1624c2-3231-4ec6-9d04-72752c8df040": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 681
         }
       },
-      "displayName": "一括受け取り"
+      "displayName": "一括受け取り",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "5f4b378f-0b97-4721-aad5-a4f2bb6f4a21": {
       "type": "hint-box",
@@ -44,8 +47,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "左上角返回按钮"
+      "displayName": "左上角返回按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "3e64b08b-0fcf-4609-a0c0-97b8be73f8d1": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 423
         }
       },
-      "displayName": "建议 Wifi 环境下载文本"
+      "displayName": "建议 Wifi 环境下载文本",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "73b4fbe5-7a86-49d0-90e6-4792e1cda085": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 557
         }
       },
-      "displayName": "ダウンロード"
+      "displayName": "ダウンロード",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

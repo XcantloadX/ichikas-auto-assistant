@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "1e309b4b-9270-4a8c-a08a-e3366dfd26fb": {
       "type": "prefab",
@@ -17,7 +17,10 @@
         "fixed": true
       },
       "displayName": "スキップ",
-      "description": "跳过最后一话时跳过弹窗提示的跳过按钮"
+      "description": "跳过最后一话时跳过弹窗提示的跳过按钮",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

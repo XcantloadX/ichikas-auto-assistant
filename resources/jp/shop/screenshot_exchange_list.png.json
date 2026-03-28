@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "a6e2b8b1-1e2b-4b2a-9c6d-3a3b3b3b3b3b": {
       "type": "prefab",
@@ -16,7 +16,9 @@
         "fixed": true
       },
       "displayName": "活动交换所",
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

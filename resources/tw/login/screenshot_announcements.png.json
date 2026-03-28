@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "acf65aeb-f7d4-4e8e-b97a-f1914cd90c98": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "通知弹窗 SEKAI Announcements"
+      "displayName": "通知弹窗 SEKAI Announcements",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

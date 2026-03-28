@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "cf35db62-eb92-493b-a620-77897740d9f6": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "故事列表 筛选弹窗 确认按钮"
+      "displayName": "故事列表 筛选弹窗 确认按钮",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "9b2c08fb-f2ff-4598-8974-819caac34249": {
       "type": "prefab",
@@ -33,7 +35,9 @@
         "fixed": true
       },
       "displayName": "故事列表 筛选弹窗 未读/跳过 单选",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

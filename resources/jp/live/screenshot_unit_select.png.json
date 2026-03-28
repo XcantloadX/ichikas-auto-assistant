@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "95eff75b-a3e0-4693-a7b2-463f8092d5ce": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 577
         }
       },
-      "displayName": "开始演出 按钮"
+      "displayName": "开始演出 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "c6abf269-d131-45f6-983c-5f0d911a987a": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 677
         }
       },
-      "displayName": "自动演出 设置按钮"
+      "displayName": "自动演出 设置按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 686
         }
       },
-      "displayName": "自动演出 ON"
+      "displayName": "自动演出 ON",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "c4eb4872-6d30-4804-8594-9b98a9add2da": {
       "type": "prefab",
@@ -60,8 +69,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "おすすめ編成"
+      "displayName": "おすすめ編成",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "a7d4c0eb-9a52-4df2-b3d3-2e79da8c6216": {
       "type": "prefab",
@@ -77,8 +88,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "AP 条右侧设置按钮"
+      "displayName": "AP 条右侧设置按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

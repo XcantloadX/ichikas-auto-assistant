@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "f0c7585d-98a6-4539-afaa-e9435e98ed60": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 318
         }
       },
-      "displayName": "スキップ 按钮图标"
+      "displayName": "スキップ 按钮图标",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "686db7b7-bca3-4c11-96af-25d1142f6c23": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 390
         }
       },
-      "displayName": "早送り 按钮图标"
+      "displayName": "早送り 按钮图标",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

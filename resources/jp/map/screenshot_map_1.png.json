@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "1852dc13-8dc3-45ed-a682-3d6ed3793226": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 221
         }
       },
-      "displayName": "スクランブル交差点"
+      "displayName": "スクランブル交差点",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "f7f2f77c-49dd-4c87-9010-231e1d1c6300": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 271
         }
       },
-      "displayName": "音楽ショップ"
+      "displayName": "音楽ショップ",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "af87f0e8-b408-48e1-8234-631fa8822dda": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 60
         }
       },
-      "displayName": "关闭地图 按钮"
+      "displayName": "关闭地图 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "4462ae7e-efd8-4c17-af15-a029409c8a81": {
       "type": "prefab",
@@ -59,7 +68,10 @@
           "y2": 652
         }
       },
-      "displayName": "前往世界 按钮"
+      "displayName": "前往世界 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

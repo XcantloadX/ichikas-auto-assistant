@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "c5936026-6dd4-416d-8cf4-7392772c06fa": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "歌曲选择页面 清空搜索按钮"
+      "displayName": "歌曲选择页面 清空搜索按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

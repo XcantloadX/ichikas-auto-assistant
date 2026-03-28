@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "743bde1e-1a2c-4889-aeae-5ac70e23c7e9": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 375
         }
       },
-      "displayName": "ライブボーナスを5回復しました。"
+      "displayName": "ライブボーナスを5回復しました。",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

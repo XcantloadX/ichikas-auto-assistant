@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "2ec0cf90-8f64-4cc7-9ec2-a5e53e5e2b9f": {
       "type": "prefab",
@@ -15,7 +15,10 @@
         },
         "fixed": true
       },
-      "displayName": "Googleアカウントで連携"
+      "displayName": "Googleアカウントで連携",
+      "variant_policy": {
+        "tw": "exclude"
+      }
     },
     "b34e62d0-3932-4058-9927-e4bb660a1d5a": {
       "type": "prefab",
@@ -31,7 +34,10 @@
         },
         "fixed": false
       },
-      "displayName": "GooglePlayで連携"
+      "displayName": "GooglePlayで連携",
+      "variant_policy": {
+        "tw": "exclude"
+      }
     }
   }
 }

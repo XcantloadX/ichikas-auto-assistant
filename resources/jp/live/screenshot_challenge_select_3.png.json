@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "0ec2d74a-eab9-4387-9b47-d7f2f5e41ab8": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 199
         }
       },
-      "displayName": "花里みのり"
+      "displayName": "花里みのり",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "71c61e81-b14e-4017-99a5-53e3ce0e394b": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 203
         }
       },
-      "displayName": "桐谷遥"
+      "displayName": "桐谷遥",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "733b46d4-6030-4769-b2cf-ce0dd85bc923": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 201
         }
       },
-      "displayName": "桃井愛莉"
+      "displayName": "桃井愛莉",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "ba15954f-a44f-4f33-a638-1db5dc409e48": {
       "type": "prefab",
@@ -59,7 +68,10 @@
           "y2": 195
         }
       },
-      "displayName": "日野森雫"
+      "displayName": "日野森雫",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

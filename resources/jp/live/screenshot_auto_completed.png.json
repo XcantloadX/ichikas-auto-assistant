@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "23410eba-b645-4547-86f2-2ef49867723e": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 429
         }
       },
-      "displayName": "指定された回数のオートライプが完了しました。"
+      "displayName": "指定された回数のオートライプが完了しました。",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

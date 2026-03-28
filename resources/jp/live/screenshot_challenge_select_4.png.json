@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "823b7f96-b813-4282-8610-ae18ad799fb7": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 204
         }
       },
-      "displayName": "小豆沢"
+      "displayName": "小豆沢",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "c65119a1-435d-4cda-92b5-f526c6cd770b": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 203
         }
       },
-      "displayName": "白石杏"
+      "displayName": "白石杏",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "85bb0359-de82-427b-83b9-bd8abfc99ab6": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 200
         }
       },
-      "displayName": "東雲彰人"
+      "displayName": "東雲彰人",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "ec3b566a-e8f1-42a8-9ea6-88e4c38b3e63": {
       "type": "prefab",
@@ -59,7 +68,10 @@
           "y2": 201
         }
       },
-      "displayName": "青柳冬弥"
+      "displayName": "青柳冬弥",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

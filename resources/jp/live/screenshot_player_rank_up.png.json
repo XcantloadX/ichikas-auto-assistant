@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "38019b8c-dc1a-45bb-8b4e-68533f92c583": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "升级时的演出能量文本"
+      "displayName": "升级时的演出能量文本",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

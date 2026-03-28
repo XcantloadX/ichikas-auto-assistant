@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "1ffe2072-0f7b-4ee3-a3c2-5df169c728c4": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 58
         }
       },
-      "displayName": "剧情阅读 右上角菜单按钮"
+      "displayName": "剧情阅读 右上角菜单按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

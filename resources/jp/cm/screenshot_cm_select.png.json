@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "587370d6-25ac-441d-beeb-a5dcfdabccd3": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 340
         }
       },
-      "displayName": "播放广告 按钮"
+      "displayName": "播放广告 按钮",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

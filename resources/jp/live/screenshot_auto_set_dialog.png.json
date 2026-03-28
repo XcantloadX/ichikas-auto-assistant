@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "2eb13fe9-08d5-4cee-a18a-57b8c37215a5": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": false,
-      "displayName": "自动编队 活动成员"
+      "displayName": "自动编队 活动成员",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "ab73f9bb-7999-4282-bf33-b45f8e049b38": {
       "type": "prefab",
@@ -33,7 +35,9 @@
         "fixed": true
       },
       "displayName": "自动编队 推荐",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "b57ec406-7be0-4220-b7c2-59d8570a8450": {
       "type": "prefab",
@@ -50,7 +54,9 @@
         "fixed": true
       },
       "displayName": "自动编队 确定按钮",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

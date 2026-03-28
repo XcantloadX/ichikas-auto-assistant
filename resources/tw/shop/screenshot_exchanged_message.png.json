@@ -1,9 +1,9 @@
 {
   "version": 3,
   "definitions": {
-    "ec8cc294-859b-4c56-b4e5-bf2ad58d68bb": {
+    "3af77b0b-b8de-47fa-afb9-9568736ab500": {
       "type": "prefab",
-      "name": "Live.ButtonLiveCompletedNext",
+      "name": "Shop.TextExchangeDone",
       "variant": "tw",
       "props": {}
     }

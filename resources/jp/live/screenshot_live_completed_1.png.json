@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "ec8cc294-859b-4c56-b4e5-bf2ad58d68bb": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 682
         }
       },
-      "displayName": "次へ"
+      "displayName": "次へ",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

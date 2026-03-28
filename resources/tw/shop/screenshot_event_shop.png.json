@@ -1,9 +1,9 @@
 {
   "version": 3,
   "definitions": {
-    "ec8cc294-859b-4c56-b4e5-bf2ad58d68bb": {
+    "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
       "type": "prefab",
-      "name": "Live.ButtonLiveCompletedNext",
+      "name": "Shop.TextEndTimeUntil",
       "variant": "tw",
       "props": {}
     }

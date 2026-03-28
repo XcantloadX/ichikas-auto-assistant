@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "45e8ae05-fe00-4644-8f13-4e2c53f417a0": {
       "type": "prefab",
@@ -16,7 +16,9 @@
         "fixed": true
       },
       "displayName": "MV 播放已暂停文本",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "306ef78a-cf2c-4e29-8361-cff97e42c4ef": {
       "type": "prefab",
@@ -33,7 +35,9 @@
         "fixed": true
       },
       "displayName": "MV 播放已暂停 跳过按钮",
-      "variant_inherit": false
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "0b702c10-d067-437a-bd7d-2f964e932b91": {
       "type": "prefab",
@@ -21,8 +21,10 @@
           "y2": 613.0472178948323
         }
       },
-      "variant_inherit": true,
-      "displayName": "区域未读对话 NEW 标志"
+      "displayName": "区域未读对话 NEW 标志",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "2bcdac90-5adc-4137-a491-8bbeae113f92": {
       "type": "hint-box",

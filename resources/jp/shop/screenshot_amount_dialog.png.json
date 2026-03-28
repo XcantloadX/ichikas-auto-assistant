@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "b505324a-ab4c-4945-9d43-765d305d4677": {
       "type": "prefab",
@@ -16,7 +16,9 @@
         "fixed": true,
         "button_type": "normal"
       },
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "b6a87f73-79ed-491e-b7c3-9fa584680827": {
       "type": "prefab",
@@ -33,7 +35,9 @@
         "fixed": true,
         "button_type": "normal"
       },
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "5755f9a0-cf33-4372-bc21-8aea136efb02": {
       "type": "prefab",
@@ -47,6 +51,9 @@
           "x2": 579.5454545454546,
           "y2": 677.6382475634105
         }
+      },
+      "variant_policy": {
+        "tw": "require"
       }
     },
     "c9ee51d4-2cf0-454d-b2e7-7657a61994f9": {
@@ -62,6 +69,9 @@
           "y2": 678.5464147825186
         },
         "button_type": "primary"
+      },
+      "variant_policy": {
+        "tw": "require"
       }
     }
   }

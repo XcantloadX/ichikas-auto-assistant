@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "36d97e62-3160-4b52-a7ec-84fa44e7ecc6": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 207
         }
       },
-      "displayName": "星乃 一歌"
+      "displayName": "星乃 一歌",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "2c1cd5be-19d4-4d04-bcc2-007a3a070a15": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 207
         }
       },
-      "displayName": "天馬 咲希"
+      "displayName": "天馬 咲希",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "e111fa38-1ff4-49c7-b1bd-fd876cb5ee3b": {
       "type": "prefab",
@@ -44,7 +50,10 @@
           "y2": 204
         }
       },
-      "displayName": "望月 穂波"
+      "displayName": "望月 穂波",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "0aa9773e-68b7-464d-b96e-70cf4a630505": {
       "type": "prefab",
@@ -59,7 +68,10 @@
           "y2": 204
         }
       },
-      "displayName": "日野森 志歩"
+      "displayName": "日野森 志歩",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

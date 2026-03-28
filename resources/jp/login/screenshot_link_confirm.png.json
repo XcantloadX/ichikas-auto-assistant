@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "ece2e23d-8bb4-4d5f-b533-779daf5d1ceb": {
       "type": "prefab",
@@ -15,7 +15,10 @@
         },
         "fixed": true
       },
-      "displayName": "連携"
+      "displayName": "連携",
+      "variant_policy": {
+        "tw": "exclude"
+      }
     }
   }
 }

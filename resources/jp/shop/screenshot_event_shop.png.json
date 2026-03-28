@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "1a5a0d64-9980-4b76-a9cf-f961ebe4f43d": {
       "type": "prefab",
@@ -15,8 +15,10 @@
         },
         "fixed": false
       },
-      "variant_inherit": true,
-      "displayName": "卡片商品 Lv1 文本"
+      "displayName": "卡片商品 Lv1 文本",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "c9269644-b1e1-430e-b4a6-8696175d3c90": {
       "type": "prefab",
@@ -32,7 +34,9 @@
         },
         "fixed": true
       },
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "af2fa909-5a1c-4253-b4e6-e223f82773c2": {
       "type": "prefab",
@@ -48,7 +52,9 @@
         },
         "fixed": true
       },
-      "variant_inherit": true
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
       "type": "prefab",
@@ -64,8 +70,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": null,
-      "displayName": "活动商店最下方的まで"
+      "displayName": "活动商店最下方的まで",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "8dec26b6-85a8-4ece-afbb-6f2fb610fbe9": {
       "type": "prefab",
@@ -80,8 +88,10 @@
           "y2": 623.4417880278074
         }
       },
-      "variant_inherit": true,
-      "displayName": "活动商店 列表"
+      "displayName": "活动商店 列表",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

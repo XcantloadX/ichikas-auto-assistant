@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "8e5e7013-5cd4-45b1-8ab1-c4c71cc788c5": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 682
         }
       },
-      "displayName": ""
+      "displayName": "",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "c913df93-6d3c-4e2c-9dc4-4ad9e6d3ac46": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 680
         }
       },
-      "displayName": "前往歌曲选择 按钮"
+      "displayName": "前往歌曲选择 按钮",
+      "variant_policy": {
+        "tw": "require"
+      }
     }
   }
 }

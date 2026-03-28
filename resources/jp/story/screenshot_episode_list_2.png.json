@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "2af3a46b-41fe-4cca-a7ed-5c4eeec0c4bd": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 120
         }
       },
-      "displayName": "イベントストーリー"
+      "displayName": "イベントストーリー",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
       "type": "prefab",
@@ -29,7 +32,10 @@
           "y2": 219
         }
       },
-      "displayName": "第8話"
+      "displayName": "第8話",
+      "variant_policy": {
+        "tw": "require"
+      }
     },
     "f7b052bd-4ff3-4d13-b36f-bdae7e9c8f44": {
       "type": "hint-point",
@@ -57,8 +63,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "剧情分集列表 右上角书签按钮"
+      "displayName": "剧情分集列表 右上角书签按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "7438ba2d-1971-482c-bd87-62e0ecdc7c53": {
       "type": "prefab",
@@ -74,8 +82,10 @@
         },
         "fixed": true
       },
-      "variant_inherit": true,
-      "displayName": "分集列表 左上角返回按钮"
+      "displayName": "分集列表 左上角返回按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     }
   }
 }

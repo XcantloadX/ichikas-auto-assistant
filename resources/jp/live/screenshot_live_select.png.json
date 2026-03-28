@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "definitions": {
     "9a4dc8be-ed9d-4860-bfc9-70169617351d": {
       "type": "prefab",
@@ -14,7 +14,10 @@
           "y2": 55
         }
       },
-      "displayName": "画面上方水晶数量图标"
+      "displayName": "画面上方水晶数量图标",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf": {
       "type": "hint-box",
@@ -57,7 +60,10 @@
           "y2": 260
         }
       },
-      "displayName": "单人演出 按钮"
+      "displayName": "单人演出 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "e01b6a1d-be60-4323-8152-94b56bf9488a": {
       "type": "prefab",
@@ -72,7 +78,10 @@
           "y2": 272
         }
       },
-      "displayName": "多人演出 按钮"
+      "displayName": "多人演出 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "db8c1d40-9e04-43b9-affe-70c9d0ffd89d": {
       "type": "prefab",
@@ -87,7 +96,10 @@
           "y2": 411
         }
       },
-      "displayName": "挑战演出 按钮"
+      "displayName": "挑战演出 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393": {
       "type": "prefab",
@@ -102,7 +114,10 @@
           "y2": 582
         }
       },
-      "displayName": "虚拟演唱会 按钮"
+      "displayName": "虚拟演唱会 按钮",
+      "variant_policy": {
+        "tw": "inherit"
+      }
     },
     "76c00bd4-0a0e-454e-be4f-76aea6d737d2": {
       "type": "hint-point",
