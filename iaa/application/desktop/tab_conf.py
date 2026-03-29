@@ -11,6 +11,7 @@ from iaa.config.schemas import (
   ChallengeLiveAward,
   CustomEmulatorData,
   MuMuEmulatorData,
+  PhysicalAndroidData,
 )
 from .toast import show_toast
 from .advance_select import AdvanceSelect
@@ -23,6 +24,7 @@ EMULATOR_DISPLAY_MAP: dict[EmulatorOptions, str] = {
   'mumu': 'MuMu',
   'mumu_v5': 'MuMu v5.x',
   'custom': '自定义',
+  'physical_android': '物理设备(USB)',
 }
 EMULATOR_VALUE_MAP: dict[str, EmulatorOptions] = {v: k for k, v in EMULATOR_DISPLAY_MAP.items()}
 
@@ -78,6 +80,9 @@ class ConfStore:
     self.custom_port_row: Optional[tb.Frame] = None
     self.custom_emulator_path_row: Optional[tb.Frame] = None
     self.custom_emulator_args_row: Optional[tb.Frame] = None
+    # 物理设备设置
+    self.physical_android_serial_var = tk.StringVar()
+    self.physical_android_serial_row: Optional[tb.Frame] = None
     # 演出设置
     self.song_var = tk.StringVar()
     self.auto_set_unit_var = tk.BooleanVar()
@@ -186,12 +191,22 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
     store.custom_adb_port_var.set('5555')
     store.custom_emulator_path_var.set('')
     store.custom_emulator_args_var.set('')
+  if emulator_key == 'physical_android' and isinstance(emulator_data, PhysicalAndroidData):
+    store.physical_android_serial_var.set((emulator_data.adb_serial or '').strip())
+  else:
+    store.physical_android_serial_var.set('')
 
   # 模拟器类型
   row = tb.Frame(frame)
   row.pack(fill=tk.X, padx=8, pady=8)
   tb.Label(row, text="模拟器类型", width=16, anchor=tk.W).pack(side=tk.LEFT)
   tb.Combobox(row, state="readonly", textvariable=store.emulator_var, values=list(EMULATOR_VALUE_MAP.keys()), width=28).pack(side=tk.LEFT)
+
+  # 物理设备 ADB 序列号（仅在选择"物理设备(USB)"时显示）
+  physical_android_serial_row = tb.Frame(frame)
+  store.physical_android_serial_row = physical_android_serial_row
+  tb.Label(physical_android_serial_row, text="ADB 序列号", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  tb.Entry(physical_android_serial_row, textvariable=store.physical_android_serial_var, width=30).pack(side=tk.LEFT)
 
   mumu_instance_row = tb.Frame(frame)
   store.mumu_instance_row = mumu_instance_row
@@ -299,6 +314,13 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
     else:
       if store.mumu_instance_row:
         store.mumu_instance_row.pack_forget()
+
+    if emu_val == 'physical_android':
+      if store.physical_android_serial_row:
+        store.physical_android_serial_row.pack(fill=tk.X, padx=8, pady=8)
+    else:
+      if store.physical_android_serial_row:
+        store.physical_android_serial_row.pack_forget()
 
     if emu_val == 'custom':
       if store.custom_ip_row:
@@ -566,6 +588,11 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
           emulator_path=emulator_path,
           emulator_args=emulator_args,
         )
+      elif emulator_val == 'physical_android':
+        serial = (store.physical_android_serial_var.get() or '').strip()
+        if not serial:
+          raise ValueError("物理设备模式下必须填写 ADB 序列号")
+        conf.game.emulator_data = PhysicalAndroidData(adb_serial=serial)
       else:
         conf.game.emulator_data = None
 

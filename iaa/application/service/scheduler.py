@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData
+from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData, PhysicalAndroidData
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -42,6 +42,8 @@ class SchedulerService:
         """当前正在执行的任务名称"""
         self.device: Device | None = None
         """当前正在执行的任务的设备"""
+        self._device_started: bool = False
+        """设备生命周期是否已启动"""
 
     @property
     def running(self) -> bool:
@@ -69,6 +71,10 @@ class SchedulerService:
             try:
                 logger.info("Preparing context...")
                 self.__prepare_context()
+                if self.device is None:
+                    raise RuntimeError("Device not initialized after context preparation.")
+                self.device.start()
+                self._device_started = True
                 logger.info("Scheduler started.")
                 tasks = get_tasks()
                 if not tasks:
@@ -180,6 +186,12 @@ class SchedulerService:
                     except Exception:
                         logger.exception("Error handler raised an exception")
             finally:
+                if self.device is not None and self._device_started:
+                    try:
+                        self.device.stop()
+                    finally:
+                        self._device_started = False
+                self.device = None
                 self.__running = False
                 # 停止阶段结束
                 if self.__stop_requested:
@@ -189,13 +201,6 @@ class SchedulerService:
                 vars.flow.clear_interrupt()
                 # 若在准备阶段失败，也需要复位启动标记
                 self.is_starting = False
-                # 清理设备资源
-                if self.device:
-                    try:
-                        self.device.stop()
-                    except Exception:
-                        logger.exception("Failed to stop device")
-                    self.device = None
                 logger.info("Scheduler stopped.")
 
         if run_in_thread:
@@ -344,10 +349,31 @@ class SchedulerService:
                 raise ValueError("'nemu_ipc' 实现仅支持 MuMu12，不支持 custom 模拟器。")
             else:
                 raise ValueError(f"Unknown control implementation: {impl}")
+        elif emulator == 'physical_android':
+            from kotonebot.client.host import PhysicalAndroidHost
+            from kotonebot.client.host import AdbHostConfig
+            data = self.iaa.config.conf.game.emulator_data
+            if not isinstance(data, PhysicalAndroidData):
+                raise ValueError('physical_android 模式下 emulator_data 必须是 PhysicalAndroidData。')
+            adb_serial = (data.adb_serial or '').strip()
+            if not adb_serial:
+                raise ValueError('物理设备模式下必须提供 ADB 序列号。')
+            usb_host = PhysicalAndroidHost.query(id=adb_serial)
+            if usb_host is None:
+                raise ValueError(f'找不到 ADB USB 设备: {adb_serial}')
+            if not usb_host.running():
+                raise ValueError(f'ADB USB 设备不可用: {adb_serial}')
+            if impl == 'adb':
+                device = usb_host.create_device('adb', AdbHostConfig())
+            elif impl == 'uiautomator':
+                device = usb_host.create_device('uiautomator2', AdbHostConfig())
+            elif impl == 'nemu_ipc':
+                raise ValueError("'nemu_ipc' 实现仅支持 MuMu12，不支持 physical_android。")
+            else:
+                raise ValueError(f"Unknown control implementation: {impl}")
         else:
             raise ValueError(f"Unknown emulator: {emulator}")
         device.orientation = 'landscape'
-        device.start()
         init_context(target_device=device, force=True)
         self.device = device
 

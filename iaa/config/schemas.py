@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict
 from typing_extensions import assert_never
 
 LinkAccountOptions = Literal['no', 'google', 'google_play']
-EmulatorOptions = Literal['mumu', 'mumu_v5', 'custom']
+EmulatorOptions = Literal['mumu', 'mumu_v5', 'custom', 'physical_android']
 
 
 class GameCharacter(str, Enum):
@@ -287,13 +287,17 @@ class CustomEmulatorData(BaseModel):
     emulator_args: str = ''
 
 
+class PhysicalAndroidData(BaseModel):
+    adb_serial: str = ''
+
+
 class GameConfig(BaseModel):
     server: Literal['jp', 'tw'] = 'jp'
     link_account: LinkAccountOptions = 'no'
     emulator: EmulatorOptions = 'mumu_v5'
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator'] = 'nemu_ipc'
     check_emulator: bool = False
-    emulator_data: MuMuEmulatorData | CustomEmulatorData | None = None
+    emulator_data: MuMuEmulatorData | CustomEmulatorData | PhysicalAndroidData | None = None
     """
     是否引继账号。
     
