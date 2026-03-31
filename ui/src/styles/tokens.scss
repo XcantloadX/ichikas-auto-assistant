@@ -1,0 +1,47 @@
+// Design tokens – macOS Aqua style
+// These are exported as a SCSS module, consumed via additionalData in vite.config.ts
+
+$color-accent:          #007AFF;
+$color-accent-hover:    #0066D6;
+$color-accent-active:   #0055B3;
+$color-danger:          #FF3B30;
+$color-success:         #34C759;
+$color-warning:         #FF9500;
+
+$color-bg:              #ECECEC;
+$color-surface:         #F5F5F7;
+$color-surface-elevated:#FFFFFF;
+$color-border:          rgba(0, 0, 0, 0.12);
+$color-border-strong:   rgba(0, 0, 0, 0.22);
+$color-separator:       rgba(0, 0, 0, 0.08);
+
+$color-text-primary:    rgba(0, 0, 0, 0.85);
+$color-text-secondary:  rgba(0, 0, 0, 0.55);
+$color-text-disabled:   rgba(0, 0, 0, 0.30);
+$color-text-on-accent:  #FFFFFF;
+
+$color-sidebar-bg:      #E8E8E8;
+$color-sidebar-active:  rgba(0, 122, 255, 0.14);
+$color-sidebar-hover:   rgba(0, 0, 0, 0.06);
+
+$radius-sm:   4px;
+$radius-md:   8px;
+$radius-lg:   12px;
+$radius-xl:   16px;
+
+$shadow-sm:   0 1px 3px rgba(0,0,0,0.10);
+$shadow-md:   0 4px 12px rgba(0,0,0,0.12);
+
+$font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+$font-mono:   'SF Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+
+$spacing-1: 4px;
+$spacing-2: 8px;
+$spacing-3: 12px;
+$spacing-4: 16px;
+$spacing-5: 20px;
+$spacing-6: 24px;
+$spacing-8: 32px;
+
+$transition-fast:  0.12s ease;
+$transition-base:  0.20s ease;

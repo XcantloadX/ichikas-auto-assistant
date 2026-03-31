@@ -1,0 +1,55 @@
+// Global styles – macOS Aqua aesthetic
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: $font-system;
+  font-size: 13px;
+  line-height: 1.5;
+  color: $color-text-primary;
+  background: $color-bg;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: $color-accent;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.20);
+  border-radius: 3px;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.35);
+  }
+}
+
+button {
+  font-family: $font-system;
+  cursor: pointer;
+}
+
+input, select, textarea {
+  font-family: $font-system;
+}
