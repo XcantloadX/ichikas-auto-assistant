@@ -64,9 +64,12 @@ def start_game():
     rep = task_reporter()
     d = device.of_android()
     package_name = get_package_name()
+    while d.detect_orientation() != 'landscape':
+        sleep(3)
     if d.current_package() != package_name:
-        logger.info('Not at game. Launching...')
-        d.launch_app(package_name)
+        if type(d.screenshotable).__name__ != 'ScrcpyImpl':
+            logger.info('Not at game. Launching...')
+            d.launch_app(package_name)
         
         # 检查是否需要登录
         link_account = conf().game.link_account

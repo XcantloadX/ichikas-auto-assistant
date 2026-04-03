@@ -10,12 +10,13 @@ ICON = ROOT / 'assets' / 'icon_round.ico'
 def collect_package_assets():
     datas = []
     binaries = []
-    hiddenimports = ['rapidocr_onnxruntime', 'kotonebot', 'kaa', 'iaa.res', 'uiautomator2']
-    for package in ('rapidocr_onnxruntime', 'kotonebot', 'kaa', 'uiautomator2'):
+    hiddenimports = ['rapidocr_onnxruntime', 'kotonebot', 'kaa', 'iaa.res', 'uiautomator2', 'av']
+    for package in ('rapidocr_onnxruntime', 'kotonebot', 'kaa', 'uiautomator2', 'av'):
         pkg_datas, pkg_binaries, pkg_hiddenimports = collect_all(package)
         datas += pkg_datas
         binaries += pkg_binaries
         hiddenimports += pkg_hiddenimports
+    datas.append((str(ROOT / 'assets' / 'scrcpy.jar'), 'assets'))
     return datas, binaries, hiddenimports
 
 

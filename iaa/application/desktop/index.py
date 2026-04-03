@@ -5,6 +5,7 @@ import os
 import ttkbootstrap as tb
 from ..service.iaa_service import IaaService
 from tkinter import messagebox
+from .scrcpy_viewer import ScrcpyMirrorWindow
 
 
 @dataclass
@@ -25,6 +26,7 @@ class DesktopApp:
         self.root.title("一歌小助手")
         self.root.geometry("900x520")
         self.store = Store()
+        self.scrcpy_viewer = ScrcpyMirrorWindow(self.root)
 
         # 服务聚合
         self.service = IaaService()
@@ -59,6 +61,7 @@ class DesktopApp:
         self.notebook = tb.Notebook(self.root)
         self._build_tabs()
         self.notebook.pack(fill=tk.BOTH, expand=True, padx=12, pady=12)
+        self._schedule_scrcpy_viewer_monitor()
 
     # -------------------- UI 构建 --------------------
     def _build_tabs(self) -> None:
@@ -104,6 +107,7 @@ class DesktopApp:
         return tasks
 
     def _on_close(self) -> None:
+        self.scrcpy_viewer.close()
         sch = self.service.scheduler
         if sch.running:
             confirm = messagebox.askyesno(
@@ -121,6 +125,30 @@ class DesktopApp:
             self.root.destroy()
         except Exception:
             pass
+
+    def _schedule_scrcpy_viewer_monitor(self) -> None:
+        def _tick() -> None:
+            try:
+                scheduler = self.service.scheduler
+                should_open = (
+                    self.service.config.conf.game.control_impl == 'scrcpy'
+                    and scheduler.device is not None
+                    and (scheduler.running or scheduler.is_starting or scheduler.is_stopping)
+                )
+                if should_open and scheduler.device is not None:
+                    self.scrcpy_viewer.ensure_open(scheduler.device)
+                else:
+                    self.scrcpy_viewer.notify_run_stopped()
+            except Exception:
+                pass
+            finally:
+                try:
+                    if self.root.winfo_exists():
+                        self.root.after(300, _tick)
+                except Exception:
+                    pass
+
+        self.root.after(300, _tick)
 
     # -------------------- 入口 --------------------
     def run(self) -> None:

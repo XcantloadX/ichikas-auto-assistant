@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Callable, Any
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
 from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData, PhysicalAndroidData
+from iaa.consts import package_by_server
+from iaa.utils import asset_path
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -18,6 +20,7 @@ from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
+SCRCPY_BUNDLED_VERSION = '3.3.1'
 
 
 class SchedulerService:
@@ -295,6 +298,26 @@ class SchedulerService:
                 raise RuntimeError(f'No {host_name} host found.')
             return hosts[0]
 
+        def _build_scrcpy_config(timeout: float):
+            from kotonebot.client.implements.scrcpy import ScrcpyConfig, VirtualDisplayConfig
+
+            jar_path = asset_path('scrcpy.jar')
+            if not os.path.isfile(jar_path):
+                raise FileNotFoundError(f'Scrcpy jar not found: {jar_path}')
+            return ScrcpyConfig(
+                timeout=timeout,
+                server_jar_path=jar_path,
+                server_version=SCRCPY_BUNDLED_VERSION,
+                virtual_display=VirtualDisplayConfig(
+                    enabled=True,
+                    reuse_existing=True,
+                    launch_package=package_by_server(self.iaa.config.conf.game.server),
+                    width=1280,
+                    height=720,
+                    system_decorations=False
+                ),
+            )
+
         if emulator == 'mumu':
             host = _resolve_mumu_instance(Mumu12Host, 'MuMu')
             _maybe_start(host)
@@ -304,6 +327,9 @@ class SchedulerService:
             elif impl == 'adb':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -318,6 +344,9 @@ class SchedulerService:
             elif impl == 'adb':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                from kotonebot.client.host import AdbHostConfig
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -343,6 +372,8 @@ class SchedulerService:
             _maybe_start(instance)
             if impl == 'adb':
                 device = instance.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                device = instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
             elif impl == 'uiautomator':
                 device = instance.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
@@ -365,6 +396,8 @@ class SchedulerService:
                 raise ValueError(f'ADB USB 设备不可用: {adb_serial}')
             if impl == 'adb':
                 device = usb_host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                device = usb_host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
             elif impl == 'uiautomator':
                 device = usb_host.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':

@@ -41,12 +41,13 @@ LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
 }
 LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {v: k for k, v in LINK_DISPLAY_MAP.items()}
 
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator'], str] = {
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], str] = {
   'nemu_ipc': 'Nemu IPC',
   'adb': 'ADB',
   'uiautomator': 'UIAutomator2',
+  'scrcpy': 'Scrcpy',
 }
-CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator']] = {v: k for k, v in CONTROL_IMPL_DISPLAY_MAP.items()}
+CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy']] = {v: k for k, v in CONTROL_IMPL_DISPLAY_MAP.items()}
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'
 
 
