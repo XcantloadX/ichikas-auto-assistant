@@ -21,6 +21,86 @@ from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
 SCRCPY_BUNDLED_VERSION = '3.3.1'
+TARGET_RESOLUTION = '1280x720'
+
+
+def _parse_wm_size_output(output: str) -> str | None:
+    """
+    解析 `wm size` 命令输出，返回原始物理分辨率。
+    
+    输出格式示例：
+    - "Physical size: 1080x1920"
+    - "Physical size: 1080x1920\\nOverride size: 1280x720"
+    """
+    import re
+    match = re.search(r'Physical size:\s*(\d+x\d+)', output)
+    if match:
+        return match.group(1)
+    return None
+
+
+def _setup_resolution(
+    device: 'Device',
+    emulator: str,
+    resolution_method: str,
+    package_name: str
+) -> str | None:
+    """
+    设置设备分辨率。
+    
+    :param device: 设备实例
+    :param emulator: 模拟器类型 ('mumu', 'mumu_v5', 'custom', 'physical_android')
+    :param resolution_method: 分辨率设置方式 ('auto', 'keep', 'wm_size')
+    :param package_name: 游戏包名，用于 kill 游戏
+    :return: 原始物理分辨率，用于恢复；如果不需修改则返回 None
+    """
+    if resolution_method == 'keep':
+        logger.debug('Resolution method is "keep", skip resolution setup.')
+        return None
+    
+    if resolution_method == 'auto':
+        if emulator != 'physical_android':
+            logger.debug('Resolution method is "auto" but not physical device, skip resolution setup.')
+            return None
+    
+    result = device.commands.adb_shell('wm size')
+    original = _parse_wm_size_output(result)
+    
+    if original is None:
+        logger.warning('Failed to parse wm size output: %s', result)
+        return None
+    
+    if original == TARGET_RESOLUTION:
+        logger.debug('Current resolution is already %s, skip.', TARGET_RESOLUTION)
+        return None
+    
+    device.commands.adb_shell(f'am force-stop {package_name}')
+    logger.info('Killed game package: %s', package_name)
+    time.sleep(1)
+
+    device.commands.adb_shell(f'wm size {TARGET_RESOLUTION}')
+    logger.info('Set resolution from %s to %s', original, TARGET_RESOLUTION)
+    time.sleep(0.5)
+
+    # 然后再启动
+    device.commands.launch_app(package_name)
+    
+
+    return original
+
+
+def _restore_resolution(device: 'Device', original_resolution: str) -> None:
+    """
+    恢复设备分辨率。
+    
+    :param device: 设备实例
+    :param original_resolution: 原始分辨率
+    """
+    try:
+        device.commands.adb_shell('wm size reset')
+        logger.info('Reset resolution to original.')
+    except Exception as e:
+        logger.warning('Failed to reset resolution: %s', e)
 
 
 class SchedulerService:
@@ -47,6 +127,10 @@ class SchedulerService:
         """当前正在执行的任务的设备"""
         self._device_started: bool = False
         """设备生命周期是否已启动"""
+        self._original_resolution: str | None = None
+        """原始分辨率，用于恢复"""
+        self._connect_thread: threading.Thread | None = None
+        """设备连接线程"""
 
     @property
     def running(self) -> bool:
@@ -189,6 +273,9 @@ class SchedulerService:
                     except Exception:
                         logger.exception("Error handler raised an exception")
             finally:
+                if self.device is not None and self._original_resolution is not None:
+                    _restore_resolution(self.device, self._original_resolution)
+                    self._original_resolution = None
                 if self.device is not None and self._device_started:
                     try:
                         self.device.stop()
@@ -235,10 +322,7 @@ class SchedulerService:
         vars.flow.request_interrupt()
         if block:
             self._thread.join()
-        if self.device:
-            self.device.stop()
-        self.device = None
-        self._thread = None
+        # Note: device.stop() and resolution restore are handled in finally block of _runner
 
     def run_single(
         self,
@@ -263,15 +347,13 @@ class SchedulerService:
             return [(task_id, _call)]
         self.__start_tasks(_get, thread_name="IAA-Scheduler-Manual", run_in_thread=run_in_thread)
 
-    def __prepare_context(self) -> None:
+    def __create_device(self) -> 'Device':
         """
-        初始化配置上下文与设备上下文。
+        创建设备实例。
 
         .. NOTE::
             需要和任务执行在同一个线程中调用。
         """
-        # 因为导入 kotonebot 开销较大，这里延迟导入
-        from kotonebot.backend.context.context import init_context
         from kotonebot.client.host import Mumu12Host, Mumu12V5Host
         from kotonebot.client.host.protocol import HostProtocol, Instance
         impl = self.iaa.config.conf.game.control_impl
@@ -298,24 +380,29 @@ class SchedulerService:
                 raise RuntimeError(f'No {host_name} host found.')
             return hosts[0]
 
-        def _build_scrcpy_config(timeout: float):
+        def _build_scrcpy_config(timeout: float, use_virtual_display: bool):
             from kotonebot.client.implements.scrcpy import ScrcpyConfig, VirtualDisplayConfig
 
             jar_path = asset_path('scrcpy.jar')
             if not os.path.isfile(jar_path):
                 raise FileNotFoundError(f'Scrcpy jar not found: {jar_path}')
-            return ScrcpyConfig(
-                timeout=timeout,
-                server_jar_path=jar_path,
-                server_version=SCRCPY_BUNDLED_VERSION,
-                virtual_display=VirtualDisplayConfig(
+            
+            virtual_display_config = None
+            if use_virtual_display:
+                virtual_display_config = VirtualDisplayConfig(
                     enabled=True,
                     reuse_existing=True,
                     launch_package=package_by_server(self.iaa.config.conf.game.server),
                     width=1280,
                     height=720,
                     system_decorations=False
-                ),
+                )
+            
+            return ScrcpyConfig(
+                timeout=timeout,
+                server_jar_path=jar_path,
+                server_version=SCRCPY_BUNDLED_VERSION,
+                virtual_display=virtual_display_config,
             )
 
         if emulator == 'mumu':
@@ -329,7 +416,8 @@ class SchedulerService:
                 device = host.create_device('adb', AdbHostConfig())
             elif impl == 'scrcpy':
                 from kotonebot.client.host import AdbHostConfig
-                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -346,7 +434,8 @@ class SchedulerService:
                 device = host.create_device('adb', AdbHostConfig())
             elif impl == 'scrcpy':
                 from kotonebot.client.host import AdbHostConfig
-                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -373,7 +462,8 @@ class SchedulerService:
             if impl == 'adb':
                 device = instance.create_device('adb', AdbHostConfig())
             elif impl == 'scrcpy':
-                device = instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 device = instance.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
@@ -397,7 +487,8 @@ class SchedulerService:
             if impl == 'adb':
                 device = usb_host.create_device('adb', AdbHostConfig())
             elif impl == 'scrcpy':
-                device = usb_host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout))
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = usb_host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 device = usb_host.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
@@ -406,7 +497,62 @@ class SchedulerService:
                 raise ValueError(f"Unknown control implementation: {impl}")
         else:
             raise ValueError(f"Unknown emulator: {emulator}")
+        
+        return device
+
+    def connect_device(self, on_success: Callable[[], None] | None = None, on_error: Callable[[Exception], None] | None = None) -> None:
+        """
+        在后台线程中连接设备。
+
+        :param on_success: 连接成功后的回调。
+        :param on_error: 连接失败后的回调。
+        """
+        if self.device is not None:
+            if on_success:
+                on_success()
+            return
+        
+        if self._connect_thread is not None and self._connect_thread.is_alive():
+            return
+        
+        def _connect() -> None:
+            try:
+                logger.info("Connecting to device...")
+                device = self.__create_device()
+                device.orientation = 'landscape'
+                device.start()
+                self.device = device
+                self._device_started = True
+                logger.info("Device connected successfully.")
+                if on_success:
+                    on_success()
+            except Exception as e:
+                logger.exception("Failed to connect device: %s", e)
+                if on_error:
+                    on_error(e)
+        
+        self._connect_thread = threading.Thread(target=_connect, name="IAA-DeviceConnect", daemon=True)
+        self._connect_thread.start()
+
+    def __prepare_context(self) -> None:
+        """
+        初始化配置上下文与设备上下文。
+
+        .. NOTE::
+            需要和任务执行在同一个线程中调用。
+        """
+        # 因为导入 kotonebot 开销较大，这里延迟导入
+        from kotonebot.backend.context.context import init_context
+        emulator = self.iaa.config.conf.game.emulator
+        
+        device = self.__create_device()
         device.orientation = 'landscape'
+        
+        # 设置分辨率
+        resolution_method = self.iaa.config.conf.game.resolution_method
+        package_name = package_by_server(self.iaa.config.conf.game.server)
+        self._original_resolution = _setup_resolution(device, emulator, resolution_method, package_name)
+        
         init_context(target_device=device, force=True)
         self.device = device
 

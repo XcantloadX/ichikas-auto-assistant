@@ -297,6 +297,8 @@ class GameConfig(BaseModel):
     emulator: EmulatorOptions = 'mumu_v5'
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'] = 'nemu_ipc'
     check_emulator: bool = False
+    scrcpy_virtual_display: bool = False
+    resolution_method: Literal['auto', 'keep', 'wm_size'] = 'auto'
     emulator_data: MuMuEmulatorData | CustomEmulatorData | PhysicalAndroidData | None = None
     """
     是否引继账号。

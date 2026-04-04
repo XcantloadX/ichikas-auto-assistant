@@ -48,6 +48,13 @@ CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy
   'scrcpy': 'Scrcpy',
 }
 CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy']] = {v: k for k, v in CONTROL_IMPL_DISPLAY_MAP.items()}
+
+RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], str] = {
+  'auto': '智能决定',
+  'keep': '保持原始分辨率',
+  'wm_size': '修改分辨率（wm size）',
+}
+RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['auto', 'keep', 'wm_size']] = {v: k for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()}
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'
 
 
@@ -84,6 +91,12 @@ class ConfStore:
     # 物理设备设置
     self.physical_android_serial_var = tk.StringVar()
     self.physical_android_serial_row: Optional[tb.Frame] = None
+    # Scrcpy 设置
+    self.scrcpy_virtual_display_var = tk.BooleanVar()
+    self.scrcpy_virtual_display_row: Optional[tb.Frame] = None
+    self.scrcpy_virtual_display_cb: Optional[tb.Checkbutton] = None
+    # 分辨率设置
+    self.resolution_method_var = tk.StringVar()
     # 演出设置
     self.song_var = tk.StringVar()
     self.auto_set_unit_var = tk.BooleanVar()
@@ -157,7 +170,7 @@ def normalize_song_name_input(value: str) -> str | None:
   return normalized
 
 
-def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) -> None:
+def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore, app: DesktopApp) -> None:
   frame = tb.Labelframe(parent, text="游戏设置")
   frame.pack(fill=tk.X, padx=16, pady=8)
 
@@ -171,6 +184,8 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   store.link_var.set(LINK_DISPLAY_MAP.get(link_key, '不引继账号'))
   store.control_impl_var.set(CONTROL_IMPL_DISPLAY_MAP.get(control_impl_key, 'Nemu IPC'))
   store.check_emulator_var.set(bool(conf.game.check_emulator))
+  store.scrcpy_virtual_display_var.set(bool(conf.game.scrcpy_virtual_display))
+  store.resolution_method_var.set(RESOLUTION_METHOD_DISPLAY_MAP.get(conf.game.resolution_method, '自动'))
   emulator_data = conf.game.emulator_data
   initial_mumu_instance_id = None
   if emulator_key in {'mumu', 'mumu_v5'} and isinstance(emulator_data, MuMuEmulatorData):
@@ -379,6 +394,61 @@ def build_game_config_group(parent: tk.Misc, conf: IaaConfig, store: ConfStore) 
   tb.Label(row, text="控制方式", width=16, anchor=tk.W).pack(side=tk.LEFT)
   tb.Combobox(row, state="readonly", textvariable=store.control_impl_var, values=list(CONTROL_IMPL_DISPLAY_MAP.values()), width=28).pack(side=tk.LEFT)
 
+  # Scrcpy 虚拟显示器
+  scrcpy_virtual_display_row = tb.Frame(frame)
+  store.scrcpy_virtual_display_row = scrcpy_virtual_display_row
+  tb.Label(scrcpy_virtual_display_row, text="", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  scrcpy_cb = tb.Checkbutton(scrcpy_virtual_display_row, text="使用虚拟显示器", variable=store.scrcpy_virtual_display_var)
+  scrcpy_cb.pack(side=tk.LEFT)
+  scrcpy_cb.configure(state="disabled")
+  store.scrcpy_virtual_display_cb = scrcpy_cb
+
+  def _update_scrcpy_virtual_display_row(*_args) -> None:
+    control_impl_val = CONTROL_IMPL_VALUE_MAP.get(store.control_impl_var.get(), 'nemu_ipc')
+    if control_impl_val == 'scrcpy':
+      if store.scrcpy_virtual_display_row:
+        store.scrcpy_virtual_display_row.pack(fill=tk.X, padx=8, pady=8)
+    else:
+      if store.scrcpy_virtual_display_row:
+        store.scrcpy_virtual_display_row.pack_forget()
+
+  store.control_impl_var.trace_add('write', lambda *_: _update_scrcpy_virtual_display_row())
+  _update_scrcpy_virtual_display_row()
+
+  # 分辨率设置
+  row = tb.Frame(frame)
+  row.pack(fill=tk.X, padx=8, pady=8)
+  tb.Label(row, text="分辨率设置", width=16, anchor=tk.W).pack(side=tk.LEFT)
+  tb.Combobox(row, state="readonly", textvariable=store.resolution_method_var, values=list(RESOLUTION_METHOD_VALUE_MAP.keys()), width=28).pack(side=tk.LEFT)
+  
+  def _reset_resolution() -> None:
+    device = app.service.scheduler.device
+    if device is None:
+      def on_success() -> None:
+        app.root.after(0, lambda: show_toast(app.root, "设备已连接", kind="success"))
+        app.root.after(0, _do_reset)
+      
+      def on_error(e: Exception) -> None:
+        app.root.after(0, lambda: show_toast(app.root, f"连接失败：{e}", kind="danger"))
+      
+      show_toast(app.root, "正在连接设备...", kind="info")
+      app.service.scheduler.connect_device(on_success=on_success, on_error=on_error)
+      return
+    
+    _do_reset()
+  
+  def _do_reset() -> None:
+    device = app.service.scheduler.device
+    if device is None:
+      return
+    try:
+      device.commands.adb_shell('wm size reset')
+      show_toast(app.root, "已恢复分辨率", kind="success")
+    except Exception as e:
+      show_toast(app.root, f"恢复失败：{e}", kind="danger")
+  
+  tb.Button(row, text="恢复分辨率", command=_reset_resolution).pack(side=tk.LEFT, padx=(8, 0))
+
   # 启动模拟器
   row = tb.Frame(frame)
   row.pack(fill=tk.X, padx=8, pady=8)
@@ -552,7 +622,7 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
   store = ConfStore()
 
   # 分组构建
-  build_game_config_group(inner, conf, store)
+  build_game_config_group(inner, conf, store, app)
   build_live_config_group(inner, conf, store)
   build_challenge_live_config_group(inner, conf, store)
   build_cm_config_group(inner, conf, store)
@@ -570,6 +640,8 @@ def build_settings_tab(app: DesktopApp, parent: tk.Misc) -> None:  # noqa: ARG00
       conf.game.link_account = link_val
       conf.game.control_impl = control_impl_val
       conf.game.check_emulator = bool(store.check_emulator_var.get())
+      conf.game.scrcpy_virtual_display = bool(store.scrcpy_virtual_display_var.get())
+      conf.game.resolution_method = RESOLUTION_METHOD_VALUE_MAP.get(store.resolution_method_var.get(), 'auto')
       # 模拟器附加数据
       if emulator_val in {'mumu', 'mumu_v5'}:
         conf.game.emulator_data = MuMuEmulatorData(

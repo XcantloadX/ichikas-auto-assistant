@@ -67,7 +67,11 @@ def start_game():
     while d.detect_orientation() != 'landscape':
         sleep(3)
     if d.current_package() != package_name:
-        if type(d.screenshotable).__name__ != 'ScrcpyImpl':
+        use_scrcpy_with_virtual_display = (
+            type(d.screenshotable).__name__ == 'ScrcpyImpl'
+            and conf().game.scrcpy_virtual_display
+        )
+        if not use_scrcpy_with_virtual_display:
             logger.info('Not at game. Launching...')
             d.launch_app(package_name)
         
