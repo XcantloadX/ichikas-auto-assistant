@@ -357,6 +357,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     loop_mode_var = tk.StringVar(value="list")
     auto_mode_var = tk.StringVar(value="game_auto")
     debug_enabled_var = tk.BooleanVar(value=False)
+    auto_set_unit_var = tk.BooleanVar(value=bool(conf.live.auto_set_unit))
     ap_multiplier_var = tk.StringVar(
       value=("保持现状" if conf.live.ap_multiplier is None else str(conf.live.ap_multiplier))
     )
@@ -465,8 +466,12 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     row_debug.grid(row=7, column=0, sticky=tk.W, pady=(0, 12))
     tb.Checkbutton(row_debug, text="调试显示（脚本自动）", variable=debug_enabled_var).pack(side=tk.LEFT)
 
+    row_auto_set_unit = tb.Frame(body)
+    row_auto_set_unit.grid(row=8, column=0, sticky=tk.W, pady=(0, 12))
+    tb.Checkbutton(row_auto_set_unit, text="自动编队", variable=auto_set_unit_var).pack(side=tk.LEFT)
+
     btn_bar = tb.Frame(body)
-    btn_bar.grid(row=8, column=0, sticky=tk.E)
+    btn_bar.grid(row=9, column=0, sticky=tk.E)
 
     def _sync_count_state() -> None:
       if count_mode_var.get() == "specify":
@@ -522,6 +527,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
         "debug_enabled": bool(debug_enabled_var.get()),
         "ap_multiplier": (None if ap_multiplier_var.get() == "保持现状" else int(ap_multiplier_var.get())),
         "song_name": normalize_song_name_input(song_name_var.get()),
+        "auto_set_unit": bool(auto_set_unit_var.get()),
       }
       win.destroy()
       sch.run_single("auto_live", run_in_thread=True, kwargs=kwargs)

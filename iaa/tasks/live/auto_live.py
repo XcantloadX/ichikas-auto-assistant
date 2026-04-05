@@ -15,6 +15,7 @@ def auto_live(
     debug_enabled: bool = False,
     ap_multiplier: int | None = None,
     song_name: str | None = None,
+    auto_set_unit: bool = False,
 ) -> None:
     reporter = task_reporter()
     reporter.message('准备自动演出参数')
@@ -24,7 +25,7 @@ def auto_live(
         raise ValueError('run_count 必须为正整数或 None。')
     if cycle_mode == 'list' and song_name:
         raise ValueError('list cycle mode does not support song_name.')
-
+    
     if cycle_mode == 'single':
         plan = SingleLoopPlan(
             loop_count=run_count,
@@ -32,7 +33,7 @@ def auto_live(
             debug_enabled=debug_enabled,
             ap_multiplier=ap_multiplier,
             song_name=song_name,
-            auto_set_unit=conf().live.auto_set_unit,
+            auto_set_unit=auto_set_unit,
             song_select_mode='specified' if song_name else 'current',
         )
     elif cycle_mode == 'random':
@@ -41,7 +42,7 @@ def auto_live(
             play_mode=play_mode,
             debug_enabled=debug_enabled,
             ap_multiplier=ap_multiplier,
-            auto_set_unit=conf().live.auto_set_unit,
+            auto_set_unit=auto_set_unit,
             loop_song_mode='random',
         )
     elif cycle_mode == 'list':
@@ -50,7 +51,7 @@ def auto_live(
             play_mode=play_mode,
             debug_enabled=debug_enabled,
             ap_multiplier=ap_multiplier,
-            auto_set_unit=conf().live.auto_set_unit,
+            auto_set_unit=auto_set_unit,
         )
 
     reporter.message('返回首页准备进入演出')
