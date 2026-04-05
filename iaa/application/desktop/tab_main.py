@@ -11,6 +11,8 @@ from .index import DesktopApp
 from .tab_conf import SONG_KEEP_UNCHANGED, SONG_NAME_OPTIONS, normalize_song_name_input
 from iaa.context import hub as progress_hub
 from iaa.progress import TaskProgressEvent
+from iaa.tasks.live.live import SingleLoopPlan, ListLoopPlan
+from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 
 
 def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
@@ -364,6 +366,74 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     song_name_var = tk.StringVar(value=(conf.live.song_name or SONG_KEEP_UNCHANGED))
     last_single_song_name = {"value": song_name_var.get()}
 
+    # 内置预设定义
+    BUILTIN_PRESETS: dict[str, AutoLivePreset] = {
+      "clear": AutoLivePreset(
+        name="CLEAR 10 首歌",
+        plan=ListLoopPlan(
+          loop_count=10,
+          play_mode='game_auto',
+          ap_multiplier=1,
+        )
+      ),
+      "fc": AutoLivePreset(
+        name="FC 10 次",
+        plan=SingleLoopPlan(
+          loop_count=10,
+          play_mode='script_auto',
+          ap_multiplier=0,
+        )
+      ),
+      "leader": AutoLivePreset(
+        name="队长次数",
+        plan=SingleLoopPlan(
+          loop_count=30,
+          play_mode='script_auto',
+          ap_multiplier=0,
+        )
+      ),
+    }
+
+    def apply_preset(preset: AutoLivePreset) -> None:
+      """统一的预设应用函数"""
+      plan = preset.plan
+      
+      # 应用次数
+      if plan.loop_count is None:
+        count_mode_var.set("all")
+        count_var.set("10")
+      else:
+        count_mode_var.set("specify")
+        count_var.set(str(plan.loop_count))
+      
+      # 应用循环模式
+      if isinstance(plan, SingleLoopPlan):
+        loop_mode_var.set("single")
+        # 应用歌曲选择
+        if plan.song_select_mode == 'specified' and plan.song_name:
+          song_name_var.set(plan.song_name)
+        else:
+          song_name_var.set(SONG_KEEP_UNCHANGED)
+      elif isinstance(plan, ListLoopPlan):
+        if plan.loop_song_mode == 'random':
+          loop_mode_var.set("random")
+        else:
+          loop_mode_var.set("list")
+        song_name_var.set("")
+      
+      # 应用其他设置
+      auto_mode_var.set(plan.play_mode)
+      debug_enabled_var.set(plan.debug_enabled)
+      auto_set_unit_var.set(plan.auto_set_unit)
+      
+      if plan.ap_multiplier is None:
+        ap_multiplier_var.set("保持现状")
+      else:
+        ap_multiplier_var.set(str(plan.ap_multiplier))
+      
+      _sync_count_state()
+      _sync_loop_mode_state()
+
     def _center_window() -> None:
       win.update_idletasks()
       w = win.winfo_width()
@@ -382,36 +452,21 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
         y = (sh - h) // 2
       win.geometry(f"+{max(0, x)}+{max(0, y)}")
 
-    def _apply_preset_clear() -> None:
-      count_mode_var.set("specify")
-      count_var.set("10")
-      loop_mode_var.set("list")
-      auto_mode_var.set("game_auto")
-      ap_multiplier_var.set("1")
-      _sync_count_state()
-
-    def _apply_preset_fc() -> None:
-      count_mode_var.set("specify")
-      count_var.set("10")
-      loop_mode_var.set("single")
-      auto_mode_var.set("script_auto")
-      ap_multiplier_var.set("0")
-      _sync_count_state()
-
-    def _apply_preset_leader() -> None:
-      count_mode_var.set("specify")
-      count_var.set("30")
-      loop_mode_var.set("single")
-      auto_mode_var.set("script_auto")
-      ap_multiplier_var.set("0")
-      _sync_count_state()
+    def _apply_last_preset() -> None:
+      manager = LivePresetManager()
+      preset = manager.load_last_auto()
+      if preset is None:
+        messagebox.showinfo("提示", "没有找到上次设定", parent=win)
+        return
+      apply_preset(preset)
 
     row_preset = tb.Frame(body)
     row_preset.grid(row=0, column=0, sticky=tk.W, pady=(0, 10))
     tb.Label(row_preset, text="预设：", width=8, anchor=tk.W).pack(side=tk.LEFT)
-    tb.Button(row_preset, text="CLEAR 10 首歌", command=_apply_preset_clear).pack(side=tk.LEFT, padx=(8, 8))
-    tb.Button(row_preset, text="FC 10 次", command=_apply_preset_fc).pack(side=tk.LEFT, padx=(0, 8))
-    tb.Button(row_preset, text="队长次数", command=_apply_preset_leader).pack(side=tk.LEFT)
+    tb.Button(row_preset, text="上次设定", command=_apply_last_preset).pack(side=tk.LEFT, padx=(8, 8))
+    tb.Button(row_preset, text="CLEAR 10 首歌", command=lambda: apply_preset(BUILTIN_PRESETS["clear"])).pack(side=tk.LEFT, padx=(0, 8))
+    tb.Button(row_preset, text="FC 10 次", command=lambda: apply_preset(BUILTIN_PRESETS["fc"])).pack(side=tk.LEFT, padx=(0, 8))
+    tb.Button(row_preset, text="队长次数", command=lambda: apply_preset(BUILTIN_PRESETS["leader"])).pack(side=tk.LEFT)
 
     sep = tb.Separator(body, orient=tk.HORIZONTAL)
     sep.grid(row=1, column=0, sticky=tk.EW, pady=(0, 10))
@@ -520,17 +575,45 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
           messagebox.showerror("参数错误", "指定次数必须为正整数。", parent=win)
           return
         count = int(value)
-      kwargs = {
-        "run_count": (count if count_mode_var.get() == "specify" else None),
-        "cycle_mode": loop_mode_var.get(),
-        "play_mode": ("script_auto" if auto_mode_var.get() == "script_auto" else "game_auto"),
-        "debug_enabled": bool(debug_enabled_var.get()),
-        "ap_multiplier": (None if ap_multiplier_var.get() == "保持现状" else int(ap_multiplier_var.get())),
-        "song_name": normalize_song_name_input(song_name_var.get()),
-        "auto_set_unit": bool(auto_set_unit_var.get()),
-      }
+      
+      # 解析 AP 倍率
+      ap_mult_str = ap_multiplier_var.get()
+      ap_mult: int | None = None if ap_mult_str == "保持现状" else int(ap_mult_str)
+      
+      # 解析歌曲名称
+      song_name = normalize_song_name_input(song_name_var.get())
+      
+      # 构建 Plan 对象
+      loop_mode = loop_mode_var.get()
+      play_mode = "script_auto" if auto_mode_var.get() == "script_auto" else "game_auto"
+      
+      if loop_mode == "single":
+        plan = SingleLoopPlan(
+          loop_count=count,
+          song_select_mode='specified' if song_name else 'current',
+          song_name=song_name,
+          play_mode=play_mode,
+          debug_enabled=bool(debug_enabled_var.get()),
+          ap_multiplier=ap_mult,
+          auto_set_unit=bool(auto_set_unit_var.get()),
+        )
+      else:  # list or random
+        plan = ListLoopPlan(
+          loop_count=count,
+          loop_song_mode='random' if loop_mode == "random" else 'list_next',
+          play_mode=play_mode,
+          debug_enabled=bool(debug_enabled_var.get()),
+          ap_multiplier=ap_mult,
+          auto_set_unit=bool(auto_set_unit_var.get()),
+        )
+      
+      # 保存为上次设定
+      preset = AutoLivePreset(name="上次设定", plan=plan)
+      manager = LivePresetManager()
+      manager.save_last_auto(preset)
+      
       win.destroy()
-      sch.run_single("auto_live", run_in_thread=True, kwargs=kwargs)
+      sch.run_single("auto_live", run_in_thread=True, kwargs={"plan": plan})
       _refresh_power_button()
 
     tb.Button(btn_bar, text="开始", bootstyle="primary", command=_on_start).pack(side=tk.LEFT, padx=(0, 8))  # type: ignore[call-arg]

@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 from typing import Callable, Literal, TypeVar
 from typing_extensions import assert_never
+from pydantic import BaseModel, ConfigDict
 
 from kotonebot import logging
 from kotonebot.core import AnyOf, Prefab
@@ -23,28 +23,26 @@ PrefabClass = TypeVar('PrefabClass', bound=Prefab)
 ChallengeCharacterPrefab = tuple[PrefabClass, PrefabClass | None]
 
 
-@dataclass
-class LivePlan:
+class LivePlan(BaseModel):
+    model_config = ConfigDict(frozen=True)
+    
     play_mode: SoloPlayMode = 'game_auto'
     debug_enabled: bool = False
     ap_multiplier: int | None = None
     auto_set_unit: bool = False
 
 
-@dataclass
 class OncePlan(LivePlan):
     song_select_mode: SongChoiceMode = 'current'
     song_name: str | None = None
 
 
-@dataclass
 class SingleLoopPlan(LivePlan):
     loop_count: int | None = None
     song_select_mode: SongChoiceMode = 'current'
     song_name: str | None = None
 
 
-@dataclass
 class ListLoopPlan(LivePlan):
     loop_count: int | None = None
     loop_song_mode: LoopSongMode = 'list_next'
