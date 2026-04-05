@@ -89,7 +89,7 @@ CHALLENGE_AWARD_PREFABS: dict[ChallengeLiveAward, PrefabClass] = {
 def _skip():
     if server() == 'jp':
         device.click(1, 1)
-    elif server() == 'tw':
+    elif server() == 'tw' or server() == 'cn':
         # 台服要点侧边，点左上角没用
         device.click(6, 346)
     else:
