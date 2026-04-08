@@ -554,7 +554,7 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
       if current == "script_auto" and last_auto_mode != "script_auto":
         messagebox.showwarning(
           "提示",
-          "使用“脚本自动”时必须满足：\n1.当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3.使用 MuMu 模拟器且控制方法选择「nemu_ipc」\n4.分辨率为 16:9，支持 1280x720 及其等比例缩放（如 1600x900、1920x1080）\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担",
+          "使用“脚本自动”时必须满足：\n1.当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3.使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n4.分辨率为 16:9，支持 1280x720 及其等比例缩放（如 1600x900、1920x1080）\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担",
           parent=win,
         )
       if current == "script_auto":
