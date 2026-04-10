@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "definitions": {
+    "72af99e3-66cc-48cc-8dc5-c860a98862b7": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.Ad1.ButtonClose",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1148.7870628483965,
+          "y1": 26.155412488354333,
+          "x2": 1174.2285754301545,
+          "y2": 53.49707270323128
+        },
+        "region": {
+          "kind": "rect",
+          "x1": 1068.3138848461253,
+          "y1": 5.476864124367495,
+          "x2": 1271.7890384059683,
+          "y2": 202.8999308463425
+        }
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "exclude"
+      }
+    }
+  }
+}

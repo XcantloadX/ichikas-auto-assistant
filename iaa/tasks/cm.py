@@ -173,6 +173,22 @@ def clear_common_cm():
                 device.click_center() # 关闭奖励领取提示
                 rep.message('奖励已领取')
                 state = 1
+            # Applovin 广告特判
+            elif R.Cm.Ad1.ButtonClose.try_click():
+                logger.info('Close button clicked. (Applovin/GP ad?)')
+                sleep(1)
+                state = 1
+            elif R.Cm.Ad1.ButtonSkip.try_click():
+                logger.info('Skip button clicked. (Applovin/GP ad?)')
+                sleep(1)
+            # GooglePlay App 广告特判：
+            # 点击 skip 按钮后会自动跳转到商店页面，需要跳过回来
+            elif device.commands.current_package() != package_name():
+                logger.info('Returning to game from ad. (GP ad?)')
+                # device.commands.launch_app(package_name())
+                # 有些广告，调用 launch_app 会触发重新播放，导致无限循环
+                device.commands.adb_shell('adb shell am force-stop com.android.vending')
+                sleep(1)
             # 还在加载
             else:
                 rep.message('等待结果')
