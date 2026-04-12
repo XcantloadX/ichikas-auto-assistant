@@ -2,7 +2,7 @@ from kotonebot import device, task, Loop, action, sleep, logging
 
 from iaa.config.schemas import LinkAccountOptions
 from iaa.consts import package_name as get_package_name
-from iaa.context import conf, task_reporter
+from iaa.context import conf, task_reporter, server
 from . import R
 from .common import go_home
 
@@ -77,7 +77,7 @@ def start_game():
         
         # 检查是否需要登录
         link_account = conf().game.link_account
-        if link_account != 'no':
+        if server() == 'jp' and link_account != 'no':
             rep.message(f'通过 {link_account} 进行引继')
             login(link_account)
         
