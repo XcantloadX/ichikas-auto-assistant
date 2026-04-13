@@ -182,7 +182,15 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     phase_path = payload.get("phase_path")
     phase_parts: list[str] = []
     if isinstance(phase_path, list):
-      phase_parts = [str(p) for p in phase_path if isinstance(p, str) and p]
+      for p in phase_path:
+        if isinstance(p, dict):
+          name = p.get('name', '')
+          p_current = p.get('current')
+          p_total = p.get('total')
+          if isinstance(p_current, int) and isinstance(p_total, int):
+            phase_parts.append(f"{name} ({p_current}/{p_total})")
+          elif name:
+            phase_parts.append(str(name))
 
     if event.type == "task_failed":
       err = payload.get("error")
@@ -207,12 +215,6 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
     if message:
       parts.append(message)
     display_text = " > ".join([p for p in parts if p])
-
-    if current is not None:
-      if total is not None:
-        display_text = f"{display_text} ({current}/{total})"
-      else:
-        display_text = f"{display_text} ({current})"
 
     if display_text:
       progress_text_var.set(display_text)
