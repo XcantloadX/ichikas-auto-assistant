@@ -1,5 +1,6 @@
 import tkinter as tk
 import queue
+import threading
 
 import ttkbootstrap as tb
 from tkinter import messagebox
@@ -40,28 +41,76 @@ def build_control_tab(app: DesktopApp, parent: tk.Misc) -> None:
   btn_run_mission_rewards = None
   btn_run_ten_songs = None
   btn_run_main_story = None
+  export_state = {"busy": False, "prev_cursor": ""}
+
+  def _set_export_busy(busy: bool) -> None:
+    export_state["busy"] = busy
+    if busy:
+      try:
+        export_state["prev_cursor"] = str(app.root.cget("cursor"))
+      except Exception:
+        export_state["prev_cursor"] = ""
+      try:
+        app.root.configure(cursor="watch")
+      except Exception:
+        pass
+      try:
+        btn_export.configure(text="导出中...", state=tk.DISABLED)
+      except Exception:
+        pass
+    else:
+      try:
+        app.root.configure(cursor=export_state["prev_cursor"] or "")
+      except Exception:
+        pass
+      try:
+        btn_export.configure(text="导出报告", state=tk.NORMAL)
+      except Exception:
+        pass
 
   def _on_export_report() -> None:
-    try:
-      tmp_zip = app.service.export_report_zip()
-    except Exception as e:  # noqa: BLE001
-      messagebox.showerror("导出失败", f"生成报告失败：{e}", parent=app.root)
+    if export_state["busy"]:
       return
-    try:
-      initial_name = os.path.basename(tmp_zip)
-      save_path = filedialog.asksaveasfilename(
-        title="保存报告",
-        defaultextension=".zip",
-        initialfile=initial_name,
-        filetypes=[("Zip 文件", "*.zip")],
-        parent=app.root,
-      )
-      if not save_path:
+
+    _set_export_busy(True)
+    progress_text_var.set("正在导出报告并抓取截图...")
+
+    def _run_export() -> None:
+      try:
+        tmp_zip = app.service.export_report_zip()
+      except Exception as e:  # noqa: BLE001
+        app.root.after(0, lambda: _finish_export_error("导出失败", f"生成报告失败：{e}"))
         return
-      shutil.copyfile(tmp_zip, save_path)
-      messagebox.showinfo("导出成功", "报告已保存。", parent=app.root)
-    except Exception as e:  # noqa: BLE001
-      messagebox.showerror("保存失败", f"保存报告失败：{e}", parent=app.root)
+      app.root.after(0, lambda: _finish_export_success(tmp_zip))
+
+    def _finish_export_error(title: str, text: str) -> None:
+      _set_export_busy(False)
+      progress_text_var.set("就绪")
+      messagebox.showerror(title, text, parent=app.root)
+
+    def _finish_export_success(tmp_zip: str) -> None:
+      _set_export_busy(False)
+      progress_text_var.set("请选择报告保存位置")
+      try:
+        initial_name = os.path.basename(tmp_zip)
+        save_path = filedialog.asksaveasfilename(
+          title="保存报告",
+          defaultextension=".zip",
+          initialfile=initial_name,
+          filetypes=[("Zip 文件", "*.zip")],
+          parent=app.root,
+        )
+        if not save_path:
+          progress_text_var.set("就绪")
+          return
+        shutil.copyfile(tmp_zip, save_path)
+        progress_text_var.set("就绪")
+        messagebox.showinfo("导出成功", "报告已保存。", parent=app.root)
+      except Exception as e:  # noqa: BLE001
+        progress_text_var.set("就绪")
+        messagebox.showerror("保存失败", f"保存报告失败：{e}", parent=app.root)
+
+    threading.Thread(target=_run_export, name="IAA-ExportReport", daemon=True).start()
 
   # 右侧导出按钮
   btn_export = tb.Button(lf_power, text="导出报告", bootstyle="secondary", command=_on_export_report)  # type: ignore[call-arg]
