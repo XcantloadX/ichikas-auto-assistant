@@ -9,7 +9,8 @@ from kotonebot.backend import image
 from . import R
 from iaa.config.schemas import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
-from iaa.game_ui.list_view import ListViewItem, ListView
+from iaa.game_ui.list_view import ListViewItem
+from iaa.game_ui.side_tabbar import SideTabbar
 
 logger = logging.getLogger(__name__)
 
@@ -173,13 +174,11 @@ def _purchase(item: ListViewItem):
             logger.info("Purchase successful")
             return True
 
-@task('活动商店', screenshot_mode='manual')
-def event_shop() -> None:
+def _do_single() -> None:
     rep = task_reporter()
     targets = list(get_conf().event_shop.purchase_items)
     all_items = list(ShopItem)
     
-    goto_event_shop()
     view = R.Shop.EventShopListView.require()
     assert view.scrollable is not None
     view.scrollable.measure_bounds()
@@ -228,3 +227,18 @@ def event_shop() -> None:
 
                 logger.info("Skipping target item %s because it cannot be purchased now", target.display(server()))
                 break
+
+@task('活动商店', screenshot_mode='manual')
+def event_shop():
+    goto_event_shop()
+
+    rep = task_reporter()
+    sidebar = SideTabbar()
+    tabs = sidebar.update().tabs
+    if len(tabs) == 0:
+        logger.warning("No tabs found in sidebar. Continuing without switching tabs.")
+        
+    with rep.phase('活动', total=len(tabs)):
+        for tab in tabs:
+            sidebar.switch_to(tab)
+            _do_single()
