@@ -373,6 +373,8 @@ def _enter_song_select() -> None:
         elif at_song_select():
             logger.debug('Now at song select.')
             break
+        else:
+            _skip()
 
 
 def _prepare_solo_live(song_select_mode: SongChoiceMode | Literal['list_next'], song_name: str | None) -> None:
