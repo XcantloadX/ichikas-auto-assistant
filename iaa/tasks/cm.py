@@ -133,11 +133,12 @@ def clear_common_cm():
             elif R.Cm.ButtonPlayCm.try_click():
                 rep.message('播放广告')
                 logger.debug('Clicked CM start button.')
-                sleep(0.2)
+                sleep(1)
             # 没有剩余广告了
             else:
-                logger.info('All ads cleared.')
-                break
+                if not R.Hud.ButtonGoBack.exists():
+                    logger.info('All ads cleared.')
+                    break
         elif state == 2:
             if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
                 rep.message('等待广告载入')
