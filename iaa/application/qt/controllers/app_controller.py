@@ -1,9 +1,12 @@
 from __future__ import annotations
 
-from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl
+from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QCoreApplication
 from PySide6.QtGui import QDesktopServices
+from PySide6.QtWidgets import QMessageBox
 
 from iaa.application.service.iaa_service import IaaService
+from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
+from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
 from .progress_bridge import ProgressBridge
@@ -19,7 +22,34 @@ class AppController(QObject):
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
-        self.service = IaaService()
+        try:
+            self.service = IaaService()
+        except ConfigValidationError as e:
+            from iaa.config import manager
+
+            field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
+            msg = f"以下配置项校验失败：\n{field_list}\n\n错误详情：\n{e.error_details}\n\n是否重置这些为默认值？"
+
+            reply = QMessageBox.question(
+                None,
+                "一歌小助手",
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+
+            if reply == QMessageBox.StandardButton.Yes:
+                manager.fallback_invalid_fields(DEFAULT_CONFIG_NAME, e.invalid_fields)
+                self.service = IaaService()
+            else:
+                QMessageBox.warning(
+                    None,
+                    "一歌小助手",
+                    "配置校验失败，未重置。程序即将退出。",
+                    QMessageBox.StandardButton.Ok
+                )
+                QCoreApplication.exit(1)
+        
         self.progressBridge = ProgressBridge(self)
         self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
