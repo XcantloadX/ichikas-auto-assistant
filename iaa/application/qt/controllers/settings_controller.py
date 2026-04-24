@@ -1,19 +1,17 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QObject, Signal, Slot
+from PySide6.QtQml import QJSValue
 
-from iaa.config.schemas import (
-    ChallengeLiveAward,
-    CustomEmulatorData,
-    GameCharacter,
-    MuMuEmulatorData,
-    PhysicalAndroidData,
-    ShopItem,
-)
+from iaa.config.schemas import MuMuEmulatorData, ShopItem
 
+from ..dsl import FormContext, FormMeta
+from ..engine.form_engine import FormEngine
+from ..engine.form_state import FormState
+from ..forms.settings_form import build_settings_form
 from ..models import (
     CONTROL_IMPL_DISPLAY_MAP,
     DEFAULT_MUMU_INSTANCE_LABEL,
@@ -21,25 +19,122 @@ from ..models import (
     LINK_DISPLAY_MAP,
     RESOLUTION_METHOD_DISPLAY_MAP,
     SERVER_DISPLAY_MAP,
-    SONG_KEEP_UNCHANGED,
     SONG_NAME_OPTIONS,
     challenge_awards_for_ui,
     challenge_character_groups_for_ui,
     challenge_characters_for_ui,
-    normalize_song_name_input,
 )
+
 if TYPE_CHECKING:
     from iaa.application.service.iaa_service import IaaService
+
+
+def _normalize_qt_value(value: Any) -> Any:
+    """Convert QML-passed values into plain Python containers/scalars."""
+    if isinstance(value, QJSValue):
+        return _normalize_qt_value(value.toVariant())
+    if isinstance(value, list):
+        return [_normalize_qt_value(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(_normalize_qt_value(item) for item in value)
+    if isinstance(value, dict):
+        return {key: _normalize_qt_value(item) for key, item in value.items()}
+    return value
 
 
 class SettingsController(QObject):
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
     configSwitched = Signal()
+    runtimeChanged = Signal()
+    dirtyChanged = Signal(bool)
 
     def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
+        self._spec, self._form_hooks = build_settings_form()
+        self._engine = FormEngine(self._spec)
+        self._state = FormState(self._make_context())
+        self._runtime: dict[str, Any] = {}
+        self._recompute_runtime()
+
+    def _make_context(self) -> FormContext:
+        return FormContext(
+            conf=self._iaa.config.conf,
+            shared=self._iaa.config.shared,
+            meta=self._build_meta(),
+        )
+
+    def _sync_context_back(self) -> None:
+        self._iaa.config.conf = self._state.context.conf
+        self._iaa.config.shared = self._state.context.shared
+
+    def _reload(self) -> None:
+        self._state.reset(self._make_context())
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+
+    def _build_meta(self) -> FormMeta:
+        return FormMeta(
+            profiles=[{'value': name, 'label': name} for name in self._iaa.config.list()],
+            emulators=[{'value': key, 'label': label} for key, label in EMULATOR_DISPLAY_MAP.items()],
+            servers=[{'value': key, 'label': label} for key, label in SERVER_DISPLAY_MAP.items()],
+            linkAccounts=[{'value': key, 'label': label} for key, label in LINK_DISPLAY_MAP.items()],
+            controlImpls=[{'value': key, 'label': label} for key, label in CONTROL_IMPL_DISPLAY_MAP.items()],
+            resolutionMethods=[
+                {'value': key, 'label': label} for key, label in RESOLUTION_METHOD_DISPLAY_MAP.items()
+            ],
+            songNames=SONG_NAME_OPTIONS,
+            apMultipliers=['保持现状', *[str(i) for i in range(0, 11)]],
+            challengeCharacterGroups=challenge_character_groups_for_ui(),
+            challengeCharacters=challenge_characters_for_ui(),
+            challengeAwards=challenge_awards_for_ui(),
+            eventShopItems=[{'value': item.value, 'label': item.display('cn')} for item in ShopItem],
+            mumuInstances=[{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
+        )
+
+    def _recompute_runtime(self) -> None:
+        runtime = self._engine.build_runtime(self._state.context)
+        runtime['dirty'] = self._state.dirty
+        runtime['profileName'] = self._iaa.config.current_config_name
+        self._runtime = runtime
+
+    def _get_mumu_instance_id(self) -> str:
+        conf = self._state.context.conf
+        if conf.game.emulator in {'mumu', 'mumu_v5'} and isinstance(conf.game.emulator_data, MuMuEmulatorData):
+            return conf.game.emulator_data.instance_id or ''
+        return ''
+
+    def _set_mumu_instance_id(self, selected_id: str) -> None:
+        conf = self._state.context.conf
+        if conf.game.emulator not in {'mumu', 'mumu_v5'}:
+            return
+        if not isinstance(conf.game.emulator_data, MuMuEmulatorData):
+            conf.game.emulator_data = MuMuEmulatorData()
+        conf.game.emulator_data.instance_id = selected_id or None
+
+    def _refresh_mumu_runtime(self, preferred_id: str = '', show_notice: bool = True) -> None:
+        emulator = str(self._state.context.conf.game.emulator or '')
+        payload = json.loads(self._build_mumu_instances_payload(emulator, preferred_id))
+        self._state.context.meta.mumuInstances = payload.get(
+            'items', [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+        )
+
+        selected_id = str(payload.get('selectedId', '') or '')
+        if selected_id != self._get_mumu_instance_id():
+            self._set_mumu_instance_id(selected_id)
+
+        self._sync_context_back()
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+
+        if show_notice:
+            if payload.get('ok'):
+                self.operationSucceeded.emit(str(payload.get('statusText', '已刷新 MuMu 实例')))
+            else:
+                self.operationFailed.emit(str(payload.get('statusText', '刷新 MuMu 实例失败')))
 
     def _build_mumu_instances_payload(self, emulator: str, preferred_id: str = '') -> str:
         if emulator not in {'mumu', 'mumu_v5'}:
@@ -58,7 +153,7 @@ class SettingsController(QObject):
             host_cls = Mumu12Host if emulator == 'mumu' else Mumu12V5Host
             instances = host_cls.list()
             saved_id = ''
-            conf = self._iaa.config.conf
+            conf = self._state.context.conf
             if (
                 conf.game.emulator == emulator
                 and isinstance(conf.game.emulator_data, MuMuEmulatorData)
@@ -101,162 +196,87 @@ class SettingsController(QObject):
             )
 
     @Slot(result=str)
+    def getRuntime(self) -> str:
+        return json.dumps(self._runtime, ensure_ascii=False)
+
+    @Slot(result=bool)
+    def isDirty(self) -> bool:
+        return self._state.dirty
+
+    @Slot(result=str)
+    def currentProfileName(self) -> str:
+        return self._iaa.config.current_config_name
+
+    @Slot(result=str)
+    def profilesJson(self) -> str:
+        profiles = self._state.context.meta.profiles
+        return json.dumps({'profiles': profiles}, ensure_ascii=False)
+
+    @Slot(result=str)
     def optionsJson(self) -> str:
-        options = {
-            'profiles': [{'value': name, 'label': name} for name in self._iaa.config.list()],
-            'emulators': [{'value': key, 'label': label} for key, label in EMULATOR_DISPLAY_MAP.items()],
-            'servers': [{'value': key, 'label': label} for key, label in SERVER_DISPLAY_MAP.items()],
-            'linkAccounts': [{'value': key, 'label': label} for key, label in LINK_DISPLAY_MAP.items()],
-            'controlImpls': [{'value': key, 'label': label} for key, label in CONTROL_IMPL_DISPLAY_MAP.items()],
-            'resolutionMethods': [
-                {'value': key, 'label': label} for key, label in RESOLUTION_METHOD_DISPLAY_MAP.items()
-            ],
-            'songNames': SONG_NAME_OPTIONS,
-            'apMultipliers': ['保持现状', *[str(i) for i in range(0, 11)]],
-            'challengeCharacterGroups': challenge_character_groups_for_ui(),
-            'challengeCharacters': challenge_characters_for_ui(),
-            'challengeAwards': challenge_awards_for_ui(),
-            'eventShopItems': [{'value': item.value, 'label': item.display('cn')} for item in ShopItem],
-            'mumuInstances': [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
-        }
-        return json.dumps(options, ensure_ascii=False)
+        return json.dumps(self._state.context.meta.model_dump(mode='json'), ensure_ascii=False)
 
-    @Slot(result=str)
-    def stateJson(self) -> str:
-        conf = self._iaa.config.conf
-        emulator_data = conf.game.emulator_data
-        state = {
-            'profileName': self._iaa.config.current_config_name,
-            'game': {
-                'emulator': conf.game.emulator,
-                'server': conf.game.server,
-                'linkAccount': conf.game.link_account,
-                'controlImpl': conf.game.control_impl,
-                'checkEmulator': bool(conf.game.check_emulator),
-                'scrcpyVirtualDisplay': bool(conf.game.scrcpy_virtual_display),
-                'resolutionMethod': conf.game.resolution_method,
-                'mumuInstanceId': (
-                    emulator_data.instance_id
-                    if conf.game.emulator in {'mumu', 'mumu_v5'} and isinstance(emulator_data, MuMuEmulatorData)
-                    else ''
-                ),
-                'physicalAndroidSerial': (
-                    (emulator_data.adb_serial or '').strip()
-                    if conf.game.emulator == 'physical_android' and isinstance(emulator_data, PhysicalAndroidData)
-                    else ''
-                ),
-                'customAdbIp': (
-                    emulator_data.adb_ip
-                    if conf.game.emulator == 'custom' and isinstance(emulator_data, CustomEmulatorData)
-                    else '127.0.0.1'
-                ),
-                'customAdbPort': str(
-                    emulator_data.adb_port
-                    if conf.game.emulator == 'custom' and isinstance(emulator_data, CustomEmulatorData)
-                    else 5555
-                ),
-                'customEmulatorPath': (
-                    emulator_data.emulator_path
-                    if conf.game.emulator == 'custom' and isinstance(emulator_data, CustomEmulatorData)
-                    else ''
-                ),
-                'customEmulatorArgs': (
-                    emulator_data.emulator_args
-                    if conf.game.emulator == 'custom' and isinstance(emulator_data, CustomEmulatorData)
-                    else ''
-                ),
-            },
-            'live': {
-                'songName': conf.live.song_name or SONG_KEEP_UNCHANGED,
-                'autoSetUnit': bool(conf.live.auto_set_unit),
-                'apMultiplier': '保持现状' if conf.live.ap_multiplier is None else str(conf.live.ap_multiplier),
-                'appendFc': bool(conf.live.append_fc),
-                'appendRandom': bool(conf.live.prepend_random),
-            },
-            'challengeLive': {
-                'characters': [character.value for character in conf.challenge_live.characters],
-                'award': conf.challenge_live.award.value,
-            },
-            'cm': {'watchAdWaitSec': str(int(conf.cm.watch_ad_wait_sec))},
-            'eventShop': {'selectedItems': [item.value for item in conf.event_shop.purchase_items]},
-            'telemetry': {'sentry': bool(self._iaa.config.shared.telemetry.sentry)},
-        }
-        return json.dumps(state, ensure_ascii=False)
-
-    @Slot(result=str)
-    def refreshMumuInstancesJson(self) -> str:
-        conf = self._iaa.config.conf
-        return self._build_mumu_instances_payload(conf.game.emulator)
-
-    @Slot(str, str, result=str)
-    def refreshMumuInstancesJsonFor(self, emulator: str, preferred_id: str) -> str:
-        return self._build_mumu_instances_payload(str(emulator or ''), str(preferred_id or ''))
-
-    @Slot(str)
-    def saveJson(self, state_json: str) -> None:
+    @Slot(str, 'QVariant')
+    def setValue(self, field_id: str, value: Any) -> None:
         try:
-            state = json.loads(state_json)
-            conf = self._iaa.config.conf
-            game = state['game']
-            live = state['live']
-            challenge = state['challengeLive']
-            cm = state['cm']
-            event_shop = state['eventShop']
-            telemetry = state['telemetry']
+            field = self._engine.find_field(field_id)
+            if field is None:
+                raise KeyError(f'Unknown field id: {field_id}')
 
-            conf.game.emulator = game['emulator']
-            conf.game.server = game['server']
-            conf.game.link_account = 'no' if conf.game.server == 'tw' else game['linkAccount']
-            conf.game.control_impl = game['controlImpl']
-            conf.game.check_emulator = bool(game['checkEmulator'])
-            conf.game.scrcpy_virtual_display = bool(game['scrcpyVirtualDisplay'])
-            conf.game.resolution_method = game['resolutionMethod']
+            value = _normalize_qt_value(value)
+            field.ref.set(self._state.context, value)
+            if field.on_change:
+                field.on_change(self._state.context, value)
+            for hook in self._form_hooks:
+                hook(self._state.context)
 
-            if conf.game.emulator in {'mumu', 'mumu_v5'}:
-                conf.game.emulator_data = MuMuEmulatorData(instance_id=(game.get('mumuInstanceId') or '') or None)
-            elif conf.game.emulator == 'custom':
-                raw_port = str(game.get('customAdbPort') or '').strip() or '5555'
-                conf.game.emulator_data = CustomEmulatorData(
-                    adb_ip=(game.get('customAdbIp') or '').strip() or '127.0.0.1',
-                    adb_port=int(raw_port),
-                    emulator_path=(game.get('customEmulatorPath') or '').strip(),
-                    emulator_args=(game.get('customEmulatorArgs') or '').strip(),
-                )
-            elif conf.game.emulator == 'physical_android':
-                conf.game.emulator_data = PhysicalAndroidData(
-                    adb_serial=(game.get('physicalAndroidSerial') or '').strip()
-                )
-            else:
-                conf.game.emulator_data = None
+            self._sync_context_back()
+            self._recompute_runtime()
+            self.runtimeChanged.emit()
+            self.dirtyChanged.emit(self._state.dirty)
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(f'设置字段失败：{exc}')
 
-            conf.live.song_name = normalize_song_name_input(live['songName'])
-            conf.live.auto_set_unit = bool(live['autoSetUnit'])
-            conf.live.ap_multiplier = None if live['apMultiplier'] == '保持现状' else int(live['apMultiplier'])
-            conf.live.append_fc = bool(live['appendFc'])
-            conf.live.prepend_random = bool(live['appendRandom'])
+    @Slot(str, str, str)
+    def triggerAction(self, field_id: str, action: str, payload_json: str = '{}') -> None:
+        _ = payload_json
+        if field_id == 'game.mumuInstanceId' and action == 'refresh':
+            preferred_id = self._get_mumu_instance_id()
+            self._refresh_mumu_runtime(preferred_id=preferred_id, show_notice=True)
+            return
+        if field_id == 'game.resolutionMethod' and action == 'resetResolution':
+            self.resetResolution()
+            return
+        self.operationFailed.emit(f'不支持的动作: {field_id}.{action}')
 
-            conf.challenge_live.characters = [GameCharacter(character) for character in challenge['characters']]
-            conf.challenge_live.award = ChallengeLiveAward(challenge['award'])
-
-            raw_wait_sec = str(cm['watchAdWaitSec']).strip()
-            if not raw_wait_sec:
-                raise ValueError('CM 广告等待秒数不能为空')
-            wait_sec = int(raw_wait_sec)
-            if wait_sec <= 0:
-                raise ValueError('CM 广告等待秒数必须大于 0')
-            conf.cm.watch_ad_wait_sec = wait_sec
-
-            conf.event_shop.purchase_items = [ShopItem(item_id) for item_id in event_shop.get('selectedItems', [])]
-            self._iaa.config.shared.telemetry.sentry = bool(telemetry['sentry'])
-            self._iaa.config.save_shared()
+    @Slot()
+    def save(self) -> None:
+        try:
+            self._sync_context_back()
+            self._iaa.config.save()
+            self._state.mark_saved()
+            self._state.context.meta = self._build_meta()
+            self._recompute_runtime()
+            self.runtimeChanged.emit()
+            self.dirtyChanged.emit(self._state.dirty)
             self.operationSucceeded.emit('保存成功')
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(f'保存失败：{exc}')
 
     @Slot()
+    def discard(self) -> None:
+        self._state.discard()
+        self._sync_context_back()
+        self._state.context.meta = self._build_meta()
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+
+    @Slot()
     def resetResolution(self) -> None:
         device = self._iaa.scheduler.device
         if device is None:
+
             def on_success() -> None:
                 self._do_reset_resolution()
 
@@ -282,6 +302,7 @@ class SettingsController(QObject):
     def switchProfile(self, name: str) -> bool:
         try:
             self._iaa.config.switch_config(name)
+            self._reload()
             self.configSwitched.emit()
             self.operationSucceeded.emit(f'已切换到配置: {name}')
             return True
@@ -296,6 +317,7 @@ class SettingsController(QObject):
     def createProfile(self, name: str) -> bool:
         try:
             self._iaa.config.create(name)
+            self._reload()
             self.configSwitched.emit()
             self.operationSucceeded.emit(f'已创建并切换到配置: {name}')
             return True
@@ -307,6 +329,7 @@ class SettingsController(QObject):
     def deleteProfile(self, name: str) -> bool:
         try:
             deleted_current = self._iaa.config.delete(name)
+            self._reload()
             if deleted_current:
                 self.configSwitched.emit()
             self.operationSucceeded.emit(f'已删除配置: {name}')
@@ -325,6 +348,7 @@ class SettingsController(QObject):
     def renameProfile(self, old_name: str, new_name: str) -> bool:
         try:
             renamed_current = self._iaa.config.rename(old_name, new_name)
+            self._reload()
             if renamed_current:
                 self.configSwitched.emit()
             self.operationSucceeded.emit(f'已重命名为: {new_name}')

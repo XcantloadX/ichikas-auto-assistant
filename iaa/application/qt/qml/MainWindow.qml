@@ -33,7 +33,7 @@ ApplicationWindow {
             id: sideNav
             Layout.fillHeight: true
             model: ["控制", "配置", "关于"]
-            currentConfig: settingsController.stateJson() ? JSON.parse(settingsController.stateJson()).profileName || "default" : "default"
+            currentConfig: settingsController.currentProfileName() || "default"
 
             onCurrentChanging: function(index, previousIndex) {
                 var previousPage = stack.children[previousIndex]
@@ -61,7 +61,7 @@ ApplicationWindow {
             target: settingsController
             function onConfigSwitched() {
                 sideNav.reloadConfigs();
-                sideNav.currentConfig = settingsController.stateJson() ? JSON.parse(settingsController.stateJson()).profileName || "default" : "default";
+                sideNav.currentConfig = settingsController.currentProfileName() || "default";
             }
         }
 
@@ -79,6 +79,7 @@ ApplicationWindow {
 
             SettingsPage {
                 id: settingsPage
+                formController: settingsController
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
             }
 

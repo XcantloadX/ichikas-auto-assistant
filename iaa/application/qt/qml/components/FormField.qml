@@ -3,12 +3,15 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 RowLayout {
-    property string labelText: ""
+    id: root
+    property var labelText: null
     property alias control: controlLoader.sourceComponent
+    readonly property bool hasLabel: labelText !== null && labelText !== undefined
 
     Label {
-        text: labelText
-        Layout.preferredWidth: 120
+        visible: root.hasLabel
+        text: root.hasLabel ? String(root.labelText) : ""
+        Layout.preferredWidth: root.hasLabel ? 120 : 0
         Layout.alignment: Qt.AlignVCenter
     }
 
