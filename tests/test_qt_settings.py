@@ -28,13 +28,23 @@ def make_conf() -> IaaConfig:
     )
 
 
+def make_config_service(conf: IaaConfig, *, save: Mock | None = None) -> SimpleNamespace:
+    return SimpleNamespace(
+        conf=conf,
+        save=save or Mock(),
+        save_shared=Mock(),
+        current_config_name='test',
+        shared=SimpleNamespace(telemetry=SimpleNamespace(sentry=None)),
+    )
+
+
 class SettingsControllerTests(unittest.TestCase):
     def test_save_json_forces_tw_link_account_to_no(self) -> None:
         conf = make_conf()
-        save = Mock()
+        config_service = make_config_service(conf, save=Mock())
         controller = SettingsController(
             SimpleNamespace(
-                config=SimpleNamespace(conf=conf, save=save),
+                config=config_service,
                 scheduler=SimpleNamespace(device=None, connect_device=Mock()),
             )
         )
@@ -44,7 +54,8 @@ class SettingsControllerTests(unittest.TestCase):
         controller.saveJson(json.dumps(state, ensure_ascii=False))
         self.assertEqual(conf.game.server, 'tw')
         self.assertEqual(conf.game.link_account, 'no')
-        save.assert_called_once()
+        config_service.save.assert_not_called()
+        config_service.save_shared.assert_called_once()
 
     @patch('kotonebot.client.host.Mumu12V5Host.list')
     def test_refresh_mumu_instances_preserves_existing_selection(self, list_mock: Mock) -> None:
@@ -52,7 +63,7 @@ class SettingsControllerTests(unittest.TestCase):
         conf = make_conf()
         controller = SettingsController(
             SimpleNamespace(
-                config=SimpleNamespace(conf=conf, save=Mock()),
+                config=make_config_service(conf, save=Mock()),
                 scheduler=SimpleNamespace(device=None, connect_device=Mock()),
             )
         )
@@ -66,7 +77,7 @@ class SettingsControllerTests(unittest.TestCase):
         conf = make_conf()
         controller = SettingsController(
             SimpleNamespace(
-                config=SimpleNamespace(conf=conf, save=Mock()),
+                config=make_config_service(conf, save=Mock()),
                 scheduler=SimpleNamespace(device=None, connect_device=Mock()),
             )
         )
@@ -79,7 +90,7 @@ class SettingsControllerTests(unittest.TestCase):
         conf.game.emulator_data = MuMuEmulatorData(instance_id='42')
         controller = SettingsController(
             SimpleNamespace(
-                config=SimpleNamespace(conf=conf, save=Mock()),
+                config=make_config_service(conf, save=Mock()),
                 scheduler=SimpleNamespace(device=None, connect_device=Mock()),
             )
         )

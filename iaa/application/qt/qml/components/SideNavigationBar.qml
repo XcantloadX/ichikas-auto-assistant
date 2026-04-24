@@ -13,10 +13,22 @@ Rectangle {
     property var model: []
     property int currentIndex: 0
     property int previousIndex: 0
+    property var configNames: []
+    property string currentConfig: "default"
     signal currentChanging(int index, int previousIndex)
+    signal configSwitchRequested(string name)
+    signal openConfigManager()
 
     function confirmSwitch(index) {
         root.currentIndex = index
+    }
+
+    function reloadConfigs() {
+        configNames = JSON.parse(settingsController.optionsJson()).profiles || [];
+    }
+
+    Component.onCompleted: {
+        reloadConfigs();
     }
 
     ColumnLayout {
@@ -78,9 +90,38 @@ Rectangle {
             }
         }
 
-        ComboBox {
+        RowLayout {
             Layout.fillWidth: true
-            model: ["默认配置"]
+            spacing: 8
+
+            ComboBox {
+                Layout.fillWidth: true
+                model: root.configNames
+                textRole: "label"
+                valueRole: "value"
+                currentIndex: {
+                    for (var i = 0; i < model.length; i++) {
+                        if (model[i].value === root.currentConfig) return i;
+                    }
+                    return 0;
+                }
+                enabled: !runController.running && !runController.isStarting && !runController.isStopping
+                onActivated: {
+                    var selected = currentValue;
+                    if (selected && selected !== root.currentConfig) {
+                        root.configSwitchRequested(selected);
+                    }
+                }
+            }
+
+            Button {
+                Layout.preferredWidth: 32
+                Layout.preferredHeight: 32
+                text: "⚙"
+                font.pixelSize: 16
+                enabled: !runController.running && !runController.isStarting && !runController.isStopping
+                onClicked: root.openConfigManager()
+            }
         }
 
         ListView {

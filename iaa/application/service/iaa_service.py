@@ -8,18 +8,17 @@ from datetime import datetime
 from functools import cached_property
 
 import cv2
-import numpy as np
 
 from .config_service import ConfigService
 from .assets_service import AssetsService
 from .scheduler import SchedulerService
 
 class IaaService:
-    def __init__(self):
+    def __init__(self, config_name: str | None = None):
         # 首先配置日志
         self.__configure_logging()
         
-        self.config = ConfigService(self)
+        self.config = ConfigService(self, config_name=config_name)
         self.assets = AssetsService(self)
         self.scheduler = SchedulerService(self)
 

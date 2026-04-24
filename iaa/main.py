@@ -1,12 +1,14 @@
 import argparse
+import os
+import sys
 from typing import Sequence
 from dataclasses import dataclass
 
 from kotonebot.backend import debug
 
-import iaa.application.service.config_service as config_service_module
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
+from iaa.config import manager
 from iaa.telemetry import setup as setup_telemetry
 from iaa.tasks.registry import MANUAL_TASKS, REGULAR_TASKS, list_task_infos
 
@@ -17,7 +19,7 @@ ALL_TASK_IDS = tuple([*REGULAR_TASKS.keys(), *MANUAL_TASKS.keys()])
 class CliAction:
     kind: str
     task_ids: tuple[str, ...] = ()
-    config_name: str = 'default'
+    config_name: str | None = None
     debug_enabled: bool = False
     auto_live_kwargs: dict[str, object] | None = None
     help_text: str | None = None
@@ -25,7 +27,7 @@ class CliAction:
 
 def add_common_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--debug', '-d', action='store_true', help='Enable debug mode')
-    parser.add_argument('--config', '-c', default='default', help='Configuration name to use')
+    parser.add_argument('--config', '-c', default=None, help='Configuration name to use')
 
 
 def add_auto_live_args(parser: argparse.ArgumentParser) -> None:
@@ -173,9 +175,27 @@ def print_task_list() -> None:
         )
 
 
+def cli_root_dir() -> str:
+    if not os.path.basename(sys.executable).startswith('python'):
+        return os.path.dirname(sys.executable)
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+
+def validate_cli_config_selection(action: CliAction) -> None:
+    if action.config_name is not None or action.kind not in {'run_regular', 'invoke_tasks'}:
+        return
+
+    manager.config_path = os.path.join(cli_root_dir(), 'conf')
+    configs = manager.list()
+    if len(configs) <= 1:
+        return
+
+    names = ', '.join(configs)
+    raise RuntimeError(f"Multiple configs found ({names}). Please specify one with -c/--config.")
+
+
 def execute_cli_action(action: CliAction) -> int:
     configure_debug(action.debug_enabled)
-    config_service_module.DEFAULT_CONFIG_NAME = action.config_name
 
     if action.kind == 'list_tasks':
         print_task_list()
@@ -186,12 +206,14 @@ def execute_cli_action(action: CliAction) -> int:
             print(action.help_text, end='')
         return 0
 
-    iaa = IaaService()
-
     if action.kind == 'list_configs':
-        for name in iaa.config.list():
+        manager.config_path = os.path.join(cli_root_dir(), 'conf')
+        for name in manager.list():
             print(name)
         return 0
+
+    validate_cli_config_selection(action)
+    iaa = IaaService(config_name=action.config_name)
 
     if action.kind == 'invoke_tasks':
         for task_id in action.task_ids:
@@ -213,7 +235,7 @@ def execute_cli_action(action: CliAction) -> int:
 
 def main(argv: Sequence[str] | None = None) -> int:
     action = parse_cli_action(argv)
-    setup_telemetry(config_name=action.config_name)
+    setup_telemetry()
     return execute_cli_action(action)
 
 

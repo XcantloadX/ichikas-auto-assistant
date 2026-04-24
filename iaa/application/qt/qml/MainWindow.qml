@@ -33,7 +33,8 @@ ApplicationWindow {
             id: sideNav
             Layout.fillHeight: true
             model: ["控制", "配置", "关于"]
-            
+            currentConfig: settingsController.stateJson() ? JSON.parse(settingsController.stateJson()).profileName || "default" : "default"
+
             onCurrentChanging: function(index, previousIndex) {
                 var previousPage = stack.children[previousIndex]
                 if (previousPage && typeof previousPage.hasUnsavedChanges === "function" && previousPage.hasUnsavedChanges()) {
@@ -43,6 +44,24 @@ ApplicationWindow {
                 } else {
                     sideNav.confirmSwitch(index)
                 }
+            }
+
+            onConfigSwitchRequested: function(name) {
+                if (settingsController.switchProfile(name)) {
+                    sideNav.currentConfig = name;
+                }
+            }
+
+            onOpenConfigManager: {
+                configManagerDialog.open()
+            }
+        }
+
+        Connections {
+            target: settingsController
+            function onConfigSwitched() {
+                sideNav.reloadConfigs();
+                sideNav.currentConfig = settingsController.stateJson() ? JSON.parse(settingsController.stateJson()).profileName || "default" : "default";
             }
         }
 
@@ -70,6 +89,10 @@ ApplicationWindow {
     AutoLiveDialog {
         id: autoLiveDialog
         onShowNotice: function(kind, text) { window.showNotice(kind, text) }
+    }
+
+    ConfigManagerDialog {
+        id: configManagerDialog
     }
 
     // ScrcpyWindow {}

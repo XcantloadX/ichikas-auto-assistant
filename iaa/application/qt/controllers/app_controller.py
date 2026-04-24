@@ -55,14 +55,18 @@ class AppController(QObject):
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
         self.settingsController = SettingsController(self.service, self)
         self._global_error = ''
-        self._telemetry_consent_required = self.service.config.conf.telemetry.sentry is None
-        setup_telemetry(self.service.config.conf)
+        self._telemetry_consent_required = self.service.config.shared.telemetry.sentry is None
+        setup_telemetry()
 
         self.runController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.runController.operationFailed.connect(self.reportError)
         self.settingsController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.settingsController.operationFailed.connect(self.reportError)
+        self.settingsController.configSwitched.connect(self._on_config_switched)
         self.service.scheduler.on_error = self._on_scheduler_error
+
+    def _on_config_switched(self) -> None:
+        self.runController.tasksChanged.emit()
 
     def _on_scheduler_error(self, exc: Exception) -> None:
         self.reportError(str(exc))
@@ -107,8 +111,8 @@ class AppController(QObject):
 
     @Slot(bool)
     def setTelemetryConsent(self, allowed: bool) -> None:
-        self.service.config.conf.telemetry.sentry = allowed
-        self.service.config.save()
+        self.service.config.shared.telemetry.sentry = allowed
+        self.service.config.save_shared()
         self._telemetry_consent_required = False
         self.telemetryConsentRequiredChanged.emit()
         self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')

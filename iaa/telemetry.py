@@ -5,7 +5,6 @@ from asyncio import CancelledError
 
 from iaa import __VERSION__
 from iaa.config import manager
-from iaa.config.base import IaaConfig
 
 logger = logging.getLogger(__name__)
 
@@ -18,27 +17,27 @@ def _root_dir() -> str:
     return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 
-def _load_config(config_name: str) -> IaaConfig:
+def _load_shared():
     manager.config_path = os.path.join(_root_dir(), 'conf')
-    return manager.read(config_name, not_exist='create')
+    return manager.read_shared()
 
 
 def is_dev() -> bool:
     return os.path.basename(sys.executable).startswith('python')
 
 
-def is_enabled(config: IaaConfig | None = None, *, config_name: str = 'default') -> bool:
-    conf = config or _load_config(config_name)
-    return bool(conf.telemetry.sentry)
+def is_enabled() -> bool:
+    shared = _load_shared()
+    return bool(shared.telemetry.sentry)
 
 
-def setup(config: IaaConfig | None = None, *, config_name: str = 'default') -> None:
+def setup() -> None:
     if is_dev():
         logger.info('Development mode detected, telemetry disabled.')
         return
 
-    conf = config or _load_config(config_name)
-    if not conf.telemetry.sentry:
+    shared = _load_shared()
+    if not shared.telemetry.sentry:
         logger.info('Telemetry disabled or pending consent.')
         return
 

@@ -421,11 +421,6 @@ class EventStoreConfig(BaseModel):
         ShopItem.ITEM_3STAR_MEMBER,
     ]
 
-
-class TelemetryConfig(BaseModel):
-    sentry: bool | None = None
-
-
 class SchedulerConfig(BaseModel):
     start_game_enabled: bool = True
     solo_live_enabled: bool = True

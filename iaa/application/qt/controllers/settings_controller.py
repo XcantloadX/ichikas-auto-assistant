@@ -35,6 +35,7 @@ if TYPE_CHECKING:
 class SettingsController(QObject):
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
+    configSwitched = Signal()
 
     def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -102,6 +103,7 @@ class SettingsController(QObject):
     @Slot(result=str)
     def optionsJson(self) -> str:
         options = {
+            'profiles': [{'value': name, 'label': name} for name in self._iaa.config.list()],
             'emulators': [{'value': key, 'label': label} for key, label in EMULATOR_DISPLAY_MAP.items()],
             'servers': [{'value': key, 'label': label} for key, label in SERVER_DISPLAY_MAP.items()],
             'linkAccounts': [{'value': key, 'label': label} for key, label in LINK_DISPLAY_MAP.items()],
@@ -124,6 +126,7 @@ class SettingsController(QObject):
         conf = self._iaa.config.conf
         emulator_data = conf.game.emulator_data
         state = {
+            'profileName': self._iaa.config.current_config_name,
             'game': {
                 'emulator': conf.game.emulator,
                 'server': conf.game.server,
@@ -176,7 +179,7 @@ class SettingsController(QObject):
             },
             'cm': {'watchAdWaitSec': str(int(conf.cm.watch_ad_wait_sec))},
             'eventShop': {'selectedItems': [item.value for item in conf.event_shop.purchase_items]},
-            'telemetry': {'sentry': bool(conf.telemetry.sentry)},
+            'telemetry': {'sentry': bool(self._iaa.config.shared.telemetry.sentry)},
         }
         return json.dumps(state, ensure_ascii=False)
 
@@ -244,8 +247,8 @@ class SettingsController(QObject):
             conf.cm.watch_ad_wait_sec = wait_sec
 
             conf.event_shop.purchase_items = [ShopItem(item_id) for item_id in event_shop.get('selectedItems', [])]
-            conf.telemetry.sentry = bool(telemetry['sentry'])
-            self._iaa.config.save()
+            self._iaa.config.shared.telemetry.sentry = bool(telemetry['sentry'])
+            self._iaa.config.save_shared()
             self.operationSucceeded.emit('保存成功')
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(f'保存失败：{exc}')
@@ -274,3 +277,64 @@ class SettingsController(QObject):
             self.operationSucceeded.emit('已恢复分辨率')
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(f'恢复失败：{exc}')
+
+    @Slot(str, result=bool)
+    def switchProfile(self, name: str) -> bool:
+        try:
+            self._iaa.config.switch_config(name)
+            self.configSwitched.emit()
+            self.operationSucceeded.emit(f'已切换到配置: {name}')
+            return True
+        except RuntimeError as e:
+            self.operationFailed.emit(str(e))
+            return False
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(f'切换失败：{exc}')
+            return False
+
+    @Slot(str, result=bool)
+    def createProfile(self, name: str) -> bool:
+        try:
+            self._iaa.config.create(name)
+            self.configSwitched.emit()
+            self.operationSucceeded.emit(f'已创建并切换到配置: {name}')
+            return True
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(f'创建失败：{exc}')
+            return False
+
+    @Slot(str, result=bool)
+    def deleteProfile(self, name: str) -> bool:
+        try:
+            deleted_current = self._iaa.config.delete(name)
+            if deleted_current:
+                self.configSwitched.emit()
+            self.operationSucceeded.emit(f'已删除配置: {name}')
+            return True
+        except FileNotFoundError:
+            self.operationFailed.emit(f'配置不存在: {name}')
+            return False
+        except RuntimeError as e:
+            self.operationFailed.emit(str(e))
+            return False
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(f'删除失败：{exc}')
+            return False
+
+    @Slot(str, str, result=bool)
+    def renameProfile(self, old_name: str, new_name: str) -> bool:
+        try:
+            renamed_current = self._iaa.config.rename(old_name, new_name)
+            if renamed_current:
+                self.configSwitched.emit()
+            self.operationSucceeded.emit(f'已重命名为: {new_name}')
+            return True
+        except FileNotFoundError:
+            self.operationFailed.emit(f'配置不存在: {old_name}')
+            return False
+        except FileExistsError:
+            self.operationFailed.emit(f'配置名称已存在: {new_name}')
+            return False
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(f'重命名失败：{exc}')
+            return False

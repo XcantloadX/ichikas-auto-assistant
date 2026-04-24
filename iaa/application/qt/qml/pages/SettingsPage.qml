@@ -256,6 +256,9 @@ PageContainer {
         function onOperationFailed(text) {
             root.showNotice("error", text);
         }
+        function onConfigSwitched() {
+            root.loadState();
+        }
     }
 
     Loader {
