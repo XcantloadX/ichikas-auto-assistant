@@ -132,8 +132,8 @@ class AppController(QObject):
 
     @Slot(bool)
     def setTelemetryConsent(self, allowed: bool) -> None:
-        self.service.config.shared.telemetry.sentry = allowed
-        self.service.config.save_shared()
+        self.preferencesController.setValue('telemetry.sentry', allowed)
+        self.preferencesController.save()
         self._telemetry_consent_required = False
         self.telemetryConsentRequiredChanged.emit()
         self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
