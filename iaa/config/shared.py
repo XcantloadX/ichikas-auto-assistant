@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel
 
 
@@ -11,6 +13,8 @@ class ProfilesConfig(BaseModel):
 
 class InterfaceConfig(BaseModel):
     window_style: str = ''
+    theme_color: str | None = None
+    color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
 
 
 class SharedConfig(BaseModel):

@@ -82,7 +82,7 @@ Rectangle {
                         text: "一歌小助手"
                         font.pixelSize: 18
                         font.weight: Font.DemiBold
-                        color: "#202020"
+                        color: palette.text
                         verticalAlignment: Text.AlignVCenter
                     }
 
@@ -90,7 +90,7 @@ Rectangle {
                         Layout.fillWidth: true
                         text: "版本 v" + appController.version
                         font.pixelSize: 12
-                        color: "#202020"
+                        color: palette.placeholderText
                         verticalAlignment: Text.AlignVCenter
                     }
                 }

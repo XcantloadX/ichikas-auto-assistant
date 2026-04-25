@@ -31,6 +31,7 @@ class AppController(QObject):
     notificationRaised = Signal(str, str)
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
+    windowStyleChanged = Signal()
 
     def __init__(self, parent: QObject | None = None) -> None:
         super().__init__(parent)
@@ -110,7 +111,7 @@ class AppController(QObject):
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
-    windowStyle = Property(str, _get_window_style, constant=True)
+    windowStyle = Property(str, _get_window_style, notify=windowStyleChanged)
 
     @Slot(str)
     def openExternalUrl(self, url: str) -> None:
@@ -136,6 +137,10 @@ class AppController(QObject):
         self._telemetry_consent_required = False
         self.telemetryConsentRequiredChanged.emit()
         self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+
+    @Slot()
+    def refreshWindowStyle(self) -> None:
+        self.windowStyleChanged.emit()
 
     @Slot(result=bool)
     def confirmClose(self) -> bool:

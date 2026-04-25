@@ -14,7 +14,7 @@ ApplicationWindow {
     visible: true
     title: window.appCtrl ? window.appCtrl.windowTitle : ""
     font.family: "Microsoft YaHei UI"
-    color: window.appCtrl && window.appCtrl.windowStyle === "solid" ? "#fff" : "transparent"
+    color: window.appCtrl && window.appCtrl.windowStyle === "solid" ? palette.window : "transparent"
     background: null
 
     readonly property var appCtrl: appController
