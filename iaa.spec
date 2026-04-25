@@ -123,6 +123,7 @@ def collect_package_assets():
         hiddenimports += pkg_hiddenimports
     datas.append((str(ROOT / 'assets' / 'scrcpy.jar'), 'assets'))
     datas.append((str(ROOT / 'iaa' / 'application' / 'qt' / 'qml'), 'iaa/application/qt/qml'))
+    datas.append((str(ROOT / 'iaa' / 'application' / 'framework' / 'dsl' / 'qml'), 'iaa/application/framework/dsl/qml'))
     return datas, binaries, hiddenimports
 
 
