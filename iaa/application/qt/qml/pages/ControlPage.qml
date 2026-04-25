@@ -131,6 +131,7 @@ PageContainer {
                                 CheckBox {
                                     visible: !!modelData.checkable
                                     checked: !!modelData.enabled
+                                    enabled: !runController.running && !runController.isStarting && !runController.isStopping
                                     text: modelData.name
                                     onToggled: runController.setRegularTaskEnabled(modelData.id, checked)
                                 }

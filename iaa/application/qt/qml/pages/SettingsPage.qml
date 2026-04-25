@@ -11,27 +11,48 @@ PageContainer {
     id: root
     title: "配置"
 
-    titleRightContent: Rectangle {
-        visible: root.dirty
-        color: "#FFEBE9"
-        border.color: "#DC3545"
-        radius: 4
-        implicitHeight: 32
-        width: labelId.implicitWidth + 16
+    titleRightContent: RowLayout {
+        spacing: 8
+        Rectangle {
+            visible: root.scriptRunning
+            color: "#FEF3C7"
+            border.color: "#F59E0B"
+            radius: 4
+            implicitHeight: 32
+            width: runningLabel.implicitWidth + 16
 
-        Label {
-            id: labelId
-            text: "有未保存改动"
-            color: "#DC3545"
-            font.bold: true
-            anchors.centerIn: parent
+            Label {
+                id: runningLabel
+                text: "脚本运行时无法修改配置"
+                color: "#B45309"
+                font.bold: true
+                anchors.centerIn: parent
+            }
+        }
+        Rectangle {
+            visible: root.dirty
+            color: "#FFEBE9"
+            border.color: "#DC3545"
+            radius: 4
+            implicitHeight: 32
+            width: labelId.implicitWidth + 16
+
+            Label {
+                id: labelId
+                text: "有未保存改动"
+                color: "#DC3545"
+                font.bold: true
+                anchors.centerIn: parent
+            }
         }
     }
+
+    readonly property bool scriptRunning: runController.running || runController.isStarting || runController.isStopping
 
     headerActions: Button {
         text: "保存"
         highlighted: true
-        enabled: root.runtimeReady
+        enabled: root.runtimeReady && !root.scriptRunning
         onClicked: root.formController.save()
     }
 
@@ -95,6 +116,7 @@ PageContainer {
     Loader {
         anchors.fill: parent
         active: root.runtimeReady
+        enabled: !root.scriptRunning
         sourceComponent: runtimeComponent
     }
 
