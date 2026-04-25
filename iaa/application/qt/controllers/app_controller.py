@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import sys
+
 from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QCoreApplication
 from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QMessageBox
@@ -15,6 +17,14 @@ from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
 from .preferences_controller import PreferencesController
+
+
+def _resolve_window_style(style: str) -> str:
+    if style in ('mica', 'acrylic', 'blur', 'solid'):
+        return style
+    if sys.getwindowsversion().build >= 22000:
+        return 'mica'
+    return 'solid'
 
 
 class AppController(QObject):
@@ -92,11 +102,15 @@ class AppController(QObject):
     def _get_telemetry_consent_required(self) -> bool:
         return self._telemetry_consent_required
 
+    def _get_window_style(self) -> str:
+        return _resolve_window_style(self.service.config.shared.interface.window_style)
+
     version = Property(str, _get_version, constant=True)
     windowTitle = Property(str, _get_window_title, constant=True)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
+    windowStyle = Property(str, _get_window_style, constant=True)
 
     @Slot(str)
     def openExternalUrl(self, url: str) -> None:

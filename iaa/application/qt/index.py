@@ -1,8 +1,8 @@
+import ctypes
 import os
 import sys
-import ctypes
-from pathlib import Path
 from ctypes import wintypes
+from pathlib import Path
 from typing import cast
 
 from PySide6.QtCore import QUrl
@@ -24,6 +24,38 @@ DWMWA_SYSTEMBACKDROP_TYPE = 38
 # 4 = TabbedWindow
 DWM_SYSTEMBACKDROP_MAINWINDOW = 2
 
+WNDCA_ACCENT_POLICY = 19
+
+ACCENT_DISABLED = 0
+ACCENT_ENABLE_BLURBEHIND = 3
+ACCENT_ENABLE_ACRYLICBLURBEHIND = 4
+
+
+class ACCENT_POLICY(ctypes.Structure):
+    _fields_ = [
+        ("AccentState", ctypes.c_uint),
+        ("AccentFlags", ctypes.c_uint),
+        ("GradientColor", ctypes.c_uint),
+        ("AnimationId", ctypes.c_uint),
+    ]
+
+
+class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
+    _fields_ = [
+        ("Attrib", ctypes.c_uint),
+        ("pvData", ctypes.c_void_p),
+        ("cbData", ctypes.c_size_t),
+    ]
+
+
+def is_windows_11() -> bool:
+    return sys.getwindowsversion().build >= 22000
+
+
+def is_windows_10_1803() -> bool:
+    return sys.getwindowsversion().build >= 17134
+
+
 def enable_mica(hwnd: int) -> int:
     dwmapi = ctypes.windll.dwmapi
 
@@ -35,8 +67,64 @@ def enable_mica(hwnd: int) -> int:
         ctypes.sizeof(value)
     )
 
+
+def enable_blur(hwnd: int) -> int:
+    user32 = ctypes.windll.user32
+    set_window_composition = user32.SetWindowCompositionAttribute
+    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+    set_window_composition.restype = ctypes.c_bool
+
+    accent = ACCENT_POLICY(ACCENT_ENABLE_BLURBEHIND, 0, 0, 0)
+    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
+
+    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
+
+
+def enable_acrylic(hwnd: int) -> int:
+    user32 = ctypes.windll.user32
+    set_window_composition = user32.SetWindowCompositionAttribute
+    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+    set_window_composition.restype = ctypes.c_bool
+
+    accent = ACCENT_POLICY(ACCENT_ENABLE_ACRYLICBLURBEHIND, 0, 0, 0)
+    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
+
+    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
+
+
+def disable_blur(hwnd: int) -> int:
+    user32 = ctypes.windll.user32
+    set_window_composition = user32.SetWindowCompositionAttribute
+    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
+    set_window_composition.restype = ctypes.c_bool
+
+    accent = ACCENT_POLICY(ACCENT_DISABLED, 0, 0, 0)
+    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
+
+    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
+
+
+def resolve_window_style(style: str) -> str:
+    if style in ('mica', 'acrylic', 'blur', 'solid'):
+        return style
+    if is_windows_11():
+        return 'mica'
+    return 'solid'
+
+
+def apply_window_style(hwnd: int, style: str) -> None:
+    resolved = resolve_window_style(style)
+    if resolved == 'mica':
+        enable_mica(hwnd)
+    elif resolved == 'acrylic':
+        enable_acrylic(hwnd)
+    elif resolved == 'blur':
+        enable_blur(hwnd)
+    elif resolved == 'solid':
+        disable_blur(hwnd)
+
+
 def main() -> None:
-    # Keep Fluent controls while making transparent + Mica rendering stable on resize/maximize.
     os.environ.setdefault("QSG_RHI_BACKEND", "opengl")
     QQuickWindow.setDefaultAlphaBuffer(True)
 
@@ -64,7 +152,11 @@ def main() -> None:
         raise RuntimeError('Failed to load Qt desktop UI.')
     window = cast(QQuickWindow, engine.rootObjects()[0])
     hwnd = int(window.winId())
-    enable_mica(hwnd)
+
+    from iaa.config.manager import read_shared
+    shared = read_shared()
+    apply_window_style(hwnd, shared.interface.window_style)
+
     exit_code = app.exec()
     controller.shutdown()
     raise SystemExit(exit_code)
