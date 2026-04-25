@@ -6,9 +6,7 @@ from typing import TYPE_CHECKING, Any
 from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
-from ..dsl import PreferencesContext
-from ..engine.preferences_engine import PreferencesEngine
-from ..engine.preferences_state import PreferencesState
+from iaa.application.framework.dsl import PreferencesContext, RuntimeEngine, SnapshotState
 from ..forms.preferences_form import build_preferences_form
 
 if TYPE_CHECKING:
@@ -37,10 +35,27 @@ class PreferencesController(QObject):
         super().__init__(parent)
         self._iaa = iaa_service
         self._spec, self._form_hooks = build_preferences_form()
-        self._engine = PreferencesEngine(self._spec)
-        self._state = PreferencesState(self._make_context())
+        self._engine = RuntimeEngine(self._spec)
+        self._state = SnapshotState(
+            self._make_context(),
+            snapshot_fn=self._snapshot_context,
+            restore_fn=self._restore_context,
+            stable_dump_fn=self._stable_dump_snapshot,
+        )
         self._runtime: dict[str, Any] = {}
         self._recompute_runtime()
+
+    @staticmethod
+    def _snapshot_context(context: PreferencesContext) -> dict[str, Any]:
+        return {'shared': context.shared.model_copy(deep=True)}
+
+    @staticmethod
+    def _restore_context(context: PreferencesContext, snapshot: dict[str, Any]) -> None:
+        context.shared = snapshot['shared']
+
+    @staticmethod
+    def _stable_dump_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+        return {'shared': snapshot['shared'].model_dump(mode='json')}
 
     def _make_context(self) -> PreferencesContext:
         return PreferencesContext(shared=self._iaa.config.shared)

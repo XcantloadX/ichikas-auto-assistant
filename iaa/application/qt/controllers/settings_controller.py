@@ -8,9 +8,7 @@ from PySide6.QtQml import QJSValue
 
 from iaa.config.schemas import MuMuEmulatorData, ShopItem
 
-from ..dsl import FormContext, FormMeta
-from ..engine.form_engine import FormEngine
-from ..engine.form_state import FormState
+from iaa.application.framework.dsl import FormContext, FormMeta, RuntimeEngine, SnapshotState
 from ..forms.settings_form import build_settings_form
 from ..models import (
     CONTROL_IMPL_DISPLAY_MAP,
@@ -55,10 +53,36 @@ class SettingsController(QObject):
         super().__init__(parent)
         self._iaa = iaa_service
         self._spec, self._form_hooks = build_settings_form()
-        self._engine = FormEngine(self._spec)
-        self._state = FormState(self._make_context())
+        self._engine = RuntimeEngine(self._spec)
+        self._state = SnapshotState(
+            self._make_context(),
+            snapshot_fn=self._snapshot_context,
+            restore_fn=self._restore_context,
+            stable_dump_fn=self._stable_dump_snapshot,
+        )
         self._runtime: dict[str, Any] = {}
         self._recompute_runtime()
+
+    @staticmethod
+    def _snapshot_context(context: FormContext) -> dict[str, Any]:
+        return {
+            'conf': context.conf.model_copy(deep=True),
+            'shared': context.shared.model_copy(deep=True),
+        }
+
+    @staticmethod
+    def _restore_context(context: FormContext, snapshot: dict[str, Any]) -> None:
+        context.conf = snapshot['conf']
+        context.shared = snapshot['shared']
+
+    @staticmethod
+    def _stable_dump_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+        conf = snapshot['conf']
+        shared = snapshot['shared']
+        return {
+            'conf': conf.model_dump(mode='json'),
+            'shared': shared.model_dump(mode='json'),
+        }
 
     def _make_context(self) -> FormContext:
         return FormContext(

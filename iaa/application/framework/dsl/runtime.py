@@ -2,14 +2,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from ..dsl import FieldSpec, FormContext, FormSpec
+from .specs import FieldSpec, FormSpec
 
 
-class FormEngine:
+class RuntimeEngine:
     def __init__(self, spec: FormSpec) -> None:
         self.spec = spec
 
-    def build_runtime(self, state: FormContext) -> dict[str, Any]:
+    def build_runtime(self, state: Any) -> dict[str, Any]:
         groups: list[dict[str, Any]] = []
         for group in self.spec.groups:
             runtime_fields: list[dict[str, Any]] = []
@@ -28,7 +28,7 @@ class FormEngine:
                     return field
         return None
 
-    def _build_field_runtime(self, field: FieldSpec, state: FormContext) -> dict[str, Any]:
+    def _build_field_runtime(self, field: FieldSpec, state: Any) -> dict[str, Any]:
         value = field.ref.get(state)
         visible = field.visible(state) if callable(field.visible) else field.visible
         enabled = field.enabled(state) if callable(field.enabled) else field.enabled

@@ -1,6 +1,20 @@
 from __future__ import annotations
 
-from ..dsl import Checkbox, Custom, FormContext, FormPage, FormSpec, Group, Segmented, Select, Text, TransferList, custom_ref, of, ref
+from iaa.application.framework.dsl import (
+    Checkbox,
+    Custom,
+    FormContext,
+    FormPage,
+    FormSpec,
+    Group,
+    Segmented,
+    Select,
+    Text,
+    TransferList,
+    custom_ref,
+    of,
+    ref,
+)
 from ..models import SONG_KEEP_UNCHANGED, normalize_song_name_input
 from iaa.config.schemas import (
     ChallengeLiveAward,

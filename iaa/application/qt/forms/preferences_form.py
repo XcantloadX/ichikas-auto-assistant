@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from ..dsl import Checkbox, FormPage, Group, PreferencesContext, Select, ref
-from ..dsl.refs import of
+from iaa.application.framework.dsl import Checkbox, FormPage, Group, PreferencesContext, Select, of, ref
 
 CTX = of(PreferencesContext)
 

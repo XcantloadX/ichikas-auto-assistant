@@ -5,7 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
-import "../dsl"
+import "../../../framework/dsl/qml"
 
 PageContainer {
     id: root
