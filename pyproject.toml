@@ -18,6 +18,7 @@ dependencies = [
     "pydantic",
     "sentry-sdk",
     "thefuzz>=0.22.1",
+    "plyer>=2.1.0",
 ]
 
 [dependency-groups]

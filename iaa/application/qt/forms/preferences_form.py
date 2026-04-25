@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from iaa.application.framework.dsl import Checkbox, FormPage, Group, PreferencesContext, Select, of, ref
+from iaa.application.framework.dsl import Checkbox, FormPage, Group, PreferencesContext, Select, Text, of, ref
 
 CTX = of(PreferencesContext)
 
@@ -55,6 +55,25 @@ def build_preferences_form() -> tuple:
                     {'value': '#6b69d6', 'label': '靛蓝（#6B69D6）'},
                     {'value': '#4a5459', 'label': '石墨灰（#4A5459）'},
                 ],
+            )
+
+        with Group('通知'):
+            Checkbox(
+                key='notify.system',
+                label='系统通知',
+                ref=ref(CTX.shared.notify.system),
+            )
+            Checkbox(
+                key='notify.push.enabled',
+                label='推送通知',
+                ref=ref(CTX.shared.notify.push.enabled),
+            )
+            Text(
+                key='notify.push.data.command',
+                label='自定义命令',
+                ref=ref(CTX.shared.notify.push.data.command),
+                placeholder='任务完成后执行的命令',
+                visible=lambda ctx: ctx.shared.notify.push.enabled,
             )
 
     return page.spec, page.hooks

@@ -17,7 +17,26 @@ class InterfaceConfig(BaseModel):
     color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
 
 
+class CustomPushData(BaseModel):
+    command: str = ''
+
+
+PushData = CustomPushData
+
+
+class PushConfig(BaseModel):
+    enabled: bool = False
+    type: Literal['custom'] = 'custom'
+    data: CustomPushData = CustomPushData()
+
+
+class NotifyConfig(BaseModel):
+    system: bool = True
+    push: PushConfig = PushConfig()
+
+
 class SharedConfig(BaseModel):
     profiles: ProfilesConfig = ProfilesConfig()
     telemetry: TelemetryConfig = TelemetryConfig()
     interface: InterfaceConfig = InterfaceConfig()
+    notify: NotifyConfig = NotifyConfig()

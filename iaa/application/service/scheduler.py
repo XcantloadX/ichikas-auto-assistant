@@ -155,6 +155,7 @@ class SchedulerService:
 
         def _runner() -> None:
             run_id = uuid.uuid4().hex
+            completion_status: str = 'success'
             try:
                 logger.info("Preparing context...")
                 self.__prepare_context()
@@ -166,6 +167,7 @@ class SchedulerService:
                 tasks = get_tasks()
                 if not tasks:
                     logger.info("No tasks to run. Exiting...")
+                    completion_status = 'no_tasks'
                     return
                 self.__running = True
                 # 启动阶段结束
@@ -219,6 +221,7 @@ class SchedulerService:
                             )
                         )
                     except KeyboardInterrupt:
+                        completion_status = 'interrupted'
                         progress_hub().publish(
                             TaskProgressEvent(
                                 run_id=run_id,
@@ -238,6 +241,7 @@ class SchedulerService:
                         logger.info("KeyboardInterrupt received. Stopping scheduler.")
                         break
                     except Exception as e:  # noqa: BLE001
+                        completion_status = 'failed'
                         progress_hub().publish(
                             TaskProgressEvent(
                                 run_id=run_id,
@@ -266,6 +270,7 @@ class SchedulerService:
                         self.current_task_id = None
                         self.current_task_name = None
             except Exception as e:  # noqa: BLE001
+                completion_status = 'crashed'
                 logger.exception("Scheduler runner crashed: %s", e)
                 if self.on_error:
                     try:
@@ -296,6 +301,19 @@ class SchedulerService:
                 # 若在准备阶段失败，也需要复位启动标记
                 self.is_starting = False
                 logger.info("Scheduler stopped.")
+
+                # 发送通知
+                if completion_status != 'no_tasks':
+                    from iaa.notify import send_notification
+                    from iaa.config.manager import read_shared
+                    shared_config = read_shared()
+                    message_map = {
+                        'success': '任务执行完成',
+                        'interrupted': '任务已中断',
+                        'failed': '任务执行失败',
+                        'crashed': '调度器发生错误',
+                    }
+                    send_notification('iaa', message_map.get(completion_status, '任务结束'), shared_config.notify)
 
         if run_in_thread:
             self._thread = threading.Thread(target=_runner, name=thread_name, daemon=True)
