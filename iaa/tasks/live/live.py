@@ -12,7 +12,7 @@ from iaa.context import conf, server, task_reporter, keyboard
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_core import RhythmGameAnalyzer
-from iaa.config.schemas import ChallengeLiveAward, GameCharacter
+from iaa.definitions.enums import ChallengeLiveAward, GameCharacter
 
 logger = logging.getLogger(__name__)
 LiveMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None

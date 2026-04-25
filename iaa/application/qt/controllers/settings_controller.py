@@ -6,7 +6,8 @@ from typing import TYPE_CHECKING, Any
 from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
-from iaa.config.schemas import MuMuEmulatorData, ShopItem
+from iaa.config.schemas import MuMuEmulatorData
+from iaa.definitions.enums import ShopItem
 
 from iaa.application.framework.dsl import FormContext, FormMeta, RuntimeEngine, SnapshotState
 from ..forms.settings_form import build_settings_form

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from iaa.config.schemas import (
+from iaa.definitions.enums import (
     ChallengeLiveAward,
     EmulatorOptions,
     GameCharacter,

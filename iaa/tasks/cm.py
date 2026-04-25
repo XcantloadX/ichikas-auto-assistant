@@ -6,7 +6,7 @@ from kotonebot import device, task, Loop, action, sleep
 
 from . import R
 from .common import go_home
-from iaa.consts import package_name
+from iaa.definitions.consts import package_name
 from iaa.context import conf as get_conf, task_reporter, server
 
 logger = logging.getLogger(__name__)

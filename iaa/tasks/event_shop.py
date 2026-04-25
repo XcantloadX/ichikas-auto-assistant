@@ -7,7 +7,7 @@ from kotonebot.core import TemplateMatchPrefab
 from kotonebot.backend import image
 
 from . import R
-from iaa.config.schemas import ShopItem
+from iaa.definitions.enums import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
 from iaa.game_ui.list_view import ListViewItem
 from iaa.game_ui.side_tabbar import SideTabbar

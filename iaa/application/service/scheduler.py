@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, Callable, Any
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
 from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData, PhysicalAndroidData
-from iaa.consts import package_by_server
+from iaa.definitions.consts import package_by_server
 from iaa.utils import asset_path
 
 if TYPE_CHECKING:

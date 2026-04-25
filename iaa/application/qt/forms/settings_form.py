@@ -17,11 +17,13 @@ from iaa.application.framework.dsl import (
 )
 from ..models import SONG_KEEP_UNCHANGED, normalize_song_name_input
 from iaa.config.schemas import (
-    ChallengeLiveAward,
     CustomEmulatorData,
-    GameCharacter,
     MuMuEmulatorData,
     PhysicalAndroidData,
+)
+from iaa.definitions.enums import (
+    ChallengeLiveAward,
+    GameCharacter,
     ShopItem,
 )
 

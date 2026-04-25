@@ -1,7 +1,7 @@
 from kotonebot import device, task, Loop, action, sleep, logging
 
-from iaa.config.schemas import LinkAccountOptions
-from iaa.consts import package_name as get_package_name
+from iaa.definitions.enums import LinkAccountOptions
+from iaa.definitions.consts import package_name as get_package_name
 from iaa.context import conf, task_reporter, server
 from . import R
 from .common import go_home
