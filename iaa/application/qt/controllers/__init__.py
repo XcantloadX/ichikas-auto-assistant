@@ -1,4 +1,5 @@
 from .app_controller import AppController
+from .preferences_controller import PreferencesController
 from .profile_store_backend import ProfileStoreBackend
 from .progress_bridge import ProgressBridge
 from .run_controller import RunController
@@ -7,6 +8,7 @@ from .settings_controller import SettingsController
 
 __all__ = [
     'AppController',
+    'PreferencesController',
     'ProfileStoreBackend',
     'ProgressBridge',
     'RunController',

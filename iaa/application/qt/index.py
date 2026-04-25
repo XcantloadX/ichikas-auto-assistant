@@ -48,6 +48,7 @@ def main() -> None:
     engine.rootContext().setContextProperty('appController', controller)
     engine.rootContext().setContextProperty('runController', controller.runController)
     engine.rootContext().setContextProperty('settingsController', controller.settingsController)
+    engine.rootContext().setContextProperty('preferencesController', controller.preferencesController)
     engine.rootContext().setContextProperty('profileStoreBackend', controller.profileStoreBackend)
     engine.rootContext().setContextProperty('progressBridge', controller.progressBridge)
     engine.rootContext().setContextProperty('scrcpyController', controller.scrcpyController)

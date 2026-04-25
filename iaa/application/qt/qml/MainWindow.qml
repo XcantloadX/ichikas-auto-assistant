@@ -20,6 +20,7 @@ ApplicationWindow {
     readonly property var appCtrl: appController
     readonly property var runCtrl: runController
     readonly property var settingsCtrl: settingsController
+    readonly property var prefsCtrl: preferencesController
     property string noticeKind: "info"
     property string noticeText: ""
     property bool allowImmediateClose: false
@@ -46,6 +47,7 @@ ApplicationWindow {
     NavigationCoordinator {
         id: navigation
         settingsCtrl: window.settingsCtrl
+        prefsCtrl: window.prefsCtrl
         unsavedChangesDialog: unsavedChangesDialog
     }
 
@@ -56,7 +58,7 @@ ApplicationWindow {
         SideNavigationBar {
             id: sideNav
             Layout.fillHeight: true
-            model: ["控制", "配置", "关于"]
+            model: ["控制", "配置", "偏好", "关于"]
             currentConfig: App.ProfileStore.currentProfileName
 
             onCurrentChanging: function(index, previousIndex) {
@@ -91,6 +93,12 @@ ApplicationWindow {
             SettingsPage {
                 id: settingsPage
                 formController: window.settingsCtrl
+                onShowNotice: function(kind, text) { window.showNotice(kind, text) }
+            }
+
+            PreferencesPage {
+                id: preferencesPage
+                prefsController: window.prefsCtrl
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
             }
 

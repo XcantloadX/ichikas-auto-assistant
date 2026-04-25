@@ -14,6 +14,7 @@ from .profile_store_backend import ProfileStoreBackend
 from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
+from .preferences_controller import PreferencesController
 
 
 class AppController(QObject):
@@ -55,6 +56,7 @@ class AppController(QObject):
         self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
         self.settingsController = SettingsController(self.service, self)
+        self.preferencesController = PreferencesController(self.service, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
         self._global_error = ''
         self._telemetry_consent_required = self.service.config.shared.telemetry.sentry is None
@@ -65,6 +67,8 @@ class AppController(QObject):
         self.settingsController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.settingsController.operationFailed.connect(self.reportError)
         self.settingsController.configSwitched.connect(self._on_config_switched)
+        self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
+        self.preferencesController.operationFailed.connect(self.reportError)
         self.service.scheduler.on_error = self._on_scheduler_error
 
     def _on_config_switched(self) -> None:
