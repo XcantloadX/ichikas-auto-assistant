@@ -31,6 +31,7 @@ ColumnLayout {
     FormField {
         Layout.fillWidth: true
         labelText: root.field.label
+        helpText: root.field.helpText || ""
         SegmentedButton {
             Layout.fillWidth: true
             enabled: !!root.field.enabled

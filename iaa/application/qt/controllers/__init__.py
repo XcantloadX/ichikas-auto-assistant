@@ -5,6 +5,7 @@ from .progress_bridge import ProgressBridge
 from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
+from .help_controller import HelpController
 
 __all__ = [
     'AppController',
@@ -14,4 +15,5 @@ __all__ = [
     'RunController',
     'ScrcpyController',
     'SettingsController',
+    'HelpController',
 ]

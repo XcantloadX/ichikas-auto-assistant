@@ -6,6 +6,7 @@ Control {
     id: root
     background: null
     property string title: "NewPage"
+    property bool showTitle: true
     default property alias contentData: contentArea.data
     /** 紧挨着标题文本右侧的内容 */
     property alias titleRightContent: titleRightArea.data
@@ -20,6 +21,8 @@ Control {
         spacing: 20
 
         RowLayout {
+            visible: root.showTitle
+
             Label {
                 text: root.title
                 font.pixelSize: 30

@@ -51,6 +51,7 @@ class RuntimeEngine:
             'id': field.key,
             'kind': field.kind,
             'label': field.label,
+            'helpText': field.help_text,
             'value': value,
             'visible': bool(visible),
             'enabled': bool(enabled),

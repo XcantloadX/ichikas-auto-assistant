@@ -17,6 +17,7 @@ from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
 from .preferences_controller import PreferencesController
+from .help_controller import HelpController
 
 
 def _resolve_window_style(style: str) -> str:
@@ -69,6 +70,7 @@ class AppController(QObject):
         self.settingsController = SettingsController(self.service, self)
         self.preferencesController = PreferencesController(self.service, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
+        self.helpController = HelpController(self.service, self)
         self._global_error = ''
         self._telemetry_consent_required = self.service.config.shared.telemetry.sentry is None
         setup_telemetry()

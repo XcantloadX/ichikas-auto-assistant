@@ -143,6 +143,7 @@ ColumnLayout {
     FormField {
         Layout.fillWidth: true
         labelText: root.field.label
+        helpText: root.field.helpText || ""
 
         RowLayout {
             spacing: 10

@@ -12,6 +12,7 @@ import cv2
 from .config_service import ConfigService
 from .assets_service import AssetsService
 from .scheduler import SchedulerService
+from .help_service import HelpService
 
 class IaaService:
     def __init__(self, config_name: str | None = None):
@@ -21,6 +22,7 @@ class IaaService:
         self.config = ConfigService(self, config_name=config_name)
         self.assets = AssetsService(self)
         self.scheduler = SchedulerService(self)
+        self.help = HelpService(self)
 
     def __configure_logging(self) -> None:
         """配置日志：控制台 DEBUG + 文件 logs/YYYY-MM-DD-hh-mm-ss.log。只配置一次。"""

@@ -218,6 +218,17 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 ref=ref(CTX.conf.game.server),
                 options=lambda s: s.meta.servers,
                 on_change=_on_server_change,
+                help_text='''广告：现招募维护者维护除日服以外的服务器适配~ 如果你有兴趣参与维护，请联系作者。
+<hr>
+维护者：
+<ul>
+<li>日服：作者本人</li>
+<li>台服：空缺</li>
+<li>国服：空缺</li>
+<li>国际服：空缺</li>
+<li>韩服：空缺</li>
+</ul>
+'''
             )
             Segmented(
                 key='game.linkAccount',
@@ -225,12 +236,14 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 ref=ref(CTX.conf.game.link_account),
                 enabled=lambda s: s.conf.game.server == 'jp',
                 options=lambda s: s.meta.linkAccounts,
+                help_text='''每次启动游戏的时候是否使用引继账号登录（仅限日服）''',
             )
             Segmented(
                 key='game.controlImpl',
                 label='控制方式',
                 ref=ref(CTX.conf.game.control_impl),
                 options=lambda s: s.meta.controlImpls,
+                help_text='''对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式，对于其他模拟器与物理机，推荐使用 <b>scrcpy</b> 方式''',
             )
             Checkbox(
                 key='game.scrcpyVirtualDisplay',

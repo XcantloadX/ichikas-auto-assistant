@@ -58,6 +58,7 @@ ApplicationWindow {
         SideNavigationBar {
             id: sideNav
             Layout.fillHeight: true
+            // model: ["控制", "配置", "偏好", "帮助", "关于"]
             model: ["控制", "配置", "偏好", "关于"]
             currentConfig: App.ProfileStore.currentProfileName
 
@@ -101,6 +102,8 @@ ApplicationWindow {
                 prefsController: window.prefsCtrl
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
             }
+
+            // HelpPage {}
 
             AboutPage {}
         }

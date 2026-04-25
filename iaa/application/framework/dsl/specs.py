@@ -24,6 +24,7 @@ class FieldSpec:
         key: 字段的业务路径，使用点号路径表达式，例如 ``game.emulator``。
         kind: 字段类型，例如 ``text`` / ``select`` / ``segmented`` / ``checkbox``。
         label: 页面上展示给用户的标签文本；为 ``None`` 时不展示标签。
+        help_text: 字段帮助文本，显示在标签旁的帮助图标中；为 ``None`` 时不显示帮助。
         default: 字段默认值；保留给 DSL 使用，不直接参与运行时计算。
         visible: 可见性规则。可以是布尔值，也可以是接收 state 的 predicate。
         enabled: 可用性规则。可以是布尔值，也可以是接收 state 的 predicate。
@@ -37,6 +38,7 @@ class FieldSpec:
     kind: str
     label: str | None
     ref: Ref[FormContext, Any]
+    help_text: str | None = None
 
     default: Any = None
     visible: Predicate | bool = True
@@ -215,6 +217,7 @@ def Text(
     enabled: Predicate | bool = True,
     options: OptionsProvider | list[Any] | None = None,
     placeholder: str | None = None,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -229,6 +232,7 @@ def Text(
         enabled: 启用规则。
         options: 预留参数，文本字段通常不使用，但保留以便 DSL 统一。
         placeholder: 文本框占位提示。
+        help_text: 字段帮助文本。
         props: QML 渲染层的扩展属性。
         validators: 校验器列表。
         on_change: 值变化后的联动钩子。
@@ -242,6 +246,7 @@ def Text(
             kind='text',
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,
@@ -263,6 +268,7 @@ def Select(
     enabled: Predicate | bool = True,
     options: OptionsProvider | list[Any] | None = None,
     with_reset_button: bool = False,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -280,6 +286,7 @@ def Select(
             kind='select',
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,
@@ -300,6 +307,7 @@ def Segmented(
     visible: Predicate | bool = True,
     enabled: Predicate | bool = True,
     options: OptionsProvider | list[Any] | None = None,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -314,6 +322,7 @@ def Segmented(
             kind='segmented',
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,
@@ -334,6 +343,7 @@ def Checkbox(
     visible: Predicate | bool = True,
     enabled: Predicate | bool = True,
     options: OptionsProvider | list[Any] | None = None,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -348,6 +358,7 @@ def Checkbox(
             kind='checkbox',
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,
@@ -369,6 +380,7 @@ def Custom(
     visible: Predicate | bool = True,
     enabled: Predicate | bool = True,
     options: OptionsProvider | list[Any] | None = None,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -384,6 +396,7 @@ def Custom(
             kind=kind,
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,
@@ -406,6 +419,7 @@ def TransferList(
     options: OptionsProvider | list[Any] | None = None,
     reorderable: bool = False,
     height: int = 220,
+    help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Validator] | None = None,
     on_change: OnChangeHook | None = None,
@@ -420,6 +434,7 @@ def TransferList(
             kind='transfer_list',
             label=label,
             ref=ref,
+            help_text=help_text,
             default=default,
             visible=visible,
             enabled=enabled,

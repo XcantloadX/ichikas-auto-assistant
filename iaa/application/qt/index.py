@@ -185,6 +185,7 @@ def main() -> None:
     engine.rootContext().setContextProperty('profileStoreBackend', controller.profileStoreBackend)
     engine.rootContext().setContextProperty('progressBridge', controller.progressBridge)
     engine.rootContext().setContextProperty('scrcpyController', controller.scrcpyController)
+    engine.rootContext().setContextProperty('helpController', controller.helpController)
     engine.addImageProvider('scrcpy', controller.scrcpyController.image_provider)
 
     icon_path = Path(controller.service.root) / 'assets' / 'icon_round.ico'
