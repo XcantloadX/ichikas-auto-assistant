@@ -1,8 +1,8 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Layouts
+import QtQuick.Effects
 
-Item {
+Control {
     id: root
     implicitWidth: 18
     implicitHeight: 18
@@ -20,6 +20,10 @@ Item {
         var p = root.mapToItem(tipPopup.parent, 0, root.height + 6);
         tipPopup.x = p.x;
         tipPopup.y = p.y;
+    }
+
+    function withAlpha(c, a) {
+        return Qt.rgba(c.r, c.g, c.b, a)
     }
 
     onHoveringChanged: {
@@ -57,12 +61,12 @@ Item {
     Rectangle {
         anchors.fill: parent
         radius: width / 2
-        color: iconMouse.containsMouse ? "#2D6CDF" : "#9CA3AF"
+        color: iconMouse.containsMouse ? root.palette.accent : "#A0A0A0"
 
         Text {
             anchors.centerIn: parent
             text: "?"
-            color: "white"
+            color: root.palette.window
             font.pixelSize: 12
             font.bold: true
         }
@@ -85,11 +89,10 @@ Item {
         closePolicy: Popup.NoAutoClose
 
         background: Rectangle {
-            color: "#1F2937"
+            color: root.palette.toolTipBase
             radius: 6
-            border.color: "#111827"
+            border.color: root.palette.mid
             border.width: 1
-            opacity: 0.96
         }
 
         contentItem: Label {
@@ -98,8 +101,9 @@ Item {
             wrapMode: Text.Wrap
             textFormat: Text.RichText
             text: root.richText
-            color: "#F9FAFB"
+            color: root.palette.toolTipText
             lineHeight: 1.2
+            font.pixelSize: 13
         }
 
         MouseArea {
