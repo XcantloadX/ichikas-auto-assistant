@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import "." as App
 import "pages"
 import "dialogs"
 
@@ -11,18 +12,41 @@ ApplicationWindow {
     width: 980
     height: 680
     visible: true
-    title: appController.windowTitle
+    title: window.appCtrl ? window.appCtrl.windowTitle : ""
     font.family: "Microsoft YaHei UI"
     color: "transparent"
     background: null
 
+    readonly property var appCtrl: appController
+    readonly property var runCtrl: runController
+    readonly property var settingsCtrl: settingsController
     property string noticeKind: "info"
     property string noticeText: ""
+    property bool allowImmediateClose: false
 
     function showNotice(kind, text) {
-        noticeKind = kind
-        noticeText = text
+        window.noticeKind = kind
+        window.noticeText = text
         noticePopup.open()
+    }
+
+    function requestAppClose() {
+        var closeRunner = function() {
+            window.allowImmediateClose = true
+            window.close()
+        }
+        if (window.runCtrl && window.runCtrl.running) {
+            quitDialog.pendingCloseAction = closeRunner
+            quitDialog.open()
+            return
+        }
+        navigation.requestGuardedAction("关闭窗口", closeRunner)
+    }
+
+    NavigationCoordinator {
+        id: navigation
+        settingsCtrl: window.settingsCtrl
+        unsavedChangesDialog: unsavedChangesDialog
     }
 
     RowLayout {
@@ -33,35 +57,22 @@ ApplicationWindow {
             id: sideNav
             Layout.fillHeight: true
             model: ["控制", "配置", "关于"]
-            currentConfig: settingsController.currentProfileName() || "default"
+            currentConfig: App.ProfileStore.currentProfileName
 
             onCurrentChanging: function(index, previousIndex) {
-                var previousPage = stack.children[previousIndex]
-                if (previousPage && typeof previousPage.hasUnsavedChanges === "function" && previousPage.hasUnsavedChanges()) {
-                    confirmSwitchDialog.targetIndex = index
-                    confirmSwitchDialog.previousIndex = previousIndex
-                    confirmSwitchDialog.open()
-                } else {
+                navigation.requestGuardedAction("切换页面", function() {
                     sideNav.confirmSwitch(index)
-                }
+                })
             }
 
-            onConfigSwitchRequested: function(name) {
-                if (settingsController.switchProfile(name)) {
-                    sideNav.currentConfig = name;
-                }
+            onProfileSwitchRequested: function(name) {
+                navigation.requestGuardedAction("切换配置", function() {
+                    window.settingsCtrl.switchProfile(name)
+                })
             }
 
             onOpenConfigManager: {
                 configManagerDialog.open()
-            }
-        }
-
-        Connections {
-            target: settingsController
-            function onConfigSwitched() {
-                sideNav.reloadConfigs();
-                sideNav.currentConfig = settingsController.currentProfileName() || "default";
             }
         }
 
@@ -73,13 +84,13 @@ ApplicationWindow {
 
             ControlPage {
                 id: controlPage
-                autoLiveDialog: autoLiveDialog
+                autoLiveDialog: autoLiveDialogView
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
             }
 
             SettingsPage {
                 id: settingsPage
-                formController: settingsController
+                formController: window.settingsCtrl
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
             }
 
@@ -88,12 +99,14 @@ ApplicationWindow {
     }
 
     AutoLiveDialog {
-        id: autoLiveDialog
+        id: autoLiveDialogView
         onShowNotice: function(kind, text) { window.showNotice(kind, text) }
     }
 
     ConfigManagerDialog {
         id: configManagerDialog
+        navigation: navigation
+        settingsCtrl: window.settingsCtrl
     }
 
     // ScrcpyWindow {}
@@ -144,9 +157,9 @@ ApplicationWindow {
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 Button {
-                    text: "拒绝"
+                        text: "拒绝"
                     onClicked: {
-                        appController.setTelemetryConsent(false)
+                        window.appCtrl.setTelemetryConsent(false)
                         telemetryDialog.close()
                     }
                 }
@@ -154,7 +167,7 @@ ApplicationWindow {
                     text: "允许"
                     highlighted: true
                     onClicked: {
-                        appController.setTelemetryConsent(true)
+                        window.appCtrl.setTelemetryConsent(true)
                         telemetryDialog.close()
                     }
                 }
@@ -169,6 +182,7 @@ ApplicationWindow {
         standardButtons: Dialog.NoButton
         width: 420
         anchors.centerIn: Overlay.overlay
+        property var pendingCloseAction: null
         background: null
         contentItem: ColumnLayout {
             spacing: 12
@@ -179,14 +193,22 @@ ApplicationWindow {
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
-                Button { text: "取消"; onClicked: quitDialog.close() }
+                Button {
+                    text: "取消"
+                    onClicked: {
+                        quitDialog.pendingCloseAction = null
+                        quitDialog.close()
+                    }
+                }
                 Button {
                     text: "退出"
                     highlighted: true
                     onClicked: {
                         quitDialog.close()
-                        appController.confirmClose()
-                        Qt.quit()
+                        if (quitDialog.pendingCloseAction) {
+                            navigation.requestGuardedAction("关闭窗口", quitDialog.pendingCloseAction)
+                            quitDialog.pendingCloseAction = null
+                        }
                     }
                 }
             }
@@ -194,53 +216,45 @@ ApplicationWindow {
     }
 
     Dialog {
-        id: confirmSwitchDialog
+        id: unsavedChangesDialog
         modal: true
         title: "未保存更改"
         standardButtons: Dialog.NoButton
         width: 420
         anchors.centerIn: Overlay.overlay
 
-        property int targetIndex: 0
-        property int previousIndex: 0
+        property string actionLabel: "继续此操作"
 
         contentItem: ColumnLayout {
             spacing: 12
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "当前页面有未保存的更改，请选择操作："
+                text: "当前配置有未保存的更改。" + unsavedChangesDialog.actionLabel + "前，请先选择处理方式。"
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 spacing: 8
                 Button {
-                    text: "返回"
+                    text: "取消"
                     onClicked: {
-                        confirmSwitchDialog.close()
+                        navigation.clearPendingGuardedAction()
+                        unsavedChangesDialog.close()
                     }
                 }
                 Button {
-                    text: "丢弃更改"
+                    text: "不保存并继续"
                     onClicked: {
-                        var previousPage = stack.children[confirmSwitchDialog.previousIndex]
-                        if (previousPage && typeof previousPage.discardChanges === "function") {
-                            previousPage.discardChanges()
-                        }
-                        confirmSwitchDialog.close()
-                        sideNav.confirmSwitch(confirmSwitchDialog.targetIndex)
+                        unsavedChangesDialog.close()
+                        navigation.discardAndContinuePendingAction()
                     }
                 }
                 Button {
-                    text: "保存更改"
+                    text: "保存并继续"
                     highlighted: true
                     onClicked: {
-                        var previousPage = stack.children[confirmSwitchDialog.previousIndex]
-                        if (previousPage && typeof previousPage.saveChanges === "function") {
-                            previousPage.saveChanges()
-                        }
-                        confirmSwitchDialog.close()
-                        sideNav.confirmSwitch(confirmSwitchDialog.targetIndex)
+                        unsavedChangesDialog.close()
+                        navigation.saveAndContinuePendingAction()
                     }
                 }
             }
@@ -248,36 +262,46 @@ ApplicationWindow {
     }
 
     Connections {
-        target: appController
+        target: window.appCtrl
         function onNotificationRaised(kind, text) {
             window.showNotice(kind, text)
         }
         function onTelemetryConsentRequiredChanged() {
-            if (appController.telemetryConsentRequired) {
+            if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
                 telemetryDialog.open()
             }
         }
     }
 
     Connections {
-        target: runController
+        target: window.runCtrl
         function onScriptAutoWarningRequested(text) {
             window.showNotice("error", text)
         }
     }
 
     Component.onCompleted: {
-        if (appController.telemetryConsentRequired) {
+        if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
             telemetryDialog.open()
         }
     }
 
     onClosing: function(close) {
-        if (runController.running) {
-            close.accepted = false
-            quitDialog.open()
-        } else {
-            close.accepted = appController.confirmClose()
+        if (window.allowImmediateClose) {
+            window.allowImmediateClose = false
+            close.accepted = window.appCtrl ? window.appCtrl.confirmClose() : true
+            if (close.accepted) {
+                if (window.appCtrl) {
+                    window.appCtrl.shutdown()
+                }
+            }
+            return
         }
+        close.accepted = false
+        if (window.runCtrl && window.runCtrl.running) {
+            window.requestAppClose()
+            return
+        }
+        window.requestAppClose()
     }
 }

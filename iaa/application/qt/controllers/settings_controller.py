@@ -46,6 +46,8 @@ class SettingsController(QObject):
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
     configSwitched = Signal()
+    currentProfileChanged = Signal(str)
+    profilesChanged = Signal()
     runtimeChanged = Signal()
     dirtyChanged = Signal(bool)
 
@@ -249,8 +251,8 @@ class SettingsController(QObject):
             return
         self.operationFailed.emit(f'不支持的动作: {field_id}.{action}')
 
-    @Slot()
-    def save(self) -> None:
+    @Slot(result=bool)
+    def save(self) -> bool:
         try:
             self._sync_context_back()
             self._iaa.config.save()
@@ -260,17 +262,20 @@ class SettingsController(QObject):
             self.runtimeChanged.emit()
             self.dirtyChanged.emit(self._state.dirty)
             self.operationSucceeded.emit('保存成功')
+            return True
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(f'保存失败：{exc}')
+            return False
 
-    @Slot()
-    def discard(self) -> None:
+    @Slot(result=bool)
+    def discard(self) -> bool:
         self._state.discard()
         self._sync_context_back()
         self._state.context.meta = self._build_meta()
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
+        return True
 
     @Slot()
     def resetResolution(self) -> None:
@@ -304,6 +309,7 @@ class SettingsController(QObject):
             self._iaa.config.switch_config(name)
             self._reload()
             self.configSwitched.emit()
+            self.currentProfileChanged.emit(self._iaa.config.current_config_name)
             self.operationSucceeded.emit(f'已切换到配置: {name}')
             return True
         except RuntimeError as e:
@@ -319,6 +325,8 @@ class SettingsController(QObject):
             self._iaa.config.create(name)
             self._reload()
             self.configSwitched.emit()
+            self.profilesChanged.emit()
+            self.currentProfileChanged.emit(self._iaa.config.current_config_name)
             self.operationSucceeded.emit(f'已创建并切换到配置: {name}')
             return True
         except Exception as exc:  # noqa: BLE001
@@ -330,8 +338,10 @@ class SettingsController(QObject):
         try:
             deleted_current = self._iaa.config.delete(name)
             self._reload()
+            self.profilesChanged.emit()
             if deleted_current:
                 self.configSwitched.emit()
+                self.currentProfileChanged.emit(self._iaa.config.current_config_name)
             self.operationSucceeded.emit(f'已删除配置: {name}')
             return True
         except FileNotFoundError:
@@ -349,8 +359,10 @@ class SettingsController(QObject):
         try:
             renamed_current = self._iaa.config.rename(old_name, new_name)
             self._reload()
+            self.profilesChanged.emit()
             if renamed_current:
                 self.configSwitched.emit()
+                self.currentProfileChanged.emit(self._iaa.config.current_config_name)
             self.operationSucceeded.emit(f'已重命名为: {new_name}')
             return True
         except FileNotFoundError:

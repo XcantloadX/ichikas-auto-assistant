@@ -16,7 +16,7 @@ Rectangle {
     property var configNames: []
     property string currentConfig: "default"
     signal currentChanging(int index, int previousIndex)
-    signal configSwitchRequested(string name)
+    signal profileSwitchRequested(string name)
     signal openConfigManager()
 
     function confirmSwitch(index) {
@@ -24,11 +24,19 @@ Rectangle {
     }
 
     function reloadConfigs() {
-        configNames = JSON.parse(settingsController.optionsJson()).profiles || [];
+        configNames = JSON.parse(App.ProfileStore.profilesJson).profiles || [];
     }
 
     Component.onCompleted: {
         reloadConfigs();
+    }
+
+    Connections {
+        target: App.ProfileStore
+
+        function onProfilesChanged() {
+            root.reloadConfigs()
+        }
     }
 
     ColumnLayout {
@@ -109,7 +117,7 @@ Rectangle {
                 onActivated: {
                     var selected = currentValue;
                     if (selected && selected !== root.currentConfig) {
-                        root.configSwitchRequested(selected);
+                        root.profileSwitchRequested(selected);
                     }
                 }
             }

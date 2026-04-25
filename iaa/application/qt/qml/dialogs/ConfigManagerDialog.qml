@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 
 Dialog {
     id: root
@@ -12,13 +13,22 @@ Dialog {
     anchors.centerIn: Overlay.overlay
 
     property var configNames: []
+    required property var navigation
+    required property var settingsCtrl
 
     function reload() {
-        var profiles = JSON.parse(settingsController.optionsJson()).profiles || [];
-        configNames = profiles;
+        root.configNames = JSON.parse(App.ProfileStore.profilesJson).profiles || []
     }
 
     Component.onCompleted: reload()
+
+    Connections {
+        target: App.ProfileStore
+
+        function onProfilesChanged() {
+            root.reload()
+        }
+    }
 
     contentItem: ColumnLayout {
         spacing: 12
@@ -37,10 +47,12 @@ Dialog {
                 highlighted: true
                 enabled: newConfigName.text.trim().length > 0
                 onClicked: {
-                    if (settingsController.createProfile(newConfigName.text.trim())) {
-                        newConfigName.text = "";
-                        root.reload();
-                        sideNav.reloadConfigs();
+                    var name = newConfigName.text.trim()
+                    if (name.length > 0) {
+                        root.navigation.requestGuardedAction("切换到新配置", function() {
+                            root.settingsCtrl.createProfile(name)
+                        })
+                        newConfigName.text = ""
                     }
                 }
             }
@@ -135,10 +147,18 @@ Dialog {
                     highlighted: true
                     enabled: renameDialog.newName.trim().length > 0
                     onClicked: {
-                        settingsController.renameProfile(renameDialog.targetConfigName, renameDialog.newName.trim());
-                        renameDialog.close();
-                        root.reload();
-                        sideNav.reloadConfigs();
+                        var oldName = renameDialog.targetConfigName
+                        var newName = renameDialog.newName.trim()
+                        var isCurrent = oldName === App.ProfileStore.currentProfileName
+                        var runner = function() {
+                            root.settingsCtrl.renameProfile(oldName, newName)
+                        }
+                        if (isCurrent) {
+                            root.navigation.requestGuardedAction("重命名当前配置", runner)
+                        } else {
+                            runner()
+                        }
+                        renameDialog.close()
                     }
                 }
             }
@@ -172,10 +192,17 @@ Dialog {
                     text: "删除"
                     highlighted: true
                     onClicked: {
-                        settingsController.deleteProfile(deleteConfirmDialog.targetConfigName);
-                        deleteConfirmDialog.close();
-                        root.reload();
-                        sideNav.reloadConfigs();
+                        var name = deleteConfirmDialog.targetConfigName
+                        var isCurrent = name === App.ProfileStore.currentProfileName
+                        var runner = function() {
+                            root.settingsCtrl.deleteProfile(name)
+                        }
+                        if (isCurrent) {
+                            root.navigation.requestGuardedAction("删除当前配置", runner)
+                        } else {
+                            runner()
+                        }
+                        deleteConfirmDialog.close()
                     }
                 }
             }

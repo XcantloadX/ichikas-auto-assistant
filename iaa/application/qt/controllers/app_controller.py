@@ -10,6 +10,7 @@ from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
 from .progress_bridge import ProgressBridge
+from .profile_store_backend import ProfileStoreBackend
 from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
@@ -54,6 +55,7 @@ class AppController(QObject):
         self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
         self.settingsController = SettingsController(self.service, self)
+        self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
         self._global_error = ''
         self._telemetry_consent_required = self.service.config.shared.telemetry.sentry is None
         setup_telemetry()
