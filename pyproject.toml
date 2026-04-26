@@ -1,6 +1,6 @@
 [project]
 name = "ichikas-auto-assistant"
-version = "26.04b4"
+version = "26.04b5"
 description = """
 Ichika's Auto Assistant is a helper script
 for Project Sekai: Colorful Stage

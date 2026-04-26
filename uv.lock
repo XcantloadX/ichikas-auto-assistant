@@ -354,7 +354,7 @@ wheels = [
 
 [[package]]
 name = "ichikas-auto-assistant"
-version = "26.4b3"
+version = "26.4b5"
 source = { virtual = "." }
 dependencies = [
     { name = "kotonebot", extra = ["android"] },
