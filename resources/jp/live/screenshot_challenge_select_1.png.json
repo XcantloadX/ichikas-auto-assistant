@@ -16,7 +16,8 @@
       },
       "displayName": "キャラクラーを選択レてください",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "59294cc5-bbb5-4568-bf81-24bd6cbb8dd5": {
@@ -34,7 +35,8 @@
       },
       "displayName": "初音ミク",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "82997d1e-1f73-440a-82fb-88246e48ee2a": {
@@ -52,7 +54,8 @@
       },
       "displayName": "鏡音リン",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "e3883fd0-5b36-4e2e-b657-f40c32a94216": {
@@ -70,7 +73,8 @@
       },
       "displayName": "鏡音レン",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "5c660ff2-7f22-4968-8845-50bfc7ecc000": {
@@ -88,7 +92,8 @@
       },
       "displayName": "巡音ルカ",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "0c8d55ec-5774-4b16-b019-5dc04d0f4dcc": {
@@ -106,7 +111,8 @@
       },
       "displayName": "MEIKO",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "inherit"
       }
     },
     "e55d6310-79ab-4f2d-b6b3-2441fa6dbe66": {
@@ -124,7 +130,8 @@
       },
       "displayName": "KAITO",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "inherit"
       }
     },
     "a93d25b7-1025-4cb4-89da-44fa172ae19a": {
@@ -142,7 +149,8 @@
       },
       "displayName": "组合「VIRTUAL SINGER」",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "inherit"
       }
     },
     "3cec98a5-e17e-4a31-9afc-5ac75a7cd16f": {
@@ -160,7 +168,8 @@
       },
       "displayName": "组合「Leo/need」",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "d10b9d2a-b562-420c-b3a5-09e4f651f89e": {
@@ -178,7 +187,8 @@
       },
       "displayName": "组合「MORE MORE JUMP!」",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "95d2af7d-b475-466a-b435-9a79215a6eaf": {
@@ -196,7 +206,8 @@
       },
       "displayName": "组合「Vivid BAD SQUAD」",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "654adfab-df80-4a7f-9183-d6d27f0c40f3": {
@@ -214,7 +225,8 @@
       },
       "displayName": "组合「ワンダーランズｘショウタイム」",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "7f0c09b8-bf28-469d-84a4-dd6e188b5ecf": {
@@ -232,7 +244,8 @@
       },
       "displayName": "组合「25時ナイトコードで」",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

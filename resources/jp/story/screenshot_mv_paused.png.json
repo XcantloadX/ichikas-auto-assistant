@@ -17,7 +17,8 @@
       },
       "displayName": "MV 播放已暂停文本",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "306ef78a-cf2c-4e29-8361-cff97e42c4ef": {
@@ -36,7 +37,8 @@
       },
       "displayName": "MV 播放已暂停 跳过按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

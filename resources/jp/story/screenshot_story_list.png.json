@@ -17,7 +17,8 @@
       },
       "displayName": "故事列表 筛选按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "8f2149e7-d32c-45e2-b60f-b8b5f681b29b": {
@@ -36,7 +37,8 @@
       },
       "displayName": "故事列表 进入按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "e710ba9f-22f3-4f2b-978f-5d385b91787f": {
@@ -67,7 +69,8 @@
       },
       "displayName": "故事列表 左侧展开按队查看按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

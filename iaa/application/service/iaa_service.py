@@ -8,20 +8,21 @@ from datetime import datetime
 from functools import cached_property
 
 import cv2
-import numpy as np
 
 from .config_service import ConfigService
 from .assets_service import AssetsService
 from .scheduler import SchedulerService
+from .help_service import HelpService
 
 class IaaService:
-    def __init__(self):
+    def __init__(self, config_name: str | None = None):
         # 首先配置日志
         self.__configure_logging()
         
-        self.config = ConfigService(self)
+        self.config = ConfigService(self, config_name=config_name)
         self.assets = AssetsService(self)
         self.scheduler = SchedulerService(self)
+        self.help = HelpService(self)
 
     def __configure_logging(self) -> None:
         """配置日志：控制台 DEBUG + 文件 logs/YYYY-MM-DD-hh-mm-ss.log。只配置一次。"""
@@ -118,9 +119,7 @@ class IaaService:
             _zipdir(logs_dir, 'logs', zf)
             _zipdir(conf_dir, 'conf', zf)
             try:
-                if not self.scheduler.device:
-                    raise RuntimeError("Device not initialized.")
-                img_data = self.scheduler.device.screenshot()
+                img_data = self.scheduler.capture_screenshot()
                 img_file = cv2.imencode('.png', img_data)[1].tobytes()
                 zf.writestr('screenshot.png', img_file)
             except Exception:

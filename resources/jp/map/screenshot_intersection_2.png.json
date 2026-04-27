@@ -16,7 +16,8 @@
       },
       "displayName": "看广告提示图标",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "exclude"
       }
     }
   }

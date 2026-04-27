@@ -16,7 +16,8 @@
       },
       "displayName": "",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "86a9a7e4-e2c3-49d3-872c-c0d9b9c74b3c": {
@@ -34,7 +35,8 @@
       },
       "displayName": "OK",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

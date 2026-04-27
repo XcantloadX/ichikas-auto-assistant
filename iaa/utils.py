@@ -25,7 +25,7 @@ def sprite_path(path: str) -> str:
         exe_dir = os.path.dirname(sys.executable)
         packaged_path = os.path.join(exe_dir, 'assets', 'res_compiled', path)
         if not os.path.exists(packaged_path):
-            raise RuntimeError(f"Missing resource folder: {packaged_path}")
+            raise FileNotFoundError(f'Missing resource folder: {packaged_path}')
         return packaged_path
     
     # 源码运行：基于模块文件的绝对路径
@@ -38,5 +38,5 @@ def sprite_path(path: str) -> str:
 
 def asset_path(path: str) -> str:
     if not os.path.exists('./assets'):
-        raise RuntimeError("Missing assets folder in current directory.")
+        raise FileNotFoundError(f'Missing assets "{path}" folder in current directory.')
     return os.path.abspath(os.path.join('./assets', path))

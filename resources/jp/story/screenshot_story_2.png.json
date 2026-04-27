@@ -16,7 +16,8 @@
       },
       "displayName": "スキップ 按钮图标",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "686db7b7-bca3-4c11-96af-25d1142f6c23": {
@@ -34,7 +35,8 @@
       },
       "displayName": "早送り 按钮图标",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

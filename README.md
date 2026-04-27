@@ -89,6 +89,9 @@ python -m iaa.main ... # 参数参考上面的 CLI 上手
 * `iaa.exe`：GUI 入口
 * `iaa-cli.exe`：CLI 入口
 
+### 发布
+见 [doc/LOCAL_RELEASE.md](./doc/LOCAL_RELEASE.md)。
+
 ### 贡献
 TODO
 

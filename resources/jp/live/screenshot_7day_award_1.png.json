@@ -16,7 +16,8 @@
       },
       "displayName": "今週のチャレニメスラニブ報動",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "df78dcea-eed2-49ca-95d0-67066f5507ca": {
@@ -34,7 +35,8 @@
       },
       "displayName": "挑战演出 每周奖励 水晶",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "d34fa417-e8da-4a14-9b83-c4e385863096": {
@@ -52,7 +54,8 @@
       },
       "displayName": "挑战演出 每周奖励 音乐卡",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "exclude"
       }
     },
     "d80c55a0-15ca-45a9-a24a-3cdc6a57c0d6": {
@@ -70,7 +73,8 @@
       },
       "displayName": "挑战演出 每周奖励 奇迹晶石",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "875d9bca-2870-43c3-9531-92b040bfc590": {
@@ -88,7 +92,8 @@
       },
       "displayName": "挑战演出 每周奖励 魔法之布",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "f90392bc-b7d4-491e-b2d3-ae216003d17a": {
@@ -106,7 +111,8 @@
       },
       "displayName": "挑战演出 每周奖励 硬币",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "1f7662e4-53e0-43f9-9dab-839ca88ff9ad": {
@@ -124,7 +130,8 @@
       },
       "displayName": "挑战演出 每周奖励 中级练习乐谱",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "23b1762d-e0f5-4230-b20f-4cfc4c6d511e": {
@@ -142,7 +149,8 @@
       },
       "displayName": "挑战演出 每周奖励 奇异种子",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "0588ed35-9d61-439a-bd8e-2997713634a3": {
@@ -160,7 +168,8 @@
       },
       "displayName": "挑战演出 每周奖励 魔法之线",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

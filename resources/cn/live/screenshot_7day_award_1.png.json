@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "fe2e8e2f-c600-44fa-9b18-25613ee88801": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.TextWeeklyAward",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

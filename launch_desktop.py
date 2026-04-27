@@ -11,7 +11,7 @@ def myexcepthook(type, value, traceback, oldhook=sys.excepthook):
 
 sys.excepthook = myexcepthook
 
-from iaa.application.desktop.index import main
+from iaa.application.qt.index import main
 
 if __name__ == "__main__":
   main() 

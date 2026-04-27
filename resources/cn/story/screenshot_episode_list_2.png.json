@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "2af3a46b-41fe-4cca-a7ed-5c4eeec0c4bd": {
+      "type": "prefab",
+      "name": "Story.TextEventStory",
+      "variant": "cn",
+      "props": {}
+    },
+    "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
+      "type": "prefab",
+      "name": "Story.TextEpisode8",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

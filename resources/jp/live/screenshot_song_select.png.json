@@ -16,7 +16,8 @@
       },
       "displayName": "決定",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "6446c387-cacf-4147-a310-bdee6160e3c3": {
@@ -58,7 +59,8 @@
       },
       "displayName": "切换到封面视图",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "e6d1216a-3594-44fb-aa13-efd9320cec45": {
@@ -89,7 +91,8 @@
       },
       "displayName": "歌曲选择页面 搜索图标",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "73c78678-59c9-4d6b-80ff-6c887f7cbaa1": {
@@ -108,7 +111,8 @@
       },
       "displayName": "歌曲选择 Vo.",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "require"
       }
     },
     "7c27897f-70c5-4d24-a0af-95be8d45b5a9": {
@@ -127,7 +131,8 @@
       },
       "displayName": "歌曲选择 随机按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

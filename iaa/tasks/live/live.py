@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 from typing import Callable, Literal, TypeVar
 from typing_extensions import assert_never
+from pydantic import BaseModel, ConfigDict
 
 from kotonebot import logging
 from kotonebot.core import AnyOf, Prefab
@@ -12,7 +12,7 @@ from iaa.context import conf, server, task_reporter, keyboard
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_core import RhythmGameAnalyzer
-from iaa.config.schemas import ChallengeLiveAward, GameCharacter
+from iaa.definitions.enums import ChallengeLiveAward, GameCharacter
 
 logger = logging.getLogger(__name__)
 LiveMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None
@@ -23,28 +23,26 @@ PrefabClass = TypeVar('PrefabClass', bound=Prefab)
 ChallengeCharacterPrefab = tuple[PrefabClass, PrefabClass | None]
 
 
-@dataclass
-class LivePlan:
+class LivePlan(BaseModel):
+    model_config = ConfigDict(frozen=True)
+    
     play_mode: SoloPlayMode = 'game_auto'
     debug_enabled: bool = False
     ap_multiplier: int | None = None
     auto_set_unit: bool = False
 
 
-@dataclass
 class OncePlan(LivePlan):
     song_select_mode: SongChoiceMode = 'current'
     song_name: str | None = None
 
 
-@dataclass
 class SingleLoopPlan(LivePlan):
     loop_count: int | None = None
     song_select_mode: SongChoiceMode = 'current'
     song_name: str | None = None
 
 
-@dataclass
 class ListLoopPlan(LivePlan):
     loop_count: int | None = None
     loop_song_mode: LoopSongMode = 'list_next'
@@ -91,7 +89,7 @@ CHALLENGE_AWARD_PREFABS: dict[ChallengeLiveAward, PrefabClass] = {
 def _skip():
     if server() == 'jp':
         device.click(1, 1)
-    elif server() == 'tw':
+    elif server() == 'tw' or server() == 'cn':
         # 台服要点侧边，点左上角没用
         device.click(6, 346)
     else:
@@ -375,6 +373,8 @@ def _enter_song_select() -> None:
         elif at_song_select():
             logger.debug('Now at song select.')
             break
+        else:
+            _skip()
 
 
 def _prepare_solo_live(song_select_mode: SongChoiceMode | Literal['list_next'], song_name: str | None) -> None:

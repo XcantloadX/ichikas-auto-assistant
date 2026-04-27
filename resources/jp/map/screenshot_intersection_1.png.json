@@ -16,7 +16,8 @@
       },
       "displayName": "交叉口 背景大楼 100 红色 LOGO",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "require"
       }
     },
     "8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50": {
@@ -34,7 +35,8 @@
       },
       "displayName": "打开地图 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "1429f33a-8793-401e-b937-39974e1501f1": {
@@ -53,7 +55,8 @@
       },
       "displayName": "工具栏 LIVE 按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "5df90065-4f75-4f85-a9d2-2d9f8c418394": {
@@ -85,7 +88,8 @@
       },
       "displayName": "首页 礼物按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "e153dec8-abf8-42c5-9a08-b8f7e16c7792": {
@@ -103,7 +107,8 @@
       },
       "displayName": "首页 任务按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "e6e9b497-82e4-4721-8b52-cfa6c80f8cea": {
@@ -122,7 +127,8 @@
       },
       "displayName": "工具栏 STORY 按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

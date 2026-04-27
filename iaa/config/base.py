@@ -1,7 +1,13 @@
-from typing import Literal
 from pydantic import BaseModel
 
-from .schemas import GameConfig, LiveConfig, SchedulerConfig, ChallengeLiveConfig, CmConfig, EventStoreConfig
+from .schemas import (
+    ChallengeLiveConfig,
+    CmConfig,
+    EventStoreConfig,
+    GameConfig,
+    LiveConfig,
+    SchedulerConfig,
+)
 
 CONFIG_VERSION_CODE = 1
 

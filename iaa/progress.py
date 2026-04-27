@@ -34,7 +34,7 @@ class TaskProgressSnapshot:
     current_steps: int | None = None
     total_steps: int | None = None
     phase: str | None = None
-    phase_path: list[str] | None = None
+    phase_path: list[dict[str, Any]] | None = None
     error: str | None = None
 
 
@@ -118,8 +118,12 @@ class TaskReporter:
 
     def _pop_phase(self, state: _PhaseState, failed: bool) -> None:
         phase_path = self._phase_path()
-        if not phase_path or phase_path[-1] != state.name:
-            phase_path = phase_path + [state.name]
+        if not phase_path or phase_path[-1].get('name') != state.name:
+            entry: dict[str, Any] = {'name': state.name}
+            if state.total_steps is not None:
+                entry['current'] = state.current_steps
+                entry['total'] = state.total_steps
+            phase_path = phase_path + [entry]
         if self._phase_stack and self._phase_stack[-1] is state:
             self._phase_stack.pop()
         elif state in self._phase_stack:
@@ -170,8 +174,15 @@ class TaskReporter:
             return None
         return self._phase_stack[-1]
 
-    def _phase_path(self) -> list[str]:
-        return [phase.name for phase in self._phase_stack]
+    def _phase_path(self) -> list[dict[str, Any]]:
+        result: list[dict[str, Any]] = []
+        for phase in self._phase_stack:
+            entry: dict[str, Any] = {'name': phase.name}
+            if phase.total_steps is not None:
+                entry['current'] = phase.current_steps
+                entry['total'] = phase.total_steps
+            result.append(entry)
+        return result
 
     def _publish(self, event_type: ProgressEventType, payload: dict[str, Any]) -> None:
         self.hub.publish(

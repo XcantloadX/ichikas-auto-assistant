@@ -1,0 +1,2 @@
+singleton Globals Globals.qml
+singleton ProfileStore ProfileStore.qml

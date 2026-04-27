@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "e0351492-58ef-47f7-9221-9d9c4eed715c": {
+      "type": "prefab",
+      "name": "CommonDialog.ButtonTipDialogNext",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

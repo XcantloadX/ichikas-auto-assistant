@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "definitions": {
+    "2eb13fe9-08d5-4cee-a18a-57b8c37215a5": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.TextEventMember",
+      "variant": "cn",
+      "props": {}
+    },
+    "ab73f9bb-7999-4282-bf33-b45f8e049b38": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.TextRecommend",
+      "variant": "cn",
+      "props": {}
+    },
+    "b57ec406-7be0-4220-b7c2-59d8570a8450": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.ButtonConfirm",
+      "variant": "cn",
+      "props": {}
+    },
+    "9dd57d2f-2810-4caf-878e-eb7d70438211": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.TextUnitRecommend",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

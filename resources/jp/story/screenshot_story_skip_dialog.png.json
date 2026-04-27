@@ -12,11 +12,13 @@
           "y1": 413,
           "x2": 690,
           "y2": 445
-        }
+        },
+        "fixed": true
       },
       "displayName": "次を読む",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

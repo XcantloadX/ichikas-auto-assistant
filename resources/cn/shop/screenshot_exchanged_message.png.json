@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "3af77b0b-b8de-47fa-afb9-9568736ab500": {
+      "type": "prefab",
+      "name": "Shop.TextExchangeDone",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

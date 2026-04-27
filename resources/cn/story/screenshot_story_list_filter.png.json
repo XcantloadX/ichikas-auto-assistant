@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "cf35db62-eb92-493b-a620-77897740d9f6": {
+      "type": "prefab",
+      "name": "Story.StoryList.ButtonConfirmFilter",
+      "variant": "cn",
+      "props": {}
+    },
+    "9b2c08fb-f2ff-4598-8974-819caac34249": {
+      "type": "prefab",
+      "name": "Story.StoryList.RadioUnread",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

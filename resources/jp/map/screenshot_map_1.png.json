@@ -16,7 +16,8 @@
       },
       "displayName": "スクランブル交差点",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "f7f2f77c-49dd-4c87-9010-231e1d1c6300": {
@@ -34,7 +35,8 @@
       },
       "displayName": "音楽ショップ",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "af87f0e8-b408-48e1-8234-631fa8822dda": {
@@ -52,7 +54,8 @@
       },
       "displayName": "关闭地图 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "4462ae7e-efd8-4c17-af15-a029409c8a81": {
@@ -70,7 +73,8 @@
       },
       "displayName": "前往世界 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

@@ -16,7 +16,8 @@
       },
       "displayName": "花里みのり",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "71c61e81-b14e-4017-99a5-53e3ce0e394b": {
@@ -34,7 +35,8 @@
       },
       "displayName": "桐谷遥",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "733b46d4-6030-4769-b2cf-ce0dd85bc923": {
@@ -52,7 +54,8 @@
       },
       "displayName": "桃井愛莉",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "ba15954f-a44f-4f33-a638-1db5dc409e48": {
@@ -70,7 +73,8 @@
       },
       "displayName": "日野森雫",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

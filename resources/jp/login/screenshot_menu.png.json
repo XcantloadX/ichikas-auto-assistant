@@ -16,7 +16,8 @@
       },
       "displayName": "「データ引き継ぎ」的图标",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "exclude",
+        "cn": "exclude"
       }
     }
   }

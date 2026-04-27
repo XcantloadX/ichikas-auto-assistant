@@ -1,6 +1,6 @@
 [project]
 name = "ichikas-auto-assistant"
-version = "26.03b3"
+version = "26.04b5"
 description = """
 Ichika's Auto Assistant is a helper script
 for Project Sekai: Colorful Stage
@@ -9,14 +9,16 @@ that automates dailies.
 readme = "README.md"
 requires-python = "~=3.10.0"
 dependencies = [
-    "kotonebot[android]==0.12.0",
+    "kotonebot[android]==0.13.0",
     "numpy<2.0",
     "onnxruntime==1.14.0 ; sys_platform == 'win32' or sys_platform == 'linux'",
     "onnxruntime ; sys_platform != 'win32'",
     "psutil",
+    "PySide6",
     "pydantic",
+    "sentry-sdk",
     "thefuzz>=0.22.1",
-    "ttkbootstrap>=1.14.2",
+    "plyer>=2.1.0",
 ]
 
 [dependency-groups]
@@ -43,6 +45,6 @@ prefabs_module = "iaa.game_ui.elements"
 resource_path = "resources/"
 
 [tool.kotonebot.variant]                                                                                                                  
-variants = ["tw"]
+variants = ["tw", "cn"]
 base = "jp"
 path_pattern = "nest"

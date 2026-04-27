@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "5cf9e05f-5d1e-49d5-a88e-0d881260f201": {
+      "type": "prefab",
+      "name": "Live.SwitchAutoLiveOff",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

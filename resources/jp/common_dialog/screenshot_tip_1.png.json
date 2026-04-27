@@ -16,7 +16,8 @@
         "fixed": true
       },
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

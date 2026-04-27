@@ -8,6 +8,8 @@ from typing import TYPE_CHECKING, Callable, Any
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
 from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData, PhysicalAndroidData
+from iaa.definitions.consts import package_by_server
+from iaa.utils import asset_path
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -18,6 +20,87 @@ from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
+SCRCPY_BUNDLED_VERSION = '3.3.1'
+TARGET_RESOLUTION = '1280x720'
+
+
+def _parse_wm_size_output(output: str) -> str | None:
+    """
+    解析 `wm size` 命令输出，返回原始物理分辨率。
+    
+    输出格式示例：
+    - "Physical size: 1080x1920"
+    - "Physical size: 1080x1920\\nOverride size: 1280x720"
+    """
+    import re
+    match = re.search(r'Physical size:\s*(\d+x\d+)', output)
+    if match:
+        return match.group(1)
+    return None
+
+
+def _setup_resolution(
+    device: 'Device',
+    emulator: str,
+    resolution_method: str,
+    package_name: str
+) -> str | None:
+    """
+    设置设备分辨率。
+    
+    :param device: 设备实例
+    :param emulator: 模拟器类型 ('mumu', 'mumu_v5', 'custom', 'physical_android')
+    :param resolution_method: 分辨率设置方式 ('auto', 'keep', 'wm_size')
+    :param package_name: 游戏包名，用于 kill 游戏
+    :return: 原始物理分辨率，用于恢复；如果不需修改则返回 None
+    """
+    if resolution_method == 'keep':
+        logger.debug('Resolution method is "keep", skip resolution setup.')
+        return None
+    
+    if resolution_method == 'auto':
+        if emulator != 'physical_android':
+            logger.debug('Resolution method is "auto" but not physical device, skip resolution setup.')
+            return None
+    
+    result = device.commands.adb_shell('wm size')
+    original = _parse_wm_size_output(result)
+    
+    if original is None:
+        logger.warning('Failed to parse wm size output: %s', result)
+        return None
+    
+    if original == TARGET_RESOLUTION:
+        logger.debug('Current resolution is already %s, skip.', TARGET_RESOLUTION)
+        return None
+    
+    # device.commands.adb_shell(f'am force-stop {package_name}')
+    # logger.info('Killed game package: %s', package_name)
+    # time.sleep(1)
+
+    device.commands.adb_shell(f'wm size {TARGET_RESOLUTION}')
+    logger.info('Set resolution from %s to %s', original, TARGET_RESOLUTION)
+    time.sleep(0.5)
+
+    # 然后再启动
+    device.commands.launch_app(package_name)
+    
+
+    return original
+
+
+def _restore_resolution(device: 'Device', original_resolution: str) -> None:
+    """
+    恢复设备分辨率。
+    
+    :param device: 设备实例
+    :param original_resolution: 原始分辨率
+    """
+    try:
+        device.commands.adb_shell('wm size reset')
+        logger.info('Reset resolution to original.')
+    except Exception as e:
+        logger.warning('Failed to reset resolution: %s', e)
 
 
 class SchedulerService:
@@ -44,6 +127,10 @@ class SchedulerService:
         """当前正在执行的任务的设备"""
         self._device_started: bool = False
         """设备生命周期是否已启动"""
+        self._original_resolution: str | None = None
+        """原始分辨率，用于恢复"""
+        self._connect_thread: threading.Thread | None = None
+        """设备连接线程"""
 
     @property
     def running(self) -> bool:
@@ -68,6 +155,7 @@ class SchedulerService:
 
         def _runner() -> None:
             run_id = uuid.uuid4().hex
+            completion_status: str = 'success'
             try:
                 logger.info("Preparing context...")
                 self.__prepare_context()
@@ -79,6 +167,7 @@ class SchedulerService:
                 tasks = get_tasks()
                 if not tasks:
                     logger.info("No tasks to run. Exiting...")
+                    completion_status = 'no_tasks'
                     return
                 self.__running = True
                 # 启动阶段结束
@@ -132,6 +221,7 @@ class SchedulerService:
                             )
                         )
                     except KeyboardInterrupt:
+                        completion_status = 'interrupted'
                         progress_hub().publish(
                             TaskProgressEvent(
                                 run_id=run_id,
@@ -151,6 +241,7 @@ class SchedulerService:
                         logger.info("KeyboardInterrupt received. Stopping scheduler.")
                         break
                     except Exception as e:  # noqa: BLE001
+                        completion_status = 'failed'
                         progress_hub().publish(
                             TaskProgressEvent(
                                 run_id=run_id,
@@ -179,6 +270,7 @@ class SchedulerService:
                         self.current_task_id = None
                         self.current_task_name = None
             except Exception as e:  # noqa: BLE001
+                completion_status = 'crashed'
                 logger.exception("Scheduler runner crashed: %s", e)
                 if self.on_error:
                     try:
@@ -186,22 +278,42 @@ class SchedulerService:
                     except Exception:
                         logger.exception("Error handler raised an exception")
             finally:
+                if self.device is not None and self._original_resolution is not None:
+                    _restore_resolution(self.device, self._original_resolution)
+                    self._original_resolution = None
                 if self.device is not None and self._device_started:
                     try:
                         self.device.stop()
                     finally:
                         self._device_started = False
                 self.device = None
+                self._thread = None
                 self.__running = False
                 # 停止阶段结束
                 if self.__stop_requested:
                     self.is_stopping = False
                     self.__stop_requested = False
                 from kotonebot.backend.context import vars
-                vars.flow.clear_interrupt()
+                try:
+                    vars.flow.clear_interrupt()
+                except Exception:
+                    logger.exception("Failed to clear flow interrupt state.")
                 # 若在准备阶段失败，也需要复位启动标记
                 self.is_starting = False
                 logger.info("Scheduler stopped.")
+
+                # 发送通知
+                if completion_status != 'no_tasks':
+                    from iaa.notify import send_notification
+                    from iaa.config.manager import read_shared
+                    shared_config = read_shared()
+                    message_map = {
+                        'success': '任务执行完成',
+                        'interrupted': '任务已中断',
+                        'failed': '任务执行失败',
+                        'crashed': '调度器发生错误',
+                    }
+                    send_notification('iaa', message_map.get(completion_status, '任务结束'), shared_config.notify)
 
         if run_in_thread:
             self._thread = threading.Thread(target=_runner, name=thread_name, daemon=True)
@@ -232,10 +344,7 @@ class SchedulerService:
         vars.flow.request_interrupt()
         if block:
             self._thread.join()
-        if self.device:
-            self.device.stop()
-        self.device = None
-        self._thread = None
+        # Note: device.stop() and resolution restore are handled in finally block of _runner
 
     def run_single(
         self,
@@ -260,15 +369,13 @@ class SchedulerService:
             return [(task_id, _call)]
         self.__start_tasks(_get, thread_name="IAA-Scheduler-Manual", run_in_thread=run_in_thread)
 
-    def __prepare_context(self) -> None:
+    def __create_device(self) -> 'Device':
         """
-        初始化配置上下文与设备上下文。
+        创建设备实例。
 
         .. NOTE::
             需要和任务执行在同一个线程中调用。
         """
-        # 因为导入 kotonebot 开销较大，这里延迟导入
-        from kotonebot.backend.context.context import init_context
         from kotonebot.client.host import Mumu12Host, Mumu12V5Host
         from kotonebot.client.host.protocol import HostProtocol, Instance
         impl = self.iaa.config.conf.game.control_impl
@@ -283,17 +390,51 @@ class SchedulerService:
                 instance.wait_available()
 
         def _resolve_mumu_instance(host_cls: type[HostProtocol], host_name: str) -> Instance:
+            def _check(id: str):
+                if host_cls is Mumu12V5Host and host_cls.check_app_keptlive(id):
+                    raise RuntimeError(
+                        '检测到当前模拟器 MuMu 12 已开启“应用保活”功能。\n'
+                        '请前往 MuMu 模拟器设置 → 其他 → 后台挂机时保活运行 中关闭，然后重新尝试。'
+                    ) 
+
             instance_id = emulator_data.instance_id if isinstance(emulator_data, MuMuEmulatorData) else None
             if instance_id is not None:
                 instance = host_cls.query(id=instance_id)
                 if instance is None:
                     raise RuntimeError(f'{host_name} instance not found: {instance_id}')
+                _check(instance.id)
                 return instance
 
             hosts = host_cls.list()
             if not hosts:
                 raise RuntimeError(f'No {host_name} host found.')
+            _check(hosts[0].id)
             return hosts[0]
+
+        def _build_scrcpy_config(timeout: float, use_virtual_display: bool):
+            from kotonebot.client.implements.scrcpy import ScrcpyConfig, VirtualDisplayConfig
+
+            jar_path = asset_path('scrcpy.jar')
+            if not os.path.isfile(jar_path):
+                raise FileNotFoundError(f'Scrcpy jar not found: {jar_path}')
+            
+            virtual_display_config = None
+            if use_virtual_display:
+                virtual_display_config = VirtualDisplayConfig(
+                    enabled=True,
+                    reuse_existing=True,
+                    launch_package=package_by_server(self.iaa.config.conf.game.server),
+                    width=1280,
+                    height=720,
+                    system_decorations=False
+                )
+            
+            return ScrcpyConfig(
+                timeout=timeout,
+                server_jar_path=jar_path,
+                server_version=SCRCPY_BUNDLED_VERSION,
+                virtual_display=virtual_display_config,
+            )
 
         if emulator == 'mumu':
             host = _resolve_mumu_instance(Mumu12Host, 'MuMu')
@@ -304,6 +445,10 @@ class SchedulerService:
             elif impl == 'adb':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                from kotonebot.client.host import AdbHostConfig
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -318,6 +463,10 @@ class SchedulerService:
             elif impl == 'adb':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                from kotonebot.client.host import AdbHostConfig
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 from kotonebot.client.host import AdbHostConfig
                 device = host.create_device('uiautomator2', AdbHostConfig())
@@ -343,6 +492,9 @@ class SchedulerService:
             _maybe_start(instance)
             if impl == 'adb':
                 device = instance.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 device = instance.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
@@ -357,14 +509,22 @@ class SchedulerService:
                 raise ValueError('physical_android 模式下 emulator_data 必须是 PhysicalAndroidData。')
             adb_serial = (data.adb_serial or '').strip()
             if not adb_serial:
-                raise ValueError('物理设备模式下必须提供 ADB 序列号。')
-            usb_host = PhysicalAndroidHost.query(id=adb_serial)
-            if usb_host is None:
-                raise ValueError(f'找不到 ADB USB 设备: {adb_serial}')
+                devices = PhysicalAndroidHost.list()
+                if not devices:
+                    raise ValueError('未找到任何 USB 设备。请连接设备后重试。')
+                usb_host = devices[0]
+                logger.info('自动选择 USB 设备: %s', usb_host.id)
+            else:
+                usb_host = PhysicalAndroidHost.query(id=adb_serial)
+                if usb_host is None:
+                    raise ValueError(f'找不到 ADB USB 设备: {adb_serial}')
             if not usb_host.running():
                 raise ValueError(f'ADB USB 设备不可用: {adb_serial}')
             if impl == 'adb':
                 device = usb_host.create_device('adb', AdbHostConfig())
+            elif impl == 'scrcpy':
+                use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
+                device = usb_host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
                 device = usb_host.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
@@ -373,7 +533,87 @@ class SchedulerService:
                 raise ValueError(f"Unknown control implementation: {impl}")
         else:
             raise ValueError(f"Unknown emulator: {emulator}")
+        
+        return device
+
+    def connect_device(self, on_success: Callable[[], None] | None = None, on_error: Callable[[Exception], None] | None = None) -> None:
+        """
+        在后台线程中连接设备。
+
+        :param on_success: 连接成功后的回调。
+        :param on_error: 连接失败后的回调。
+        """
+        if self.device is not None:
+            if on_success:
+                on_success()
+            return
+        
+        if self._connect_thread is not None and self._connect_thread.is_alive():
+            return
+        
+        def _connect() -> None:
+            try:
+                logger.info("Connecting to device...")
+                device = self.__create_device()
+                device.orientation = 'landscape'
+                device.start()
+                self.device = device
+                self._device_started = True
+                logger.info("Device connected successfully.")
+                if on_success:
+                    on_success()
+            except Exception as e:
+                logger.exception("Failed to connect device: %s", e)
+                if on_error:
+                    on_error(e)
+        
+        self._connect_thread = threading.Thread(target=_connect, name="IAA-DeviceConnect", daemon=True)
+        self._connect_thread.start()
+
+    def capture_screenshot(self):
+        """
+        获取当前设备截图。
+
+        优先复用调度器当前持有的设备；若当前未持有设备，则临时创建设备、
+        启动、截图，并在完成后立即清理。
+        """
+        if self.device is not None:
+            return self.device.screenshot()
+
+        logger.info("No active scheduler device. Creating a temporary device for screenshot capture.")
+        device = self.__create_device()
         device.orientation = 'landscape'
+        started = False
+        try:
+            device.start()
+            started = True
+            return device.screenshot()
+        finally:
+            if started:
+                try:
+                    device.stop()
+                except Exception:
+                    logger.exception("Failed to stop temporary screenshot device.")
+
+    def __prepare_context(self) -> None:
+        """
+        初始化配置上下文与设备上下文。
+
+        .. NOTE::
+            需要和任务执行在同一个线程中调用。
+        """
+        # 因为导入 kotonebot 开销较大，这里延迟导入
+        from kotonebot.backend.context.context import init_context
+        emulator = self.iaa.config.conf.game.emulator
+        
+        device = self.__create_device()
+        device.orientation = 'landscape'
+        
+        # 设置分辨率
+        resolution_method = self.iaa.config.conf.game.resolution_method
+        package_name = package_by_server(self.iaa.config.conf.game.server)
+        self._original_resolution = _setup_resolution(device, emulator, resolution_method, package_name)
+        
         init_context(target_device=device, force=True)
         self.device = device
 

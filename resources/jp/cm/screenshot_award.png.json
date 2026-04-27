@@ -16,7 +16,8 @@
       },
       "displayName": "報酬を獲得しました",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "exclude"
       }
     }
   }

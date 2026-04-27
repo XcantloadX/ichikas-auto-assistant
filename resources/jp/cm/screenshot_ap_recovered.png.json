@@ -16,7 +16,8 @@
       },
       "displayName": "ライブボーナスを5回復しました。",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "exclude"
       }
     }
   }

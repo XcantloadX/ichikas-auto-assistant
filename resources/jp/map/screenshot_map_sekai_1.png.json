@@ -16,7 +16,8 @@
       },
       "displayName": "現実世界へ",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

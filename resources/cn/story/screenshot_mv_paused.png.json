@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "45e8ae05-fe00-4644-8f13-4e2c53f417a0": {
+      "type": "prefab",
+      "name": "Story.TextMvPausedDialog",
+      "variant": "cn",
+      "props": {}
+    },
+    "306ef78a-cf2c-4e29-8361-cff97e42c4ef": {
+      "type": "prefab",
+      "name": "Story.ButtonSkipMv",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

@@ -16,7 +16,8 @@
       },
       "displayName": "イベントストーリー",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
@@ -34,7 +35,8 @@
       },
       "displayName": "第8話",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "f7b052bd-4ff3-4d13-b36f-bdae7e9c8f44": {
@@ -65,7 +67,8 @@
       },
       "displayName": "剧情分集列表 右上角书签按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "7438ba2d-1971-482c-bd87-62e0ecdc7c53": {
@@ -84,7 +87,8 @@
       },
       "displayName": "分集列表 左上角返回按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

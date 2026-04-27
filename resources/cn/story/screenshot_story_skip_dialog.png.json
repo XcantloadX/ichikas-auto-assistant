@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "fff9420f-5fb4-4231-b6b4-4a45f83b33ed": {
+      "type": "prefab",
+      "name": "Story.ButtonReadNext",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

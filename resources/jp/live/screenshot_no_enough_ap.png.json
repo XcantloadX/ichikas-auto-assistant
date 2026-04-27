@@ -17,7 +17,8 @@
       "displayName": "最低1つ消費する",
       "description": "当 AP 为 0 时开启 AUTO 的提示",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

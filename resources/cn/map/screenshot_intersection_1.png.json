@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "definitions": {
+    "248c62fd-ac66-4a55-8439-53974274d42c": {
+      "type": "prefab",
+      "name": "Scene.Intersection.BuildingLogo",
+      "variant": "cn",
+      "props": {}
+    },
+    "1429f33a-8793-401e-b937-39974e1501f1": {
+      "type": "prefab",
+      "name": "Hud.ButtonLive",
+      "variant": "cn",
+      "props": {}
+    },
+    "e6e9b497-82e4-4721-8b52-cfa6c80f8cea": {
+      "type": "prefab",
+      "name": "Hud.ButtonStory",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

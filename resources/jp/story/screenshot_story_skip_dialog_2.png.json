@@ -19,7 +19,8 @@
       "displayName": "スキップ",
       "description": "跳过最后一话时跳过弹窗提示的跳过按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

@@ -17,7 +17,8 @@
       },
       "displayName": "主线剧情按钮 右侧的预览图片",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

@@ -16,7 +16,8 @@
       },
       "displayName": "指定された回数のオートライプが完了しました。",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

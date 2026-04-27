@@ -17,7 +17,8 @@
       },
       "displayName": "故事列表 筛选弹窗 确认按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "9b2c08fb-f2ff-4598-8974-819caac34249": {
@@ -36,7 +37,8 @@
       },
       "displayName": "故事列表 筛选弹窗 未读/跳过 单选",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

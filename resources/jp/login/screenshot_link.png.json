@@ -17,7 +17,8 @@
       },
       "displayName": "Googleアカウントで連携",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "exclude",
+        "cn": "exclude"
       }
     },
     "b34e62d0-3932-4058-9927-e4bb660a1d5a": {
@@ -36,7 +37,8 @@
       },
       "displayName": "GooglePlayで連携",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "exclude",
+        "cn": "exclude"
       }
     }
   }

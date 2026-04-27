@@ -16,7 +16,8 @@
       },
       "displayName": "天馬司",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "6cd7b225-ef84-4219-9d6a-961b3abedffb": {
@@ -34,7 +35,8 @@
       },
       "displayName": "鳳えむ",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "101c74a1-cde5-41fa-b2e9-26e7e476d55e": {
@@ -52,7 +54,8 @@
       },
       "displayName": "草薙寧々",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "bbd3e850-7227-4f38-b1d3-14d97a10b239": {
@@ -70,7 +73,8 @@
       },
       "displayName": "神代類",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

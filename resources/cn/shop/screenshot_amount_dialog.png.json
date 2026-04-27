@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "5755f9a0-cf33-4372-bc21-8aea136efb02": {
+      "type": "prefab",
+      "name": "Shop.AmountDialog.ButtonCancel",
+      "variant": "cn",
+      "props": {}
+    },
+    "c9ee51d4-2cf0-454d-b2e7-7657a61994f9": {
+      "type": "prefab",
+      "name": "Shop.AmountDialog.ButtonConfirm",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

@@ -87,9 +87,9 @@ class AdbKeyboardInput:
         d = device.of_android()
         ret = d.commands.adb_shell('dumpsys input_method | grep mServedInputConnection')
         ret = ret.strip()
-        if ret == 'mServedInputConnectionWrapper=null':
+        if 'mServedInputConnectionWrapper=null' in ret or 'mServedInputConnection=null' in ret:
             return False
-        elif ret.startswith('mServedInputConnectionWrapper='):
+        elif ret.startswith('mServedInputConnectionWrapper=') or ret.startswith('mServedInputConnection='):
             return True
         else:
             logger.warning(f"Unexpected output from dumpsys input_method: {ret}")

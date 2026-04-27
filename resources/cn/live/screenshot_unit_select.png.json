@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "definitions": {
+    "c6abf269-d131-45f6-983c-5f0d911a987a": {
+      "type": "prefab",
+      "name": "Live.ButtonAutoLiveSettings",
+      "variant": "cn",
+      "props": {}
+    },
+    "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
+      "type": "prefab",
+      "name": "Live.SwitchAutoLiveOn",
+      "variant": "cn",
+      "props": {}
+    },
+    "c4eb4872-6d30-4804-8594-9b98a9add2da": {
+      "type": "prefab",
+      "name": "Live.ButtonSetRecommendUnit",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

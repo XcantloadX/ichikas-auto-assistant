@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "a28c6154-ae09-4481-ad79-0e5bbf9ed103": {
+      "type": "prefab",
+      "name": "CommonDialog.ButtonTipDialogClose",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

@@ -16,7 +16,8 @@
       },
       "displayName": "切换到列表视图",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

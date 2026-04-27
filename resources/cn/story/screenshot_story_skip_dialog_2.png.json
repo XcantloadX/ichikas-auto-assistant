@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "1e309b4b-9270-4a8c-a08a-e3366dfd26fb": {
+      "type": "prefab",
+      "name": "Story.ButtonSkipStory",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

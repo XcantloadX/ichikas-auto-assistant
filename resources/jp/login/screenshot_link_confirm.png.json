@@ -17,7 +17,8 @@
       },
       "displayName": "連携",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "exclude",
+        "cn": "exclude"
       }
     }
   }

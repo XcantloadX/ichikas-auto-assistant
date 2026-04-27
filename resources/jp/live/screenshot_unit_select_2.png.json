@@ -16,7 +16,8 @@
       },
       "displayName": "自动演出 OFF",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "require"
       }
     }
   }

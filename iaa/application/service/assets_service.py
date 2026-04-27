@@ -10,6 +10,6 @@ class AssetsService:
         self.iaa = iaa_service
 
     @property
-    def logo_path(self) -> str:
-        """一歌小助手的 LOGO 路径"""
-        return os.path.join(self.iaa.root, 'assets', 'marry_with_6_mikus.png')
+    def assets_root_path(self) -> str:
+        """运行时 assets 根目录"""
+        return os.path.join(self.iaa.root, 'assets')

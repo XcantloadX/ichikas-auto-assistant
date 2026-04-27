@@ -16,7 +16,8 @@
       },
       "displayName": "剧情阅读 右上角菜单按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

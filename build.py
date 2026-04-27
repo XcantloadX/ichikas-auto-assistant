@@ -42,21 +42,39 @@ def update_meta(version: str) -> None:
 def run_command(command: list[str], cwd: Path | None = None) -> CompletedProcess:
     """Runs a command and checks for errors."""
     click.echo(f"Running command: {' '.join(command)}")
-    result = subprocess.run(
+    process = subprocess.Popen(
         command,
         cwd=cwd,
-        capture_output=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
         text=True,
         encoding="utf-8",
         errors="ignore",
+        bufsize=1,
     )
+    output_lines: list[str] = []
+
+    if process.stdout is not None:
+        for line in process.stdout:
+            output_lines.append(line)
+            click.echo(line, nl=False)
+
+    return_code = process.wait()
+    stdout_text = "".join(output_lines)
+    result = CompletedProcess(
+        args=command,
+        returncode=return_code,
+        stdout=stdout_text,
+        stderr=None,
+    )
+
     if result.returncode != 0:
         click.echo(click.style(f"Error running command: {' '.join(command)}", fg="red"))
-        if result.stdout:
-            click.echo(result.stdout.encode("gbk", errors="backslashreplace").decode("gbk"))
-        if result.stderr:
-            click.echo(result.stderr.encode("gbk", errors="backslashreplace").decode("gbk"))
-        raise subprocess.CalledProcessError(result.returncode, command)
+        raise subprocess.CalledProcessError(
+            result.returncode,
+            command,
+            output=result.stdout,
+        )
     return result
 
 

@@ -17,7 +17,8 @@
         "button_type": "normal"
       },
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "b6a87f73-79ed-491e-b7c3-9fa584680827": {
@@ -36,7 +37,8 @@
         "button_type": "normal"
       },
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "5755f9a0-cf33-4372-bc21-8aea136efb02": {
@@ -53,7 +55,8 @@
         }
       },
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "c9ee51d4-2cf0-454d-b2e7-7657a61994f9": {
@@ -71,7 +74,8 @@
         "button_type": "primary"
       },
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

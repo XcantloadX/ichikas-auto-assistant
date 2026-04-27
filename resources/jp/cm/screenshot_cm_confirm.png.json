@@ -16,7 +16,8 @@
       },
       "displayName": "視聴開始 按钮",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "exclude"
       }
     }
   }

@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "57799e00-8036-483a-beb5-3212d3858680": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.TextAwardClaimConfirm",
+      "variant": "cn",
+      "props": {}
+    },
+    "efb7440d-3b59-4973-9da2-1c1dfffae2c1": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.ButtonConfirm",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

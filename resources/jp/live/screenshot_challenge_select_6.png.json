@@ -16,7 +16,8 @@
       },
       "displayName": "宵崎奏",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "896881e6-2579-495e-935c-27d744542e1f": {
@@ -34,7 +35,8 @@
       },
       "displayName": "朝比奈真冬",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "d6522a11-a1c1-4bb3-b886-0d21e8b63641": {
@@ -52,7 +54,8 @@
       },
       "displayName": "東雲絵名",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "d6bf5ad6-2d47-4e1e-87db-e0883d7e950f": {
@@ -70,7 +73,8 @@
       },
       "displayName": "暁山瑞希",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

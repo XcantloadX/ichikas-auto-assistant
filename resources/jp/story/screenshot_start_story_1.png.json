@@ -16,7 +16,8 @@
       },
       "displayName": "次のスト一リーを連続で読む",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "abbfd906-7b6d-4d5c-81ef-52a7d1cf460e": {
@@ -34,7 +35,8 @@
       },
       "displayName": "ボイスなし",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "052adf6d-e689-44ff-8fb0-f0d1f7239548": {
@@ -52,7 +54,8 @@
       },
       "displayName": "ボイステータをブウニロートしてストーリーを読みますか？",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     }
   }

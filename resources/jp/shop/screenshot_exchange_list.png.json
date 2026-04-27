@@ -17,7 +17,8 @@
       },
       "displayName": "活动交换所",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     }
   }

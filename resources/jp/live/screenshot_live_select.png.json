@@ -16,7 +16,8 @@
       },
       "displayName": "画面上方水晶数量图标",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf": {
@@ -62,7 +63,8 @@
       },
       "displayName": "单人演出 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "e01b6a1d-be60-4323-8152-94b56bf9488a": {
@@ -80,7 +82,8 @@
       },
       "displayName": "多人演出 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "db8c1d40-9e04-43b9-affe-70c9d0ffd89d": {
@@ -98,7 +101,8 @@
       },
       "displayName": "挑战演出 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393": {
@@ -116,7 +120,8 @@
       },
       "displayName": "虚拟演唱会 按钮",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "inherit"
       }
     },
     "76c00bd4-0a0e-454e-be4f-76aea6d737d2": {

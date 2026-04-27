@@ -5,7 +5,7 @@ from iaa.input import AdbKeyboardInput
 
 
 from .config.base import IaaConfig
-from .errors import ContextNotInitializedError
+from .definitions.errors import ContextNotInitializedError
 from iaa.progress import DummyTaskReporter, ProgressHub, TaskReporter
 
 g_conf: contextvars.ContextVar[Optional[IaaConfig]] = contextvars.ContextVar('g_conf', default=None)

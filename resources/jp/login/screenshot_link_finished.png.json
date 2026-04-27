@@ -16,7 +16,8 @@
       },
       "displayName": "プレイヤーデータの連携が完了しました。",
       "variant_policy": {
-        "tw": "exclude"
+        "tw": "exclude",
+        "cn": "exclude"
       }
     }
   }

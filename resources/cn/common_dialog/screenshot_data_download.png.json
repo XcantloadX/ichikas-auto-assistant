@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "3e64b08b-0fcf-4609-a0c0-97b8be73f8d1": {
+      "type": "prefab",
+      "name": "CommonDialog.TextRecommendDownloadViaWifi",
+      "variant": "cn",
+      "props": {}
+    },
+    "73b4fbe5-7a86-49d0-90e6-4792e1cda085": {
+      "type": "prefab",
+      "name": "CommonDialog.ButtonDownload",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

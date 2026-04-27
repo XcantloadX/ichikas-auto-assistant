@@ -1,0 +1,23 @@
+{
+  "version": 3,
+  "definitions": {
+    "74ae5b01-869d-423a-bd67-b4100bd92bdb": {
+      "type": "prefab",
+      "name": "Live.ButtonDecide",
+      "variant": "cn",
+      "props": {}
+    },
+    "aa917d01-d177-494a-b945-5379122eeab0": {
+      "type": "prefab",
+      "name": "Live.ButtonToJacketView",
+      "variant": "cn",
+      "props": {}
+    },
+    "73c78678-59c9-4d6b-80ff-6c887f7cbaa1": {
+      "type": "prefab",
+      "name": "Live.SongSelect.TextVo",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

@@ -6,8 +6,8 @@ from kotonebot import device, task, Loop, action, sleep
 
 from . import R
 from .common import go_home
-from iaa.consts import package_name
-from iaa.context import conf as get_conf, task_reporter
+from iaa.definitions.consts import package_name
+from iaa.context import conf as get_conf, task_reporter, server
 
 logger = logging.getLogger(__name__)
 
@@ -133,11 +133,12 @@ def clear_common_cm():
             elif R.Cm.ButtonPlayCm.try_click():
                 rep.message('播放广告')
                 logger.debug('Clicked CM start button.')
-                sleep(0.2)
+                sleep(1)
             # 没有剩余广告了
             else:
-                logger.info('All ads cleared.')
-                break
+                if not R.Hud.ButtonGoBack.exists():
+                    logger.info('All ads cleared.')
+                    break
         elif state == 2:
             if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
                 rep.message('等待广告载入')
@@ -173,6 +174,22 @@ def clear_common_cm():
                 device.click_center() # 关闭奖励领取提示
                 rep.message('奖励已领取')
                 state = 1
+            # Applovin 广告特判
+            elif R.Cm.Ad1.ButtonClose.try_click():
+                logger.info('Close button clicked. (Applovin/GP ad?)')
+                sleep(1)
+                state = 1
+            elif R.Cm.Ad1.ButtonSkip.try_click():
+                logger.info('Skip button clicked. (Applovin/GP ad?)')
+                sleep(1)
+            # GooglePlay App 广告特判：
+            # 点击 skip 按钮后会自动跳转到商店页面，需要跳过回来
+            elif device.commands.current_package() != package_name():
+                logger.info('Returning to game from ad. (GP ad?)')
+                # device.commands.launch_app(package_name())
+                # 有些广告，调用 launch_app 会触发重新播放，导致无限循环
+                device.commands.adb_shell('adb shell am force-stop com.android.vending')
+                sleep(1)
             # 还在加载
             else:
                 rep.message('等待结果')
@@ -183,6 +200,9 @@ def cm():
     """
     看广告并领取奖励。包括演出积分/心愿结晶、活动货币、两次 AP 恢复、两次礼物、水晶、音乐商店。
     """
+    if server() == 'cn':
+        logger.info('CM task is not supported on CN server.')
+        return
     go_home()
     rep = task_reporter()
     rep.message('正在前往交叉路口')

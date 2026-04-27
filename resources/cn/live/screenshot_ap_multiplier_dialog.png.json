@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "822c41b1-bcfa-4ea9-add4-6788bcca7009": {
+      "type": "prefab",
+      "name": "Live.ApMultiplierDialog.TextTip",
+      "variant": "cn",
+      "props": {}
+    },
+    "b6d937ba-7b8a-4908-9f2a-5e3c42c799c6": {
+      "type": "prefab",
+      "name": "Live.ApMultiplierDialog.ButtonConfirm",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

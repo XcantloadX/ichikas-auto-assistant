@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "definitions": {
+    "1b826846-0cc4-4783-ac6e-1eadb8398fe7": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.Ad1.ButtonSkip",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 102.46923006200527,
+          "y1": 24.116043372100194,
+          "x2": 125.11185136448273,
+          "y2": 46.21008045347464
+        },
+        "region": {
+          "kind": "rect",
+          "x1": 5.54705297504961,
+          "y1": 4.385077324343655,
+          "x2": 295.65551259601614,
+          "y2": 183.8605925261391
+        }
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "exclude"
+      }
+    }
+  }
+}
