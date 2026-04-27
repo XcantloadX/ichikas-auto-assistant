@@ -16,7 +16,7 @@
       },
       "displayName": "この報酬を受け取ります。よろしいですか？",
       "variant_policy": {
-        "tw": "exclude",
+        "tw": "require",
         "cn": "require"
       }
     },
@@ -36,7 +36,7 @@
       "displayName": "決定",
       "description": "挑战演出领取奖励弹窗",
       "variant_policy": {
-        "tw": "exclude",
+        "tw": "require",
         "cn": "require"
       }
     }

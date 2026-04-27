@@ -16,7 +16,7 @@
       },
       "displayName": "今週のチャレニメスラニブ報動",
       "variant_policy": {
-        "tw": "exclude",
+        "tw": "require",
         "cn": "require"
       }
     },
