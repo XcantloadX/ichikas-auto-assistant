@@ -238,8 +238,13 @@ def _configure_unit() -> None:
         elif R.Live.ButtonSetRecommendUnit.try_click():
             logger.debug('Clicked auto set unit button.')
     # 然后编队
-    R.Live.AutoSetDialog.TextRecommend.wait().click()
-    sleep(0.3)
+    rec_type_btn = R.Live.AutoSetDialog.TextRecommend.try_wait(timeout=1)
+    if rec_type_btn:
+        logger.debug('Setting unit with recommend type.')
+        rec_type_btn.click()
+        sleep(0.3)
+    else:
+        logger.debug('Recommend type button not found. Not during a event.')
     logger.debug('Clicking イベントメンバー button.')
     for _ in Loop():
         btn = (
