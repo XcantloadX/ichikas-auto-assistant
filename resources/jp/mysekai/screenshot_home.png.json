@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "definitions": {
+    "e331240a-2bf9-4917-bc40-d10d2e592cd9": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "MySekai.Hud.ButtonLayout",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 115.05776597665391,
+          "y1": 27.726191184284275,
+          "x2": 164.10217542840712,
+          "y2": 66.18596075733741
+        },
+        "fixed": true
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "inherit"
+      },
+      "displayName": "烤森 布局按钮图标"
+    }
+  }
+}

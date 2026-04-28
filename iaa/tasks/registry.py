@@ -15,6 +15,7 @@ from .live.auto_live import auto_live
 from .mission_rewards import collect_mission_rewards
 from .event_shop import event_shop
 from ._dump_item import _dump_item
+from ._dump_sekai_home import _dump_sekai_home
 
 TaskRegistry = dict[str, Callable[[], None]]
 
@@ -29,6 +30,7 @@ class TaskInfo:
 REGULAR_TASKS: TaskRegistry = {
     'start_game': start_game,
     '_dump_item': _dump_item,
+    '_dump_sekai_home': _dump_sekai_home,
     'cm': cm,
     'solo_live': solo_live,
     'challenge_live': challenge_live,
@@ -42,6 +44,7 @@ MANUAL_TASKS: TaskRegistry = {
     'main_story': farm_story,
     'auto_live': auto_live,
     'mission_rewards': collect_mission_rewards,
+    '_dump_sekai_home': _dump_sekai_home,
 }
 
 
@@ -59,6 +62,8 @@ def name_from_id(task_id: str) -> str:
         'main_story': '刷主线剧情',
         'auto_live': '自动演出',
         'mission_rewards': '任务奖励',
+        '_dump_item': '保存 ListView Item Icon',
+        '_dump_sekai_home': 'dump 烤森',
     }
     return mapping.get(task_id, task_id)
 
@@ -76,6 +81,7 @@ TASK_INFOS: dict[str, TaskInfo] = {
     'main_story': TaskInfo('main_story', '刷主线剧情', 'manual'),
     'auto_live': TaskInfo('auto_live', '自动演出', 'manual', supports_kwargs=True),
     'mission_rewards': TaskInfo('mission_rewards', '任务奖励', 'manual'),
+    '_dump_sekai_home': TaskInfo('_dump_sekai_home', 'dump 烤森', 'regular'),
 }
 
 

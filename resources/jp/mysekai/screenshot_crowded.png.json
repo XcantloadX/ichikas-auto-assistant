@@ -1,0 +1,39 @@
+{
+  "version": 3,
+  "definitions": {
+    "695980fa-aed7-4504-aa81-070b2bb714a1": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "MySekai.DialogCrowded.Text",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 351.71121363325926,
+          "y1": 295.20177429742614,
+          "x2": 924.6133819788288,
+          "y2": 383.1163908711134
+        },
+        "fixed": true
+      },
+      "variant_policy": {
+        "tw": "exclude",
+        "cn": "exclude"
+      }
+    },
+    "31e1994d-e806-4b08-9fe3-5e9b769a76dd": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "MySekai.DialogCrowded.ButtonOk",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 561.6753591002218,
+          "y1": 405.09504501453523,
+          "x2": 728.6468462096636,
+          "y2": 444.05720463241937
+        },
+        "fixed": true
+      }
+    }
+  }
+}

@@ -18,6 +18,12 @@
       "name": "Hud.ButtonStory",
       "variant": "cn",
       "props": {}
+    },
+    "f4235297-c9c1-496e-a4a6-c17e6addb5c7": {
+      "type": "prefab",
+      "name": "Hud.ButtonMySekai",
+      "variant": "cn",
+      "props": {}
     }
   }
 }

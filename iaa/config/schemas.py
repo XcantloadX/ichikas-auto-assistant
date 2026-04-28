@@ -90,6 +90,10 @@ class EventStoreConfig(BaseModel):
         ShopItem.ITEM_3STAR_MEMBER,
     ]
 
+
+class DeveloperConfig(BaseModel):
+    sekai_dump_post_process: bool = False
+
 class SchedulerConfig(BaseModel):
     start_game_enabled: bool = True
     solo_live_enabled: bool = True
@@ -100,6 +104,7 @@ class SchedulerConfig(BaseModel):
     area_convos_enabled: bool = True
     mission_rewards_enabled: bool = True
     event_shop_enabled: bool = True
+    dump_sekai_home_enabled: bool = False
 
     def is_enabled(self, task_id: str) -> bool:
         """根据任务标识判断是否启用。
@@ -113,6 +118,7 @@ class SchedulerConfig(BaseModel):
         - "gift"
         - "area_convos"
         - "mission_rewards"
+        - "_dump_sekai_home"
         """
         if task_id == 'start_game':
             return bool(self.start_game_enabled)
@@ -132,4 +138,6 @@ class SchedulerConfig(BaseModel):
             return bool(self.mission_rewards_enabled)
         if task_id == 'event_shop':
             return bool(self.event_shop_enabled)
+        if task_id == '_dump_sekai_home':
+            return bool(self.dump_sekai_home_enabled)
         return False

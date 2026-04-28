@@ -90,7 +90,7 @@ def create(name: str, *, exist: Literal['raise', 'ok'] = 'raise') -> None:
     
     # 创建默认配置
     from .base import GameConfig, LiveConfig
-    from .schemas import ChallengeLiveConfig, EventStoreConfig, SchedulerConfig
+    from .schemas import ChallengeLiveConfig, DeveloperConfig, EventStoreConfig, SchedulerConfig
     
     default_config = IaaConfig(
         name=name,
@@ -99,6 +99,7 @@ def create(name: str, *, exist: Literal['raise', 'ok'] = 'raise') -> None:
         live=LiveConfig(),
         challenge_live=ChallengeLiveConfig(),
         event_shop=EventStoreConfig(),
+        developer=DeveloperConfig(),
         scheduler=SchedulerConfig(),
     )
     
@@ -194,11 +195,14 @@ def fallback_invalid_fields(name: str, invalid_fields: List[str]) -> IaaConfig:
     with open(config_file, 'r', encoding='utf-8') as f:
         config_data = json.load(f)
 
+    from .schemas import DeveloperConfig
+
     default = IaaConfig.model_construct(
         name=config_data.get('name', name),
         description=config_data.get('description', f"Configuration for {name}"),
         game=GameConfig(),
         live=LiveConfig(),
+        developer=DeveloperConfig(),
     )
     default_dict = default.model_dump()
 

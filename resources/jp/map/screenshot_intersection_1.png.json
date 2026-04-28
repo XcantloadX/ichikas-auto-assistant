@@ -130,6 +130,26 @@
         "tw": "require",
         "cn": "require"
       }
+    },
+    "f4235297-c9c1-496e-a4a6-c17e6addb5c7": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Hud.ButtonMySekai",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 900.8336604906972,
+          "y1": 624.5631424777046,
+          "x2": 1079.406425473922,
+          "y2": 679.9486851838863
+        },
+        "fixed": true
+      },
+      "displayName": "工具栏 MYSEKAI 按钮",
+      "variant_policy": {
+        "tw": "require",
+        "cn": "require"
+      }
     }
   }
 }

@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from .schemas import (
     ChallengeLiveConfig,
     CmConfig,
+    DeveloperConfig,
     EventStoreConfig,
     GameConfig,
     LiveConfig,
@@ -23,4 +24,5 @@ class IaaConfig(BaseModel):
     challenge_live: ChallengeLiveConfig = ChallengeLiveConfig()
     cm: CmConfig = CmConfig()
     event_shop: EventStoreConfig = EventStoreConfig()
+    developer: DeveloperConfig = DeveloperConfig()
     scheduler: SchedulerConfig = SchedulerConfig()

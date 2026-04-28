@@ -341,4 +341,16 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 height=220,
             )
 
+        with Group('开发者设置（仅供开发使用！）'):
+            Checkbox(
+                key='scheduler.dumpSekaiHomeEnabled',
+                label='dump 烤森',
+                ref=ref(CTX.conf.scheduler.dump_sekai_home_enabled),
+            )
+            Checkbox(
+                key='developer.sekaiDumpPostProcess',
+                label='dump 烤森 - 后处理与预打标',
+                ref=ref(CTX.conf.developer.sekai_dump_post_process),
+            )
+
     return page.spec, page.hooks
