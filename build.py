@@ -39,6 +39,60 @@ def update_meta(version: str) -> None:
     click.echo(f"Updated {meta_path} with version {version}")
 
 
+def _cleanup_pyside6_excludes(dist_dir: Path) -> int:
+    """Remove excluded PySide6 files from the built distribution. Returns bytes removed."""
+    internal_dir = dist_dir / "_internal"
+    if not internal_dir.exists():
+        return 0
+
+    removed_bytes = 0
+
+    pyside6_dir = internal_dir / "PySide6"
+    if pyside6_dir.exists():
+        dir_excludes = ["translations", "qml/qtwebengine", "plugins/multimedia"]
+        for pattern in dir_excludes:
+            path = pyside6_dir / pattern
+            if path.exists():
+                if path.is_dir():
+                    size = sum(f.stat().st_size for f in path.rglob("*") if f.is_file())
+                    shutil.rmtree(path)
+                    click.echo(f"  Removed dir: {pattern}/ ({size / 1024 / 1024:.1f} MB)")
+                    removed_bytes += size
+                else:
+                    size = path.stat().st_size
+                    path.unlink()
+                    click.echo(f"  Removed file: {pattern} ({size / 1024 / 1024:.1f} MB)")
+                    removed_bytes += size
+
+    dll_patterns = ["Qt6WebEngine", "qtwebengine", "avcodec", "avformat", "avutil", "swscale", "swresample"]
+
+    for dll in internal_dir.glob("*.dll"):
+        if any(p in dll.name for p in dll_patterns):
+            size = dll.stat().st_size
+            dll.unlink()
+            click.echo(f"  Removed DLL: {dll.name} ({size / 1024 / 1024:.1f} MB)")
+            removed_bytes += size
+
+    av_libs_dir = internal_dir / "av.libs"
+    if av_libs_dir.exists():
+        for dll in av_libs_dir.glob("*.dll"):
+            if any(p in dll.name for p in dll_patterns):
+                size = dll.stat().st_size
+                dll.unlink()
+                click.echo(f"  Removed DLL: av.libs/{dll.name} ({size / 1024 / 1024:.1f} MB)")
+                removed_bytes += size
+
+    if pyside6_dir.exists():
+        for dll in pyside6_dir.glob("*.dll"):
+            if any(p in dll.name for p in dll_patterns):
+                size = dll.stat().st_size
+                dll.unlink()
+                click.echo(f"  Removed DLL: PySide6/{dll.name} ({size / 1024 / 1024:.1f} MB)")
+                removed_bytes += size
+
+    return removed_bytes
+
+
 def run_command(command: list[str], cwd: Path | None = None) -> CompletedProcess:
     """Runs a command and checks for errors."""
     click.echo(f"Running command: {' '.join(command)}")
@@ -195,6 +249,9 @@ def build(build_diff: bool) -> None:
     click.echo("Copying files to distribution directory...")
     dist_dir.mkdir(parents=True, exist_ok=True)
     shutil.copytree(built_dir, dist_dir, dirs_exist_ok=True)
+
+    click.echo("Cleaning up excluded PySide6 files...")
+    _cleanup_pyside6_excludes(dist_dir)
 
     click.echo("Creating package...")
     _create_archive(dist_dir, package_output_path, message="Packaged", sevenzip_level=2)
