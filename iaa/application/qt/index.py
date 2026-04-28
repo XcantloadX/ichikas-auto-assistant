@@ -1,6 +1,7 @@
 import ctypes
 import os
 import sys
+import platform
 from ctypes import wintypes
 from pathlib import Path
 from typing import cast
@@ -113,6 +114,8 @@ def resolve_window_style(style: str) -> str:
 
 
 def apply_window_style(hwnd: int, style: str) -> None:
+    if platform.system() != 'Windows':
+        return
     resolved = resolve_window_style(style)
     if resolved == 'mica':
         enable_mica(hwnd)

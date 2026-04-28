@@ -1,6 +1,5 @@
-from __future__ import annotations
-
 import sys
+import platform
 
 from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QCoreApplication
 from PySide6.QtGui import QDesktopServices
@@ -18,14 +17,6 @@ from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
-
-
-def _resolve_window_style(style: str) -> str:
-    if style in ('mica', 'acrylic', 'blur', 'solid'):
-        return style
-    if sys.getwindowsversion().build >= 22000:
-        return 'mica'
-    return 'solid'
 
 
 class AppController(QObject):
@@ -106,7 +97,15 @@ class AppController(QObject):
         return self._telemetry_consent_required
 
     def _get_window_style(self) -> str:
-        return _resolve_window_style(self.service.config.shared.interface.window_style)
+        style = self.service.config.shared.interface.window_style
+        if platform.system() != 'Windows':
+            return 'solid'
+        
+        if style in ('mica', 'acrylic', 'blur', 'solid'):
+            return style
+        if sys.getwindowsversion().build >= 22000:
+            return 'mica'
+        return 'solid'
 
     version = Property(str, _get_version, constant=True)
     windowTitle = Property(str, _get_window_title, constant=True)
