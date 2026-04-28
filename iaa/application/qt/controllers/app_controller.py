@@ -85,7 +85,14 @@ class AppController(QObject):
         return self.service.version
 
     def _get_window_title(self) -> str:
-        return f'一歌小助手 v{self.service.version}'
+        if platform.system() == 'Windows':
+            return f'一歌小助手'
+        elif platform.system() == 'Darwin':
+            return f'一歌小助手 (on macOS)'
+        elif platform.system() == 'Linux':
+            return f'一歌小助手 (on Linux)'
+        else:
+            return f'一歌小助手'
 
     def _get_assets_root_path(self) -> str:
         return self.service.assets.assets_root_path.replace('\\', '/')
