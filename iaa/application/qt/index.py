@@ -1,3 +1,8 @@
+# ruff: noqa: E402
+from .controllers.log_bridge import LogBridge
+log_bridge = LogBridge(None)
+log_bridge.install()
+
 import ctypes
 import os
 import sys
@@ -176,7 +181,7 @@ def main() -> None:
     QQuickStyle.setStyle("FluentWinUI3")
     app.setFont(QFont("Microsoft YaHei UI"))
 
-    controller = AppController()
+    controller = AppController(log_bridge=log_bridge)
     interface = controller.service.config.shared.interface
     apply_color_scheme(app, interface.color_scheme)
 
@@ -187,6 +192,7 @@ def main() -> None:
     engine.rootContext().setContextProperty('preferencesController', controller.preferencesController)
     engine.rootContext().setContextProperty('profileStoreBackend', controller.profileStoreBackend)
     engine.rootContext().setContextProperty('progressBridge', controller.progressBridge)
+    engine.rootContext().setContextProperty('logBridge', controller.logBridge)
     engine.rootContext().setContextProperty('scrcpyController', controller.scrcpyController)
     engine.rootContext().setContextProperty('helpController', controller.helpController)
     engine.addImageProvider('scrcpy', controller.scrcpyController.image_provider)

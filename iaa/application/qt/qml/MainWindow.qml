@@ -21,6 +21,7 @@ ApplicationWindow {
     readonly property var runCtrl: runController
     readonly property var settingsCtrl: settingsController
     readonly property var prefsCtrl: preferencesController
+    readonly property var logBridgeObj: logBridge
     property string noticeKind: "info"
     property string noticeText: ""
     property bool allowImmediateClose: false
@@ -59,7 +60,7 @@ ApplicationWindow {
             id: sideNav
             Layout.fillHeight: true
             // model: ["控制", "配置", "偏好", "帮助", "关于"]
-            model: ["控制", "配置", "偏好", "关于"]
+            model: ["控制", "配置", "偏好", "日志", "关于"]
             currentConfig: App.ProfileStore.currentProfileName
 
             onCurrentChanging: function(index, previousIndex) {
@@ -101,6 +102,11 @@ ApplicationWindow {
                 id: preferencesPage
                 prefsController: window.prefsCtrl
                 onShowNotice: function(kind, text) { window.showNotice(kind, text) }
+            }
+
+            LogPage {
+                id: logPage
+                logBridge: window.logBridgeObj
             }
 
             // HelpPage {}

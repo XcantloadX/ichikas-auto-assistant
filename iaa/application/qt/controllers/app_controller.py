@@ -11,6 +11,7 @@ from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
 from .progress_bridge import ProgressBridge
+from .log_bridge import LogBridge
 from .profile_store_backend import ProfileStoreBackend
 from .run_controller import RunController
 from .scrcpy_controller import ScrcpyController
@@ -25,8 +26,9 @@ class AppController(QObject):
     telemetryConsentRequiredChanged = Signal()
     windowStyleChanged = Signal()
 
-    def __init__(self, parent: QObject | None = None) -> None:
-        super().__init__(parent)
+    def __init__(self, log_bridge: LogBridge) -> None:
+        super().__init__(None)
+        self.logBridge = log_bridge
         try:
             self.service = IaaService()
         except ConfigValidationError as e:
@@ -164,4 +166,5 @@ class AppController(QObject):
     @Slot()
     def shutdown(self) -> None:
         self.progressBridge.close()
+        self.logBridge.close()
         self.scrcpyController.set_visible(False)
