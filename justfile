@@ -6,6 +6,7 @@ default:
 
 setup:
     uv sync --group dev
+    uv run ./tools/make_resources.py
 
 res:
     uv run ./tools/make_resources.py

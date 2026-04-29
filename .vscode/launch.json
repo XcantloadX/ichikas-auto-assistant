@@ -5,18 +5,6 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Module",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "iaa.game_ui.side_tabbar"
-        },
-        {
-            "name": "Server",
-            "type": "debugpy",
-            "request": "launch",
-            "module": "iaa.application.server.index"
-        },
-        {
             "name": "main",
             "type": "debugpy",
             "request": "launch",

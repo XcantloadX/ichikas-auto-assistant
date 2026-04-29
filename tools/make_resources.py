@@ -54,6 +54,7 @@ def main():
             ide_type=ide,
             default_variant=default_variant,
         ),
+        ignore_error=True,
     )
     print(f"Scanning {result.root_scan_path}...")
     if result.variant_names is not None:
