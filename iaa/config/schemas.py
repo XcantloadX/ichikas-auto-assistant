@@ -74,7 +74,7 @@ class LiveConfig(BaseModel):
 
 
 class ChallengeLiveConfig(BaseModel):
-    characters: list[GameCharacter] = []
+    characters: list[GameCharacter] = [GameCharacter.Ichika]
     award: ChallengeLiveAward = ChallengeLiveAward.Crystal
 
 
