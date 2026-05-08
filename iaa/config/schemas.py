@@ -19,14 +19,18 @@ class MuMuEmulatorData(BaseModel):
 class CustomEmulatorData(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
-    adb_ip: str = '127.0.0.1'
-    adb_port: int = 5555
-    emulator_path: str = ''
-    emulator_args: str = ''
+    adb_ip: str | None = None
+    adb_port: int | None = None
+    device_serial: str = ''
+    run_adb_connect: bool = True
+    wait_start_command: bool = False
+    start_command: str = ''
+    stop_command: str = ''
+    running_command: str = ''
 
 
 class PhysicalAndroidData(BaseModel):
-    adb_serial: str = ''
+    device_serial: str = ''
 
 
 class GameConfig(BaseModel):

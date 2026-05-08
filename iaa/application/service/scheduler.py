@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, Callable, Any
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
 from iaa.config.schemas import CustomEmulatorData, MuMuEmulatorData, PhysicalAndroidData
+from iaa.application.service.custom_emulator import CustomEmulatorInstance
 from iaa.definitions.consts import package_by_server
 from iaa.utils import asset_path
 
@@ -473,30 +474,46 @@ class SchedulerService:
             else:
                 raise ValueError(f"Unknown control implementation: {impl}")
         elif emulator == 'custom':
-            from kotonebot.client.host import create_custom
             from kotonebot.client.host import AdbHostConfig
             data = emulator_data if isinstance(emulator_data, CustomEmulatorData) else None
             if data is None:
                 raise RuntimeError('Custom emulator data is required when emulator is set to custom.')
-            adb_ip = data.adb_ip or '127.0.0.1'
-            adb_port = data.adb_port or 5555
-            emulator_path = data.emulator_path or ''
-            emulator_args = data.emulator_args or ''
-            instance = create_custom(
+            adb_ip = data.adb_ip
+            adb_port = data.adb_port
+            device_serial = (data.device_serial or '').strip() or None
+            run_adb_connect = bool(data.run_adb_connect)
+            wait_start_command = bool(data.wait_start_command)
+            start_command = (data.start_command or '').strip()
+            stop_command = (data.stop_command or '').strip()
+            running_command = (data.running_command or '').strip()
+            if not start_command:
+                raise ValueError('Custom emulator start_command is required.')
+            if run_adb_connect:
+                if adb_port is None:
+                    raise ValueError('Custom emulator adb port is required when adb connect is enabled.')
+            else:
+                adb_port = None
+                if not device_serial:
+                    raise ValueError('Custom emulator device_serial is required when adb connect is disabled.')
+            custom_instance = CustomEmulatorInstance(
                 adb_ip=adb_ip,
                 adb_port=adb_port,
-                adb_name="",
-                exe_path=emulator_path,
-                emulator_args=emulator_args,
+                device_serial=device_serial,
+                run_adb_connect=run_adb_connect,
+                wait_start_command=wait_start_command,
+                start_command=start_command,
+                stop_command=stop_command,
+                running_command=running_command,
             )
-            _maybe_start(instance)
+            self._custom_emulator_instance = custom_instance
+            _maybe_start(custom_instance)
             if impl == 'adb':
-                device = instance.create_device('adb', AdbHostConfig())
+                device = custom_instance.create_device('adb', AdbHostConfig())
             elif impl == 'scrcpy':
                 use_vd = self.iaa.config.conf.game.scrcpy_virtual_display
-                device = instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
+                device = custom_instance.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
             elif impl == 'uiautomator':
-                device = instance.create_device('uiautomator2', AdbHostConfig())
+                device = custom_instance.create_device('uiautomator2', AdbHostConfig())
             elif impl == 'nemu_ipc':
                 raise ValueError("'nemu_ipc' 实现仅支持 MuMu12，不支持 custom 模拟器。")
             else:
@@ -507,7 +524,7 @@ class SchedulerService:
             data = self.iaa.config.conf.game.emulator_data
             if not isinstance(data, PhysicalAndroidData):
                 raise ValueError('physical_android 模式下 emulator_data 必须是 PhysicalAndroidData。')
-            adb_serial = (data.adb_serial or '').strip()
+            adb_serial = (data.device_serial or '').strip()
             if not adb_serial:
                 devices = PhysicalAndroidHost.list()
                 if not devices:

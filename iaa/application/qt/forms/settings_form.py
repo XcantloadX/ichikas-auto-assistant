@@ -54,6 +54,12 @@ def _validate_watch_ad_wait_sec(value: object, _state: FormContext) -> str | Non
     return None
 
 
+def _validate_start_command(value: object, _state: FormContext) -> str | None:
+    if not str(value or '').strip():
+        return '启动命令不能为空'
+    return None
+
+
 def _on_server_change(state: FormContext, value: object) -> None:
     if value != 'jp':
         state.conf.game.link_account = 'no'
@@ -75,7 +81,7 @@ def _set_mumu_instance_id(state: FormContext, value: object) -> None:
 
 def _get_physical_android_serial(state: FormContext) -> str:
     if state.conf.game.emulator == 'physical_android' and isinstance(state.conf.game.emulator_data, PhysicalAndroidData):
-        return (state.conf.game.emulator_data.adb_serial or '').strip()
+        return (state.conf.game.emulator_data.device_serial or '').strip()
     return ''
 
 
@@ -84,13 +90,20 @@ def _set_physical_android_serial(state: FormContext, value: object) -> None:
         return
     if not isinstance(state.conf.game.emulator_data, PhysicalAndroidData):
         state.conf.game.emulator_data = PhysicalAndroidData()
-    state.conf.game.emulator_data.adb_serial = str(value or '').strip()
+    state.conf.game.emulator_data.device_serial = str(value or '').strip()
 
 
 def _ensure_custom_data(state: FormContext) -> CustomEmulatorData:
     if not isinstance(state.conf.game.emulator_data, CustomEmulatorData):
         state.conf.game.emulator_data = CustomEmulatorData()
     return state.conf.game.emulator_data
+
+
+def _custom_adb_connect_enabled(state: FormContext) -> bool:
+    if state.conf.game.emulator != 'custom':
+        return False
+    data = _ensure_custom_data(state)
+    return bool(data.run_adb_connect)
 
 
 def _get_custom_adb_ip(state: FormContext) -> str:
@@ -108,44 +121,101 @@ def _set_custom_adb_ip(state: FormContext, value: object) -> None:
 
 def _get_custom_adb_port(state: FormContext) -> str:
     if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
-        return str(state.conf.game.emulator_data.adb_port)
-    return '5555'
+        value = state.conf.game.emulator_data.adb_port
+        return '' if value is None else str(value)
+    return ''
 
 
 def _set_custom_adb_port(state: FormContext, value: object) -> None:
     if state.conf.game.emulator != 'custom':
         return
     text = str(value or '').strip()
+    if not text:
+        data = _ensure_custom_data(state)
+        data.adb_port = None
+        return
     if not text.isdigit():
         return
     data = _ensure_custom_data(state)
     data.adb_port = int(text)
 
 
-def _get_custom_path(state: FormContext) -> str:
+def _get_custom_device_serial(state: FormContext) -> str:
     if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
-        return state.conf.game.emulator_data.emulator_path
+        return state.conf.game.emulator_data.device_serial
     return ''
 
 
-def _set_custom_path(state: FormContext, value: object) -> None:
+def _set_custom_device_serial(state: FormContext, value: object) -> None:
     if state.conf.game.emulator != 'custom':
         return
     data = _ensure_custom_data(state)
-    data.emulator_path = str(value or '').strip()
+    data.device_serial = str(value or '').strip()
 
 
-def _get_custom_args(state: FormContext) -> str:
+def _get_custom_run_adb_connect(state: FormContext) -> bool:
     if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
-        return state.conf.game.emulator_data.emulator_args
+        return bool(state.conf.game.emulator_data.run_adb_connect)
+    return True
+
+
+def _set_custom_run_adb_connect(state: FormContext, value: object) -> None:
+    if state.conf.game.emulator != 'custom':
+        return
+    data = _ensure_custom_data(state)
+    data.run_adb_connect = bool(value)
+
+
+def _get_custom_wait_start_command(state: FormContext) -> bool:
+    if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
+        return bool(state.conf.game.emulator_data.wait_start_command)
+    return True
+
+
+def _set_custom_wait_start_command(state: FormContext, value: object) -> None:
+    if state.conf.game.emulator != 'custom':
+        return
+    data = _ensure_custom_data(state)
+    data.wait_start_command = bool(value)
+
+
+def _get_custom_start_command(state: FormContext) -> str:
+    if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
+        return state.conf.game.emulator_data.start_command
     return ''
 
 
-def _set_custom_args(state: FormContext, value: object) -> None:
+def _set_custom_start_command(state: FormContext, value: object) -> None:
     if state.conf.game.emulator != 'custom':
         return
     data = _ensure_custom_data(state)
-    data.emulator_args = str(value or '').strip()
+    data.start_command = str(value or '').strip()
+
+
+def _get_custom_stop_command(state: FormContext) -> str:
+    if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
+        return state.conf.game.emulator_data.stop_command
+    return ''
+
+
+def _set_custom_stop_command(state: FormContext, value: object) -> None:
+    if state.conf.game.emulator != 'custom':
+        return
+    data = _ensure_custom_data(state)
+    data.stop_command = str(value or '').strip()
+
+
+def _get_custom_running_command(state: FormContext) -> str:
+    if state.conf.game.emulator == 'custom' and isinstance(state.conf.game.emulator_data, CustomEmulatorData):
+        return state.conf.game.emulator_data.running_command
+    return ''
+
+
+def _set_custom_running_command(state: FormContext, value: object) -> None:
+    if state.conf.game.emulator != 'custom':
+        return
+    data = _ensure_custom_data(state)
+    data.running_command = str(value or '').strip()
 
 
 def _get_watch_ad_wait_sec(state: FormContext) -> str:
@@ -182,7 +252,7 @@ def build_settings_form() -> tuple[FormSpec, list]:
             )
             Text(
                 key='game.physicalAndroidSerial',
-                label='ADB 序列号',
+                label='设备序列号',
                 ref=custom_ref(_get_physical_android_serial, _set_physical_android_serial),
                 visible=_emulator_is('physical_android'),
                 placeholder='留空自动选择第一个 USB 设备',
@@ -191,26 +261,56 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 key='game.customAdbIp',
                 label='ADB IP',
                 ref=custom_ref(_get_custom_adb_ip, _set_custom_adb_ip),
-                visible=_emulator_is('custom'),
+                visible=_custom_adb_connect_enabled,
             )
             Text(
                 key='game.customAdbPort',
                 label='ADB 端口',
                 ref=custom_ref(_get_custom_adb_port, _set_custom_adb_port),
-                visible=_emulator_is('custom'),
+                visible=_custom_adb_connect_enabled,
                 validators=[_validate_port],
             )
+            Checkbox(
+                key='game.customRunAdbConnect',
+                label='执行 adb connect',
+                ref=custom_ref(_get_custom_run_adb_connect, _set_custom_run_adb_connect),
+                visible=_emulator_is('custom'),
+                help_text='如果模拟器需要通过「IP:端口」的形式连接，那么需要勾选，否则不需要。'
+            )
             Text(
-                key='game.customEmulatorPath',
-                label='模拟器路径',
-                ref=custom_ref(_get_custom_path, _set_custom_path),
+                key='game.customDeviceSerial',
+                label='设备序列号',
+                ref=custom_ref(_get_custom_device_serial, _set_custom_device_serial),
+                visible=_emulator_is('custom'),
+                placeholder='留空表示序列号同 `IP:端口`'
+            )
+            Text(
+                key='game.customStartCommand',
+                label='启动命令',
+                ref=custom_ref(_get_custom_start_command, _set_custom_start_command),
+                visible=_emulator_is('custom'),
+                validators=[_validate_start_command],
+                help_text='将会通过 shell 方式执行。因此编写时请注意转义等问题。<br>下面两个命令也是一样的。'
+            )
+            Checkbox(
+                key='game.customWaitStartCommand',
+                label='等待启动命令退出后才继续',
+                ref=custom_ref(_get_custom_wait_start_command, _set_custom_wait_start_command),
                 visible=_emulator_is('custom'),
             )
             Text(
-                key='game.customEmulatorArgs',
-                label='启动参数',
-                ref=custom_ref(_get_custom_args, _set_custom_args),
+                key='game.customStopCommand',
+                label='结束命令',
+                ref=custom_ref(_get_custom_stop_command, _set_custom_stop_command),
                 visible=_emulator_is('custom'),
+                placeholder='可选。如果为空，将会自动终止启动命令中的进程'
+            )
+            Text(
+                key='game.customRunningCommand',
+                label='运行检测命令',
+                ref=custom_ref(_get_custom_running_command, _set_custom_running_command),
+                visible=_emulator_is('custom'),
+                placeholder='可选。如果为空，将会使用默认的运行检测方式'
             )
             Segmented(
                 key='game.server',
