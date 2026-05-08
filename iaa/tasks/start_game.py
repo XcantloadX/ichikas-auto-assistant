@@ -81,8 +81,8 @@ def start_game():
             rep.message(f'通过 {link_account} 进行引继')
             login(link_account)
         
-        go_home(4)
+        go_home(check_alive=True)
     else:
         logger.info('Already at game.')
-        go_home()
+        go_home(check_alive=True)
     
