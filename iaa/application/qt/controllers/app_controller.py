@@ -163,6 +163,25 @@ class AppController(QObject):
             pass
         return True
 
+    @Slot(result=str)
+    def checkMigrationMessages(self) -> str:
+        from iaa.config.migration import get_deferred_messages
+        messages = get_deferred_messages()
+        if not messages:
+            return ""
+
+        html = [f"<b>配置文件已升级到 v{self.service.version}。</b>"]
+        if messages:
+            html.append("<ol>")
+            for msg in messages:
+                if msg.old_version and msg.new_version:
+                    html.append(f"<li>v{msg.old_version} → v{msg.new_version}：{msg.text}</li>")
+                else:
+                    html.append(f"<li>{msg.text}</li>")
+            html.append("</ol>")
+        
+        return "".join(html)
+
     @Slot()
     def shutdown(self) -> None:
         self.progressBridge.close()

@@ -4,8 +4,10 @@ from pathlib import Path
 
 from pydantic_core import ValidationError
 
-from .base import IaaConfig, GameConfig, LiveConfig
+from .base import IaaConfig, GameConfig, LiveConfig, CONFIG_VERSION_CODE
 from .shared import SharedConfig
+from .migration import MigrationChain, add_deferred_messages
+from .migrations import ProfileV1ToV2
 
 
 class ConfigValidationError(Exception):
@@ -30,7 +32,16 @@ def get_invalid_field_names(e: ValidationError) -> tuple[List[str], str]:
 
     return sorted(fields), '\n'.join(details)
 
+
 config_path: str = './conf'
+
+
+# --- 迁移定义 ---
+
+shared_migration_chain = MigrationChain(steps=[])
+profile_migration_chain = MigrationChain(steps=[
+    ProfileV1ToV2(),
+])
 
 
 def list() -> list[str]:
@@ -52,6 +63,11 @@ def read_shared() -> SharedConfig:
     conf_dir = Path(config_path)
     conf_dir.mkdir(parents=True, exist_ok=True)
     
+    # 迁移
+    messages = shared_migration_chain.run(conf_dir)
+    if messages:
+        add_deferred_messages(messages)
+
     shared_file = conf_dir / '_shared.json'
     
     if not shared_file.exists():
@@ -169,6 +185,11 @@ def read(name: str, *, not_exist: Literal['raise', 'create'] | IaaConfig | None 
         else:
             raise ValueError(f"Invalid non_exist value: {not_exist}")
     
+    # 迁移
+    messages = profile_migration_chain.run(Path(config_path))
+    if messages:
+        add_deferred_messages(messages)
+
     with open(config_file, 'r', encoding='utf-8') as f:
         config_data = json.load(f)
     

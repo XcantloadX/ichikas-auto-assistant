@@ -193,6 +193,25 @@ ApplicationWindow {
     }
 
     Dialog {
+        id: migrationDialog
+        modal: true
+        title: "配置升级"
+        standardButtons: Dialog.Ok
+        width: 520
+        anchors.centerIn: Overlay.overlay
+        property string migrationText: ""
+        contentItem: ColumnLayout {
+            spacing: 12
+            Label {
+                Layout.fillWidth: true
+                wrapMode: Text.Wrap
+                textFormat: Text.RichText
+                text: migrationDialog.migrationText
+            }
+        }
+    }
+
+    Dialog {
         id: quitDialog
         modal: true
         title: "确认退出"
@@ -300,6 +319,13 @@ ApplicationWindow {
     Component.onCompleted: {
         if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
             telemetryDialog.open()
+        }
+        if (window.appCtrl) {
+            var migrationMsg = window.appCtrl.checkMigrationMessages()
+            if (migrationMsg) {
+                migrationDialog.migrationText = migrationMsg
+                migrationDialog.open()
+            }
         }
     }
 

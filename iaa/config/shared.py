@@ -36,6 +36,7 @@ class NotifyConfig(BaseModel):
 
 
 class SharedConfig(BaseModel):
+    version: int = 1
     profiles: ProfilesConfig = ProfilesConfig()
     telemetry: TelemetryConfig = TelemetryConfig()
     interface: InterfaceConfig = InterfaceConfig()

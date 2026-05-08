@@ -10,7 +10,7 @@ from .schemas import (
     SchedulerConfig,
 )
 
-CONFIG_VERSION_CODE = 1
+CONFIG_VERSION_CODE = 2
 
 class IaaBaseTaskConfig(BaseModel):
     enabled: bool = False
