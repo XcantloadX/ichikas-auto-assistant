@@ -97,6 +97,7 @@ class EventStoreConfig(BaseModel):
 
 class DeveloperConfig(BaseModel):
     sekai_dump_post_process: bool = False
+    screen_recording_enabled: bool = False
 
 class SchedulerConfig(BaseModel):
     start_game_enabled: bool = True

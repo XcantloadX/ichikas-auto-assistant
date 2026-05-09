@@ -466,5 +466,11 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 label='dump 烤森 - 后处理与预打标',
                 ref=ref(CTX.conf.developer.sekai_dump_post_process),
             )
+            Checkbox(
+                key='developer.screenRecordingEnabled',
+                label='自动录屏（需安装 ffmpeg）',
+                ref=ref(CTX.conf.developer.screen_recording_enabled),
+                help_text='脚本启动时自动录屏，结束时自动结束。输出到 dumps/screen_records/ 目录。',
+            )
 
     return page.spec, page.hooks

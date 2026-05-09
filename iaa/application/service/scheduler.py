@@ -173,6 +173,12 @@ class SchedulerService:
                 self.__running = True
                 # 启动阶段结束
                 self.is_starting = False
+                if self.iaa.config.conf.developer.screen_recording_enabled:
+                    try:
+                        from iaa.application.service.screen_recorder import start_recording
+                        start_recording()
+                    except Exception as e:
+                        logger.warning('Failed to start screen recording: %s', e)
                 total_tasks = len(tasks)
                 for index, (task_id, func) in enumerate(tasks):
                     self.current_task_id = task_id
@@ -279,6 +285,12 @@ class SchedulerService:
                     except Exception:
                         logger.exception("Error handler raised an exception")
             finally:
+                if self.iaa.config.conf.developer.screen_recording_enabled:
+                    try:
+                        from iaa.application.service.screen_recorder import stop_recording
+                        stop_recording()
+                    except Exception as e:
+                        logger.warning('Failed to stop screen recording: %s', e)
                 if self.device is not None and self._original_resolution is not None:
                     _restore_resolution(self.device, self._original_resolution)
                     self._original_resolution = None
