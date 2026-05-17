@@ -23,6 +23,7 @@ from iaa.config.schemas import (
     MuMuDevice,
     CustomDevice,
     NoDevice,
+    PlayCoverDevice,
     AutoConnection,
     UsbConnection,
     TcpConnection,
@@ -53,11 +54,14 @@ def _is_custom(s: FormContext) -> bool:
 def _is_no_device(s: FormContext) -> bool:
     return isinstance(s.conf.device.lifecycle, NoDevice)
 
+def _is_playcover(s: FormContext) -> bool:
+    return isinstance(s.conf.device.lifecycle, PlayCoverDevice)
+
 def _is_tcp(s: FormContext) -> bool:
     return isinstance(s.conf.device.connection, TcpConnection)
 
 def _show_connection_section(s: FormContext) -> bool:
-    return not _is_mumu(s)
+    return not _is_mumu(s) and not _is_playcover(s)
 
 def _show_tcp_fields(s: FormContext) -> bool:
     return _show_connection_section(s) and _is_tcp(s)
@@ -104,6 +108,8 @@ def _get_lifecycle_type(state: FormContext) -> str:
         return lc.type
     if isinstance(lc, CustomDevice):
         return 'custom'
+    if isinstance(lc, PlayCoverDevice):
+        return 'playcover'
     return 'none'
 
 def _set_lifecycle_type(state: FormContext, value: object) -> None:
@@ -134,6 +140,12 @@ def _set_lifecycle_type(state: FormContext, value: object) -> None:
             state.conf.device.connection = UsbConnection(type='usb')
         if state.conf.device.control_impl == 'nemu_ipc':
             state.conf.device.control_impl = 'adb'
+    elif val == 'playcover':
+        if isinstance(current, PlayCoverDevice):
+            return
+        state.conf.device.lifecycle = PlayCoverDevice(type='playcover')
+        if state.conf.device.control_impl == 'nemu_ipc':
+            state.conf.device.control_impl = 'adb'
 
 
 # ── MuMu instance id ──────────────────────────────────────────────────────────
@@ -154,12 +166,13 @@ def _set_mumu_instance_id(state: FormContext, value: object) -> None:
 
 def _get_check_and_start(state: FormContext) -> bool:
     lc = state.conf.device.lifecycle
-    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice)) else False
+    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)) else False
 
 def _set_check_and_start(state: FormContext, value: object) -> None:
     lc = state.conf.device.lifecycle
-    if isinstance(lc, (MuMuDevice, CustomDevice)):
+    if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)):
         lc.check_and_start = bool(value)
+
 
 
 # ── CustomDevice lifecycle fields ─────────────────────────────────────────────
@@ -337,6 +350,7 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 options=lambda s: [
                     o for o in s.meta.lifecycleTypes
                     if not (o['value'] in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
+                    and not (o['value'] == 'playcover' and platform.system() != 'Darwin')
                 ],
             )
             # MuMu 专属
@@ -353,7 +367,7 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 key='device.checkAndStart',
                 label='检查并启动',
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
-                visible=_lifecycle_is(MuMuDevice, CustomDevice),
+                visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice),
             )
             # 自定义专属
             Text(
@@ -385,7 +399,7 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 placeholder='可选。如果为空，将会使用默认的运行检测方式'
             )
 
-        with Group('连接设置'):
+        with Group('连接设置', visible=_show_connection_section):
             Segmented(
                 key='device.connectionType',
                 label='连接方式',
@@ -430,7 +444,7 @@ def build_settings_form() -> tuple[FormSpec, list]:
                 placeholder='留空则默认使用 IP:端口 作为序列号'
             )
 
-        with Group('控制方式'):
+        with Group('控制方式', visible=lambda s: not _is_playcover(s)):
             Segmented(
                 key='device.controlImpl',
                 label='控制方式',

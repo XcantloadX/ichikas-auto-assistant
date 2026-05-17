@@ -14,6 +14,9 @@ class RuntimeEngine:
         field_map: dict[str, Any] = {}
 
         for group in self.spec.groups:
+            group_visible = group.visible(state) if callable(group.visible) else group.visible
+            if not group_visible:
+                continue
             field_ids: list[str] = []
             for field in group.fields:
                 runtime = self._build_field_runtime(field, state)

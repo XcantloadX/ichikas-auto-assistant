@@ -27,8 +27,12 @@ class CustomDevice(BaseModel):
 class NoDevice(BaseModel):
     type: Literal['none']
 
+class PlayCoverDevice(BaseModel):
+    type: Literal['playcover']
+    check_and_start: bool = False
+
 DeviceLifecycle = Annotated[
-    MuMuDevice | CustomDevice | NoDevice,
+    MuMuDevice | CustomDevice | NoDevice | PlayCoverDevice,
     Field(discriminator='type')
 ]
 

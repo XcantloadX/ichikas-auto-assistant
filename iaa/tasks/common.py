@@ -17,8 +17,9 @@ def go_home(*, check_alive: bool = False):
     rep = task_reporter()
     rep.message('正在返回首页')
     logger.info('Try to go home.')
+    from kotonebot.client.device import AndroidDevice
     for _ in Loop(interval=0.5):
-        if check_alive and device.of_android().current_package() != package_name():
+        if isinstance(device._device, AndroidDevice) and check_alive and device.of_android().current_package() != package_name():
             device.of_android().launch_app(package_name())
             sleep(5)
             continue

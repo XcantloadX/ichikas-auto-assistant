@@ -62,6 +62,15 @@ def login(link_account: LinkAccountOptions):
 @task('启动游戏', screenshot_mode='manual')
 def start_game():
     rep = task_reporter()
+
+    # PlayCover：游戏已由 lifecycle 负责启动，直接等横屏后回主页
+    from kotonebot.client.device import MacOSDevice
+    if isinstance(device._device, MacOSDevice):
+        while device.detect_orientation() != 'landscape':
+            sleep(3)
+        go_home(check_alive=True)
+        return
+
     d = device.of_android()
     package_name = get_package_name()
     while d.detect_orientation() != 'landscape':
@@ -74,13 +83,13 @@ def start_game():
         if not use_scrcpy_with_virtual_display:
             logger.info('Not at game. Launching...')
             d.launch_app(package_name)
-        
+
         # 检查是否需要登录
         link_account = conf().game.link_account
         if server() == 'jp' and link_account != 'no':
             rep.message(f'通过 {link_account} 进行引继')
             login(link_account)
-        
+
         go_home(check_alive=True)
     else:
         logger.info('Already at game.')

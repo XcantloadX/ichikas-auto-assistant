@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, TcpConnection, UsbConnection
+from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, PlayCoverDevice, TcpConnection, UsbConnection
 from iaa.application.service.custom_emulator import CustomEmulatorInstance
 from iaa.definitions.consts import package_by_server
 from iaa.utils import asset_path
@@ -560,6 +560,25 @@ class SchedulerService:
             else:
                 raise ValueError('设备类型为"无"时，连接方式不能为自动，请选择 USB 或 TCP。')
 
+        elif isinstance(lifecycle, PlayCoverDevice):
+            from kotonebot.client.playcover import Playcover
+            from iaa.definitions.consts import bundle_id_by_server
+
+            bundle_id = bundle_id_by_server(self.iaa.config.conf.game.server)
+            app = Playcover.find(bundle_id)
+            if app is None:
+                raise ValueError(f'未找到 PlayCover 应用：{bundle_id}')
+
+            if lifecycle.check_and_start and not app.running():
+                logger.info('PlayCover app not running, launching: %s', bundle_id)
+                app.launch()
+                app.wait_available(timeout=60)
+
+            if not app.running():
+                raise RuntimeError('游戏未在运行。请启动游戏，或在配置里启用「检查并启动」。')
+
+            return app.create_device()
+
         else:
             raise ValueError(f"Unknown lifecycle type: {type(lifecycle)}")
 
@@ -635,11 +654,14 @@ class SchedulerService:
         device = self.__create_device()
         device.orientation = 'landscape'
 
-        # 设置分辨率
+        # 设置分辨率（PlayCover 不走 ADB，直接跳过）
         device_conf = self.iaa.config.conf.device
-        is_physical = isinstance(device_conf.lifecycle, NoDevice)
-        package_name = package_by_server(self.iaa.config.conf.game.server)
-        self._original_resolution = _setup_resolution(device, is_physical, device_conf.resolution_method, package_name)
+        if not isinstance(device_conf.lifecycle, PlayCoverDevice):
+            is_physical = isinstance(device_conf.lifecycle, NoDevice)
+            package_name = package_by_server(self.iaa.config.conf.game.server)
+            self._original_resolution = _setup_resolution(device, is_physical, device_conf.resolution_method, package_name)
+        else:
+            self._original_resolution = None
         
         init_context(target_device=device, force=True)
         self.device = device

@@ -60,6 +60,7 @@ class GroupSpec:
 
     title: str
     fields: list[FieldSpec]
+    visible: 'Predicate | bool' = True
 
 
 @dataclass(slots=True)
@@ -150,14 +151,15 @@ class Group:
     在 Group 上下文内创建的字段会自动挂到当前分组。
     """
 
-    def __init__(self, title: str) -> None:
+    def __init__(self, title: str, visible: 'Predicate | bool' = True) -> None:
         """创建一个分组构建器。
 
         Args:
             title: 分组标题。
+            visible: 分组可见性，可以是布尔值或接收 state 的 predicate。
         """
         self.title = title
-        self._group_spec = GroupSpec(title=title, fields=[])
+        self._group_spec = GroupSpec(title=title, fields=[], visible=visible)
         self._token: Token[GroupSpec | None] | None = None
 
     def __enter__(self) -> 'Group':

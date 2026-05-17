@@ -10,9 +10,22 @@ PACKAGE_NAME_MAP: dict[Literal['jp', 'tw', 'cn'], str] = {
     'cn': PACKAGE_NAME_CN,
 }
 
+BUNDLE_ID_JP = 'com.sega.pjsekai'
+BUNDLE_ID_CN = 'com.hermes.mk'
+BUNDLE_ID_TW = 'com.hermes.mk.asia'
+
+BUNDLE_ID_MAP: dict[Literal['jp', 'tw', 'cn'], str] = {
+    'jp': BUNDLE_ID_JP,
+    'tw': BUNDLE_ID_TW,
+    'cn': BUNDLE_ID_CN,
+}
+
 
 def package_by_server(server: Literal['jp', 'tw', 'cn']) -> str:
     return PACKAGE_NAME_MAP.get(server, PACKAGE_NAME_JP)
+
+def bundle_id_by_server(server: Literal['jp', 'tw', 'cn']) -> str:
+    return BUNDLE_ID_MAP.get(server, BUNDLE_ID_JP)
 
 def package_name() -> str:
     """获取当前服务器的包名。

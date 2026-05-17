@@ -13,6 +13,7 @@ LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'mumu': 'MuMu 12 (v4)',
     'custom': '自定义模拟器',
     'none': '物理机 / 手动管理',
+    'playcover': 'PlayCover',
 }
 
 CONNECTION_TYPE_DISPLAY_MAP: dict[str, str] = {
