@@ -77,8 +77,25 @@ wheels = [
 
 [[package]]
 name = "av"
+version = "14.3.0"
+source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }
+resolution-markers = [
+    "sys_platform == 'win32'",
+]
+wheels = [
+    { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl", hash = "sha256:fe74c54ff6b18a46c2e593347452e98e39e3523d623d864f9219d34a1d930dfd" },
+]
+
+[[package]]
+name = "av"
 version = "17.0.1"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "sys_platform == 'darwin'",
+    "sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+]
 sdist = { url = "https://files.pythonhosted.org/packages/4e/f0/8c8dca97ae0cf00e8e2a53bb5cb9aca5fd484f585ef3e9b412200aff3ebd/av-17.0.1.tar.gz", hash = "sha256:fbcbd4aa43bca6a8691816283112d1659a27f407bbeb66d1397023691339f5d4", size = 4411938, upload-time = "2026-04-18T17:12:34.29Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f8/0c/cbc39b090ec8d30ff795f1fd2cde1b686d1943051cb11a6ba699a10c95cd/av-17.0.1-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:985c21095bfb9c4bb7ba362fbef7bf0194bd72b1d7d3c46e30d1f47c5d38b4df", size = 23409596, upload-time = "2026-04-18T17:11:32.829Z" },
@@ -87,15 +104,12 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/e4/9c/6f2abe6179e9828f6e334201a6d3ca14e90e6eb4fb5ff0ccca68e7b0beb2/av-17.0.1-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:8270634c409f8efc9a24216e5dd90313d873b26ea4b5f172b14de52cbd15121c", size = 37669836, upload-time = "2026-04-18T17:11:40.23Z" },
     { url = "https://files.pythonhosted.org/packages/a1/0b/f050ba5d3f294a2250f8b64eaa6059fc6df39573e5960f5833850aa50033/av-17.0.1-cp310-cp310-musllinux_1_2_aarch64.whl", hash = "sha256:3a3f33bbfed2bcc65be37941bfeb6cc20bbe9cb7afc4ef1ac8d330972df098f9", size = 36536999, upload-time = "2026-04-18T17:11:42.944Z" },
     { url = "https://files.pythonhosted.org/packages/cf/31/f9ed99d4c483bdb3695b7f4d5997cb2dc0b2d57ce1a6d28bce867b5ddaf9/av-17.0.1-cp310-cp310-musllinux_1_2_x86_64.whl", hash = "sha256:09b1f1601cc4a4d9e616d197b345c363ba6abfe567cb3d6b18e45516126692b6", size = 38800109, upload-time = "2026-04-18T17:11:45.834Z" },
-    { url = "https://files.pythonhosted.org/packages/14/30/9b6c933458a585508b4585dba552b2bad57ef17908bcff109275b1eb9a39/av-17.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:f63b30067e6d88a3cce0d73d01ecfc0e6f091ad2bcf689db5dc305b0b4e8348c", size = 28985245, upload-time = "2026-04-18T17:11:48.698Z" },
     { url = "https://files.pythonhosted.org/packages/4c/82/e7007dcef7bd2d2c377e2e85977701384f42d19fc808c2ccb3a99eaf58f2/av-17.0.1-cp311-abi3-macosx_11_0_x86_64.whl", hash = "sha256:987f4f46ceae4da6c614dcbd2b8149be9dbf680c3bb7a6841c58af9cff4d9230", size = 23238802, upload-time = "2026-04-18T17:11:51.166Z" },
     { url = "https://files.pythonhosted.org/packages/6b/aa/858b09a08ea6f83f91be44b5a5adad13ae8d9ac8b80fda27e73c24bfb160/av-17.0.1-cp311-abi3-macosx_14_0_arm64.whl", hash = "sha256:d97f54e55b18a74912f479c1978aadd1341d38d892dee95bb5c2f2dccfa72f32", size = 18709338, upload-time = "2026-04-18T17:11:53.286Z" },
     { url = "https://files.pythonhosted.org/packages/a8/8b/8de3fd21c4b0b74d44337421abeab0e71462337fb6a28fff888e0c356cbd/av-17.0.1-cp311-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:e6eee84afa48d0e9321047cd3e4facd44b401493f6bdc753e2e1d1e7c9e6d13e", size = 34007351, upload-time = "2026-04-18T17:11:56.116Z" },
     { url = "https://files.pythonhosted.org/packages/02/28/167b291356c2cc315a2d62a95b0ceace72b5b0bf547de30b89313110f032/av-17.0.1-cp311-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:c58c71bffd9383908c85695ac61d3184c668accb04a5bd1b262e0fb8d09f60a5", size = 36345295, upload-time = "2026-04-18T17:11:59.125Z" },
     { url = "https://files.pythonhosted.org/packages/04/fa/aae56f2ff2c204c408641e1120f5ca5ce9c3390cf5362245c6f1158704b5/av-17.0.1-cp311-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:42d6745d30a410ec9b22aef79a52a7ab5a001eb8f5adfd952946606a30983318", size = 35183754, upload-time = "2026-04-18T17:12:01.697Z" },
     { url = "https://files.pythonhosted.org/packages/ba/bd/776046f27093aef80155a204ca7d82a887ae4ee72ba4ef8411b46ea7898c/av-17.0.1-cp311-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:3ed6bcd7021fe55832f95b8ef78dd01a4cb21faf3cd71f1e1bf4f20bf100b278", size = 37430809, upload-time = "2026-04-18T17:12:04.231Z" },
-    { url = "https://files.pythonhosted.org/packages/d9/d5/3261bd2c6b7f6c0aa8379fc970d1ecf496330990b992ad28607785074268/av-17.0.1-cp311-abi3-win_amd64.whl", hash = "sha256:9af524e8632a54032e361d6b88895bd3e7c6212ca560de60f5ccc525323c764c", size = 28889649, upload-time = "2026-04-18T17:12:07.04Z" },
-    { url = "https://files.pythonhosted.org/packages/98/39/381104e427a0c7231d2ec0d25d538d58fc20fc0458846b95860d3ef8073b/av-17.0.1-cp311-abi3-win_arm64.whl", hash = "sha256:50e58a473d65ea29b645e45c9fd8518a6783737135683ecc40571a91592bdfe4", size = 21918412, upload-time = "2026-04-18T17:12:09.312Z" },
 ]
 
 [[package]]
@@ -357,10 +371,13 @@ name = "ichikas-auto-assistant"
 version = "26.5b1"
 source = { virtual = "." }
 dependencies = [
+    { name = "av", version = "14.3.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "kotonebot", extra = ["android"] },
-    { name = "numpy" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "plyer" },
     { name = "psutil" },
     { name = "pydantic" },
@@ -380,10 +397,13 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "av", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" },
     { name = "kotonebot", extras = ["android"], specifier = "==0.13.0" },
     { name = "numpy", specifier = "<2.0" },
+    { name = "numpy", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" },
     { name = "onnxruntime", marker = "sys_platform == 'linux' or sys_platform == 'win32'", specifier = "==1.14.0" },
     { name = "onnxruntime", marker = "sys_platform != 'win32'" },
+    { name = "opencv-python", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" },
     { name = "plyer", specifier = ">=2.1.0" },
     { name = "psutil" },
     { name = "pydantic" },
@@ -516,10 +536,12 @@ source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ksaa-res" },
     { name = "mouse" },
-    { name = "numpy" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "opencv-python" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "opencv-python", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "pydantic" },
     { name = "python-dotenv" },
     { name = "rapidocr-onnxruntime" },
@@ -533,7 +555,8 @@ wheels = [
 [package.optional-dependencies]
 android = [
     { name = "adbutils" },
-    { name = "av" },
+    { name = "av", version = "14.3.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "av", version = "17.0.1", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "uiautomator2" },
 ]
 dev = [
@@ -705,6 +728,12 @@ wheels = [
 name = "numpy"
 version = "1.26.4"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "sys_platform == 'darwin'",
+    "sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+]
 sdist = { url = "https://files.pythonhosted.org/packages/65/6e/09db70a523a96d25e115e71cc56a6f9031e7b8cd166c1ac8438307c14058/numpy-1.26.4.tar.gz", hash = "sha256:2a02aba9ed12e4ac4eb3ea9421c420301a0c6460d9830d74a9df87efa4912010", size = 15786129, upload-time = "2024-02-06T00:26:44.495Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/a7/94/ace0fdea5241a27d13543ee117cbc65868e82213fb31a8eb7fe9ff23f313/numpy-1.26.4-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9ff0f4f29c51e2803569d7a51c2304de5554655a60c5d776e35b4a41413830d0", size = 20631468, upload-time = "2024-02-05T23:48:01.194Z" },
@@ -713,8 +742,17 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/4b/d7/ecf66c1cd12dc28b4040b15ab4d17b773b87fa9d29ca16125de01adb36cd/numpy-1.26.4-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ffa75af20b44f8dba823498024771d5ac50620e6915abac414251bd971b4529f", size = 18240889, upload-time = "2024-02-05T23:49:25.361Z" },
     { url = "https://files.pythonhosted.org/packages/24/03/6f229fe3187546435c4f6f89f6d26c129d4f5bed40552899fcf1f0bf9e50/numpy-1.26.4-cp310-cp310-musllinux_1_1_aarch64.whl", hash = "sha256:62b8e4b1e28009ef2846b4c7852046736bab361f7aeadeb6a5b89ebec3c7055a", size = 13876746, upload-time = "2024-02-05T23:49:51.983Z" },
     { url = "https://files.pythonhosted.org/packages/39/fe/39ada9b094f01f5a35486577c848fe274e374bbf8d8f472e1423a0bbd26d/numpy-1.26.4-cp310-cp310-musllinux_1_1_x86_64.whl", hash = "sha256:a4abb4f9001ad2858e7ac189089c42178fcce737e4169dc61321660f1a96c7d2", size = 18078620, upload-time = "2024-02-05T23:50:22.515Z" },
-    { url = "https://files.pythonhosted.org/packages/d5/ef/6ad11d51197aad206a9ad2286dc1aac6a378059e06e8cf22cd08ed4f20dc/numpy-1.26.4-cp310-cp310-win32.whl", hash = "sha256:bfe25acf8b437eb2a8b2d49d443800a5f18508cd811fea3181723922a8a82b07", size = 5972659, upload-time = "2024-02-05T23:50:35.834Z" },
-    { url = "https://files.pythonhosted.org/packages/19/77/538f202862b9183f54108557bfda67e17603fc560c384559e769321c9d92/numpy-1.26.4-cp310-cp310-win_amd64.whl", hash = "sha256:b97fe8060236edf3662adfc2c633f56a08ae30560c56310562cb4f95500022d5", size = 15808905, upload-time = "2024-02-05T23:51:03.701Z" },
+]
+
+[[package]]
+name = "numpy"
+version = "1.26.4"
+source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }
+resolution-markers = [
+    "sys_platform == 'win32'",
+]
+wheels = [
+    { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl", hash = "sha256:577fb32a32ed480755fc43714f358f1da230283d6b650810eb4531bd75d874d4" },
 ]
 
 [[package]]
@@ -729,7 +767,8 @@ resolution-markers = [
 dependencies = [
     { name = "coloredlogs", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "flatbuffers", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "numpy", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "packaging", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "protobuf", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "sympy", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
@@ -754,7 +793,7 @@ resolution-markers = [
 dependencies = [
     { name = "coloredlogs", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "flatbuffers", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "numpy", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "packaging", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "protobuf", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
     { name = "sympy", marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
@@ -766,10 +805,33 @@ wheels = [
 
 [[package]]
 name = "opencv-python"
+version = "4.10.0"
+source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }
+resolution-markers = [
+    "sys_platform == 'win32'",
+]
+dependencies = [
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+]
+wheels = [
+    { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:fbbee5a855ebca549dbf1a877c52e86815aab0666c1fa47154051e2b942cdc54" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "numpy" }]
+
+[[package]]
+name = "opencv-python"
 version = "4.11.0.86"
 source = { registry = "https://pypi.org/simple" }
+resolution-markers = [
+    "platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "platform_machine != 'aarch64' and sys_platform == 'linux'",
+    "sys_platform == 'darwin'",
+    "sys_platform != 'darwin' and sys_platform != 'linux' and sys_platform != 'win32'",
+]
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/17/06/68c27a523103dad5837dc5b87e71285280c4f098c60e4fe8a8db6486ab09/opencv-python-4.11.0.86.tar.gz", hash = "sha256:03d60ccae62304860d232272e4a4fda93c39d595780cb40b161b310244b736a4", size = 95171956, upload-time = "2025-01-16T13:52:24.737Z" }
 wheels = [
@@ -777,8 +839,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/3b/84/0a67490741867eacdfa37bc18df96e08a9d579583b419010d7f3da8ff503/opencv_python-4.11.0.86-cp37-abi3-macosx_13_0_x86_64.whl", hash = "sha256:9d05ef13d23fe97f575153558653e2d6e87103995d54e6a35db3f282fe1f9c66", size = 56723197, upload-time = "2025-01-16T13:55:21.222Z" },
     { url = "https://files.pythonhosted.org/packages/f3/bd/29c126788da65c1fb2b5fb621b7fed0ed5f9122aa22a0868c5e2c15c6d23/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:1b92ae2c8852208817e6776ba1ea0d6b1e0a1b5431e971a2a0ddd2a8cc398202", size = 42230439, upload-time = "2025-01-16T13:51:35.822Z" },
     { url = "https://files.pythonhosted.org/packages/2c/8b/90eb44a40476fa0e71e05a0283947cfd74a5d36121a11d926ad6f3193cc4/opencv_python-4.11.0.86-cp37-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6b02611523803495003bd87362db3e1d2a0454a6a63025dc6658a9830570aa0d", size = 62986597, upload-time = "2025-01-16T13:52:08.836Z" },
-    { url = "https://files.pythonhosted.org/packages/fb/d7/1d5941a9dde095468b288d989ff6539dd69cd429dbf1b9e839013d21b6f0/opencv_python-4.11.0.86-cp37-abi3-win32.whl", hash = "sha256:810549cb2a4aedaa84ad9a1c92fbfdfc14090e2749cedf2c1589ad8359aa169b", size = 29384337, upload-time = "2025-01-16T13:52:13.549Z" },
-    { url = "https://files.pythonhosted.org/packages/a4/7d/f1c30a92854540bf789e9cd5dde7ef49bbe63f855b85a2e6b3db8135c591/opencv_python-4.11.0.86-cp37-abi3-win_amd64.whl", hash = "sha256:085ad9b77c18853ea66283e98affefe2de8cc4c1f43eda4c100cf9b2721142ec", size = 39488044, upload-time = "2025-01-16T13:52:21.928Z" },
 ]
 
 [[package]]
@@ -1233,10 +1293,12 @@ name = "rapidocr-onnxruntime"
 version = "1.4.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "opencv-python" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "opencv-python", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "pillow" },
     { name = "pyclipper" },
     { name = "pyyaml" },
@@ -1388,7 +1450,8 @@ name = "shapely"
 version = "2.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ca/3c/2da625233f4e605155926566c0e7ea8dda361877f48e8b1655e53456f252/shapely-2.1.1.tar.gz", hash = "sha256:500621967f2ffe9642454808009044c21e5b35db89ce69f8a2042c2ffd0e2772", size = 315422, upload-time = "2025-05-19T11:04:41.265Z" }
 wheels = [
