@@ -76,14 +76,7 @@ ComboBox {
     }
 
     function _resolveImage(source) {
-        if (!source) {
-            return ""
-        }
-        let text = String(source)
-        if (text.indexOf("://") >= 0 || text.startsWith("qrc:/")) {
-            return text
-        }
-        return App.Globals.assetPath(text)
+        return source ? App.Globals.assetPath(source) : ""
     }
 
     readonly property var _currentItem: control._modelItemAt(control.currentIndex)
