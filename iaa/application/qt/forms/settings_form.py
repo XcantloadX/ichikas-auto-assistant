@@ -5,7 +5,7 @@ import platform
 
 from iaa.application.framework.dsl import (
     Checkbox,
-    Custom,
+    FieldSpec,
     FormPage,
     FormSpec,
     Group,
@@ -15,6 +15,7 @@ from iaa.application.framework.dsl import (
     Select,
     Text,
     TransferList,
+    register_field,
     bind,
     custom_ref,
 )
@@ -325,8 +326,44 @@ def _on_server_change(state: FormContext, value: object) -> None:
 
 # ── Form ──────────────────────────────────────────────────────────────────────
 
+def ResolutionSelect(
+    key: str,
+    label: str | None,
+    *,
+    ref: Any,
+    options: Any = None,
+    on_reset: Callable[[FormContext], None] | None = None,
+    visible: Callable[[FormContext], bool] | bool = True,
+    enabled: Callable[[FormContext], bool] | bool = True,
+    **kwargs: Any,
+) -> FieldSpec[FormContext]:
+    """分辨率选择字段，带「恢复分辨率」按钮。
+
+    ``on_reset`` 是点击「恢复分辨率」时的回调，由 controller 注入。
+    """
+    field_actions: dict[str, Callable[[FormContext], None]] = {}
+    if on_reset is not None:
+        field_actions['reset'] = on_reset
+    return register_field(
+        FieldSpec(
+            key=key,
+            kind='resolution_select',
+            label=label,
+            ref=ref,
+            options=options,
+            visible=visible,
+            enabled=enabled,
+            actions=field_actions,
+            **kwargs,
+        )
+    )
+
+
 def build_settings_form(
     mumu_instances: list[dict[str, Any]],
+    *,
+    on_mumu_refresh: Callable[[FormContext], None] | None = None,
+    on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
     lifecycle_options = [
         {'value': k, 'label': v} for k, v in LIFECYCLE_TYPE_DISPLAY_MAP.items()
@@ -375,14 +412,13 @@ def build_settings_form(
                 options=lifecycle_options,
             )
             # MuMu 专属
-            Custom(
+            Select(
                 key='device.mumuInstanceId',
                 label='多开实例',
-                kind='mumu_picker',
                 ref=custom_ref(_get_mumu_instance_id, _set_mumu_instance_id),
                 visible=_lifecycle_is(MuMuDevice),
                 options=mumu_instances,
-                props={'refreshable': True},
+                refresh=on_mumu_refresh,
             )
             Checkbox(
                 key='device.checkAndStart',
@@ -487,12 +523,12 @@ def build_settings_form(
                 ref=ref(ctx.conf.device.scrcpy_virtual_display),
                 visible=lambda s: s.conf.device.control_impl == 'scrcpy',
             )
-            Select(
+            ResolutionSelect(
                 key='device.resolutionMethod',
                 label='分辨率设置',
                 ref=ref(ctx.conf.device.resolution_method),
                 options=[{'value': k, 'label': v} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()],
-                with_reset_button=True,
+                on_reset=on_reset_resolution,
             )
 
         with Group('演出设置'):

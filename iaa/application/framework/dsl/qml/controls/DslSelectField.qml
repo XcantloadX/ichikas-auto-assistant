@@ -92,10 +92,10 @@ ColumnLayout {
             }
 
             Button {
-                visible: !!(root.field.props && root.field.props.withResetButton)
-                text: "恢复分辨率"
+                visible: !!root.field.refreshable
+                text: root.field.loading ? "获取中..." : "刷新"
                 enabled: !!root.field.enabled
-                onClicked: root.formController.triggerAction(root.field.id, "resetResolution", "{}")
+                onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
             }
         }
     }

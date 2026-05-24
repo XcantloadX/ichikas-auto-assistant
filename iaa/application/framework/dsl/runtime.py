@@ -69,4 +69,6 @@ class RuntimeEngine(Generic[TCtx]):
             'error': error,
             'loading': False,
             'props': field.props,
+            'refreshable': 'refresh' in field.actions,
+            'actions': list(field.actions.keys()),
         }

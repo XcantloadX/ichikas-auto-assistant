@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "../controls"
 import "../../../framework/dsl/qml"
 
 PageContainer {
@@ -117,6 +118,9 @@ PageContainer {
         FormPageView {
             runtime: root.runtime
             formController: root.formController
+            extraKinds: ({
+                "resolution_select": Qt.resolvedUrl("../controls/DslResolutionSelect.qml")
+            })
         }
     }
 }

@@ -42,8 +42,12 @@ class SettingsController(QObject):
     def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
-        self._mumu_instances: list[dict[str, Any]] = [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
-        self._spec, self._form_hooks = build_settings_form(self._mumu_instances)
+        self._mumu_instances: list[dict[str, Any]] = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+        self._spec, self._form_hooks = build_settings_form(
+            self._mumu_instances,
+            on_mumu_refresh=self._action_mumu_refresh,
+            on_reset_resolution=self._action_reset_resolution,
+        )
         self._engine = RuntimeEngine(self._spec)
         self._state = SnapshotState(
             self._make_context(),
@@ -134,7 +138,7 @@ class SettingsController(QObject):
         emulator = lc.type if isinstance(lc, MuMuDevice) else ''
         payload = json.loads(self._build_mumu_instances_payload(emulator, preferred_id))
         self._mumu_instances[:] = payload.get(
-            'items', [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+            'items', [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
         )
 
         selected_id = str(payload.get('selectedId', '') or '')
@@ -157,7 +161,7 @@ class SettingsController(QObject):
             return json.dumps(
                 {
                     'ok': True,
-                    'items': [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
+                    'items': [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
                     'selectedId': '',
                     'statusText': '当前模拟器无需选择实例',
                 },
@@ -178,8 +182,8 @@ class SettingsController(QObject):
                 and lc.instance_id
             ):
                 saved_id = lc.instance_id
-            items = [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}] + [
-                {'id': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
+            items = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}] + [
+                {'value': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
                 for instance in instances
             ]
             ids = {item['id'] for item in items}
@@ -206,7 +210,7 @@ class SettingsController(QObject):
             return json.dumps(
                 {
                     'ok': False,
-                    'items': [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
+                    'items': [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
                     'selectedId': '',
                     'statusText': f'刷新失败：{exc}',
                 },
@@ -254,14 +258,25 @@ class SettingsController(QObject):
     @Slot(str, str, str)
     def triggerAction(self, field_id: str, action: str, payload_json: str = '{}') -> None:
         _ = payload_json
-        if field_id == 'game.mumuInstanceId' and action == 'refresh':
-            preferred_id = self._get_mumu_instance_id()
-            self._refresh_mumu_runtime(preferred_id=preferred_id, show_notice=True)
+        field = self._engine.find_field(field_id)
+        if field is None:
+            self.operationFailed.emit(f'未知字段: {field_id}')
             return
-        if field_id == 'game.resolutionMethod' and action == 'resetResolution':
-            self.resetResolution()
+        callback = field.actions.get(action)
+        if callback is None:
+            self.operationFailed.emit(f'不支持的动作: {field_id}.{action}')
             return
-        self.operationFailed.emit(f'不支持的动作: {field_id}.{action}')
+        try:
+            callback(self._state.context)
+        except Exception as exc:  # noqa: BLE001
+            self.operationFailed.emit(str(exc))
+
+    def _action_mumu_refresh(self, _ctx: object) -> None:
+        preferred_id = self._get_mumu_instance_id()
+        self._refresh_mumu_runtime(preferred_id=preferred_id, show_notice=True)
+
+    def _action_reset_resolution(self, _ctx: object) -> None:
+        self.resetResolution()
 
     @Slot(result=bool)
     def save(self) -> bool:

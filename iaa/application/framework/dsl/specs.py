@@ -45,6 +45,7 @@ class FieldSpec(Generic[TCtx]):
     props: dict[str, Any] = field(default_factory=dict)
     validators: list[Callable[[Any, TCtx], str | None]] = field(default_factory=list)
     on_change: Callable[[TCtx, Any], None] | None = None
+    actions: dict[str, Callable[[TCtx], None]] = field(default_factory=dict)
 
 
 @dataclass(slots=True)
@@ -196,10 +197,10 @@ def _require_current_group() -> GroupSpec[Any]:
     return group
 
 
-def _append_field(field: FieldSpec[TCtx]) -> FieldSpec[TCtx]:
-    """把字段追加到当前分组，并返回字段本身。
+def register_field(field: FieldSpec[TCtx]) -> FieldSpec[TCtx]:
+    """将字段注册到当前 Group 上下文，并返回字段本身。
 
-    这样 builder 调用既能完成注册，也能保留字段对象，方便后续拼装 hook 或测试。
+    项目自定义 builder 函数应以此作为最后一步，与框架内置的 Text/Select 等保持一致。
     """
     group = _require_current_group()
     group.fields.append(cast('FieldSpec[Any]', field))
@@ -239,7 +240,7 @@ def Text(
     merged_props = {} if props is None else dict(props)
     if placeholder is not None:
         merged_props['placeholder'] = placeholder
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='text',
@@ -266,7 +267,7 @@ def Select(
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    with_reset_button: bool = False,
+    refresh: Callable[[TCtx], None] | None = None,
     help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
@@ -275,11 +276,12 @@ def Select(
     """声明一个普通选择字段。
 
     这个类型适合下拉框一类的单选 UI，QML 渲染层会根据 options 决定可选项。
+    ``refresh`` 表示该字段的选项可由用户主动刷新；设置后渲染层会显示刷新按钮。
     """
-    merged_props = {} if props is None else dict(props)
-    if with_reset_button:
-        merged_props['withResetButton'] = True
-    return _append_field(
+    field_actions: dict[str, Callable[[TCtx], None]] = {}
+    if refresh is not None:
+        field_actions['refresh'] = refresh
+    return register_field(
         FieldSpec(
             key=key,
             kind='select',
@@ -290,9 +292,10 @@ def Select(
             visible=visible,
             enabled=enabled,
             options=options,
-            props=merged_props,
+            props={} if props is None else dict(props),
             validators=[] if validators is None else validators,
             on_change=on_change,
+            actions=field_actions,
         )
     )
 
@@ -341,7 +344,7 @@ def IconItemPicker(
     if cell_radius is not None:
         merged_props['cellRadius'] = cell_radius
 
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='icon_item_picker',
@@ -377,7 +380,7 @@ def Segmented(
 
     这个类型用于互斥选项切换，例如模拟器、服务器、控制方式等。
     """
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='segmented',
@@ -413,7 +416,7 @@ def Checkbox(
 
     适用于勾选框、开关类 UI。
     """
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='checkbox',
@@ -451,7 +454,7 @@ def Custom(
     当内置字段不足以描述 UI 时使用，例如 ``mumu_picker`` 或 ``transfer_list``。
     ``kind`` 由 QML 渲染层根据注册表选择对应控件。
     """
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind=kind,
@@ -489,7 +492,7 @@ def TransferList(
     merged_props = {} if props is None else dict(props)
     merged_props['reorderable'] = reorderable
     merged_props['height'] = height
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='transfer_list',
@@ -525,7 +528,7 @@ def Hotkey(
     值以 Qt portable sequence string 格式存储，例如 ``"Ctrl+F9"``、``"Meta+Shift+A"``。
     ``None`` 表示未设置。
     """
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=key,
             kind='hotkey',
@@ -557,7 +560,7 @@ def NoticeBlock(
     from .refs import custom_ref
     dummy_ref: Ref[Any, Any] = custom_ref(lambda s: None, lambda s, v: None)
 
-    return _append_field(
+    return register_field(
         FieldSpec(
             key=dummy_key,
             kind='notice_block',

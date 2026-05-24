@@ -11,6 +11,7 @@ ScrollView {
     id: root
     property var runtime: ({"groups": [], "fieldMap": {}})
     property var formController
+    property var extraKinds: ({})
 
     anchors.fill: parent
     clip: true
@@ -64,6 +65,7 @@ ScrollView {
                                 fieldId: fieldDelegate.modelData
                                 initialField: root.runtime.fieldMap[fieldDelegate.modelData] || {}
                                 formController: root.formController
+                                extraKinds: root.extraKinds
                             }
                         }
                     }

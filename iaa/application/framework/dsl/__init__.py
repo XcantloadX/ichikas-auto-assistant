@@ -1,6 +1,6 @@
 from .refs import Ref, bind, custom_ref, make_ref, of, ref
 from .runtime import RuntimeEngine
-from .specs import Checkbox, Custom, FieldSpec, FormPage, FormSpec, Group, GroupSpec, Hotkey, IconItemPicker, NoticeBlock, Segmented, Select, Text, TransferList
+from .specs import Checkbox, Custom, FieldSpec, FormPage, FormSpec, Group, GroupSpec, Hotkey, IconItemPicker, NoticeBlock, Segmented, Select, Text, TransferList, register_field
 from .state import SnapshotState
 
 __all__ = [
@@ -26,4 +26,5 @@ __all__ = [
     'Hotkey',
     'Group',
     'NoticeBlock',
+    'register_field',
 ]
