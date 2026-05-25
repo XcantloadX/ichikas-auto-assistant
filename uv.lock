@@ -383,7 +383,7 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "plyer" },
     { name = "psutil" },
     { name = "pydantic" },
@@ -409,7 +409,7 @@ requires-dist = [
     { name = "numpy", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" },
     { name = "onnxruntime", marker = "sys_platform == 'linux' or sys_platform == 'win32'", specifier = "==1.14.0" },
     { name = "onnxruntime", marker = "sys_platform != 'win32'" },
-    { name = "opencv-python", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" },
+    { name = "opencv-python", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" },
     { name = "plyer", specifier = ">=2.1.0" },
     { name = "psutil" },
     { name = "pydantic" },
@@ -546,7 +546,7 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "opencv-python", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "pydantic" },
     { name = "python-dotenv" },
@@ -812,7 +812,7 @@ wheels = [
 [[package]]
 name = "opencv-python"
 version = "4.10.0"
-source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }
+source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }
 resolution-markers = [
     "sys_platform == 'win32'",
 ]
@@ -820,7 +820,7 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
 ]
 wheels = [
-    { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:fbbee5a855ebca549dbf1a877c52e86815aab0666c1fa47154051e2b942cdc54" },
+    { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl", hash = "sha256:dc2458e3400873d643d898f0f1b1f155df07fba0948fe9226ef560d32d8555b7" },
 ]
 
 [package.metadata]
@@ -1303,7 +1303,7 @@ dependencies = [
     { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.14.0", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "onnxruntime", version = "1.23.2", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'linux' and sys_platform != 'win32'" },
-    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-25710119184/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "opencv-python", version = "4.10.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "opencv-python", version = "4.11.0.86", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "pillow" },
     { name = "pyclipper" },
