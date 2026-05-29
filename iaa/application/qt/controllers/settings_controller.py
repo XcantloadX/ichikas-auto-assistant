@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from typing import TYPE_CHECKING, Any
 
 from PySide6.QtCore import QObject, Signal, Slot
@@ -14,6 +15,7 @@ from ..models import DEFAULT_MUMU_INSTANCE_LABEL
 if TYPE_CHECKING:
     from iaa.application.service.iaa_service import IaaService
 
+logger = logging.getLogger(__name__)
 
 def _normalize_qt_value(value: Any) -> Any:
     """Convert QML-passed values into plain Python containers/scalars."""
@@ -186,7 +188,7 @@ class SettingsController(QObject):
                 {'value': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
                 for instance in instances
             ]
-            ids = {item['id'] for item in items}
+            ids = {item['value'] for item in items}
             selected_id = ''
             if preferred_id and preferred_id in ids:
                 selected_id = preferred_id
@@ -207,6 +209,7 @@ class SettingsController(QObject):
                 ensure_ascii=False,
             )
         except Exception as exc:  # noqa: BLE001
+            logger.exception('Failed to list MuMu instances')
             return json.dumps(
                 {
                     'ok': False,
