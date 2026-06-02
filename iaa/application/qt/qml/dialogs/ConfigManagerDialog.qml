@@ -64,7 +64,14 @@ Dialog {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredHeight: 200
+            clip: true
             model: root.configNames
+
+            ScrollBar.vertical: ScrollBar {
+                policy: configList.contentHeight > configList.height
+                        ? ScrollBar.AlwaysOn
+                        : ScrollBar.AlwaysOff
+            }
 
             delegate: RowLayout {
                 width: ListView.view.width
