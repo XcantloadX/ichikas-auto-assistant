@@ -105,7 +105,7 @@ def _restore_resolution(device: 'Device', original_resolution: str) -> None:
 
 
 class SchedulerService:
-    def __init__(self, iaa_service: 'IaaService', on_prepare_context: 'Callable[[], None] | None' = None):
+    def __init__(self, iaa_service: 'IaaService', on_thread_start: 'Callable[[], None] | None' = None, on_prepare_context: 'Callable[[], None] | None' = None):
         self.iaa = iaa_service
         self._thread: threading.Thread | None = None
         self.__running: bool = False
@@ -126,6 +126,8 @@ class SchedulerService:
         """当前正在执行的任务名称"""
         self._flow_controller = None
         """当前运行线程的 FlowController 直接引用，用于跨线程安全中断。"""
+        self._on_thread_start: 'Callable[[], None] | None' = on_thread_start
+        """线程启动时的钩子，在任何日志输出之前调用（可在此处设置 ContextVar 等线程级初始化）。"""
         self._on_prepare_context: 'Callable[[], None] | None' = on_prepare_context
         """上下文准备完毕后的钩子（可在此处通过传入回调自定义 ContextVar 初始化逻辑）。"""
         self.device: Device | None = None
@@ -159,6 +161,9 @@ class SchedulerService:
         self.is_starting = True
 
         def _runner() -> None:
+            # 最先设置线程级 ContextVar（log bridge、tab name 等），确保启动阶段日志也能路由到 GUI
+            if self._on_thread_start is not None:
+                self._on_thread_start()
             run_id = uuid.uuid4().hex
             completion_status: str = 'success'
             try:

@@ -16,13 +16,22 @@ from .help_service import HelpService
 class IaaService:
     _logging_configured: bool = False
 
-    def __init__(self, config_name: str | None = None, scheduler_context_hook: Callable[[], None] | None = None):
+    def __init__(
+        self,
+        config_name: str | None = None,
+        scheduler_thread_start_hook: Callable[[], None] | None = None,
+        scheduler_context_hook: Callable[[], None] | None = None,
+    ):
         # 首先配置日志
         self.__configure_logging()
 
         self.config = ConfigService(config_name=config_name)
         self.assets = AssetsService()
-        self.scheduler = SchedulerService(self, on_prepare_context=scheduler_context_hook)
+        self.scheduler = SchedulerService(
+            self,
+            on_thread_start=scheduler_thread_start_hook,
+            on_prepare_context=scheduler_context_hook,
+        )
         self.help = HelpService()
         self.config._is_running = lambda: self.scheduler.running
 
@@ -43,10 +52,12 @@ class IaaService:
         console_handler = logging.StreamHandler(stream=console_stream)
         console_handler.setLevel(logging.DEBUG)
         console_formatter = logging.Formatter(
-            fmt="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+            fmt="%(asctime)s [%(tab_name)s] [%(levelname)s] %(name)s: %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
         )
         console_handler.setFormatter(console_formatter)
+        from iaa.application.qt.controllers.log_routing import TabNameFilter
+        console_handler.addFilter(TabNameFilter())
 
         # 文件输出
         logs_dir = os.path.join(IaaService.app_root(), 'logs')

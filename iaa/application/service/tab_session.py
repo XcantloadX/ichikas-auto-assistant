@@ -20,12 +20,13 @@ class TabSession:
         from iaa.application.qt.controllers.log_bridge import LogBridge
         self.log_bridge = LogBridge(None)
 
-        def _setup_tab_context() -> None:
-            from iaa.context import set_tab_hub, set_tab_log_bridge
+        def _thread_start() -> None:
+            from iaa.context import set_tab_hub, set_tab_log_bridge, set_tab_name
             set_tab_hub(self.progress_hub)
             set_tab_log_bridge(self.log_bridge)
+            set_tab_name(config_name)
 
-        self.iaa = IaaService(config_name=config_name, scheduler_context_hook=_setup_tab_context)
+        self.iaa = IaaService(config_name=config_name, scheduler_thread_start_hook=_thread_start)
 
     @property
     def scheduler(self):

@@ -17,10 +17,11 @@ g_adb_keyboard_input: contextvars.ContextVar[Optional[AdbKeyboardInput]] = conte
 _hub = ProgressHub()
 _dummy_reporter = DummyTaskReporter()
 
-# Per-tab ContextVar：每个调度器线程在 __prepare_context 里设置自己的 hub 和 log bridge。
+# Per-tab ContextVar：每个调度器线程在线程启动时（on_thread_start）设置自己的 hub、log bridge 和 tab 名。
 # UI 线程及其他未设置的线程回退到 _hub（全局默认 hub）和 None（不路由日志）。
 _g_hub: contextvars.ContextVar[Optional[ProgressHub]] = contextvars.ContextVar('_g_hub', default=None)
 _g_log_bridge: contextvars.ContextVar[Optional[Any]] = contextvars.ContextVar('_g_log_bridge', default=None)
+_g_tab_name: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar('_g_tab_name', default=None)
 
 
 def init(config: IaaConfig) -> None:
@@ -56,8 +57,12 @@ def set_tab_hub(h: ProgressHub) -> None:
     _g_hub.set(h)
 
 def set_tab_log_bridge(bridge: 'LogBridge | None') -> None:
-    """在调度器线程的 __prepare_context 中调用，将当前线程绑定到 per-tab log bridge。"""
+    """在调度器线程启动时调用，将当前线程绑定到 per-tab log bridge。"""
     _g_log_bridge.set(bridge)
+
+def set_tab_name(name: str) -> None:
+    """在调度器线程启动时调用，记录当前线程对应的 tab 名（用于控制台日志前缀）。"""
+    _g_tab_name.set(name)
 
 def task_reporter() -> TaskReporter | DummyTaskReporter:
     reporter = g_task_reporter.get()
