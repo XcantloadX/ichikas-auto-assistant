@@ -118,6 +118,9 @@ PageContainer {
 
                         ColumnLayout {
                             Layout.fillWidth: true
+                            Layout.preferredHeight: visible ? -1 : 0
+                            Layout.minimumHeight: 0
+                            clip: true
                             spacing: 4
                             visible: card.runCtrl && card.runCtrl.running
 
