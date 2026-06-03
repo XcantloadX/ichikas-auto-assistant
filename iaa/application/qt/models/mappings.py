@@ -11,6 +11,7 @@ from iaa.definitions.enums import (
 LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'mumu_v5': 'MuMu 12 (v5)',
     'mumu': 'MuMu 12 (v4)',
+    'avd': 'AVD',
     'custom': '自定义模拟器',
     'none': '物理机 / 手动管理',
     'playcover': 'PlayCover',

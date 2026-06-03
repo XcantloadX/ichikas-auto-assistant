@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, PlayCoverDevice, TcpConnection, UsbConnection
+from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, PlayCoverDevice, AvdDevice, TcpConnection, UsbConnection
 from iaa.application.service.custom_emulator import CustomEmulatorInstance
 from iaa.definitions.consts import package_by_server
 from iaa.utils import asset_path
@@ -405,7 +405,7 @@ class SchedulerService:
         use_vd = device_conf.scrcpy_virtual_display
 
         def _maybe_start(instance: Instance) -> None:
-            check = lifecycle.check_and_start if isinstance(lifecycle, (MuMuDevice, CustomDevice)) else False
+            check = lifecycle.check_and_start if isinstance(lifecycle, (MuMuDevice, CustomDevice, AvdDevice)) else False
             if check and not instance.running():
                 logger.info('Device is not running, starting: %s', instance)
                 instance.start()
@@ -563,6 +563,25 @@ class SchedulerService:
 
             else:
                 raise ValueError('设备类型为"无"时，连接方式不能为自动，请选择 USB 或 TCP。')
+
+        elif isinstance(lifecycle, AvdDevice):
+            from iaa.application.service.avd import AvdHost
+
+            avd_host = AvdHost(sdk_path=lifecycle.sdk_path)
+            if lifecycle.avd_name:
+                avd_instance = avd_host.query(lifecycle.avd_name)
+                if avd_instance is None:
+                    raise RuntimeError(f'未找到 AVD："{lifecycle.avd_name}"')
+            else:
+                instances = avd_host.list()
+                if not instances:
+                    raise RuntimeError('未找到任何 AVD，请先通过 Android Studio 创建 AVD。')
+                avd_instance = instances[0]
+            avd_instance._extra_args = lifecycle.extra_args.split() if lifecycle.extra_args.strip() else []
+            _maybe_start(avd_instance)
+            if impl == 'nemu_ipc':
+                raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持 AVD。")
+            return _apply_impl(avd_instance)
 
         elif isinstance(lifecycle, PlayCoverDevice):
             from kotonebot.client.playcover import Playcover

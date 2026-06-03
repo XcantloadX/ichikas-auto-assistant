@@ -31,8 +31,15 @@ class PlayCoverDevice(BaseModel):
     type: Literal['playcover']
     check_and_start: bool = False
 
+class AvdDevice(BaseModel):
+    type: Literal['avd']
+    avd_name: str | None = None     # None 表示取第一个可用 AVD
+    sdk_path: str | None = None     # Android SDK 根目录；None 则自动查找
+    extra_args: str = ''            # 追加到 emulator 命令行的额外参数（空格分隔）
+    check_and_start: bool = False
+
 DeviceLifecycle = Annotated[
-    MuMuDevice | CustomDevice | NoDevice | PlayCoverDevice,
+    MuMuDevice | CustomDevice | NoDevice | PlayCoverDevice | AvdDevice,
     Field(discriminator='type')
 ]
 

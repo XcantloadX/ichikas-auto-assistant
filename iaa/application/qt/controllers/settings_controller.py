@@ -45,9 +45,12 @@ class SettingsController(QObject):
         super().__init__(parent)
         self._iaa = iaa_service
         self._mumu_instances: list[dict[str, Any]] = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+        self._avd_instances: list[dict[str, Any]] = [{'value': '', 'label': '（默认第一个）'}]
         self._spec, self._form_hooks = build_settings_form(
             self._mumu_instances,
+            self._avd_instances,
             on_mumu_refresh=self._action_mumu_refresh,
+            on_avd_refresh=self._action_avd_refresh,
             on_reset_resolution=self._action_reset_resolution,
         )
         self._engine = RuntimeEngine(self._spec)
@@ -58,6 +61,7 @@ class SettingsController(QObject):
             stable_dump_fn=self._stable_dump_snapshot,
         )
         self._runtime: dict[str, Any] = {}
+        self._reset_avd_instances()
         self._recompute_runtime()
 
     @staticmethod
@@ -94,6 +98,7 @@ class SettingsController(QObject):
     def _reload(self) -> None:
         self._mumu_instances[:] = [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
         self._state.reset(self._make_context())
+        self._reset_avd_instances()
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
@@ -277,6 +282,88 @@ class SettingsController(QObject):
     def _action_mumu_refresh(self, _ctx: object) -> None:
         preferred_id = self._get_mumu_instance_id()
         self._refresh_mumu_runtime(preferred_id=preferred_id, show_notice=True)
+
+    # ── AVD ───────────────────────────────────────────────────────────────────
+
+    def _get_avd_name(self) -> str:
+        from iaa.config.schemas import AvdDevice
+        lc = self._state.context.conf.device.lifecycle
+        if isinstance(lc, AvdDevice):
+            return lc.avd_name or ''
+        return ''
+
+    def _set_avd_name(self, name: str) -> None:
+        from iaa.config.schemas import AvdDevice
+        lc = self._state.context.conf.device.lifecycle
+        if isinstance(lc, AvdDevice):
+            lc.avd_name = name or None
+
+    def _reset_avd_instances(self) -> None:
+        """重置 AVD 实例列表为未刷新状态。
+
+        若配置中已有保存的 avd_name，将其作为占位项保留，
+        确保 Select 在用户刷新前也能正确显示已保存的值。
+        """
+        DEFAULT = {'value': '', 'label': '（默认第一个）'}
+        saved_name = self._get_avd_name()
+        if saved_name:
+            self._avd_instances[:] = [DEFAULT, {'value': saved_name, 'label': saved_name}]
+        else:
+            self._avd_instances[:] = [DEFAULT]
+
+    def _get_avd_sdk_path(self) -> str | None:
+        from iaa.config.schemas import AvdDevice
+        lc = self._state.context.conf.device.lifecycle
+        if isinstance(lc, AvdDevice):
+            return lc.sdk_path or None
+        return None
+
+    def _refresh_avd_runtime(self, preferred_name: str = '', show_notice: bool = True) -> None:
+        DEFAULT_LABEL = '（默认第一个）'
+        ok = True
+        status = '已刷新 AVD 列表'
+        try:
+            from iaa.application.service.avd import AvdHost
+            host = AvdHost(sdk_path=self._get_avd_sdk_path())
+            instances = host.list()
+            saved_name = self._get_avd_name()
+            items: list[dict[str, Any]] = [{'value': '', 'label': DEFAULT_LABEL}] + [
+                {
+                    'value': inst._avd_name,
+                    'label': f'{inst._avd_name}{"  [运行中]" if inst.adb_serial else ""}',
+                }
+                for inst in instances
+            ]
+            ids = {item['value'] for item in items}
+            selected = ''
+            if preferred_name and preferred_name in ids:
+                selected = preferred_name
+            elif saved_name and saved_name in ids:
+                selected = saved_name
+            status = '未找到 AVD，请先通过 Android Studio 创建 AVD' if not instances else f'已载入 {len(instances)} 个 AVD'
+            if selected:
+                status += f'，当前选择：{selected}'
+        except Exception as exc:  # noqa: BLE001
+            logger.exception('Failed to list AVD instances')
+            items = [{'value': '', 'label': DEFAULT_LABEL}]
+            selected = ''
+            ok = False
+            status = f'刷新失败：{exc}'
+
+        self._avd_instances[:] = items
+        if selected != self._get_avd_name():
+            self._set_avd_name(selected)
+
+        self._sync_context_back()
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+
+        if show_notice:
+            (self.operationSucceeded if ok else self.operationFailed).emit(status)
+
+    def _action_avd_refresh(self, _ctx: object) -> None:
+        self._refresh_avd_runtime(preferred_name=self._get_avd_name(), show_notice=True)
 
     def _action_reset_resolution(self, _ctx: object) -> None:
         self.resetResolution()

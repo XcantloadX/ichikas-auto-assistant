@@ -38,6 +38,7 @@ from iaa.config.schemas import (
     CustomDevice,
     NoDevice,
     PlayCoverDevice,
+    AvdDevice,
     AutoConnection,
     UsbConnection,
     TcpConnection,
@@ -71,11 +72,14 @@ def _is_no_device(s: FormContext) -> bool:
 def _is_playcover(s: FormContext) -> bool:
     return isinstance(s.conf.device.lifecycle, PlayCoverDevice)
 
+def _is_avd(s: FormContext) -> bool:
+    return isinstance(s.conf.device.lifecycle, AvdDevice)
+
 def _is_tcp(s: FormContext) -> bool:
     return isinstance(s.conf.device.connection, TcpConnection)
 
 def _show_connection_section(s: FormContext) -> bool:
-    return not _is_mumu(s) and not _is_playcover(s)
+    return not _is_mumu(s) and not _is_playcover(s) and not _is_avd(s)
 
 def _show_tcp_fields(s: FormContext) -> bool:
     return _show_connection_section(s) and _is_tcp(s)
@@ -122,6 +126,8 @@ def _get_lifecycle_type(state: FormContext) -> str:
         return lc.type
     if isinstance(lc, CustomDevice):
         return 'custom'
+    if isinstance(lc, AvdDevice):
+        return 'avd'
     if isinstance(lc, PlayCoverDevice):
         return 'playcover'
     return 'none'
@@ -154,6 +160,13 @@ def _set_lifecycle_type(state: FormContext, value: object) -> None:
             state.conf.device.connection = UsbConnection(type='usb')
         if state.conf.device.control_impl == 'nemu_ipc':
             state.conf.device.control_impl = 'adb'
+    elif val == 'avd':
+        if isinstance(current, AvdDevice):
+            return
+        state.conf.device.lifecycle = AvdDevice(type='avd')
+        state.conf.device.connection = AutoConnection(type='auto')
+        if state.conf.device.control_impl == 'nemu_ipc':
+            state.conf.device.control_impl = 'adb'
     elif val == 'playcover':
         if isinstance(current, PlayCoverDevice):
             return
@@ -180,13 +193,49 @@ def _set_mumu_instance_id(state: FormContext, value: object) -> None:
 
 def _get_check_and_start(state: FormContext) -> bool:
     lc = state.conf.device.lifecycle
-    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)) else False
+    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)) else False
 
 def _set_check_and_start(state: FormContext, value: object) -> None:
     lc = state.conf.device.lifecycle
-    if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)):
+    if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)):
         lc.check_and_start = bool(value)
 
+
+
+# ── AVD fields ────────────────────────────────────────────────────────────────
+
+def _get_avd_name(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.avd_name or ''
+    return ''
+
+def _set_avd_name(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.avd_name = str(value or '').strip() or None
+
+def _get_avd_sdk_path(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.sdk_path or ''
+    return ''
+
+def _set_avd_sdk_path(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.sdk_path = str(value or '').strip() or None
+
+def _get_avd_extra_args(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.extra_args
+    return ''
+
+def _set_avd_extra_args(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.extra_args = str(value or '').strip()
 
 
 # ── CustomDevice lifecycle fields ─────────────────────────────────────────────
@@ -361,10 +410,15 @@ def ResolutionSelect(
 
 def build_settings_form(
     mumu_instances: list[dict[str, Any]],
+    avd_instances: list[dict[str, Any]] | None = None,
     *,
     on_mumu_refresh: Callable[[FormContext], None] | None = None,
+    on_avd_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
+    if avd_instances is None:
+        avd_instances = []
+
     lifecycle_options = [
         {'value': k, 'label': v} for k, v in LIFECYCLE_TYPE_DISPLAY_MAP.items()
         if not (k in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
@@ -420,11 +474,45 @@ def build_settings_form(
                 options=mumu_instances,
                 refresh=on_mumu_refresh,
             )
+            # AVD 专属
+            Text(
+                key='device.avdSdkPath',
+                label='SDK 路径',
+                ref=custom_ref(_get_avd_sdk_path, _set_avd_sdk_path),
+                visible=_lifecycle_is(AvdDevice),
+                placeholder='留空自动查找',
+                help_text=(
+                    'Android SDK 路径。自动查找顺序：<ol>'
+                    '<li>环境变量 <code>ANDROID_HOME</code> / <code>ANDROID_SDK_ROOT</code></li>'
+                    '<li>Windows：<code>%LOCALAPPDATA%\\Android\\Sdk</code></li>'
+                    '<li>macOS：<code>~/Library/Android/sdk</code></li>'
+                    '<li>Linux：<code>~/Android/Sdk</code></li>'
+                    '<li><code>PATH</code> 中的 <code>emulator</code></li>'
+                    '</ol>'
+                    '填写后将只在该目录下查找，忽略以上自动查找逻辑。'
+                ),
+            )
+            Text(
+                key='device.avdExtraArgs',
+                label='额外启动参数',
+                ref=custom_ref(_get_avd_extra_args, _set_avd_extra_args),
+                visible=_lifecycle_is(AvdDevice),
+                placeholder='可选，例如 -gpu swiftshader_indirect -no-audio',
+                help_text='追加到 emulator 命令行末尾的参数，以空格分隔。',
+            )
+            Select(
+                key='device.avdName',
+                label='AVD 实例',
+                ref=custom_ref(_get_avd_name, _set_avd_name),
+                visible=_lifecycle_is(AvdDevice),
+                options=avd_instances,
+                refresh=on_avd_refresh,
+            )
             Checkbox(
                 key='device.checkAndStart',
                 label='检查并启动',
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
-                visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice),
+                visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice),
             )
             # 自定义专属
             Text(
