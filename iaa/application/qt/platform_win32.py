@@ -57,12 +57,19 @@ def enable_mica(hwnd: int) -> int:
     )
 
 
+def _set_dwm_frame(hwnd: int, left: int, right: int, top: int, bottom: int) -> int:
+    margins = _MARGINS(left, right, top, bottom)
+    return ctypes.windll.dwmapi.DwmExtendFrameIntoClientArea(hwnd, ctypes.byref(margins))
+
+
 def enable_blur(hwnd: int) -> int:
     user32 = ctypes.windll.user32
     set_window_composition = user32.SetWindowCompositionAttribute
     set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
     set_window_composition.restype = ctypes.c_bool
 
+    # 模糊/Acrylic 需要 DWM 帧覆盖整个客户区以提供透明背景
+    _set_dwm_frame(hwnd, -1, -1, -1, -1)
     accent = ACCENT_POLICY(ACCENT_ENABLE_BLURBEHIND, 0, 0, 0)
     data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
     return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
@@ -74,6 +81,8 @@ def enable_acrylic(hwnd: int) -> int:
     set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
     set_window_composition.restype = ctypes.c_bool
 
+    # 模糊/Acrylic 需要 DWM 帧覆盖整个客户区以提供透明背景
+    _set_dwm_frame(hwnd, -1, -1, -1, -1)
     accent = ACCENT_POLICY(ACCENT_ENABLE_ACRYLICBLURBEHIND, 0, 0, 0)
     data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
     return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
@@ -87,7 +96,15 @@ def disable_blur(hwnd: int) -> int:
 
     accent = ACCENT_POLICY(ACCENT_DISABLED, 0, 0, 0)
     data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
-    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
+    ret = 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
+
+    # solid 样式下将 DWM 帧收缩为仅保留底部 1px（维持窗口阴影），
+    # 使客户区恢复不透明。这是 Windows 10 最大化/还原闪烁的根本修复：
+    # setup_frameless_window 设置的 (-1,-1,-1,-1) 会令整个客户区成为透明
+    # DWM 缓冲区，最大化/还原时 DWM 重建缓冲区的那一帧会透出背后窗口；
+    # 缩回到 (0,0,0,1) 后客户区由 Qt 自行渲染，不再有透明空隙。
+    _set_dwm_frame(hwnd, 0, 0, 0, 1)
+    return ret
 
 
 def resolve_window_style(style: str) -> str:
