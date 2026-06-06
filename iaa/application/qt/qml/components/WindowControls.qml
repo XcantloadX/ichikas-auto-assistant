@@ -5,7 +5,8 @@ import QtQuick.Window
 // Windows 窗口控件（最小化 / 最大化 / 关闭）。
 // hit-test 布局（从右到左，名 46px）：
 //   close    → HTCLIENT（QML 处理点击 + hover）
-//   maximize → HTMAXBUTTON（OS 处理贴靠布局弹窗；hover 由 maxHoverBridge 中转）
+//   maximize → HTMAXBUTTON（OS 处理贴靠布局弹窗 + 最大化/还原；
+//              hover 由 maxHoverBridge 中转）
 //   minimize → HTCLIENT（QML 处理点击 + hover）
 Row {
     id: root

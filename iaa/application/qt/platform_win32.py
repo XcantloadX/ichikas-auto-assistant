@@ -136,10 +136,16 @@ def apply_window_style(hwnd: int, style: str) -> None:
 #   HTCAPTION（拖拽）、HTMAXBUTTON（贴靠布局弹出 + 系统最大化）、
 #   HTCLIENT（最小化/关闭按钮，由 QML 处理点击）、以及八个调整大小的边缘。
 
-WM_NCHITTEST    = 0x0084
-WM_NCCALCSIZE   = 0x0083
-WM_NCMOUSEMOVE  = 0x00A0
-WM_NCMOUSELEAVE = 0x02A2
+WM_NCHITTEST     = 0x0084
+WM_NCCALCSIZE    = 0x0083
+WM_NCLBUTTONDOWN = 0x00A1
+WM_NCLBUTTONUP   = 0x00A2
+WM_NCMOUSEMOVE   = 0x00A0
+WM_NCMOUSELEAVE  = 0x02A2
+WM_SYSCOMMAND    = 0x0112
+
+SC_RESTORE  = 0xF120
+SC_MAXIMIZE = 0xF030
 
 # WM_NCHITTEST 返回值
 HTCLIENT      = 1
@@ -253,6 +259,7 @@ class WindowEventFilter(QAbstractNativeEventFilter):
         self._hwnd = int(window.winId())
         self.maxHoverBridge = max_hover_bridge
         self._tab_bar_bridge = tab_bar_bridge
+        self._max_down_zoomed: bool | None = None
 
     def nativeEventFilter(self, eventType: bytes, message: int) -> tuple[bool, int]:
         if eventType != b"windows_generic_MSG":
@@ -277,6 +284,22 @@ class WindowEventFilter(QAbstractNativeEventFilter):
             return False, 0
         if msg.message == WM_NCMOUSELEAVE:
             self.maxHoverBridge.set_hovered(False)
+            return False, 0
+        # ── 最大化按钮点击处理 ──────────────────────────────────────────
+        # NC 区域已被 WM_NCCALCSIZE 压缩为零，若让 DefWindowProc 收到
+        # WM_NCLBUTTONDOWN(HTMAXBUTTON)，它会在错误位置绘制经典按下态
+        # artifact 并进入追踪循环，导致视觉错乱且最大化不触发。
+        # 拦截 DOWN 阻止上述行为，在 UP 手动触发最大化/还原。
+        if msg.message == WM_NCLBUTTONDOWN and msg.wParam == HTMAXBUTTON:
+            self._max_down_zoomed = ctypes.windll.user32.IsZoomed(msg.hWnd)
+            return True, 0  # 阻止 DefWindowProc 绘制经典按下态 artifact
+        if msg.message == WM_NCLBUTTONUP and msg.wParam == HTMAXBUTTON:
+            was_zoomed = self._max_down_zoomed
+            self._max_down_zoomed = None
+            if was_zoomed is not None and ctypes.windll.user32.IsZoomed(msg.hWnd) == was_zoomed:
+                cmd = SC_RESTORE if was_zoomed else SC_MAXIMIZE
+                ctypes.windll.user32.SendMessageW(msg.hWnd, WM_SYSCOMMAND, cmd, 0)
+                return True, 0
             return False, 0
         return False, 0
 

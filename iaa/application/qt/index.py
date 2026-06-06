@@ -118,9 +118,6 @@ def main() -> None:
     window = cast(QQuickWindow, engine.rootObjects()[0])
     hwnd = int(window.winId())
 
-    # Windows：先安装事件过滤器（确保 WM_NCCALCSIZE 立即生效），
-    # 再调用 setup_frameless_window 触发首次 SWP_FRAMECHANGED → WM_NCCALCSIZE
-    # 以折叠原生标题栏。引用挂在 app 上防止被垃圾回收。
     if sys.platform == 'win32':
         setup_frameless_window(hwnd)
         _win_event_filter = WindowEventFilter(window, max_hover_bridge, tab_bar_bridge)
