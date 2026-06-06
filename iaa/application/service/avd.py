@@ -90,38 +90,31 @@ def _list_running_serials() -> list[str]:
     """通过 `adb devices` 获取正在运行的 AVD serial（格式：emulator-XXXX）。"""
     try:
         from adbutils import adb
-        return [d.serial for d in adb.device_list() if d.serial.startswith('emulator-')]
+        return [d.serial for d in adb.device_list() if d.serial and d.serial.startswith('emulator-')]
     except Exception as exc:  # noqa: BLE001
         logger.warning('Failed to list running AVD serials: %s', exc)
         return []
 
 
-def _get_avd_name_for_serial(serial: str) -> str | None:
-    """获取指定 serial 对应的 AVD 名称，查不到时返回 None。"""
+def _fetch_avd_name(serial: str) -> str | None:
+    match = re.match(r'^emulator-(\d+)$', serial)
+    if not match:
+        return None
+    port = int(match.group(1))
     try:
-        from adbutils import adb
-        d = adb.device(serial)
-        # Android 9+ 可直接读系统属性
-        name = d.shell('getprop ro.boot.qemu.avd_name').strip()
-        if name:
-            return name
-        # fallback：通过 emulator console TCP 端口查询（serial = emulator-PORT）
-        match = re.match(r'^emulator-(\d+)$', serial)
-        if match:
-            port = int(match.group(1))
-            import socket
-            with socket.create_connection(('127.0.0.1', port), timeout=2) as sock:
-                sock.recv(1024)           # 读欢迎消息
-                sock.sendall(b'avd name\n')
-                time.sleep(0.2)
-                data = sock.recv(1024).decode('utf-8', errors='ignore')
-            lines = [
-                line.strip()
-                for line in data.splitlines()
-                if line.strip() and line.strip() != 'OK'
-            ]
-            if lines:
-                return lines[0]
+        import socket
+        with socket.create_connection(('127.0.0.1', port), timeout=2) as sock:
+            sock.recv(1024) # 读欢迎消息
+            sock.sendall(b'avd name\n')
+            time.sleep(0.2)
+            data = sock.recv(1024).decode('utf-8', errors='ignore')
+        lines = [
+            line.strip()
+            for line in data.splitlines()
+            if line.strip() and line.strip() != 'OK'
+        ]
+        if lines:
+            return lines[0]
     except Exception:  # noqa: BLE001
         pass
     return None
@@ -168,7 +161,7 @@ class AvdInstance(CommonAdbCreateDeviceMixin, Instance[AdbHostConfig]):
         # serial 失效或尚未获取：重新按名称匹配
         found = None
         for serial in running_serials:
-            if _get_avd_name_for_serial(serial) == self._avd_name:
+            if _fetch_avd_name(serial) == self._avd_name:
                 found = serial
                 break
         if found:
@@ -245,7 +238,7 @@ class AvdInstance(CommonAdbCreateDeviceMixin, Instance[AdbHostConfig]):
                     )
                 it.wait()
                 for serial in _list_running_serials():
-                    if _get_avd_name_for_serial(serial) == self._avd_name:
+                    if _fetch_avd_name(serial) == self._avd_name:
                         self.adb_serial = serial
                         logger.info('Discovered serial for AVD "%s": %s', self._avd_name, serial)
                         break
@@ -316,7 +309,7 @@ class AvdHost:
 
         name_to_serial: dict[str, str] = {}
         for serial in running_serials:
-            name = _get_avd_name_for_serial(serial)
+            name = _fetch_avd_name(serial)
             if name:
                 name_to_serial[name] = serial
 
