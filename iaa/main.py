@@ -4,7 +4,6 @@ import sys
 from typing import Sequence
 from dataclasses import dataclass
 
-from kotonebot.backend import debug
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
@@ -160,11 +159,6 @@ def parse_cli_action(argv: Sequence[str] | None = None) -> CliAction:
     )
 
 
-def configure_debug(debug_enabled: bool) -> None:
-    if debug_enabled:
-        debug.debug.enabled = True
-        debug.debug.auto_save_to_folder = 'dumps'
-
 
 def print_task_list() -> None:
     for info in list_task_infos():
@@ -195,8 +189,6 @@ def validate_cli_config_selection(action: CliAction) -> None:
 
 
 def execute_cli_action(action: CliAction) -> int:
-    configure_debug(action.debug_enabled)
-
     if action.kind == 'list_tasks':
         print_task_list()
         return 0
