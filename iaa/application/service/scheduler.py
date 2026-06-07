@@ -138,6 +138,8 @@ class SchedulerService:
         """原始分辨率，用于恢复"""
         self._connect_thread: threading.Thread | None = None
         """设备连接线程"""
+        self._stop_lifecycle: 'Callable[[], None] | None' = None
+        """完成后关闭模拟器的回调，仅本次由 iaa 启动时设置"""
 
     @property
     def running(self) -> bool:
@@ -309,6 +311,13 @@ class SchedulerService:
                     finally:
                         self._device_started = False
                 self.device = None
+                if self._stop_lifecycle is not None and self.iaa.config.conf.device.stop_on_finish:
+                    try:
+                        logger.info('Stopping lifecycle instance.')
+                        self._stop_lifecycle()
+                    except Exception as e:
+                        logger.warning('Failed to stop lifecycle instance: %s', e)
+                self._stop_lifecycle = None
                 self._flow_controller = None
                 self._thread = None
                 self.__running = False
@@ -409,12 +418,16 @@ class SchedulerService:
         impl = device_conf.control_impl
         use_vd = device_conf.scrcpy_virtual_display
 
-        def _maybe_start(instance: Instance) -> None:
+        def _maybe_start(instance: Instance) -> bool:
+            """启动实例（若需要）。返回 True 表示本次由 iaa 启动，False 表示已在运行或不检查。"""
             check = lifecycle.check_and_start if isinstance(lifecycle, (MuMuDevice, CustomDevice, AvdDevice)) else False
             if check and not instance.running():
                 logger.info('Device is not running, starting: %s', instance)
                 instance.start()
                 instance.wait_available()
+                return True
+            return False
+
 
         def _resolve_mumu_instance(host_cls: type[HostProtocol], host_name: str, instance_id: str | None) -> Instance:
             def _check(id: str):
@@ -483,7 +496,8 @@ class SchedulerService:
             host_cls = Mumu12Host if lifecycle.type == 'mumu' else Mumu12V5Host
             host_name = 'MuMu' if lifecycle.type == 'mumu' else 'MuMu v5'
             host = _resolve_mumu_instance(host_cls, host_name, lifecycle.instance_id)
-            _maybe_start(host)
+            if _maybe_start(host):
+                self._stop_lifecycle = host.stop
             if impl == 'nemu_ipc':
                 pass  # nemu_ipc 支持 MuMu
             elif impl in ('adb', 'scrcpy', 'uiautomator'):
@@ -525,7 +539,8 @@ class SchedulerService:
                 running_command=(lifecycle.running_command or '').strip(),
             )
             self._custom_emulator_instance = custom_instance
-            _maybe_start(custom_instance)
+            if _maybe_start(custom_instance):
+                self._stop_lifecycle = custom_instance.stop
             if impl == 'nemu_ipc':
                 raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持自定义设备。")
             return _apply_impl(custom_instance)
@@ -597,7 +612,8 @@ class SchedulerService:
             if impl == 'qemu_grpc' and '-grpc' not in avd_instance._extra_args:
                 avd_instance._extra_args += ['-grpc', '8554']
 
-            _maybe_start(avd_instance)
+            if _maybe_start(avd_instance):
+                self._stop_lifecycle = avd_instance.stop
             if impl == 'nemu_ipc':
                 raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持 AVD。")
             if impl == 'qemu_grpc':
@@ -618,6 +634,7 @@ class SchedulerService:
                 logger.info('PlayCover app not running, launching: %s', bundle_id)
                 app.launch()
                 app.wait_available(timeout=60)
+                self._stop_lifecycle = app.terminate
 
             if not app.running():
                 raise RuntimeError('游戏未在运行。请启动游戏，或在配置里启用「检查并启动」。')

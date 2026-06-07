@@ -75,6 +75,7 @@ class DeviceConfig(BaseModel):
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'] = 'nemu_ipc'
     scrcpy_virtual_display: bool = False
     resolution_method: Literal['auto', 'keep', 'wm_size'] = 'auto'
+    stop_on_finish: bool = False
 
 
 # ── 游戏配置（仅游戏层面） ────────────────────────────────────────────────────

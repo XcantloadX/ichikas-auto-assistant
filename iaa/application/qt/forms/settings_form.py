@@ -532,6 +532,17 @@ def build_settings_form(
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
                 visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice),
             )
+            Checkbox(
+                key='device.stopOnFinish',
+                label='完成后关闭模拟器',
+                ref=ref(ctx.conf.device.stop_on_finish),
+                # 展示条件：是模拟器设备，而且选中了启动模拟器
+                visible=lambda s: isinstance(
+                    s.conf.device.lifecycle,
+                    (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)
+                ) and s.conf.device.lifecycle.check_and_start,
+                help_text='所有任务执行完毕后，自动停止由 iaa 本次启动的模拟器。若模拟器在启动前已在运行，则不会关闭。',
+            )
             # 自定义专属
             Text(
                 key='device.customStartCommand',
