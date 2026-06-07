@@ -119,71 +119,65 @@ class LiveConfig(BaseModel):
 
 
 class ChallengeLiveConfig(BaseModel):
+    enabled: bool = True
     characters: list[GameCharacter] = [GameCharacter.Ichika]
     award: ChallengeLiveAward = ChallengeLiveAward.Crystal
 
 
 class CmConfig(BaseModel):
+    enabled: bool = True
     watch_ad_wait_sec: int = 70
 
 
 
-
 class EventStoreConfig(BaseModel):
+    enabled: bool = False
     purchase_items: list[ShopItem] = [
         ShopItem.ITEM_CRYSTAL,
         ShopItem.ITEM_3STAR_MEMBER,
     ]
 
 
-class DeveloperConfig(BaseModel):
-    sekai_dump_post_process: bool = False
-    screen_recording_enabled: bool = False
+class StartGameConfig(BaseModel):
+    enabled: bool = True
 
-class SchedulerConfig(BaseModel):
-    start_game_enabled: bool = True
-    solo_live_enabled: bool = True
-    challenge_live_enabled: bool = True
-    activity_story_enabled: bool = False
-    cm_enabled: bool = True
-    gift_enabled: bool = True
-    area_convos_enabled: bool = False
-    mission_rewards_enabled: bool = True
-    event_shop_enabled: bool = False
-    dump_sekai_home_enabled: bool = False
+
+class ActivityStoryConfig(BaseModel):
+    enabled: bool = False
+
+
+class GiftConfig(BaseModel):
+    enabled: bool = True
+
+
+class AreaConvosConfig(BaseModel):
+    enabled: bool = False
+
+
+class MissionRewardsConfig(BaseModel):
+    enabled: bool = True
+
+
+class TasksConfig(BaseModel):
+    """所有常规任务的配置，task_id 与字段名一一对应。"""
+    start_game: StartGameConfig = StartGameConfig()
+    solo_live: LiveConfig = LiveConfig()
+    challenge_live: ChallengeLiveConfig = ChallengeLiveConfig()
+    activity_story: ActivityStoryConfig = ActivityStoryConfig()
+    cm: CmConfig = CmConfig()
+    gift: GiftConfig = GiftConfig()
+    area_convos: AreaConvosConfig = AreaConvosConfig()
+    event_shop: EventStoreConfig = EventStoreConfig()
+    mission_rewards: MissionRewardsConfig = MissionRewardsConfig()
 
     def is_enabled(self, task_id: str) -> bool:
-        """根据任务标识判断是否启用。
+        task_conf = getattr(self, task_id, None)
+        if task_conf is None or not hasattr(task_conf, 'enabled'):
+            raise ValueError(f"Unknown or non-toggleable task: {task_id!r}")
+        return bool(task_conf.enabled)
 
-        任务标识应与 `iaa.tasks.registry.REGULAR_TASKS` 的键一致，例如：
-        - "start_game"
-        - "cm"
-        - "solo_live"
-        - "challenge_live"
-        - "activity_story"
-        - "gift"
-        - "area_convos"
-        - "mission_rewards"
-        - "_dump_sekai_home"
-        """
-        if task_id == 'start_game':
-            return bool(self.start_game_enabled)
-        if task_id == 'cm':
-            return bool(self.cm_enabled)
-        if task_id == 'solo_live':
-            return bool(self.solo_live_enabled)
-        if task_id == 'challenge_live':
-            return bool(self.challenge_live_enabled)
-        if task_id == 'activity_story':
-            return bool(self.activity_story_enabled)
-        if task_id == 'gift':
-            return bool(self.gift_enabled)
-        if task_id == 'area_convos':
-            return bool(self.area_convos_enabled)
-        if task_id == 'mission_rewards':
-            return bool(self.mission_rewards_enabled)
-        if task_id == 'event_shop':
-            return bool(self.event_shop_enabled)
-        if task_id == '_dump_sekai_home':
-            return bool(self.dump_sekai_home_enabled)
-        return False
+
+class DeveloperConfig(BaseModel):
+    dump_sekai_home_enabled: bool = False
+    sekai_dump_post_process: bool = False
+    screen_recording_enabled: bool = False

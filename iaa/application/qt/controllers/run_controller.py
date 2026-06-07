@@ -8,10 +8,13 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
+from iaa.application.service.iaa_service import IaaService
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
-from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
+from iaa.tasks.registry import TASK_INFOS
 
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
+from .progress_bridge import ProgressBridge
+from .scrcpy_controller import ScrcpyController
 
 
 class RunController(QObject):
@@ -22,7 +25,7 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: IaaService, progress_bridge: ProgressBridge, scrcpy_controller: ScrcpyController | None, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
@@ -66,7 +69,7 @@ class RunController(QObject):
 
     @Slot(result=str)
     def tasksStateJson(self) -> str:
-        scheduler_conf = self._iaa.config.conf.scheduler
+        tasks_conf = self._iaa.config.conf.tasks
         items: list[dict[str, object]] = []
         ordered_ids = [
             'start_game',
@@ -99,7 +102,7 @@ class RunController(QObject):
                     'id': task_id,
                     'name': info.display_name,
                     'kind': info.kind,
-                    'enabled': scheduler_conf.is_enabled(task_id) if task_id in checkable_ids else False,
+                    'enabled': tasks_conf.is_enabled(task_id) if task_id in checkable_ids else False,
                     'runnable': True,
                     'checkable': task_id in checkable_ids,
                 }
@@ -108,27 +111,11 @@ class RunController(QObject):
 
     @Slot(str, bool)
     def setRegularTaskEnabled(self, task_id: str, enabled: bool) -> None:
-        scheduler_conf = self._iaa.config.conf.scheduler
-        if task_id == 'start_game':
-            scheduler_conf.start_game_enabled = enabled
-        elif task_id == 'solo_live':
-            scheduler_conf.solo_live_enabled = enabled
-        elif task_id == 'challenge_live':
-            scheduler_conf.challenge_live_enabled = enabled
-        elif task_id == 'activity_story':
-            scheduler_conf.activity_story_enabled = enabled
-        elif task_id == 'cm':
-            scheduler_conf.cm_enabled = enabled
-        elif task_id == 'gift':
-            scheduler_conf.gift_enabled = enabled
-        elif task_id == 'area_convos':
-            scheduler_conf.area_convos_enabled = enabled
-        elif task_id == 'event_shop':
-            scheduler_conf.event_shop_enabled = enabled
-        elif task_id == 'mission_rewards':
-            scheduler_conf.mission_rewards_enabled = enabled
-        else:
-            return
+        tasks_conf = self._iaa.config.conf.tasks
+        task_conf = getattr(tasks_conf, task_id, None)
+        if task_conf is None or not hasattr(task_conf, 'enabled'):
+            raise ValueError(f"Unknown or non-toggleable task: {task_id!r}")
+        task_conf.enabled = enabled
         self._iaa.config.save()
         self.tasksChanged.emit()
 

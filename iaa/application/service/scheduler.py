@@ -14,7 +14,7 @@ from iaa.utils import asset_path
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
-from iaa.tasks.registry import REGULAR_TASKS, name_from_id
+from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS, name_from_id
 from iaa.tasks.registry import MANUAL_TASKS
 from iaa.context import init as init_config_context
 from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
@@ -755,10 +755,11 @@ class SchedulerService:
     def _get_enabled_tasks(self) -> list[tuple[str, Callable[[], None]]]:
         """根据配置返回启用的任务列表，顺序与 REGULAR_TASKS 保持一致。"""
         conf = self.iaa.config.conf
-        tasks: list[tuple[str, Callable[[], None]]] = []
-        for name, func in REGULAR_TASKS.items():
-            if conf.scheduler.is_enabled(name):
-                tasks.append((name, func))
-        return tasks
+        return [
+            (name, func)
+            for name, func in REGULAR_TASKS.items()
+            if (info := TASK_INFOS[name]).get_enabled is not None
+            and info.get_enabled(conf)
+        ]
 
 

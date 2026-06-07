@@ -345,7 +345,7 @@ def _set_tcp_device_serial(state: FormContext, value: object) -> None:
 # ── CM ────────────────────────────────────────────────────────────────────────
 
 def _get_watch_ad_wait_sec(state: FormContext) -> str:
-    return str(int(state.conf.cm.watch_ad_wait_sec))
+    return str(int(state.conf.tasks.cm.watch_ad_wait_sec))
 
 def _set_watch_ad_wait_sec(state: FormContext, value: object) -> None:
     text = str(value or '').strip()
@@ -354,7 +354,7 @@ def _set_watch_ad_wait_sec(state: FormContext, value: object) -> None:
     num = int(text)
     if num <= 0:
         return
-    state.conf.cm.watch_ad_wait_sec = num
+    state.conf.tasks.cm.watch_ad_wait_sec = num
 
 # ── 归一化钩子 ────────────────────────────────────────────────────────────────
 
@@ -680,44 +680,44 @@ def build_settings_form(
 
         with Group('演出设置'):
             Select(
-                key='live.songName',
+                key='tasks.soloLive.songName',
                 label='歌曲名称',
-                ref=ref(ctx.conf.live.song_name).map(
+                ref=ref(ctx.conf.tasks.solo_live.song_name).map(
                     to_ui=lambda v: v or SONG_KEEP_UNCHANGED,
                     from_ui=lambda v: normalize_song_name_input(str(v)),
                 ),
                 options=SONG_NAME_OPTIONS,
             )
             Select(
-                key='live.apMultiplier',
+                key='tasks.soloLive.apMultiplier',
                 label='AP 倍率',
-                ref=ref(ctx.conf.live.ap_multiplier).map(
+                ref=ref(ctx.conf.tasks.solo_live.ap_multiplier).map(
                     to_ui=lambda v: '保持现状' if v is None else str(v),
                     from_ui=lambda v: None if str(v) == '保持现状' else int(str(v)),
                 ),
                 options=['保持现状', *[str(i) for i in range(0, 11)]],
             )
             Checkbox(
-                key='live.autoSetUnit',
+                key='tasks.soloLive.autoSetUnit',
                 label='自动编队',
-                ref=ref(ctx.conf.live.auto_set_unit),
+                ref=ref(ctx.conf.tasks.solo_live.auto_set_unit),
             )
             Checkbox(
-                key='live.appendFc',
+                key='tasks.soloLive.appendFc',
                 label='追加一次 FullCombo 演出',
-                ref=ref(ctx.conf.live.append_fc),
+                ref=ref(ctx.conf.tasks.solo_live.append_fc),
             )
             Checkbox(
-                key='live.appendRandom',
+                key='tasks.soloLive.appendRandom',
                 label='追加一首随机歌曲',
-                ref=ref(ctx.conf.live.prepend_random),
+                ref=ref(ctx.conf.tasks.solo_live.prepend_random),
             )
 
         with Group('挑战演出设置'):
             IconItemPicker(
-                key='challengeLive.characters',
+                key='tasks.challengeLive.characters',
                 label='角色',
-                ref=ref(ctx.conf.challenge_live.characters).map(
+                ref=ref(ctx.conf.tasks.challenge_live.characters).map(
                     to_ui=lambda values: values[0].value if values else None,
                     from_ui=lambda v: [GameCharacter(str(v))],
                 ),
@@ -726,9 +726,9 @@ def build_settings_form(
                 icon_size=70,
             )
             IconItemPicker(
-                key='challengeLive.award',
+                key='tasks.challengeLive.award',
                 label='奖励',
-                ref=ref(ctx.conf.challenge_live.award).map(
+                ref=ref(ctx.conf.tasks.challenge_live.award).map(
                     to_ui=lambda v: v.value,
                     from_ui=lambda v: ChallengeLiveAward(str(v)),
                 ),
@@ -747,9 +747,9 @@ def build_settings_form(
 
         with Group('活动商店设置'):
             SortableChecklist(
-                key='eventShop.selectedItems',
+                key='tasks.eventShop.selectedItems',
                 label=None,
-                ref=ref(ctx.conf.event_shop.purchase_items).map(
+                ref=ref(ctx.conf.tasks.event_shop.purchase_items).map(
                     to_ui=lambda values: [item.value for item in values],
                     from_ui=lambda values: [ShopItem(str(v)) for v in values],
                 ),
@@ -759,9 +759,9 @@ def build_settings_form(
 
         with Group('开发者设置（仅供开发使用！）'):
             Checkbox(
-                key='scheduler.dumpSekaiHomeEnabled',
+                key='developer.dumpSekaiHomeEnabled',
                 label='dump 烤森',
-                ref=ref(ctx.conf.scheduler.dump_sekai_home_enabled),
+                ref=ref(ctx.conf.developer.dump_sekai_home_enabled),
             )
             Checkbox(
                 key='developer.sekaiDumpPostProcess',

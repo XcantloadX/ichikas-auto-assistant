@@ -194,3 +194,87 @@ class ProfileV2ToV3(MigrationStep):
                     level='warning'
                 ))
                 logger.exception(f"Error migrating config {file.name}")
+
+
+class ProfileV3ToV4(MigrationStep):
+    """
+    将任务启用开关从 scheduler.* 下沉到各任务自己的 config 中，
+    并将所有任务配置归入顶层 tasks.* 嵌套结构。
+
+    旧结构：
+        live.*  /  challenge_live.*  /  cm.*  /  event_shop.*
+        scheduler.{task}_enabled
+
+    新结构：
+        tasks.solo_live.enabled / tasks.challenge_live.enabled / ...
+    """
+
+    def check_needed(self, ctx: MigrationContext) -> bool:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) < 4:
+                    return True
+            except Exception:
+                continue
+        return False
+
+    def apply(self, ctx: MigrationContext) -> None:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) >= 4:
+                    continue
+
+                sched = data.pop('scheduler', {})
+                old_live = data.pop('live', {})
+
+                tasks: dict = {}
+
+                tasks['start_game'] = {'enabled': sched.get('start_game_enabled', True)}
+
+                old_live['enabled'] = sched.get('solo_live_enabled', True)
+                tasks['solo_live'] = old_live
+
+                challenge_live = data.pop('challenge_live', {})
+                challenge_live['enabled'] = sched.get('challenge_live_enabled', True)
+                tasks['challenge_live'] = challenge_live
+
+                tasks['activity_story'] = {'enabled': sched.get('activity_story_enabled', False)}
+
+                cm = data.pop('cm', {})
+                cm['enabled'] = sched.get('cm_enabled', True)
+                tasks['cm'] = cm
+
+                tasks['gift'] = {'enabled': sched.get('gift_enabled', True)}
+                tasks['area_convos'] = {'enabled': sched.get('area_convos_enabled', False)}
+
+                event_shop = data.pop('event_shop', {})
+                event_shop['enabled'] = sched.get('event_shop_enabled', False)
+                tasks['event_shop'] = event_shop
+
+                tasks['mission_rewards'] = {'enabled': sched.get('mission_rewards_enabled', True)}
+
+                data['tasks'] = tasks
+
+                dev = data.get('developer', {})
+                dev['dump_sekai_home_enabled'] = sched.get('dump_sekai_home_enabled', False)
+                data['developer'] = dev
+
+                data['version'] = 4
+                file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+                ctx.messages.append(MigrationMessage(
+                    text="任务配置结构升级（tasks.*）",
+                    old_version="26.05b2 (v3)",
+                    new_version="26.06b1 (v4)"
+                ))
+            except Exception as e:
+                ctx.messages.append(MigrationMessage(
+                    text=f"迁移配置 {file.name} 时出错: {e}",
+                    level='warning'
+                ))
+                logger.exception(f"Error migrating config {file.name}")
