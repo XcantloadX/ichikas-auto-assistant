@@ -287,6 +287,52 @@ class TabManager(QObject):
     def isTabOpen(self, config_name: str) -> bool:
         return any(t.config_name == config_name for t in self._tabs)
 
+    @Slot()
+    def startAllSequential(self) -> None:
+        """在后台线程中依次启动所有 tab，前一个完成后再启动下一个。"""
+        import threading
+        import time
+
+        tabs = list(self._tabs)
+
+        def _run() -> None:
+            for entry in tabs:
+                if entry.is_running or entry.scheduler.is_starting:
+                    continue
+                entry.scheduler.start_regular(run_in_thread=True)
+                time.sleep(0.5)
+                while (entry.scheduler.running
+                       or entry.scheduler.is_starting
+                       or entry.scheduler.is_stopping):
+                    time.sleep(0.5)
+
+        threading.Thread(target=_run, daemon=True).start()
+
+    @Slot()
+    def startAllParallel(self) -> None:
+        """同时启动所有 tab。"""
+        for entry in self._tabs:
+            if not entry.is_running and not entry.scheduler.is_starting:
+                entry.scheduler.start_regular(run_in_thread=True)
+
+    @Slot(result=str)
+    def allConfigsJson(self) -> str:
+        """返回所有配置（含未打开的），带 tabIndex（-1 表示未打开）和 isActive。"""
+        try:
+            from iaa.config import manager
+            all_names = manager.list()
+            open_map = {t.config_name: i for i, t in enumerate(self._tabs)}
+            return json.dumps([
+                {
+                    'configName': name,
+                    'tabIndex': open_map.get(name, -1),
+                    'isActive': open_map.get(name, -1) == self._active_index and name in open_map,
+                }
+                for name in all_names
+            ], ensure_ascii=False)
+        except Exception:
+            return '[]'
+
     @Slot(result=str)
     def tabsJson(self) -> str:
         return json.dumps([

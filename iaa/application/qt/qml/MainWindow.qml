@@ -160,7 +160,9 @@ ApplicationWindow {
             currentIndex: titleBar.currentIndex
 
             // ── index 0：总览页 ─────────────────────────────────────
-            OverviewPage {}
+            OverviewPage {
+                configManagerDialog: configManagerDialog
+            }
 
             // ── index 1：per-tab 内容区 ─────────────────────────────
             Item {
