@@ -11,6 +11,29 @@ Control {
     property int currentIndex: -1
     property string textRole: "text"
     property string valueRole: "value"
+
+    // 外部通过 value 绑定选中项，SegmentedButton 负责将其映射到 currentIndex。
+    // 避免直接绑定 currentIndex：onClicked 内部会对其做命令式赋值，会打断外部 binding。
+    property var value: undefined
+    onValueChanged: _syncIndex()
+    onModelChanged: _syncIndex()
+
+    function _syncIndex() {
+        const idx = _findIndex(root.model, root.value)
+        if (root.currentIndex !== idx)
+            root.currentIndex = idx
+    }
+
+    function _findIndex(items, val) {
+        if (!items || val === undefined) return -1
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i]
+            const v = (item && typeof item === 'object') ? item[root.valueRole] : item
+            if (v === val) return i
+        }
+        return -1
+    }
+
     readonly property var currentValue: {
         if (currentIndex >= 0 && currentIndex < root.model.length) {
             const item = root.model[currentIndex]
