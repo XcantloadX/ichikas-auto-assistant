@@ -7,6 +7,7 @@
 * 新增对于 AVD（Android Virtual Device）的特别支持，现在可以自动识别 AVD 路径与控制启动
 * 新增 AVD 专用控制方式「QEMU gRPC」，性能与 MuMu 的 NemuIPC 相当
 * 国服现已支持「活动商店」任务
+* 现在可以处理国服的一部分网络错误弹窗了
 
 修复：
 * 修复了 MuMu v5 刷新模拟器失败的问题

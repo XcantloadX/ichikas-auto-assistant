@@ -1,0 +1,43 @@
+{
+  "version": 3,
+  "definitions": {
+    "25edd61e-46a4-4c93-8d86-80c5defb8bb7": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "NetworkError.DialogConnectionError.Text",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 470.34246532481296,
+          "y1": 312.6503126375924,
+          "x2": 793.2853948259615,
+          "y2": 355.61443091281654
+        },
+        "fixed": true
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "inherit"
+      }
+    },
+    "d5aa8b60-a403-472e-bc28-d2df7594f260": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "NetworkError.DialogConnectionError.ButtonRetry",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 712.2997066228871,
+          "y1": 406.57187351831493,
+          "x2": 805.2832745597503,
+          "y2": 443.5409985458334
+        },
+        "fixed": true
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "inherit"
+      }
+    }
+  }
+}
