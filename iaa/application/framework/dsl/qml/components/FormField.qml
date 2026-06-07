@@ -8,12 +8,13 @@ RowLayout {
     property string helpText: ""
     property string errorText: ""
     property alias control: controlLoader.sourceComponent
-    readonly property bool hasLabel: labelText !== null && labelText !== undefined
+    readonly property bool hasLabel: labelText !== null && labelText !== undefined && labelText !== ""
 
     default property alias _contentChildren: controlContainer.data
 
     RowLayout {
-        Layout.preferredWidth: 120
+        visible: root.hasLabel || root.helpText.length > 0
+        Layout.preferredWidth: visible ? 120 : 0
         Layout.alignment: Qt.AlignVCenter
         spacing: 6
 

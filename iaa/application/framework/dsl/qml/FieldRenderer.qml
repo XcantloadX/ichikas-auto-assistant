@@ -50,7 +50,7 @@ Item {
             case "select": return selectFieldComponent
             case "segmented": return segmentedFieldComponent
             case "checkbox": return checkboxFieldComponent
-            case "transfer_list": return transferListComponent
+            case "sortable_checklist": return sortableChecklistComponent
             case "hotkey": return hotkeyFieldComponent
             case "notice_block": return noticeBlockComponent
             case "icon_item_picker": return iconItemPickerComponent
@@ -115,8 +115,8 @@ Item {
     }
 
     Component {
-        id: transferListComponent
-        DslTransferList {
+        id: sortableChecklistComponent
+        DslSortableChecklist {
             field: root.field
             formController: root.formController
         }

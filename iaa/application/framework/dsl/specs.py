@@ -472,7 +472,7 @@ def Custom(
     )
 
 
-def TransferList(
+def SortableChecklist(
     key: str,
     label: str | None,
     *,
@@ -481,21 +481,32 @@ def TransferList(
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    reorderable: bool = False,
-    height: int = 220,
+    height: int = 300,
     help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
 ) -> FieldSpec[TCtx]:
-    """声明一个穿梭框字段。"""
+    """声明一个可排序勾选列表字段。
+
+    单列表展示所有选项：已选项在上方（点击行取消选中，↑↓按钮调序），
+    未选项在下方（点击行选中）。支持 ``image`` / ``icon`` 图标字段。
+
+    选项对象格式::
+
+        {
+          "value": ...,       # 业务值
+          "label": "...",     # 显示文本
+          "image": "...",     # 可选，图片 URL
+          "icon":  "...",     # 可选，字形文本（如 Segoe Fluent Icons 字符）
+        }
+    """
     merged_props = {} if props is None else dict(props)
-    merged_props['reorderable'] = reorderable
     merged_props['height'] = height
     return register_field(
         FieldSpec(
             key=key,
-            kind='transfer_list',
+            kind='sortable_checklist',
             label=label,
             ref=ref,
             help_text=help_text,

@@ -15,7 +15,7 @@ from iaa.application.framework.dsl import (
     Segmented,
     Select,
     Text,
-    TransferList,
+    SortableChecklist,
     register_field,
     bind,
     custom_ref,
@@ -735,7 +735,7 @@ def build_settings_form(
             )
 
         with Group('活动商店设置'):
-            TransferList(
+            SortableChecklist(
                 key='eventShop.selectedItems',
                 label=None,
                 ref=ref(ctx.conf.event_shop.purchase_items).map(
@@ -743,8 +743,7 @@ def build_settings_form(
                     from_ui=lambda values: [ShopItem(str(v)) for v in values],
                 ),
                 options=event_shop_items,
-                reorderable=True,
-                height=220,
+                height=300,
             )
 
         with Group('开发者设置（仅供开发使用！）'):
