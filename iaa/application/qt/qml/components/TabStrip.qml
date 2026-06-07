@@ -279,7 +279,7 @@ Item {
 
         // ── ☰ 配置管理（FluentSystemIcons navigation_20 = ）────
         Item {
-            width: 32
+            width: configMgrRow.implicitWidth + 16
             height: parent.height
 
             HoverHandler { id: configMgrBtnHover }
@@ -294,13 +294,27 @@ Item {
                     : "transparent"
             }
 
-            Text {
+            Row {
+                id: configMgrRow
                 anchors.centerIn: parent
-                font.family: "FluentSystemIcons-Regular"
-                font.pixelSize: 14
-                text: "\uF560"   // GlobalNavButton
-                color: palette.windowText
-                opacity: 0.7
+                spacing: 4
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: "FluentSystemIcons-Regular"
+                    font.pixelSize: 14
+                    text: "\uF560"   // GlobalNavButton
+                    color: palette.windowText
+                    opacity: 0.7
+                }
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "配置"
+                    font.pixelSize: 13
+                    color: palette.windowText
+                    opacity: 0.7
+                }
             }
 
             MouseArea {
@@ -312,7 +326,7 @@ Item {
 
         // ── ⚙ 偏好（FluentSystemIcons settings_20 = ）────────────
         Item {
-            width: 32
+            width: settingsRow.implicitWidth + 16
             height: parent.height
 
             HoverHandler { id: settingsBtnHover }
@@ -327,13 +341,27 @@ Item {
                     : "transparent"
             }
 
-            Text {
+            Row {
+                id: settingsRow
                 anchors.centerIn: parent
-                font.family: "FluentSystemIcons-Regular"
-                font.pixelSize: 14
-                text: "\uF6A9"   // Settings
-                color: palette.windowText
-                opacity: 0.7
+                spacing: 4
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    font.family: "FluentSystemIcons-Regular"
+                    font.pixelSize: 14
+                    text: "\uF6A9"   // Settings
+                    color: palette.windowText
+                    opacity: 0.7
+                }
+
+                Text {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "偏好"
+                    font.pixelSize: 13
+                    color: palette.windowText
+                    opacity: 0.7
+                }
             }
 
             MouseArea {
