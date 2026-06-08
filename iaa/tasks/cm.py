@@ -179,7 +179,7 @@ def clear_common_cm():
                 logger.info('Close button clicked. (Applovin/GP ad?)')
                 sleep(1)
                 state = 1
-            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
+            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.6).try_click():
                 logger.info('Skip button clicked. (Applovin/GP ad?)')
                 sleep(1)
             # GooglePlay App 广告特判：
