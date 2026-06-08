@@ -122,7 +122,7 @@ def clear_common_cm():
     rep = task_reporter()
     d = device.of_android()
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
-    wait_sec = get_conf().cm.watch_ad_wait_sec
+    wait_sec = get_conf().tasks.cm.watch_ad_wait_sec
     for _ in Loop(interval=0.6):
         if state == 1:
             # 开始看

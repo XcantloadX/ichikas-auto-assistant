@@ -9,6 +9,6 @@ def ten_songs():
     go_home()
     plan = ListLoopPlan(
         loop_count=10,
-        auto_set_unit=conf().live.auto_set_unit,
+        auto_set_unit=conf().tasks.solo_live.auto_set_unit,
     )
     solo_live(plan)

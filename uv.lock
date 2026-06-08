@@ -393,6 +393,7 @@ version = "26.5b2"
 source = { virtual = "." }
 dependencies = [
     { name = "av", version = "14.3.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "click" },
     { name = "grpcio" },
     { name = "kotonebot", extra = ["android"] },
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
@@ -411,7 +412,6 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "click" },
     { name = "kotonebot", extra = ["dev"] },
     { name = "pyinstaller" },
     { name = "ruff" },
@@ -420,6 +420,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "av", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" },
+    { name = "click" },
     { name = "grpcio" },
     { name = "kotonebot", extras = ["android"], specifier = "==0.14.0" },
     { name = "numpy", specifier = "<2.0" },
@@ -438,7 +439,6 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "click" },
     { name = "kotonebot", extras = ["dev"] },
     { name = "pyinstaller", specifier = ">=6.15.0" },
     { name = "ruff" },

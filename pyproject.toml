@@ -21,6 +21,7 @@ dependencies = [
     "sentry-sdk",
     "thefuzz>=0.22.1",
     "plyer>=2.1.0",
+    "click",
     "opencv-python @ https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
     "numpy @ https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
     "av @ https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
@@ -30,7 +31,6 @@ dependencies = [
 dev = [
     "kotonebot[dev]",
     "pyinstaller>=6.15.0",
-    "click",
     "ruff",
 ]
 
