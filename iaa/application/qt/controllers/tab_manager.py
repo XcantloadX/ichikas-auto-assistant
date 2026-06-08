@@ -51,6 +51,7 @@ class TabManager(QObject):
     tabsChanged = Signal()
     activeTabChanged = Signal()
     anyBusyChanged = Signal()
+    batchModeChanged = Signal()
     closeTabBlocked = Signal(str)          # reason: str，tab 正在运行或是最后一个
     readyToCloseTab = Signal(int)          # index: int，可以关闭（QML 负责 dirty 检查后调 closeTab）
     tabOpenFailed = Signal(str)            # error: str
@@ -67,6 +68,9 @@ class TabManager(QObject):
         super().__init__(parent)
         self._tabs: list[_TabEntry] = []
         self._active_index: int = 0
+        self._batch_mode: str = ''        # '' | 'sequential' | 'parallel'
+        self._stop_all_busy: bool = False
+        self._seq_cancel = None           # threading.Event，用于取消连续执行循环
         self._restore_tabs()
 
     # ── 内部工具 ──────────────────────────────────────────────────────────────
@@ -299,15 +303,20 @@ class TabManager(QObject):
         import threading
         import time
 
-        tabs = list(self._tabs)
+        cancel = threading.Event()
+        self._seq_cancel = cancel
+        self._batch_mode = 'sequential'
+        self.batchModeChanged.emit()
 
-        # 将所有待启动 tab 标记为排队中
+        tabs = list(self._tabs)
         for entry in tabs:
             if not entry.is_running and not entry.scheduler.is_starting:
                 entry.run_ctrl._set_queued(True)
 
         def _run() -> None:
             for entry in tabs:
+                if cancel.is_set():
+                    break
                 if entry.is_running or entry.scheduler.is_starting:
                     continue
                 entry.run_ctrl._set_queued(False)
@@ -316,16 +325,89 @@ class TabManager(QObject):
                 while (entry.scheduler.running
                        or entry.scheduler.is_starting
                        or entry.scheduler.is_stopping):
+                    if cancel.is_set():
+                        break
                     time.sleep(0.5)
+
+            # 清除剩余排队标记
+            for e in tabs:
+                if e.run_ctrl._queued:
+                    e.run_ctrl._set_queued(False)
+
+            # 自然结束时自行重置；取消时由 stopAll 线程负责重置
+            if not cancel.is_set():
+                self._batch_mode = ''
+                self.batchModeChanged.emit()
+                self.anyBusyChanged.emit()
 
         threading.Thread(target=_run, daemon=True).start()
 
     @Slot()
     def startAllParallel(self) -> None:
-        """同时启动所有 tab。"""
-        for entry in self._tabs:
+        """同时启动所有 tab，并在全部结束后重置 batchMode。"""
+        import threading
+        import time
+
+        self._batch_mode = 'parallel'
+        self.batchModeChanged.emit()
+
+        tabs = list(self._tabs)
+        for entry in tabs:
             if not entry.is_running and not entry.scheduler.is_starting:
                 entry.scheduler.start_regular(run_in_thread=True)
+
+        def _watch() -> None:
+            while any(e.scheduler.running or e.scheduler.is_starting or e.scheduler.is_stopping
+                      for e in tabs):
+                time.sleep(0.5)
+                if self._stop_all_busy:
+                    return  # stopAll 线程负责重置
+            self._batch_mode = ''
+            self.batchModeChanged.emit()
+            self.anyBusyChanged.emit()
+
+        threading.Thread(target=_watch, daemon=True).start()
+
+    @Slot()
+    def stopAll(self) -> None:
+        """停止所有 tab（含排队等待的），等待启动中的 tab 完成启动后再停止。"""
+        if self._stop_all_busy:
+            return
+        self._stop_all_busy = True
+        self.batchModeChanged.emit()
+
+        # 取消连续执行循环
+        if self._seq_cancel is not None:
+            self._seq_cancel.set()
+
+        # 清除所有排队标记
+        for entry in self._tabs:
+            if entry.run_ctrl._queued:
+                entry.run_ctrl._set_queued(False)
+
+        import threading
+        import time
+
+        tabs = list(self._tabs)
+
+        def _run() -> None:
+            # 等待启动中的 tab 完成启动，再发出停止
+            for entry in tabs:
+                while entry.scheduler.is_starting:
+                    time.sleep(0.1)
+                if entry.scheduler.running and not entry.scheduler.is_stopping:
+                    entry.scheduler.stop(block=False)
+
+            # 等待所有 tab 完全停止
+            while any(e.scheduler.running or e.scheduler.is_stopping for e in tabs):
+                time.sleep(0.2)
+
+            self._batch_mode = ''
+            self._stop_all_busy = False
+            self.batchModeChanged.emit()
+            self.anyBusyChanged.emit()
+
+        threading.Thread(target=_run, daemon=True).start()
 
     @Slot(result=str)
     def allConfigsJson(self) -> str:
@@ -433,6 +515,14 @@ class TabManager(QObject):
             for t in self._tabs
         )
 
+    def _get_batch_mode(self) -> str:
+        return self._batch_mode
+
+    def _get_stop_all_busy(self) -> bool:
+        return self._stop_all_busy
+
     anyRunning = Property(bool, _get_any_running, notify=tabsChanged)
     anyBusy = Property(bool, _get_any_busy, notify=anyBusyChanged)
+    batchMode = Property(str, _get_batch_mode, notify=batchModeChanged)
+    stopAllBusy = Property(bool, _get_stop_all_busy, notify=batchModeChanged)
 

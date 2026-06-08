@@ -101,13 +101,18 @@ PageContainer {
 
                     Button {
                         id: seqBtn
+                        readonly property bool isStopMode: TabManager.batchMode === "sequential"
                         highlighted: true
-                        enabled: !TabManager.anyBusy
+                        enabled: TabManager.batchMode === ""
+                                 || (isStopMode && !TabManager.stopAllBusy)
                         leftPadding: 16
                         rightPadding: 16
                         topPadding: 8
                         bottomPadding: 8
-                        onClicked: TabManager.startAllSequential()
+                        onClicked: {
+                            if (isStopMode) TabManager.stopAll()
+                            else TabManager.startAllSequential()
+                        }
 
                         contentItem: Row {
                             spacing: 7
@@ -117,13 +122,17 @@ PageContainer {
                                 anchors.verticalCenter: parent.verticalCenter
                                 font.family: "FluentSystemIcons-Regular"
                                 font.pixelSize: 17
-                                text: "\uF605"
+                                text: seqBtn.isStopMode ? "\uF72A" : "\uF605"
                                 color: seqBtn.highlighted ? palette.highlightedText : palette.buttonText
                             }
 
                             Label {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: "连续启动"
+                                text: {
+                                    if (!seqBtn.isStopMode)    return "连续启动"
+                                    if (TabManager.stopAllBusy) return "停止中"
+                                    return "停止所有"
+                                }
                                 font.pixelSize: 14
                                 color: seqBtn.highlighted ? palette.highlightedText : palette.buttonText
                             }
@@ -132,13 +141,18 @@ PageContainer {
 
                     Button {
                         id: parBtn
+                        readonly property bool isStopMode: TabManager.batchMode === "parallel"
                         highlighted: true
-                        enabled: !TabManager.anyBusy
+                        enabled: TabManager.batchMode === ""
+                                 || (isStopMode && !TabManager.stopAllBusy)
                         leftPadding: 16
                         rightPadding: 16
                         topPadding: 8
                         bottomPadding: 8
-                        onClicked: TabManager.startAllParallel()
+                        onClicked: {
+                            if (isStopMode) TabManager.stopAll()
+                            else TabManager.startAllParallel()
+                        }
 
                         contentItem: Row {
                             spacing: 7
@@ -148,13 +162,17 @@ PageContainer {
                                 anchors.verticalCenter: parent.verticalCenter
                                 font.family: "FluentSystemIcons-Regular"
                                 font.pixelSize: 17
-                                text: "\uF100"
+                                text: parBtn.isStopMode ? "\uF72A" : "\uF100"
                                 color: parBtn.highlighted ? palette.highlightedText : palette.buttonText
                             }
 
                             Label {
                                 anchors.verticalCenter: parent.verticalCenter
-                                text: "并行启动"
+                                text: {
+                                    if (!parBtn.isStopMode)    return "并行启动"
+                                    if (TabManager.stopAllBusy) return "停止中"
+                                    return "停止所有"
+                                }
                                 font.pixelSize: 14
                                 color: parBtn.highlighted ? palette.highlightedText : palette.buttonText
                             }
@@ -355,7 +373,7 @@ PageContainer {
                             anchors.centerIn: parent
                             font.family: "FluentSystemIcons-Regular"
                             font.pixelSize: 13
-                            text: "\uF560"
+                            text: ""
                             color: palette.windowText
                             opacity: 0.7
                         }
@@ -372,4 +390,3 @@ PageContainer {
         }
     }
 }
-
