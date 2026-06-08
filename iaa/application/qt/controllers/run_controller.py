@@ -69,42 +69,19 @@ class RunController(QObject):
 
     @Slot(result=str)
     def tasksStateJson(self) -> str:
-        tasks_conf = self._iaa.config.conf.tasks
+        conf = self._iaa.config.conf
         items: list[dict[str, object]] = []
-        ordered_ids = [
-            'start_game',
-            'solo_live',
-            'challenge_live',
-            'activity_story',
-            'cm',
-            'gift',
-            'area_convos',
-            'event_shop',
-            'mission_rewards',
-            'auto_live',
-            'main_story',
-        ]
-        checkable_ids = {
-            'start_game',
-            'solo_live',
-            'challenge_live',
-            'activity_story',
-            'cm',
-            'gift',
-            'area_convos',
-            'event_shop',
-            'mission_rewards',
-        }
-        for task_id in ordered_ids:
-            info = TASK_INFOS[task_id]
+        for info in TASK_INFOS.values():
+            if info.task_id.startswith('_'):  # 内部任务，不在主界面展示
+                continue
             items.append(
                 {
-                    'id': task_id,
+                    'id': info.task_id,
                     'name': info.display_name,
                     'kind': info.kind,
-                    'enabled': tasks_conf.is_enabled(task_id) if task_id in checkable_ids else False,
+                    'enabled': info.get_enabled(conf) if info.get_enabled is not None else False,
                     'runnable': True,
-                    'checkable': task_id in checkable_ids,
+                    'checkable': info.get_enabled is not None,
                 }
             )
         return json.dumps(items, ensure_ascii=False)

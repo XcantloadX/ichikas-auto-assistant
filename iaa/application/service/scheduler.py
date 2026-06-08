@@ -14,8 +14,7 @@ from iaa.utils import asset_path
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
-from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS, name_from_id
-from iaa.tasks.registry import MANUAL_TASKS
+from iaa.tasks.registry import TASK_INFOS, name_from_id
 from iaa.context import init as init_config_context
 from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
 from iaa.progress import TaskProgressEvent, TaskReporter
@@ -386,11 +385,9 @@ class SchedulerService:
         kwargs: dict[str, Any] | None = None,
     ) -> None:
         """运行单个任务。"""
-        tasks = MANUAL_TASKS.copy()
-        tasks.update(REGULAR_TASKS)
-        if task_id not in tasks:
+        if task_id not in TASK_INFOS:
             raise ValueError(f"Unknown manual task: {task_id}")
-        task_func = tasks[task_id]
+        task_func = TASK_INFOS[task_id].func
         call_args = args or ()
         call_kwargs = kwargs or {}
 
@@ -756,9 +753,10 @@ class SchedulerService:
         """根据配置返回启用的任务列表，顺序与 REGULAR_TASKS 保持一致。"""
         conf = self.iaa.config.conf
         return [
-            (name, func)
-            for name, func in REGULAR_TASKS.items()
-            if (info := TASK_INFOS[name]).get_enabled is not None
+            (info.task_id, info.func)
+            for info in TASK_INFOS.values()
+            if info.kind == 'regular'
+            and info.get_enabled is not None
             and info.get_enabled(conf)
         ]
 

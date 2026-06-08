@@ -9,9 +9,9 @@ import click
 from iaa.application.service.iaa_service import IaaService
 from iaa.config import manager
 from iaa.telemetry import setup as setup_telemetry
-from iaa.tasks.registry import TASK_INFOS, MANUAL_TASKS, REGULAR_TASKS, list_task_infos
+from iaa.tasks.registry import TASK_INFOS, list_task_infos
 
-ALL_TASK_IDS = tuple([*REGULAR_TASKS.keys(), *MANUAL_TASKS.keys()])
+ALL_TASK_IDS = tuple(TASK_INFOS.keys())
 
 
 @dataclass
