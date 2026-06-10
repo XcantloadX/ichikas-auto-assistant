@@ -7,6 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
+from kotonebot.errors import DeviceConnectionError, UserFriendlyError
 from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, PlayCoverDevice, AvdDevice, TcpConnection, UsbConnection
 from iaa.application.service.custom_emulator import CustomEmulatorInstance
 from iaa.definitions.consts import package_by_server
@@ -22,6 +23,7 @@ from iaa.progress import TaskProgressEvent, TaskReporter
 logger = logging.getLogger(__name__)
 SCRCPY_BUNDLED_VERSION = '3.3.1'
 TARGET_RESOLUTION = '1280x720'
+
 
 
 def _parse_wm_size_output(output: str) -> str | None:
@@ -288,7 +290,10 @@ class SchedulerService:
                         self.current_task_name = None
             except Exception as e:  # noqa: BLE001
                 completion_status = 'crashed'
-                logger.exception("Scheduler runner crashed: %s", e)
+                if isinstance(e, DeviceConnectionError):
+                    logger.exception("Device connection failed: %s", e)
+                else:
+                    logger.exception("Scheduler runner crashed: %s", e)
                 if self.on_error:
                     try:
                         self.on_error(e)
@@ -495,6 +500,10 @@ class SchedulerService:
             host = _resolve_mumu_instance(host_cls, host_name, lifecycle.instance_id)
             if _maybe_start(host):
                 self._stop_lifecycle = host.stop
+            elif not host.running():
+                raise UserFriendlyError(
+                    f'模拟器 {host_name}（实例 {lifecycle.instance_id}）未运行。请手动启动模拟器，或在设备设置中勾选「检测并自动启动」。'
+                )
             if impl == 'nemu_ipc':
                 pass  # nemu_ipc 支持 MuMu
             elif impl in ('adb', 'scrcpy', 'uiautomator'):
