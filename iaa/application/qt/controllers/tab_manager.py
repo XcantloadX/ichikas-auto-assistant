@@ -7,7 +7,7 @@ import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from PySide6.QtCore import QObject, Property, Signal, Slot
+from PySide6.QtCore import QObject, Property, Signal, Slot, QMetaObject, Qt, Q_ARG
 
 from iaa.config.manager import ConfigValidationError
 
@@ -59,6 +59,7 @@ class TabManager(QObject):
     configValidationFailed = Signal(str, str, str)
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
+    errorDialogRequested = Signal(str, str)    # title, message — 用于需要弹窗的错误
     scriptAutoWarningRequested = Signal(str)   # 转发任意 tab 的同名信号
     # 转发活跃 tab 的 settings 信号，供 ProfileStoreBackend 使用
     activeProfileChanged = Signal(str)
@@ -85,6 +86,9 @@ class TabManager(QObject):
         pb = ProgressBridge(self, hub=bundle.progress_hub)
         rc = RunController(bundle.iaa, pb, None, self)
         sc = SettingsController(bundle.iaa, self)
+        bundle.iaa.scheduler.on_error = lambda exc: QMetaObject.invokeMethod(
+            self, '_on_scheduler_error', Qt.ConnectionType.QueuedConnection, Q_ARG(str, str(exc))
+        )
         return _TabEntry(bundle=bundle, run_ctrl=rc, settings_ctrl=sc, progress_bridge=pb)
 
     def _destroy_entry(self, entry: _TabEntry) -> None:
@@ -190,6 +194,10 @@ class TabManager(QObject):
         if 0 <= self._active_index < len(self._tabs):
             return self._tabs[self._active_index]
         return None
+
+    @Slot(str)
+    def _on_scheduler_error(self, message: str) -> None:
+        self.errorDialogRequested.emit('脚本运行错误', message)
 
     # ── QML Slots ─────────────────────────────────────────────────────────────
 

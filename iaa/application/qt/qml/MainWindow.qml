@@ -268,6 +268,9 @@ ApplicationWindow {
         function onNotificationRaised(kind, text) {
             App.Notice.show(kind, text)
         }
+        function onErrorDialogRequested(title, message) {
+            App.Modal.message({ title: title, content: message, buttons: [{ text: "确定", value: "ok", highlighted: true }] })
+        }
         function onTelemetryConsentRequiredChanged() {
             if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
                 window.requestTelemetryConsent()

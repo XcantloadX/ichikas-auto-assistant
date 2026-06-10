@@ -19,6 +19,7 @@ from .global_hotkey_controller import GlobalHotkeyController
 
 class AppController(QObject):
     notificationRaised = Signal(str, str)
+    errorDialogRequested = Signal(str, str)    # title, message
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
     windowStyleChanged = Signal()
@@ -44,11 +45,9 @@ class AppController(QObject):
         # 转发活跃 tab 的操作信号到 AppController
         self.tabManager.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.tabManager.operationFailed.connect(self.reportError)
+        self.tabManager.errorDialogRequested.connect(self.errorDialogRequested)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
-
-    def _on_scheduler_error(self, exc: Exception) -> None:
-        self.reportError(str(exc))
 
     def _get_version(self) -> str:
         return IaaService.app_version()
