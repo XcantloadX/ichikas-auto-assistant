@@ -50,9 +50,8 @@ Dialog {
                 onClicked: {
                     var name = newConfigName.text.trim()
                     if (name.length > 0) {
-                        root.navigation.requestGuardedAction("切换到新配置", function() {
-                            root.settingsCtrl.createProfile(name)
-                        })
+                        let doCreate = function () { root.tabManager.createProfile(name); }
+                        root.navigation.requestGuardedAction("切换到新配置", doCreate)
                         newConfigName.text = ""
                     }
                 }
@@ -153,7 +152,7 @@ Dialog {
                 Button {
                     text: "确定"
                     highlighted: true
-                    enabled: renameDialog.newName.trim().length > 0
+                    enabled: renameDialog.newName.trim().length > 0 && root.settingsCtrl !== null
                     onClicked: {
                         var oldName = renameDialog.targetConfigName
                         var newName = renameDialog.newName.trim()
@@ -201,6 +200,10 @@ Dialog {
                     highlighted: true
                     onClicked: {
                         var name = deleteConfirmDialog.targetConfigName
+                        if (root.settingsCtrl === null) {
+                            deleteConfirmDialog.close()
+                            return
+                        }
                         // 如果该配置的 tab 正在运行，拒绝删除
                         if (!root.tabManager.closeTabForConfig(name)) {
                             deleteConfirmDialog.close()

@@ -486,6 +486,20 @@ class TabManager(QObject):
     activeConfigName = Property(str, _get_active_config_name, notify=activeTabChanged)
     activeTabIndex = Property(int, _get_active_tab_index, notify=activeTabChanged)
 
+    @Slot(str, result=bool)
+    def createProfile(self, name: str) -> bool:
+        """无需活跃标签页即可创建新配置并打开对应 tab，供无配置时的初始创建使用。"""
+        try:
+            from iaa.config import manager
+            manager.create(name, exist='ok')
+            self.openTab(name)
+            self.activeProfilesChanged.emit()
+            self.operationSucceeded.emit(f'已创建配置: {name}')
+            return True
+        except Exception as exc:
+            self.operationFailed.emit(f'创建失败：{exc}')
+            return False
+
     @Slot(int, result=QObject)
     def settingsControllerAt(self, index: int) -> 'QObject | None':
         """返回指定 index 的 tab 的 SettingsController。"""
