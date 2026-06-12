@@ -21,6 +21,7 @@ Item {
 
     clip: true
 
+
     Row {
         id: interactiveRow
         anchors.left: parent.left
@@ -75,7 +76,7 @@ Item {
                         anchors.top: parent.top
                         height: parent.height + radius
                         radius: 6
-                        color: palette.window
+                        color: App.IaaTheme.tabCardBg
                     }
                 }
 
@@ -85,7 +86,7 @@ Item {
                     anchors.rightMargin: 2
                     visible: root.currentIndex !== 0 && overviewHover.hovered
                     radius: 5
-                    color: Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                    color: App.IaaTheme.hover
                 }
 
                 RowLayout {
@@ -144,7 +145,7 @@ Item {
                             anchors.top: parent.top
                             height: parent.height + radius
                             radius: 6
-                            color: palette.window
+                            color: App.IaaTheme.tabCardBg
                         }
                     }
 
@@ -155,7 +156,7 @@ Item {
                         anchors.rightMargin: 2
                         visible: !tabDelegate._isActive && tabHover.hovered
                         radius: 5
-                        color: Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                        color: App.IaaTheme.hover
                     }
 
                     RowLayout {
@@ -181,7 +182,7 @@ Item {
                             Layout.alignment: Qt.AlignVCenter
                             radius: 4
                             color: tabCloseMouseArea.containsMouse
-                                ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.15)
+                                ? App.IaaTheme.hoverStrong
                                 : "transparent"
 
                             Text {
@@ -189,7 +190,7 @@ Item {
                                 font.family: "FluentSystemIcons-Regular"
                                 font.pixelSize: 9
                                 text: "\uF369"   // ChromeClose
-                                color: palette.windowText
+                                color: App.IaaTheme.fg
                                 opacity: tabDelegate._isActive ? 0.9 : 0.6
                             }
 
@@ -220,7 +221,7 @@ Item {
                 anchors.leftMargin: 2; anchors.rightMargin: 2
                 radius: 5
                 color: addBtnHover.hovered
-                    ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                    ? App.IaaTheme.hover
                     : "transparent"
             }
 
@@ -229,7 +230,7 @@ Item {
                 font.family: "FluentSystemIcons-Regular"
                 font.pixelSize: 13
                 text: "\uF109"   // Add
-                color: palette.windowText
+                color: App.IaaTheme.fg
                 opacity: 0.7
             }
 
@@ -290,7 +291,7 @@ Item {
                 anchors.leftMargin: 2; anchors.rightMargin: 2
                 radius: 5
                 color: configMgrBtnHover.hovered
-                    ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                    ? App.IaaTheme.hover
                     : "transparent"
             }
 
@@ -304,7 +305,7 @@ Item {
                     font.family: "FluentSystemIcons-Regular"
                     font.pixelSize: 14
                     text: "\uF560"   // GlobalNavButton
-                    color: palette.windowText
+                    color: App.IaaTheme.fg
                     opacity: 0.7
                 }
 
@@ -312,7 +313,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "配置"
                     font.pixelSize: 13
-                    color: palette.windowText
+                    color: App.IaaTheme.fg
                     opacity: 0.7
                 }
             }
@@ -337,7 +338,7 @@ Item {
                 anchors.leftMargin: 2; anchors.rightMargin: 2
                 radius: 5
                 color: settingsBtnHover.hovered
-                    ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                    ? App.IaaTheme.hover
                     : "transparent"
             }
 
@@ -351,7 +352,7 @@ Item {
                     font.family: "FluentSystemIcons-Regular"
                     font.pixelSize: 14
                     text: "\uF6A9"   // Settings
-                    color: palette.windowText
+                    color: App.IaaTheme.fg
                     opacity: 0.7
                 }
 
@@ -359,7 +360,7 @@ Item {
                     anchors.verticalCenter: parent.verticalCenter
                     text: "偏好"
                     font.pixelSize: 13
-                    color: palette.windowText
+                    color: App.IaaTheme.fg
                     opacity: 0.7
                 }
             }

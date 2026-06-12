@@ -123,7 +123,7 @@ PageContainer {
                                 font.family: "FluentSystemIcons-Regular"
                                 font.pixelSize: 17
                                 text: seqBtn.isStopMode ? "\uF72A" : "\uF605"
-                                color: seqBtn.highlighted ? palette.highlightedText : palette.buttonText
+                                color: seqBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
                             }
 
                             Label {
@@ -134,7 +134,7 @@ PageContainer {
                                     return "停止所有"
                                 }
                                 font.pixelSize: 14
-                                color: seqBtn.highlighted ? palette.highlightedText : palette.buttonText
+                                color: seqBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
                             }
                         }
                     }
@@ -163,7 +163,7 @@ PageContainer {
                                 font.family: "FluentSystemIcons-Regular"
                                 font.pixelSize: 17
                                 text: parBtn.isStopMode ? "\uF72A" : "\uF100"
-                                color: parBtn.highlighted ? palette.highlightedText : palette.buttonText
+                                color: parBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
                             }
 
                             Label {
@@ -174,7 +174,7 @@ PageContainer {
                                     return "停止所有"
                                 }
                                 font.pixelSize: 14
-                                color: parBtn.highlighted ? palette.highlightedText : palette.buttonText
+                                color: parBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
                             }
                         }
                     }
@@ -213,9 +213,9 @@ PageContainer {
                             height: contentCol.implicitHeight + 32
                             radius: 8
                             color: cardHover.containsMouse
-                                ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.06)
-                                : Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.03)
-                            border.color: Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.1)
+                                ? (App.IaaTheme.isDark ? Qt.rgba(1,1,1,0.06) : Qt.rgba(0,0,0,0.06))
+                                : (App.IaaTheme.isDark ? Qt.rgba(1,1,1,0.03) : Qt.rgba(0,0,0,0.03))
+                            border.color: App.IaaTheme.isDark ? Qt.rgba(1,1,1,0.1) : Qt.rgba(0,0,0,0.1)
                             border.width: 1
 
                             HoverHandler { id: cardHover }
@@ -262,7 +262,7 @@ PageContainer {
                                         color: {
                                             if (card.runCtrl && card.runCtrl.running) return palette.highlight
                                             if (card.runCtrl && card.runCtrl.isQueued) return "#f59e0b"
-                                            return Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.3)
+                                            return App.IaaTheme.isDark ? Qt.rgba(1,1,1,0.3) : Qt.rgba(0,0,0,0.3)
                                         }
                                     }
 
@@ -366,7 +366,7 @@ PageContainer {
                         width: 22
                         height: 22
                         radius: 4
-                        color: Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+                        color: App.IaaTheme.hover
                         anchors.verticalCenter: parent.verticalCenter
 
                         Text {
@@ -374,7 +374,7 @@ PageContainer {
                             font.family: "FluentSystemIcons-Regular"
                             font.pixelSize: 13
                             text: ""
-                            color: palette.windowText
+                            color: App.IaaTheme.fg
                             opacity: 0.7
                         }
                     }

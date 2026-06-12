@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 
 // 独立页面的标题行：返回按钮 + 图标 + 标题文本 + 可拖动填充区。
 // 由 TitleBar 在 prefsMode 时切入，未来其他全屏页（关于等）也可复用。
@@ -31,9 +32,7 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 4
                 radius: 5
-                color: backHover.hovered
-                    ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
-                    : "transparent"
+                color: backHover.hovered ? App.IaaTheme.hover : "transparent"
             }
 
             Text {
@@ -41,7 +40,7 @@ Item {
                 font.family: "FluentSystemIcons-Regular"
                 font.pixelSize: 13
                 text: "\uF2AA"   // Back
-                color: palette.windowText
+                color: App.IaaTheme.fg
             }
 
             MouseArea {
@@ -84,7 +83,7 @@ Item {
 
                 Text {
                     text: root.title
-                    color: palette.windowText
+                    color: App.IaaTheme.fg
                     font.pixelSize: 12
                 }
             }

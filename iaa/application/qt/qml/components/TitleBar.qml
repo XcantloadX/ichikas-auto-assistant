@@ -73,12 +73,14 @@ Item {
         }
     }
 
-    // ── 背景（prefsMode 时与窗体同色，否则略深）───────────────────────
+    // ── 背景 ──────────────────────────────────────────────────────────
+    // 颜色由 IaaTheme 统一管理（避免散落的 palette / colorScheme 判断）。
+    // prefsMode + 非 solid：全透明，让 Mica/acrylic DWM 背景完整透出。
     Rectangle {
         anchors.fill: parent
-        color: root.prefsMode
-            ? palette.window
-            : Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.05)
+        color: (root.prefsMode && !App.IaaTheme.isSolid)
+            ? "transparent"
+            : App.IaaTheme.titleBg
     }
 
     ColumnLayout {

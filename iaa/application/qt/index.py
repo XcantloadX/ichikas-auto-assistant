@@ -59,20 +59,14 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
 
 
 def apply_theme_color(app: QApplication, color_value: str | None) -> None:
-    if not color_value:
-        # 清除自定义调色板覆盖，交由 Fluent/系统调色板驱动颜色。
-        app.setPalette(QPalette())
-        return
-
-    color = QColor(color_value)
-    if not color.isValid():
-        return
-
-    palette = QPalette(app.palette())
-    palette.setColor(QPalette.ColorRole.Highlight, color)
-    accent_role = getattr(QPalette.ColorRole, 'Accent', None)
-    if accent_role is not None:
-        palette.setColor(accent_role, color)
+    palette = QPalette()
+    if color_value:
+        color = QColor(color_value)
+        if color.isValid():
+            palette.setColor(QPalette.ColorRole.Highlight, color)
+            accent_role = getattr(QPalette.ColorRole, 'Accent', None)
+            if accent_role is not None:
+                palette.setColor(accent_role, color)
     app.setPalette(palette)
 
 
@@ -123,6 +117,10 @@ def main() -> None:
         _win_event_filter = WindowEventFilter(window, max_hover_bridge, tab_bar_bridge)
         app.installNativeEventFilter(_win_event_filter)
 
+    _startup_iface = config_manager.read_shared().interface
+    _startup_color_scheme = _startup_iface.color_scheme
+    _startup_theme_color = _startup_iface.theme_color
+
     def apply_interface_preferences() -> None:
         interface_conf = config_manager.read_shared().interface
         apply_color_scheme(app, interface_conf.color_scheme)
@@ -131,7 +129,16 @@ def main() -> None:
             apply_window_style(hwnd, interface_conf.window_style)
         controller.refreshWindowStyle()
 
-    controller.preferencesController.runtimeChanged.connect(apply_interface_preferences)
+    def apply_runtime_preferences() -> None:
+        interface_conf = config_manager.read_shared().interface
+        if sys.platform == 'win32':
+            apply_window_style(hwnd, interface_conf.window_style)
+        controller.refreshWindowStyle()
+        if (interface_conf.color_scheme != _startup_color_scheme
+                or interface_conf.theme_color != _startup_theme_color):
+            controller.notificationRaised.emit('info', '配色方案将在重启后生效。')
+
+    controller.preferencesController.runtimeChanged.connect(apply_runtime_preferences)
     apply_interface_preferences()
 
     exit_code = app.exec()

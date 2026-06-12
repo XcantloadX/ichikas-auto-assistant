@@ -1,3 +1,4 @@
+singleton IaaTheme IaaTheme.qml
 singleton Globals Globals.qml
 singleton ProfileStore ProfileStore.qml
 singleton Modal Modal.qml

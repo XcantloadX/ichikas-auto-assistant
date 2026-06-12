@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Window
+import ".." as App
 
 // Windows 窗口控件（最小化 / 最大化 / 关闭）。
 // hit-test 布局（从右到左，名 46px）：
@@ -33,14 +34,14 @@ Row {
     Rectangle {
         width: 46; height: root.height
         color: _minHover.containsMouse
-            ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+            ? App.IaaTheme.hover
             : "transparent"
         Text {
             anchors.centerIn: parent
             font.family: root._iconFont
             font.pixelSize: 16
             text: "\uEBD0"
-            color: palette.windowText
+            color: App.IaaTheme.fg
         }
         MouseArea {
             id: _minHover
@@ -57,14 +58,14 @@ Row {
             ? root._maxHoveredByOS
             : _maxHover.containsMouse
         color: _hovered
-            ? Qt.rgba(palette.windowText.r, palette.windowText.g, palette.windowText.b, 0.08)
+            ? App.IaaTheme.hover
             : "transparent"
         Text {
             anchors.centerIn: parent
             font.family: root._iconFont
             font.pixelSize: 16
             text: root.window.visibility === Window.Maximized ? "\uEB96" : "\uE7EB"
-            color: palette.windowText
+            color: App.IaaTheme.fg
         }
         MouseArea {
             id: _maxHover
@@ -87,7 +88,7 @@ Row {
             font.family: root._iconFont
             font.pixelSize: 16
             text: "\uF369"
-            color: _closeHover.containsMouse ? "white" : palette.windowText
+            color: _closeHover.containsMouse ? "white" : App.IaaTheme.fg
         }
         MouseArea {
             id: _closeHover
