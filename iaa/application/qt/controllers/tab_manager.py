@@ -235,11 +235,8 @@ class TabManager(QObject):
 
     @Slot(int)
     def requestCloseTab(self, index: int) -> None:
-        """请求关闭 tab。若 running 或是最后一个则阻断；否则 emit readyToCloseTab 由 QML 处理 dirty 检查。"""
+        """请求关闭 tab。若 running 则阻断；否则 emit readyToCloseTab 由 QML 处理 dirty 检查。"""
         if index < 0 or index >= len(self._tabs):
-            return
-        if len(self._tabs) <= 1:
-            self.closeTabBlocked.emit('至少需要保留一个 Tab')
             return
         entry = self._tabs[index]
         if entry.is_running:
@@ -251,8 +248,6 @@ class TabManager(QObject):
     def closeTab(self, index: int) -> None:
         """无条件关闭 tab（dirty 检查由 QML 层在调用前完成）。"""
         if index < 0 or index >= len(self._tabs):
-            return
-        if len(self._tabs) <= 1:
             return
         entry = self._tabs.pop(index)
         self._destroy_entry(entry)
