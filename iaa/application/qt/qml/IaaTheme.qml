@@ -22,10 +22,10 @@ QtObject {
         ? (isDark ? "#202020" : "#f3f3f3")
         : (isDark ? Qt.rgba(1,1,1,0.05) : Qt.rgba(0,0,0,0.05))
 
-    // 活跃 Tab 卡片背景
-    //   solid → 比 titleBg 浅一级，形成 Chrome 风格层次感
-    //   Mica / acrylic / blur → transparent，让 DWM 背景透出
+    // 活跃 Tab 卡片背景（比 titleBg 浅一级，形成 Chrome 风格层次感）
+    //   solid → 不透明色（与 titleBg 形成明显对比）
+    //   Mica / acrylic / blur → 半透明叠加层（比 titleBg 5% 更亮）
     readonly property color tabCardBg: isSolid
         ? (isDark ? "#2d2d2d" : "#ffffff")
-        : "transparent"
+        : (isDark ? Qt.rgba(1,1,1,0.10) : Qt.rgba(1,1,1,0.60))
 }
