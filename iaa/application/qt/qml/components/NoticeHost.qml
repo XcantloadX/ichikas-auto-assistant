@@ -93,10 +93,10 @@ Item {
             readonly property color iconColor: accentColor
             readonly property string icon: {
                 switch (toastItem.kind) {
-                    case "success": return "✓"
-                    case "warning": return "⚠"
-                    case "error":   return "✕"
-                    default:        return "ℹ"
+                    case "success": return "\uF298"   // ic_fluent_checkmark_circle_20_regular
+                    case "warning": return "\uF869"   // ic_fluent_warning_20_regular
+                    case "error":   return "\uF3F1"   // ic_fluent_error_circle_20_regular
+                    default:        return "\uF4A3"   // ic_fluent_info_20_regular
                 }
             }
 
@@ -138,8 +138,8 @@ Item {
                     Label {
                         text: toastItem.icon
                         color: toastItem.iconColor
-                        font.pixelSize: 14
-                        font.bold: true
+                        font.family: "FluentSystemIcons-Regular"
+                        font.pixelSize: 16
                         Layout.alignment: Qt.AlignVCenter
                     }
 
@@ -166,8 +166,9 @@ Item {
 
                         Label {
                             anchors.centerIn: parent
-                            text: "✕"
-                            font.pixelSize: 10
+                            text: "\uF369"   // ic_fluent_dismiss_20_regular
+                            font.family: "FluentSystemIcons-Regular"
+                            font.pixelSize: 12
                             color: closeMouse.containsMouse
                                 ? App.IaaTheme.fg
                                 : (App.IaaTheme.isDark ? Qt.rgba(1,1,1,0.45) : Qt.rgba(0,0,0,0.45))
