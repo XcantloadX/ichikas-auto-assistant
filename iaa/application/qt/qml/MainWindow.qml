@@ -271,7 +271,20 @@ ApplicationWindow {
             App.Notice.show(kind, text)
         }
         function onErrorDialogRequested(title, message) {
-            App.Modal.message({ title: title, content: message, buttons: [{ text: "确定", value: "ok", highlighted: true }] })
+            App.Modal.custom({
+                title: title,
+                content: message,
+                buttons: [
+                    {
+                        text: "复制",
+                        onClick: function() {
+                            App.Clipboard.copyText(message)
+                            App.Notice.show("success", "已复制到剪贴板")
+                        }
+                    },
+                    { text: "确定", highlighted: true, onClick: "close" }
+                ]
+            })
         }
         function onTelemetryConsentRequiredChanged() {
             if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
