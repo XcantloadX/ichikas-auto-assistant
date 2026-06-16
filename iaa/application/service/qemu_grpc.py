@@ -8,6 +8,17 @@ Android Emulator（AVD/QEMU）内置了一个 gRPC 服务（EmulatorController�
 使用前提：启动 AVD 时需传入 ``-grpc <port>`` 参数（默认 8554）。
 scheduler 在 lifecycle=avd + impl=qemu_grpc 时会自动注入该参数。
 
+鉴权说明
+--------
+Android Emulator 的 gRPC 服务默认拒绝所有未鉴权请求（见
+``<sdk>/emulator/lib/emulator_access.json`` 的 allowlist，未匹配的方法
+永远被拒绝），``streamScreenshot`` / ``sendTouch`` 均在此列。
+scheduler 因此还会注入 ``-grpc-use-token``，emulator 启动后会在
+discovery 文件（``pid_<qemu_pid>.ini``，位置见 ``_discovery_dirs``）中
+写出明文 ``grpc.token``。``create_qemu_grpc_device`` 通过 ``grpc.port``
+字段匹配到对应 discovery 文件并读取该 token，之后每次 gRPC 调用都附带
+``authorization: Bearer <token>`` metadata。
+
 Proto 说明
 ----------
 截图使用 ``streamScreenshot``（gRPC server-side streaming），
@@ -24,8 +35,11 @@ Proto 说明
 from __future__ import annotations
 
 import logging
+import os
+import sys
 import threading
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING, Literal, cast
 
 import cv2
@@ -51,8 +65,83 @@ _STREAM_DEADLINE = 300.0
 _STREAM_RECONNECT_DELAY = 2.0
 _METHOD_STREAM_SCREENSHOT = '/android.emulation.control.EmulatorController/streamScreenshot'
 _METHOD_TOUCH = '/android.emulation.control.EmulatorController/sendTouch'
+_TOKEN_LOOKUP_TIMEOUT = 10.0
 
 logger = logging.getLogger(__name__)
+
+
+# ── gRPC 鉴权 token 发现 ────────────────────────────────────────────────────
+
+
+def _discovery_dirs() -> list[Path]:
+    """返回各平台 emulator discovery 目录的候选路径（不保证存在）。
+
+    参考官方 aemu-grpc 库（android/android-grpc/python/aemu-grpc）的发现逻辑：
+    每个候选根目录下实际文件位于 ``<root>/avd/running/pid_<qemu_pid>.ini``。
+    """
+    roots: list[Path] = []
+    if sys.platform == 'win32':
+        local_app_data = os.environ.get('LOCALAPPDATA', '').strip()
+        if local_app_data:
+            roots.append(Path(local_app_data) / 'Temp')
+    elif sys.platform == 'darwin':
+        roots.append(Path.home() / 'Library' / 'Caches' / 'TemporaryItems')
+    else:
+        xdg_runtime = os.environ.get('XDG_RUNTIME_DIR', '').strip()
+        if xdg_runtime:
+            roots.append(Path(xdg_runtime))
+        else:
+            roots.append(Path('/run/user') / str(os.getuid()))  # type: ignore[attr-defined]
+    roots.append(Path.home() / '.android')  # 各平台均会兜底扫描这个目录
+    return [root / 'avd' / 'running' for root in roots]
+
+
+def _parse_discovery_ini(path: Path) -> dict[str, str]:
+    result: dict[str, str] = {}
+    try:
+        text = path.read_text(encoding='utf-8', errors='ignore')
+    except OSError:
+        return result
+    for line in text.splitlines():
+        line = line.strip()
+        if not line or '=' not in line:
+            continue
+        key, _, value = line.partition('=')
+        result[key.strip()] = value.strip()
+    return result
+
+
+def _find_grpc_token(grpc_port: int, timeout: float = _TOKEN_LOOKUP_TIMEOUT) -> str | None:
+    """在 discovery 目录中查找指定 ``grpc_port`` 对应实例的鉴权 token。
+
+    discovery 文件由 emulator 进程启动时写出，可能比 AVD 启动调用稍晚出现，
+    因此这里短暂轮询。
+
+    找到对应实例但未写出 ``grpc.token``（用户自行在 extra_args 中配置了
+    ``-grpc-use-jwt`` 而非 ``-grpc-use-token``）时返回 None——这种情况下
+    本模块本来就不支持 JWT 鉴权，调用方需自行决定如何处理。
+
+    若在超时时间内始终找不到对应 discovery 文件，则直接抛错而不是静默
+    返回 None：scheduler 已经强制注入 ``-grpc-use-token``，正常情况下
+    discovery 文件必然存在；找不到大概率是发现逻辑本身的问题（路径不对/
+    权限/emulator 版本不兼容），继续无鉴权调用只会让后续陷入与本问题
+    相同的 UNAUTHENTICATED 重连死循环，不如尽早暴露。
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        for d in _discovery_dirs():
+            if not d.is_dir():
+                continue
+            for ini in d.glob('pid_*.ini'):
+                data = _parse_discovery_ini(ini)
+                if data.get('grpc.port') == str(grpc_port):
+                    return data.get('grpc.token')
+        if time.monotonic() >= deadline:
+            raise RuntimeError(
+                f'QemuGrpcImpl: 未找到 grpc.port={grpc_port} 对应的 emulator '
+                f'discovery 文件（已等待 {timeout:.0f}s）。请确认 AVD 已正常启动。'
+            )
+        time.sleep(0.5)
 
 
 # ── Protobuf 描述符 ───────────────────────────────────────────────────────────
@@ -190,11 +279,12 @@ class QemuGrpcImpl(
     max_contacts: int = 10
     _FIRST_FRAME_TIMEOUT = 120.0
 
-    def __init__(self, grpc_port: int, adb_serial: str) -> None:
+    def __init__(self, grpc_port: int, adb_serial: str, token: str | None = None) -> None:
         from adbutils import adb
 
         self._port = grpc_port
         self._adb = adb.device(adb_serial)
+        self._token = token
         self._channel = None
         self._fn_touch = None
         self._stop_event = threading.Event()
@@ -235,6 +325,14 @@ class QemuGrpcImpl(
         self._fn_touch = None
         self._consumer_thread = None
 
+    # ── 鉴权 ──────────────────────────────────────────────────────────────
+
+    @property
+    def _auth_metadata(self) -> list[tuple[str, str]] | None:
+        if not self._token:
+            return None
+        return [('authorization', f'Bearer {self._token}')]
+
     # ── 后台消费者 ─────────────────────────────────────────────────────────
 
     def _open_stream(self):
@@ -243,7 +341,8 @@ class QemuGrpcImpl(
         call = self._channel.unary_stream(_METHOD_STREAM_SCREENSHOT)
         return call(
             _varint_field(1, 1), # ImageFormat{format=RGBA8888(1)}
-            timeout=_STREAM_DEADLINE
+            timeout=_STREAM_DEADLINE,
+            metadata=self._auth_metadata,
         )
 
     def _consumer_loop(self) -> None:
@@ -357,19 +456,31 @@ class QemuGrpcImpl(
         fn = self._fn_touch
         if fn is None:
             raise RuntimeError('gRPC not started')
-        fn(_encode_touch_event([(x, y, contact_id, True)]), timeout=_GRPC_CALL_TIMEOUT)
+        fn(
+            _encode_touch_event([(x, y, contact_id, True)]),
+            timeout=_GRPC_CALL_TIMEOUT,
+            metadata=self._auth_metadata,
+        )
 
     def touch_move(self, x: int, y: int, contact_id: int = 0) -> None:
         fn = self._fn_touch
         if fn is None:
             raise RuntimeError('gRPC not started')
-        fn(_encode_touch_event([(x, y, contact_id, True)]), timeout=_GRPC_CALL_TIMEOUT)
+        fn(
+            _encode_touch_event([(x, y, contact_id, True)]),
+            timeout=_GRPC_CALL_TIMEOUT,
+            metadata=self._auth_metadata,
+        )
 
     def touch_up(self, x: int, y: int, contact_id: int = 0) -> None:
         fn = self._fn_touch
         if fn is None:
             raise RuntimeError('gRPC not started')
-        fn(_encode_touch_event([(x, y, contact_id, False)]), timeout=_GRPC_CALL_TIMEOUT)
+        fn(
+            _encode_touch_event([(x, y, contact_id, False)]),
+            timeout=_GRPC_CALL_TIMEOUT,
+            metadata=self._auth_metadata,
+        )
 
     # click / swipe 满足 Touchable 结构协议（Device.setup() 检测用）
     # ── MultiTouchable ────────────────────────────────────────────────────────
@@ -456,7 +567,8 @@ def create_qemu_grpc_device(avd_instance: 'AvdInstance') -> 'Device':
     except (ValueError, IndexError):
         port = _DEFAULT_GRPC_PORT
 
-    impl = QemuGrpcImpl(grpc_port=port, adb_serial=avd_instance.adb_serial)
+    token = _find_grpc_token(port)
+    impl = QemuGrpcImpl(grpc_port=port, adb_serial=avd_instance.adb_serial, token=token)
     device = AndroidDevice()
     device.setup(components=[impl])
     return device

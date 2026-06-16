@@ -617,6 +617,14 @@ class SchedulerService:
             # qemu_grpc 需要 AVD 以 -grpc <port> 启动；若用户未在 extra_args 中指定则注入默认端口。
             if impl == 'qemu_grpc' and '-grpc' not in avd_instance._extra_args:
                 avd_instance._extra_args += ['-grpc', '8554']
+            # emulator 的 gRPC 服务默认拒绝所有未鉴权请求（streamScreenshot/sendTouch
+            # 均在 allowlist 的 protected 列表中），需要显式启用 -grpc-use-token，
+            # 配合 qemu_grpc.py 从 discovery 文件读取明文 token 并附加到每次调用。
+            # 若用户已自行配置了 -grpc-use-token/-grpc-use-jwt 则尊重其选择。
+            if impl == 'qemu_grpc' and not any(
+                a.startswith('-grpc-use-') for a in avd_instance._extra_args
+            ):
+                avd_instance._extra_args += ['-grpc-use-token']
 
             if _maybe_start(avd_instance):
                 self._stop_lifecycle = avd_instance.stop
