@@ -17,7 +17,8 @@
       "displayName": "自动演出直到耗尽 AP",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "exclude"
       }
     },
     "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
@@ -36,7 +37,8 @@
       "displayName": "确定自动演出设置",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "exclude"
       }
     }
   }

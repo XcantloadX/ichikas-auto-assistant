@@ -18,7 +18,8 @@
       "displayName": "演出界面 右上角 LIFE 文本",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

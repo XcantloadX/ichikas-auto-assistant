@@ -18,7 +18,8 @@
       "displayName": "SCORERANK",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "exclude"
       }
     }
   }
