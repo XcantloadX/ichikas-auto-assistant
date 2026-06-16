@@ -301,8 +301,13 @@ class QemuGrpcImpl(
 
         self._channel = grpc.insecure_channel(
             f'localhost:{self._port}',
-            # 消费者线程在 next() 上阻塞，channel 关闭后 next() 立即退出
-            options=[('grpc.use_local_subchannel_pool', 1)],
+            options=[
+                # 消费者线程在 next() 上阻塞，channel 关闭后 next() 立即退出
+                ('grpc.use_local_subchannel_pool', 1),
+                # 裸 RGBA8888 帧体积常超过 gRPC 默认 4MB 接收上限，
+                # 不限制大小，否则会持续收到 RESOURCE_EXHAUSTED 而永远拿不到帧
+                ('grpc.max_receive_message_length', -1),
+            ],
         )
         self._fn_touch = self._channel.unary_unary(_METHOD_TOUCH)
         self._stop_event.clear()

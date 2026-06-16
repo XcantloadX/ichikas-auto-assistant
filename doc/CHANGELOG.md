@@ -3,6 +3,9 @@
 新增：
 * 运行任务时的错误弹窗现在提供复制按钮，可以一键复制错误信息
 
+修复：
+* 修复了在使用 QEMU gRPC 控制方法时发生的 RESOURCE_EXHAUSTED 与 RESOURCE_EXHAUSTED 错误
+
 ## v26.06b1
 新增：
 * 现在 iaa 的窗口是无边框窗口了
