@@ -1,10 +1,44 @@
 from __future__ import annotations
 
-from iaa.application.framework.dsl import Checkbox, FormPage, FormSpec, Group, Hotkey, Select, Text, bind
+from iaa.application.framework.dsl import Checkbox, FormPage, FormSpec, Group, Hotkey, Select, Text, bind, custom_ref
 from typing import Callable, cast
 from .context import PreferencesContext
+from iaa.config.shared import CustomPushData, DiscordPushData
 
 ctx, ref = bind(PreferencesContext)
+
+
+def _push_is_custom(c: PreferencesContext) -> bool:
+    return isinstance(c.shared.notify.push.data, CustomPushData)
+
+def _push_is_discord(c: PreferencesContext) -> bool:
+    return isinstance(c.shared.notify.push.data, DiscordPushData)
+
+
+def _get_push_type(c: PreferencesContext) -> str:
+    return c.shared.notify.push.data.type
+
+def _set_push_type(c: PreferencesContext, value: str) -> None:
+    # 切换类型时整个替换 data 实例（而不是改字段），type 与数据始终保持一致
+    c.shared.notify.push.data = DiscordPushData() if value == 'discord' else CustomPushData()
+
+def _get_push_command(c: PreferencesContext) -> str:
+    data = c.shared.notify.push.data
+    return data.command if isinstance(data, CustomPushData) else ''
+
+def _set_push_command(c: PreferencesContext, value: str) -> None:
+    data = c.shared.notify.push.data
+    if isinstance(data, CustomPushData):
+        data.command = value
+
+def _get_push_webhook_url(c: PreferencesContext) -> str:
+    data = c.shared.notify.push.data
+    return data.webhook_url if isinstance(data, DiscordPushData) else ''
+
+def _set_push_webhook_url(c: PreferencesContext, value: str) -> None:
+    data = c.shared.notify.push.data
+    if isinstance(data, DiscordPushData):
+        data.webhook_url = value
 
 
 def build_preferences_form() -> tuple[FormSpec[PreferencesContext], list[Callable[[PreferencesContext], None]]]:
@@ -70,12 +104,30 @@ def build_preferences_form() -> tuple[FormSpec[PreferencesContext], list[Callabl
                 label='推送通知',
                 ref=ref(ctx.shared.notify.push.enabled),
             )
+            Select(
+                key='notify.push.type',
+                label='推送类型',
+                ref=custom_ref(_get_push_type, _set_push_type),
+                options=[
+                    {'value': 'custom', 'label': '自定义命令'},
+                    {'value': 'discord', 'label': 'Discord Webhook'},
+                ],
+                visible=lambda ctx: ctx.shared.notify.push.enabled,
+            )
             Text(
                 key='notify.push.data.command',
                 label='自定义命令',
-                ref=ref(ctx.shared.notify.push.data.command),
+                ref=custom_ref(_get_push_command, _set_push_command),
                 placeholder='任务完成后执行的命令',
-                visible=lambda ctx: ctx.shared.notify.push.enabled,
+                visible=lambda ctx: ctx.shared.notify.push.enabled and _push_is_custom(ctx),
+            )
+            Text(
+                key='notify.push.data.webhook_url',
+                label='Webhook URL',
+                help_text='<a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">如何获取 Discord Webhook URL？</a>',
+                ref=custom_ref(_get_push_webhook_url, _set_push_webhook_url),
+                placeholder='https://discord.com/api/webhooks/...',
+                visible=lambda ctx: ctx.shared.notify.push.enabled and _push_is_discord(ctx),
             )
 
         with Group('快捷键'):

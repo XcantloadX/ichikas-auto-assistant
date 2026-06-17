@@ -104,6 +104,8 @@ Control {
             color: root.palette.toolTipText
             lineHeight: 1.2
             font.pixelSize: 13
+            onLinkActivated: function(link) { Qt.openUrlExternally(link) }
+            onLinkHovered: function(link) { popupMouse.cursorShape = link.length > 0 ? Qt.PointingHandCursor : Qt.ArrowCursor }
         }
 
         MouseArea {

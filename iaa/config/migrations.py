@@ -82,6 +82,60 @@ class ProfileV1ToV2(MigrationStep):
                 logger.exception(f"Error migrating config {file.name}")
 
 
+class SharedV1ToV2(MigrationStep):
+    """
+    迁移 _shared.json 中 notify.push 的配置结构。
+
+    旧结构：push.type（顶层字段）+ push.data（与 type 分离，可能不一致）
+    新结构：push.data.type（判别式联合，type 与数据合为一体，消除不一致的可能）
+    """
+
+    def check_needed(self, ctx: MigrationContext) -> bool:
+        shared_file = ctx.config_dir / '_shared.json'
+        if not shared_file.exists():
+            return False
+        try:
+            data = json.loads(shared_file.read_text(encoding='utf-8'))
+            return data.get('version', 1) < 2
+        except Exception:
+            return False
+
+    def apply(self, ctx: MigrationContext) -> None:
+        shared_file = ctx.config_dir / '_shared.json'
+        try:
+            data = json.loads(shared_file.read_text(encoding='utf-8'))
+            if data.get('version', 1) >= 2:
+                return
+
+            notify = data.get('notify', {}) or {}
+            push = notify.get('push', {}) or {}
+            push_type = push.pop('type', 'custom')
+            old_data = push.get('data') or {}
+
+            if push_type == 'discord':
+                new_data = {'type': 'discord', 'webhook_url': old_data.get('webhook_url', '')}
+            else:
+                new_data = {'type': 'custom', 'command': old_data.get('command', '')}
+
+            push['data'] = new_data
+            notify['push'] = push
+            data['notify'] = notify
+            data['version'] = 2
+
+            shared_file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+            ctx.messages.append(MigrationMessage(
+                text="推送通知配置结构升级",
+                old_version="1",
+                new_version="2",
+            ))
+        except Exception as e:
+            ctx.messages.append(MigrationMessage(
+                text=f"迁移共享配置时出错: {e}",
+                level='warning'
+            ))
+            logger.exception("Error migrating shared config")
+
+
 class ProfileV2ToV3(MigrationStep):
     """
     将设备/连接/控制配置从 game.* 迁移到新的顶层 device.* 结构。

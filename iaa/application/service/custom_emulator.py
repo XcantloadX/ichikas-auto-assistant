@@ -157,7 +157,7 @@ class CustomEmulatorInstance(CommonAdbCreateDeviceMixin, Instance[AdbHostConfig]
                             continue
                         app = d.app_current()
                         logger.debug('Waiting for launcher... (current=%s)', app)
-                        if app and 'launcher' in app.package:
+                        if app and 'launcher' in f'{app.package}{app.activity or ""}'.lower():
                             logger.info('Emulator %s(%s) now is available.', self.name, serial)
                             state = 6
                     case 6:

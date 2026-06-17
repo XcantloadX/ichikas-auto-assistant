@@ -1,6 +1,8 @@
-from typing import Literal
+from typing import Annotated, Literal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+VERSION = 2
 
 
 class TelemetryConfig(BaseModel):
@@ -18,16 +20,21 @@ class InterfaceConfig(BaseModel):
 
 
 class CustomPushData(BaseModel):
+    type: Literal['custom'] = 'custom'
     command: str = ''
 
 
-PushData = CustomPushData
+class DiscordPushData(BaseModel):
+    type: Literal['discord'] = 'discord'
+    webhook_url: str = ''
+
+
+PushData = Annotated[CustomPushData | DiscordPushData, Field(discriminator='type')]
 
 
 class PushConfig(BaseModel):
     enabled: bool = False
-    type: Literal['custom'] = 'custom'
-    data: CustomPushData = CustomPushData()
+    data: PushData = Field(default_factory=CustomPushData)
 
 
 class NotifyConfig(BaseModel):
@@ -41,7 +48,7 @@ class HotkeysConfig(BaseModel):
 
 
 class SharedConfig(BaseModel):
-    version: int = 1
+    version: int = VERSION
     profiles: ProfilesConfig = ProfilesConfig()
     telemetry: TelemetryConfig = TelemetryConfig()
     interface: InterfaceConfig = InterfaceConfig()

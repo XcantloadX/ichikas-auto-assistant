@@ -90,7 +90,7 @@ class SettingsController(QObject):
         self._iaa.config.shared = self._state.context.shared
 
     def _reload(self) -> None:
-        self._mumu_instances[:] = [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+        self._mumu_instances[:] = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
         self._state.reset(self._make_context())
         self._recompute_runtime()
         self.runtimeChanged.emit()
@@ -186,7 +186,7 @@ class SettingsController(QObject):
                 {'value': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
                 for instance in instances
             ]
-            ids = {item['id'] for item in items}
+            ids = {item['value'] for item in items}
             selected_id = ''
             if preferred_id and preferred_id in ids:
                 selected_id = preferred_id

@@ -7,7 +7,7 @@ from pydantic_core import ValidationError
 from .base import IaaConfig, GameConfig, LiveConfig, CONFIG_VERSION_CODE
 from .shared import SharedConfig
 from .migration import MigrationChain, add_deferred_messages
-from .migrations import ProfileV1ToV2, ProfileV2ToV3
+from .migrations import ProfileV1ToV2, ProfileV2ToV3, SharedV1ToV2
 
 
 class ConfigValidationError(Exception):
@@ -38,7 +38,9 @@ config_path: str = './conf'
 
 # --- 迁移定义 ---
 
-shared_migration_chain = MigrationChain(steps=[])
+shared_migration_chain = MigrationChain(steps=[
+    SharedV1ToV2(),
+])
 profile_migration_chain = MigrationChain(steps=[
     ProfileV1ToV2(),
     ProfileV2ToV3(),

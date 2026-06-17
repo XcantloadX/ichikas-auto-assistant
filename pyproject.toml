@@ -17,6 +17,7 @@ dependencies = [
     "PySide6",
     "pydantic",
     "pynput",
+    "requests",
     "sentry-sdk",
     "thefuzz>=0.22.1",
     "plyer>=2.1.0",

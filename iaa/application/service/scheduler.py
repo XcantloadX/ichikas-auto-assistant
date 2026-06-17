@@ -317,7 +317,7 @@ class SchedulerService:
 
                 # 发送通知
                 if completion_status != 'no_tasks':
-                    from iaa.notify import send_notification
+                    from iaa.notify import NotificationType, send_notification
                     from iaa.config.manager import read_shared
                     shared_config = read_shared()
                     message_map = {
@@ -326,7 +326,18 @@ class SchedulerService:
                         'failed': '任务执行失败',
                         'crashed': '调度器发生错误',
                     }
-                    send_notification('iaa', message_map.get(completion_status, '任务结束'), shared_config.notify)
+                    type_map: dict[str, NotificationType] = {
+                        'success': 'success',
+                        'interrupted': 'info',
+                        'failed': 'error',
+                        'crashed': 'error',
+                    }
+                    send_notification(
+                        'iaa',
+                        message_map.get(completion_status, '任务结束'),
+                        shared_config.notify,
+                        type=type_map.get(completion_status, 'info'),
+                    )
 
         if run_in_thread:
             self._thread = threading.Thread(target=_runner, name=thread_name, daemon=True)
