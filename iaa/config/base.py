@@ -4,6 +4,7 @@ from .schemas import (
     DeviceConfig,
     DeveloperConfig,
     GameConfig,
+    SchedulerConfig,
     TasksConfig,
 )
 
@@ -16,4 +17,5 @@ class IaaConfig(BaseModel):
     device: DeviceConfig = DeviceConfig()
     game: GameConfig
     developer: DeveloperConfig = DeveloperConfig()
+    scheduler: SchedulerConfig = SchedulerConfig()
     tasks: TasksConfig = TasksConfig()

@@ -283,7 +283,8 @@ class SchedulerService:
                                 self.on_error(e)
                             except Exception:
                                 logger.exception("Error handler raised an exception")
-                        break
+                        if not self.iaa.config.conf.scheduler.continue_on_error:
+                            break
                     finally:
                         reset_task_reporter(token)
                         self.current_task_id = None

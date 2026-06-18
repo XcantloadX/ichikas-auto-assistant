@@ -757,6 +757,13 @@ def build_settings_form(
                 height=300,
             )
 
+        with Group('调度设置'):
+            Checkbox(
+                key='scheduler.continueOnError',
+                label='错误时继续执行后续任务',
+                ref=ref(ctx.conf.scheduler.continue_on_error),
+            )
+
         with Group('开发者设置（仅供开发使用！）'):
             Checkbox(
                 key='developer.dumpSekaiHomeEnabled',

@@ -181,3 +181,7 @@ class DeveloperConfig(BaseModel):
     dump_sekai_home_enabled: bool = False
     sekai_dump_post_process: bool = False
     screen_recording_enabled: bool = False
+
+
+class SchedulerConfig(BaseModel):
+    continue_on_error: bool = False
