@@ -7,6 +7,7 @@ from iaa.definitions.enums import (
     ChallengeLiveAward,
     ShopItem,
 )
+from iaa.definitions.consts import ServerName
 
 
 # ── 设备生命周期 ──────────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@ class DeviceConfig(BaseModel):
 # ── 游戏配置（仅游戏层面） ────────────────────────────────────────────────────
 
 class GameConfig(BaseModel):
-    server: Literal['jp', 'tw', 'cn'] = 'jp'
+    server: ServerName = 'jp'
     link_account: LinkAccountOptions = 'no'
     """
     是否引继账号。

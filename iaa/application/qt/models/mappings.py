@@ -7,6 +7,7 @@ from iaa.definitions.enums import (
     GameCharacter,
     LinkAccountOptions,
 )
+from iaa.definitions.consts import ServerName
 
 LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'mumu_v5': 'MuMu 12 (v5)',
@@ -21,12 +22,13 @@ CONNECTION_TYPE_DISPLAY_MAP: dict[str, str] = {
     'tcp': 'TCP / 无线',
 }
 
-SERVER_DISPLAY_MAP: dict[Literal['jp', 'tw', 'cn'], str] = {
+SERVER_DISPLAY_MAP: dict[ServerName, str] = {
     'jp': '日服',
     'tw': '台服',
     'cn': '国服',
+    'en': '国际服',
 }
-SERVER_VALUE_MAP: dict[str, Literal['jp', 'tw', 'cn']] = {value: key for key, value in SERVER_DISPLAY_MAP.items()}
+SERVER_VALUE_MAP: dict[str, ServerName] = {value: key for key, value in SERVER_DISPLAY_MAP.items()}
 
 LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
     'no': '不引继账号',
