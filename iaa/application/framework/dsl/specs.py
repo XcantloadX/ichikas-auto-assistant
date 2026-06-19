@@ -8,6 +8,58 @@ import uuid
 from .refs import Ref
 
 TCtx = TypeVar('TCtx')
+TResult = TypeVar('TResult')
+
+
+@dataclass
+class ActionExecState(Generic[TResult]):
+    """Action 运行时执行状态。框架内部使用，调用方通过 ActionSpec 属性访问。"""
+
+    loading: bool = False
+    error: str = ''
+    result: TResult | None = None
+
+
+class ActionSpec(Generic[TCtx, TResult]):
+    """Action 的定义与执行状态持有者。
+
+    ``fn`` 是普通同步函数，框架负责在线程池中调度执行。
+    ``ActionSpec`` 对象同时作为执行状态的类型化访问句柄。
+
+    典型用法（在 form 文件模块级定义）::
+
+        def _fetch_instances(ctx: FormContext) -> list[dict]:
+            ...
+
+        my_refresh = ActionSpec(fn=_fetch_instances, name='refresh')
+
+    字段声明时引用::
+
+        Select(
+            ...,
+            loading=lambda ctx: my_refresh.loading,
+            options=lambda ctx: my_refresh.result or [],
+            actions=[my_refresh],
+        )
+    """
+
+    def __init__(self, fn: Callable[[TCtx], TResult], name: str = 'action', threaded: bool = True) -> None:
+        self.fn = fn
+        self.name = name
+        self.threaded = threaded
+        self._state: ActionExecState[TResult] = ActionExecState()
+
+    @property
+    def loading(self) -> bool:
+        return self._state.loading
+
+    @property
+    def result(self) -> TResult | None:
+        return self._state.result
+
+    @property
+    def error(self) -> str:
+        return self._state.error
 
 
 @dataclass(slots=True)
@@ -26,9 +78,11 @@ class FieldSpec(Generic[TCtx]):
         visible: 可见性规则。可以是布尔值，也可以是接收 state 的 predicate。
         enabled: 可用性规则。可以是布尔值，也可以是接收 state 的 predicate。
         options: 下拉或可选项来源。可以是静态列表，也可以是接收 state 的 provider。
-        props: 控件私有属性，交给 QML 渲染层原样使用。
+        props: 控件私有属性，交给 QML 渲染层原样使用。值可以是 Callable[[TCtx], Any]，
+               RuntimeEngine 负责在 build_runtime 时求值。
         validators: 字段校验函数列表，按顺序执行，返回首个错误信息。
         on_change: 字段值变更后的同步钩子，用于执行联动归一化逻辑。
+        actions: 字段支持的 Action 列表（例如刷新），框架在线程池中调度执行。
     """
 
     key: str
@@ -42,10 +96,12 @@ class FieldSpec(Generic[TCtx]):
     enabled: Callable[[TCtx], bool] | bool = True
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None
 
-    props: dict[str, Any] = field(default_factory=dict)
+    # props 值支持 Callable[[TCtx], Any]，RuntimeEngine 负责求值
+    props: dict[str, Callable[[TCtx], Any] | Any] = field(default_factory=dict)
     validators: list[Callable[[Any, TCtx], str | None]] = field(default_factory=list)
     on_change: Callable[[TCtx, Any], None] | None = None
-    actions: dict[str, Callable[[TCtx], None]] = field(default_factory=dict)
+    # 替换原来的 dict[str, Callable[[TCtx], None]]
+    actions: list[ActionSpec] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -267,7 +323,7 @@ def Select(
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    refresh: Callable[[TCtx], None] | None = None,
+    actions: list[ActionSpec] | None = None,
     help_text: str | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
@@ -276,11 +332,10 @@ def Select(
     """声明一个普通选择字段。
 
     这个类型适合下拉框一类的单选 UI，QML 渲染层会根据 options 决定可选项。
-    ``refresh`` 表示该字段的选项可由用户主动刷新；设置后渲染层会显示刷新按钮。
+    ``actions`` 包含可用 ActionSpec 对象列表；若非空，渲染层会显示刷新按钮。
+    loading 状态通过 props={'loading': lambda ctx: some_action.loading} 传入。
     """
-    field_actions: dict[str, Callable[[TCtx], None]] = {}
-    if refresh is not None:
-        field_actions['refresh'] = refresh
+    merged_props = {} if props is None else dict(props)
     return register_field(
         FieldSpec(
             key=key,
@@ -292,10 +347,10 @@ def Select(
             visible=visible,
             enabled=enabled,
             options=options,
-            props={} if props is None else dict(props),
+            props=merged_props,
             validators=[] if validators is None else validators,
             on_change=on_change,
-            actions=field_actions,
+            actions=actions or [],
         )
     )
 
@@ -434,6 +489,42 @@ def Checkbox(
     )
 
 
+def InstancePicker(
+    key: str,
+    label: str | None,
+    *,
+    ref: Ref[TCtx, Any],
+    default: Any = None,
+    visible: Callable[[TCtx], bool] | bool = True,
+    enabled: Callable[[TCtx], bool] | bool = True,
+    options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
+    loading: Callable[[TCtx], bool] | bool = False,
+    props: dict[str, Callable[[TCtx], Any] | Any] | None = None,
+    actions: list[ActionSpec] | None = None,
+    help_text: str | None = None,
+    on_change: Callable[[TCtx, Any], None] | None = None,
+) -> FieldSpec[TCtx]:
+    """声明一个实例选择器字段，带刷新按钮。适用于模拟器实例列表等需要动态刷新选项的场景。"""
+    merged_props = {} if props is None else dict(props)
+    merged_props['loading'] = loading
+    return register_field(
+        FieldSpec(
+            key=key,
+            kind='instance_picker',
+            label=label,
+            ref=ref,
+            help_text=help_text,
+            default=default,
+            visible=visible,
+            enabled=enabled,
+            options=options,
+            props=merged_props,
+            actions=actions or [],
+            on_change=on_change,
+        )
+    )
+
+
 def Custom(
     key: str,
     label: str | None,
@@ -451,7 +542,7 @@ def Custom(
 ) -> FieldSpec[TCtx]:
     """声明一个自定义字段类型。
 
-    当内置字段不足以描述 UI 时使用，例如 ``mumu_picker`` 或 ``transfer_list``。
+    当内置字段不足以描述 UI 时使用，例如 ``transfer_list``。
     ``kind`` 由 QML 渲染层根据注册表选择对应控件。
     """
     return register_field(

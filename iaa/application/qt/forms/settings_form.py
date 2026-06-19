@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, cast
+from typing import Any, Callable, Literal, TypedDict, cast
 import platform
 
 from iaa.application.framework.dsl import (
+    ActionSpec,
     Checkbox,
     FieldSpec,
     FormPage,
@@ -11,6 +12,7 @@ from iaa.application.framework.dsl import (
     Group,
     Hook,
     IconItemPicker,
+    InstancePicker,
     NoticeBlock,
     Segmented,
     Select,
@@ -51,6 +53,11 @@ from iaa.definitions.enums import (
 )
 
 ctx, ref = bind(FormContext)
+
+
+class PickerOption(TypedDict):
+    value: str
+    label: str
 
 
 # ── 辅助判断 ──────────────────────────────────────────────────────────────────
@@ -390,6 +397,65 @@ def _normalize_device(ctx: FormContext) -> None:
         ctx.conf.device.resolution_method = 'keep'
 
 
+# ── MuMu 实例刷新 ActionSpec ──────────────────────────────────────────────────
+
+def _fetch_mumu_instances(ctx: FormContext) -> list[PickerOption]:
+    """从 MuMu 模拟器宿主查询实例列表，返回下拉选项。
+
+    若当前 lifecycle 不是 MuMuDevice，直接返回默认占位项。
+    """
+    from ..models import DEFAULT_MUMU_INSTANCE_LABEL
+
+    lc = ctx.conf.device.lifecycle
+    if not isinstance(lc, MuMuDevice):
+        return [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+
+    emulator = lc.type
+    if emulator not in {'mumu', 'mumu_v5'}:
+        return [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+
+    from kotonebot.client.host import Mumu12Host, Mumu12V5Host
+
+    host_cls = Mumu12Host if emulator == 'mumu' else Mumu12V5Host
+    instances = host_cls.list()
+    items: list[PickerOption] = [
+        PickerOption(value='', label=DEFAULT_MUMU_INSTANCE_LABEL)
+    ] + [
+        PickerOption(value=str(inst.id), label=f'[{inst.id}] {inst.name}')
+        for inst in instances
+    ]
+    return items
+
+
+# 模块级 ActionSpec —— 持有刷新函数和执行状态
+_mumu_refresh: ActionSpec[FormContext, list[PickerOption]] = ActionSpec(
+    fn=_fetch_mumu_instances, name='refresh'
+)
+
+
+def _fetch_avd_instances(ctx: FormContext) -> list[PickerOption]:
+    """从 AVD 查询实例列表，返回下拉选项。"""
+    DEFAULT_LABEL = '（默认第一个）'
+    lc = ctx.conf.device.lifecycle
+    sdk_path = lc.sdk_path if isinstance(lc, AvdDevice) else None
+    from iaa.application.service.avd import AvdHost
+    host = AvdHost(sdk_path=sdk_path)
+    instances = host.list()
+    return [PickerOption(value='', label=DEFAULT_LABEL)] + [
+        PickerOption(
+            value=inst._avd_name,
+            label=f'{inst._avd_name}{"  [运行中]" if inst.adb_serial else ""}',
+        )
+        for inst in instances
+    ]
+
+
+# 模块级 ActionSpec —— 持有刷新函数和执行状态
+_avd_refresh: ActionSpec[FormContext, list[PickerOption]] = ActionSpec(
+    fn=_fetch_avd_instances, name='refresh'
+)
+
+
 # ── Form ──────────────────────────────────────────────────────────────────────
 
 def ResolutionSelect(
@@ -407,9 +473,9 @@ def ResolutionSelect(
 
     ``on_reset`` 是点击「恢复分辨率」时的回调，由 controller 注入。
     """
-    field_actions: dict[str, Callable[[FormContext], None]] = {}
+    action_list: list[ActionSpec] = []
     if on_reset is not None:
-        field_actions['reset'] = on_reset
+        action_list.append(ActionSpec(fn=on_reset, name='reset', threaded=False))
     return register_field(
         FieldSpec(
             key=key,
@@ -419,23 +485,16 @@ def ResolutionSelect(
             options=options,
             visible=visible,
             enabled=enabled,
-            actions=field_actions,
+            actions=action_list,
             **kwargs,
         )
     )
 
 
 def build_settings_form(
-    mumu_instances: list[dict[str, Any]],
-    avd_instances: list[dict[str, Any]] | None = None,
     *,
-    on_mumu_refresh: Callable[[FormContext], None] | None = None,
-    on_avd_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
-    if avd_instances is None:
-        avd_instances = []
-
     lifecycle_options = [
         {'value': k, 'label': v} for k, v in LIFECYCLE_TYPE_DISPLAY_MAP.items()
         if not (k in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
@@ -484,13 +543,14 @@ def build_settings_form(
                 options=lifecycle_options,
             )
             # MuMu 专属
-            Select(
+            InstancePicker(
                 key='device.mumuInstanceId',
                 label='多开实例',
                 ref=custom_ref(_get_mumu_instance_id, _set_mumu_instance_id),
                 visible=_lifecycle_is(MuMuDevice),
-                options=mumu_instances,
-                refresh=on_mumu_refresh,
+                options=lambda ctx: _mumu_refresh.result or [],
+                loading=lambda ctx: _mumu_refresh.loading,
+                actions=[_mumu_refresh],
             )
             # AVD 专属
             Text(
@@ -518,13 +578,14 @@ def build_settings_form(
                 placeholder='可选，例如 -gpu swiftshader_indirect -no-audio',
                 help_text='追加到 emulator 命令行末尾的参数，以空格分隔。',
             )
-            Select(
+            InstancePicker(
                 key='device.avdName',
                 label='AVD 实例',
                 ref=custom_ref(_get_avd_name, _set_avd_name),
                 visible=_lifecycle_is(AvdDevice),
-                options=avd_instances,
-                refresh=on_avd_refresh,
+                options=lambda ctx: _avd_refresh.result or [],
+                loading=lambda ctx: _avd_refresh.loading,
+                actions=[_avd_refresh],
             )
             Checkbox(
                 key='device.checkAndStart',

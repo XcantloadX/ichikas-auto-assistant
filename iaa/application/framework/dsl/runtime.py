@@ -57,6 +57,11 @@ class RuntimeEngine(Generic[TCtx]):
                 error = msg
                 break
 
+        # props 响应式求值：值为 callable 时以 state 为参数求值
+        evaluated_props: dict[str, Any] = {}
+        for k, v in field.props.items():
+            evaluated_props[k] = v(state) if callable(v) else v
+
         return {
             'id': field.key,
             'kind': field.kind,
@@ -67,8 +72,6 @@ class RuntimeEngine(Generic[TCtx]):
             'enabled': bool(enabled),
             'options': options,
             'error': error,
-            'loading': False,
-            'props': field.props,
-            'refreshable': 'refresh' in field.actions,
-            'actions': list(field.actions.keys()),
+            'props': evaluated_props,
+            'actions': [a.name for a in field.actions],
         }

@@ -54,6 +54,7 @@ Item {
             case "hotkey": return hotkeyFieldComponent
             case "notice_block": return noticeBlockComponent
             case "icon_item_picker": return iconItemPickerComponent
+            case "instance_picker": return instancePickerComponent
             default: return unsupportedComponent
             }
         }
@@ -141,6 +142,14 @@ Item {
     Component {
         id: iconItemPickerComponent
         DslIconItemPicker {
+            field: root.field
+            formController: root.formController
+        }
+    }
+
+    Component {
+        id: instancePickerComponent
+        DslInstancePicker {
             field: root.field
             formController: root.formController
         }

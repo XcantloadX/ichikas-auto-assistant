@@ -4,13 +4,13 @@ import json
 import logging
 from typing import TYPE_CHECKING, Any
 
-from PySide6.QtCore import QObject, Signal, Slot
+from PySide6.QtCore import QObject, QRunnable, QThreadPool, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
+from iaa.application.framework.dsl.specs import ActionSpec
 from ..forms.context import FormContext
 from ..forms.settings_form import build_settings_form
-from ..models import DEFAULT_MUMU_INSTANCE_LABEL
 
 if TYPE_CHECKING:
     from iaa.application.service.iaa_service import IaaService
@@ -40,17 +40,13 @@ class SettingsController(QObject):
     dirtyChanged = Signal(bool)
     fieldUpdated = Signal(str, str)  # (field_id, field_json)
     groupUpdated = Signal(int, bool)  # (group_index, visible)
+    # 内部信号，用于从工作线程安全回到主线程
+    _actionDone = Signal(object, object)  # (action, error_or_None)
 
     def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
-        self._mumu_instances: list[dict[str, Any]] = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
-        self._avd_instances: list[dict[str, Any]] = [{'value': '', 'label': '（默认第一个）'}]
         self._spec, self._form_hooks = build_settings_form(
-            self._mumu_instances,
-            self._avd_instances,
-            on_mumu_refresh=self._action_mumu_refresh,
-            on_avd_refresh=self._action_avd_refresh,
             on_reset_resolution=self._action_reset_resolution,
         )
         self._engine = RuntimeEngine(self._spec)
@@ -61,8 +57,9 @@ class SettingsController(QObject):
             stable_dump_fn=self._stable_dump_snapshot,
         )
         self._runtime: dict[str, Any] = {}
-        self._reset_avd_instances()
         self._recompute_runtime()
+        # 连接内部信号到主线程槽
+        self._actionDone.connect(self._on_action_done)
 
     @staticmethod
     def _snapshot_context(context: FormContext) -> dict[str, Any]:
@@ -96,9 +93,7 @@ class SettingsController(QObject):
         self._iaa.config.shared = self._state.context.shared
 
     def _reload(self) -> None:
-        self._mumu_instances[:] = [{'id': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
         self._state.reset(self._make_context())
-        self._reset_avd_instances()
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
@@ -126,104 +121,43 @@ class SettingsController(QObject):
 
         self.dirtyChanged.emit(self._state.dirty)
 
-    def _get_mumu_instance_id(self) -> str:
-        from iaa.config.schemas import MuMuDevice
-        lc = self._state.context.conf.device.lifecycle
-        if isinstance(lc, MuMuDevice):
-            return lc.instance_id or ''
-        return ''
+    def _dispatch_action(self, action: ActionSpec) -> None:
+        """在线程池中执行 action，完成后通过内部信号回到主线程更新 runtime。"""
+        ctx = self._state.context
+        action._state.loading = True
+        action._state.error = ''
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
 
-    def _set_mumu_instance_id(self, selected_id: str) -> None:
-        from iaa.config.schemas import MuMuDevice
-        lc = self._state.context.conf.device.lifecycle
-        if isinstance(lc, MuMuDevice):
-            lc.instance_id = selected_id or None
+        signal = self._actionDone
 
-    def _refresh_mumu_runtime(self, preferred_id: str = '', show_notice: bool = True) -> None:
-        from iaa.config.schemas import MuMuDevice
-        lc = self._state.context.conf.device.lifecycle
-        emulator = lc.type if isinstance(lc, MuMuDevice) else ''
-        payload = json.loads(self._build_mumu_instances_payload(emulator, preferred_id))
-        self._mumu_instances[:] = payload.get(
-            'items', [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
-        )
+        class _Runner(QRunnable):
+            def run(self) -> None:
+                error: Exception | None = None
+                try:
+                    result = action.fn(ctx)
+                    action._state.result = result
+                    action._state.error = ''
+                except Exception as exc:  # noqa: BLE001
+                    error = exc
+                    action._state.error = str(exc)
+                finally:
+                    action._state.loading = False
+                # 通过信号安全地回到 Qt 主线程
+                signal.emit(action, error)
 
-        selected_id = str(payload.get('selectedId', '') or '')
-        if selected_id != self._get_mumu_instance_id():
-            self._set_mumu_instance_id(selected_id)
+        QThreadPool.globalInstance().start(_Runner())
 
+    @Slot(object, object)
+    def _on_action_done(self, action: ActionSpec, error: Exception | None) -> None:
+        """工作线程完成后，在主线程中更新 runtime 并通知 UI。"""
         self._sync_context_back()
         self._recompute_runtime()
         self.runtimeChanged.emit()
-        self.dirtyChanged.emit(self._state.dirty)
-
-        if show_notice:
-            if payload.get('ok'):
-                self.operationSucceeded.emit(str(payload.get('statusText', '已刷新 MuMu 实例')))
-            else:
-                self.operationFailed.emit(str(payload.get('statusText', '刷新 MuMu 实例失败')))
-
-    def _build_mumu_instances_payload(self, emulator: str, preferred_id: str = '') -> str:
-        if emulator not in {'mumu', 'mumu_v5'}:
-            return json.dumps(
-                {
-                    'ok': True,
-                    'items': [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
-                    'selectedId': '',
-                    'statusText': '当前模拟器无需选择实例',
-                },
-                ensure_ascii=False,
-            )
-        try:
-            from kotonebot.client.host import Mumu12Host, Mumu12V5Host
-
-            host_cls = Mumu12Host if emulator == 'mumu' else Mumu12V5Host
-            instances = host_cls.list()
-            saved_id = ''
-            conf = self._state.context.conf
-            lc = conf.device.lifecycle
-            from iaa.config.schemas import MuMuDevice
-            if (
-                isinstance(lc, MuMuDevice)
-                and lc.type == emulator
-                and lc.instance_id
-            ):
-                saved_id = lc.instance_id
-            items = [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}] + [
-                {'value': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
-                for instance in instances
-            ]
-            ids = {item['value'] for item in items}
-            selected_id = ''
-            if preferred_id and preferred_id in ids:
-                selected_id = preferred_id
-            elif saved_id and saved_id in ids:
-                selected_id = saved_id
-            status = f'已载入 {len(instances)} 个实例'
-            if not instances:
-                status = '未找到可用实例'
-            elif selected_id:
-                status += f'，当前选择 ID: {selected_id}'
-            return json.dumps(
-                {
-                    'ok': True,
-                    'items': items,
-                    'selectedId': selected_id,
-                    'statusText': status,
-                },
-                ensure_ascii=False,
-            )
-        except Exception as exc:  # noqa: BLE001
-            logger.exception('Failed to list MuMu instances')
-            return json.dumps(
-                {
-                    'ok': False,
-                    'items': [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}],
-                    'selectedId': '',
-                    'statusText': f'刷新失败：{exc}',
-                },
-                ensure_ascii=False,
-            )
+        if error is not None:
+            self.operationFailed.emit(f'刷新失败：{error}')
+        else:
+            self.operationSucceeded.emit('已刷新')
 
     @Slot(result=str)
     def getRuntime(self) -> str:
@@ -264,106 +198,23 @@ class SettingsController(QObject):
             self.operationFailed.emit(f'设置字段失败：{exc}')
 
     @Slot(str, str, str)
-    def triggerAction(self, field_id: str, action: str, payload_json: str = '{}') -> None:
+    def triggerAction(self, field_id: str, action_name: str, payload_json: str = '{}') -> None:
         _ = payload_json
         field = self._engine.find_field(field_id)
         if field is None:
             self.operationFailed.emit(f'未知字段: {field_id}')
             return
-        callback = field.actions.get(action)
-        if callback is None:
-            self.operationFailed.emit(f'不支持的动作: {field_id}.{action}')
+        action = next((a for a in field.actions if a.name == action_name), None)
+        if action is None:
+            self.operationFailed.emit(f'不支持的动作: {field_id}.{action_name}')
             return
-        try:
-            callback(self._state.context)
-        except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(str(exc))
-
-    def _action_mumu_refresh(self, _ctx: object) -> None:
-        preferred_id = self._get_mumu_instance_id()
-        self._refresh_mumu_runtime(preferred_id=preferred_id, show_notice=True)
-
-    # ── AVD ───────────────────────────────────────────────────────────────────
-
-    def _get_avd_name(self) -> str:
-        from iaa.config.schemas import AvdDevice
-        lc = self._state.context.conf.device.lifecycle
-        if isinstance(lc, AvdDevice):
-            return lc.avd_name or ''
-        return ''
-
-    def _set_avd_name(self, name: str) -> None:
-        from iaa.config.schemas import AvdDevice
-        lc = self._state.context.conf.device.lifecycle
-        if isinstance(lc, AvdDevice):
-            lc.avd_name = name or None
-
-    def _reset_avd_instances(self) -> None:
-        """重置 AVD 实例列表为未刷新状态。
-
-        若配置中已有保存的 avd_name，将其作为占位项保留，
-        确保 Select 在用户刷新前也能正确显示已保存的值。
-        """
-        DEFAULT = {'value': '', 'label': '（默认第一个）'}
-        saved_name = self._get_avd_name()
-        if saved_name:
-            self._avd_instances[:] = [DEFAULT, {'value': saved_name, 'label': saved_name}]
+        if not action.threaded:
+            try:
+                action.fn(self._state.context)
+            except Exception as exc:  # noqa: BLE001
+                self.operationFailed.emit(str(exc))
         else:
-            self._avd_instances[:] = [DEFAULT]
-
-    def _get_avd_sdk_path(self) -> str | None:
-        from iaa.config.schemas import AvdDevice
-        lc = self._state.context.conf.device.lifecycle
-        if isinstance(lc, AvdDevice):
-            return lc.sdk_path or None
-        return None
-
-    def _refresh_avd_runtime(self, preferred_name: str = '', show_notice: bool = True) -> None:
-        DEFAULT_LABEL = '（默认第一个）'
-        ok = True
-        status = '已刷新 AVD 列表'
-        try:
-            from iaa.application.service.avd import AvdHost
-            host = AvdHost(sdk_path=self._get_avd_sdk_path())
-            instances = host.list()
-            saved_name = self._get_avd_name()
-            items: list[dict[str, Any]] = [{'value': '', 'label': DEFAULT_LABEL}] + [
-                {
-                    'value': inst._avd_name,
-                    'label': f'{inst._avd_name}{"  [运行中]" if inst.adb_serial else ""}',
-                }
-                for inst in instances
-            ]
-            ids = {item['value'] for item in items}
-            selected = ''
-            if preferred_name and preferred_name in ids:
-                selected = preferred_name
-            elif saved_name and saved_name in ids:
-                selected = saved_name
-            status = '未找到 AVD，请先通过 Android Studio 创建 AVD' if not instances else f'已载入 {len(instances)} 个 AVD'
-            if selected:
-                status += f'，当前选择：{selected}'
-        except Exception as exc:  # noqa: BLE001
-            logger.exception('Failed to list AVD instances')
-            items = [{'value': '', 'label': DEFAULT_LABEL}]
-            selected = ''
-            ok = False
-            status = f'刷新失败：{exc}'
-
-        self._avd_instances[:] = items
-        if selected != self._get_avd_name():
-            self._set_avd_name(selected)
-
-        self._sync_context_back()
-        self._recompute_runtime()
-        self.runtimeChanged.emit()
-        self.dirtyChanged.emit(self._state.dirty)
-
-        if show_notice:
-            (self.operationSucceeded if ok else self.operationFailed).emit(status)
-
-    def _action_avd_refresh(self, _ctx: object) -> None:
-        self._refresh_avd_runtime(preferred_name=self._get_avd_name(), show_notice=True)
+            self._dispatch_action(action)
 
     def _action_reset_resolution(self, _ctx: object) -> None:
         self.resetResolution()

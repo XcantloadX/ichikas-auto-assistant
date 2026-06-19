@@ -39,14 +39,19 @@ ColumnLayout {
                 enabled: !!root.field.enabled
                 model: root.field.options || []
                 textRole: "label"
-                valueRole: "id"
+                valueRole: "value"
                 currentIndex: root.indexOfId(root.field.options || [], root.field.value)
                 onActivated: root.formController.setValue(root.field.id, currentValue)
             }
+            BusyIndicator {
+                visible: !!(root.field.props && root.field.props.loading)
+                running: !!(root.field.props && root.field.props.loading)
+                Layout.preferredWidth: 20
+                Layout.preferredHeight: 20
+            }
             Button {
-                visible: !!(root.field.props && root.field.props.refreshable)
-                text: root.field.loading ? "获取中..." : "刷新"
-                enabled: !!root.field.enabled
+                text: (root.field.props && root.field.props.loading) ? "获取中..." : "刷新"
+                enabled: !!root.field.enabled && !(root.field.props && root.field.props.loading)
                 onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
             }
         }
