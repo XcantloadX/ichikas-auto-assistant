@@ -18,7 +18,8 @@
       "displayName": "自动编队 活动成员",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "ab73f9bb-7999-4282-bf33-b45f8e049b38": {
@@ -38,7 +39,8 @@
       "displayName": "自动编队 推荐",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "b57ec406-7be0-4220-b7c2-59d8570a8450": {
@@ -58,7 +60,8 @@
       "displayName": "自动编队 确定按钮",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "9dd57d2f-2810-4caf-878e-eb7d70438211": {
@@ -77,7 +80,8 @@
       },
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     }
   }

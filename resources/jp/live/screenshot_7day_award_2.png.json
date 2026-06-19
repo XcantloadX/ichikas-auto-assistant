@@ -17,7 +17,8 @@
       "displayName": "この報酬を受け取ります。よろしいですか？",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "efb7440d-3b59-4973-9da2-1c1dfffae2c1": {
@@ -37,7 +38,8 @@
       "description": "挑战演出领取奖励弹窗",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     }
   }

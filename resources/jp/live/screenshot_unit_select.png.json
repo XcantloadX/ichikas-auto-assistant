@@ -17,7 +17,8 @@
       "displayName": "开始演出 按钮",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "c6abf269-d131-45f6-983c-5f0d911a987a": {
@@ -36,7 +37,8 @@
       "displayName": "自动演出 设置按钮",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
@@ -55,7 +57,8 @@
       "displayName": "自动演出 ON",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "c4eb4872-6d30-4804-8594-9b98a9add2da": {
@@ -75,7 +78,8 @@
       "displayName": "おすすめ編成",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "a7d4c0eb-9a52-4df2-b3d3-2e79da8c6216": {
@@ -95,7 +99,8 @@
       "displayName": "AP 条右侧设置按钮",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

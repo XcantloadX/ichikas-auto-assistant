@@ -23,7 +23,8 @@
       },
       "variant_policy": {
         "tw": "inherit",
-        "cn": "exclude"
+        "cn": "exclude",
+        "en": "inherit"
       }
     }
   }

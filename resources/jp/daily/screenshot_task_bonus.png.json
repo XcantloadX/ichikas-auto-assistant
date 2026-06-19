@@ -17,7 +17,8 @@
       "displayName": "一括受け取り",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "exclude"
       }
     },
     "5f4b378f-0b97-4721-aad5-a4f2bb6f4a21": {
@@ -51,7 +52,8 @@
       "displayName": "左上角返回按钮",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

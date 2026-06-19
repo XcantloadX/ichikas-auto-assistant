@@ -17,7 +17,8 @@
       "displayName": "建议 Wifi 环境下载文本",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     },
     "73b4fbe5-7a86-49d0-90e6-4792e1cda085": {
@@ -36,7 +37,8 @@
       "displayName": "ダウンロード",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     }
   }

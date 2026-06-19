@@ -18,7 +18,8 @@
       "displayName": "升级时的演出能量文本",
       "variant_policy": {
         "tw": "require",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

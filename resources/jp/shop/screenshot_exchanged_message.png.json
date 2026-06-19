@@ -18,7 +18,8 @@
       "displayName": "交換が完了しました",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     }
   }

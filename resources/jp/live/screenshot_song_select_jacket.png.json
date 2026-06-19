@@ -17,7 +17,8 @@
       "displayName": "切换到列表视图",
       "variant_policy": {
         "tw": "require",
-        "cn": "require"
+        "cn": "require",
+        "en": "inherit"
       }
     }
   }

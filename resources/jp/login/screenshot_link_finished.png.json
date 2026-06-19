@@ -17,7 +17,8 @@
       "displayName": "プレイヤーデータの連携が完了しました。",
       "variant_policy": {
         "tw": "exclude",
-        "cn": "exclude"
+        "cn": "exclude",
+        "en": "inherit"
       }
     }
   }
