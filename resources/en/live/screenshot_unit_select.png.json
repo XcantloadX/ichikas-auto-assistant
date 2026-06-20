@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "definitions": {
+    "95eff75b-a3e0-4693-a7b2-463f8092d5ce": {
+      "type": "prefab",
+      "name": "Live.ButtonStartLive",
+      "variant": "en",
+      "props": {}
+    },
+    "c6abf269-d131-45f6-983c-5f0d911a987a": {
+      "type": "prefab",
+      "name": "Live.ButtonAutoLiveSettings",
+      "variant": "en",
+      "props": {}
+    },
+    "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
+      "type": "prefab",
+      "name": "Live.SwitchAutoLiveOn",
+      "variant": "en",
+      "props": {}
+    },
+    "c4eb4872-6d30-4804-8594-9b98a9add2da": {
+      "type": "prefab",
+      "name": "Live.ButtonSetRecommendUnit",
+      "variant": "en",
+      "props": {}
+    },
+    "a7d4c0eb-9a52-4df2-b3d3-2e79da8c6216": {
+      "type": "prefab",
+      "name": "Live.ButtonApMultiplierSettings",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}

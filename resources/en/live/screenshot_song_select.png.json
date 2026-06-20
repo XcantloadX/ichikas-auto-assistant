@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "definitions": {
+    "74ae5b01-869d-423a-bd67-b4100bd92bdb": {
+      "type": "prefab",
+      "name": "Live.ButtonDecide",
+      "variant": "en",
+      "props": {}
+    },
+    "aa917d01-d177-494a-b945-5379122eeab0": {
+      "type": "prefab",
+      "name": "Live.ButtonToJacketView",
+      "variant": "en",
+      "props": {}
+    },
+    "d95e210c-1094-4873-9551-0f25dc586a7d": {
+      "type": "prefab",
+      "name": "Live.SongSelect.IconSearch",
+      "variant": "en",
+      "props": {}
+    },
+    "73c78678-59c9-4d6b-80ff-6c887f7cbaa1": {
+      "type": "prefab",
+      "name": "Live.SongSelect.TextVo",
+      "variant": "en",
+      "props": {}
+    },
+    "7c27897f-70c5-4d24-a0af-95be8d45b5a9": {
+      "type": "prefab",
+      "name": "Live.SongSelect.ButtonRandom",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}

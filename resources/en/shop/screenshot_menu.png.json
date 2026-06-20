@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "e2b9c2b9-6c3e-4b9b-8bbf-7a5f5e5b4b1e": {
+      "type": "prefab",
+      "name": "Shop.ButtonExchange",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}

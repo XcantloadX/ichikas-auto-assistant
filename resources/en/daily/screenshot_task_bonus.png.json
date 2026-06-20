@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "definitions": {
+    "fd1624c2-3231-4ec6-9d04-72752c8df040": {
+      "type": "prefab",
+      "name": "Hud.ButtonClaimAll",
+      "variant": "en",
+      "props": {}
+    },
+    "99f3571f-47ca-477b-97c8-ae1ba787ea13": {
+      "type": "prefab",
+      "name": "Hud.ButtonGoBack",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}

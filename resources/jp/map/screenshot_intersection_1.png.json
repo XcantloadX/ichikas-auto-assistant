@@ -18,7 +18,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "require",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "8e5c2cb1-f34e-4f66-a2d1-42b6ebe66f50": {
@@ -38,7 +38,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "1429f33a-8793-401e-b937-39974e1501f1": {
@@ -59,7 +59,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "require",
-        "en": "exclude"
+        "en": "require"
       }
     },
     "5df90065-4f75-4f85-a9d2-2d9f8c418394": {
@@ -93,7 +93,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "e153dec8-abf8-42c5-9a08-b8f7e16c7792": {
@@ -113,7 +113,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "e6e9b497-82e4-4721-8b52-cfa6c80f8cea": {
@@ -134,7 +134,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "require",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "f4235297-c9c1-496e-a4a6-c17e6addb5c7": {
@@ -155,7 +155,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "require",
-        "en": "inherit"
+        "en": "require"
       }
     }
   }

@@ -18,7 +18,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "e5633df7-0abd-4ef6-84b6-3ebfe1df3fbf": {
@@ -66,7 +66,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "e01b6a1d-be60-4323-8152-94b56bf9488a": {
@@ -86,7 +86,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "db8c1d40-9e04-43b9-affe-70c9d0ffd89d": {
@@ -106,7 +106,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "e0fbf1c6-bc8c-4da5-b0db-03b5ba35e393": {
@@ -126,7 +126,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "76c00bd4-0a0e-454e-be4f-76aea6d737d2": {

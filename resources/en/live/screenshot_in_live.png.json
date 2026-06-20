@@ -1,0 +1,11 @@
+{
+  "version": 3,
+  "definitions": {
+    "fd8739a7-bd80-45cd-a0f5-aff6380c4753": {
+      "type": "prefab",
+      "name": "Live.TextLife",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}

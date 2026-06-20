@@ -1,0 +1,29 @@
+{
+  "version": 3,
+  "definitions": {
+    "2af3a46b-41fe-4cca-a7ed-5c4eeec0c4bd": {
+      "type": "prefab",
+      "name": "Story.TextEventStory",
+      "variant": "en",
+      "props": {}
+    },
+    "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
+      "type": "prefab",
+      "name": "Story.TextEpisode8",
+      "variant": "en",
+      "props": {}
+    },
+    "0f04012a-b093-48d3-8e5e-73eb785927fe": {
+      "type": "prefab",
+      "name": "Story.ButtonBookmark",
+      "variant": "en",
+      "props": {}
+    },
+    "7438ba2d-1971-482c-bd87-62e0ecdc7c53": {
+      "type": "prefab",
+      "name": "Story.ButtonGoBack",
+      "variant": "en",
+      "props": {}
+    }
+  }
+}
