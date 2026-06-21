@@ -11,7 +11,15 @@
       "type": "prefab",
       "name": "Story.TextEpisode8",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 688.6931203086249,
+          "y1": 181.5252414000724,
+          "x2": 806.4867295673719,
+          "y2": 210.5252414000724
+        }
+      }
     },
     "0f04012a-b093-48d3-8e5e-73eb785927fe": {
       "type": "prefab",

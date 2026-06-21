@@ -5,7 +5,15 @@
       "type": "prefab",
       "name": "Cm.ButtonPlayCm",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 225.3669233157313,
+          "y1": 315,
+          "x2": 372.8881821004097,
+          "y2": 340
+        }
+      }
     }
   }
 }

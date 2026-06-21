@@ -5,7 +5,15 @@
       "type": "prefab",
       "name": "Cm.TextAwardClaimed",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 495.00516289834434,
+          "y1": 343.9373004765969,
+          "x2": 784.9927007299272,
+          "y2": 377.9373004765969
+        }
+      }
     }
   }
 }

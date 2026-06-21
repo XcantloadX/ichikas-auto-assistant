@@ -5,7 +5,15 @@
       "type": "prefab",
       "name": "Shop.ButtonExchange",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 894.2714325019826,
+          "y1": 86.67340477721237,
+          "x2": 967.2714325019826,
+          "y2": 152.69779019275714
+        }
+      }
     }
   }
 }
