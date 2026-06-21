@@ -5,13 +5,8 @@
       "type": "prefab",
       "name": "Hud.ButtonClaimAll",
       "variant": "en",
-      "props": {}
-    },
-    "99f3571f-47ca-477b-97c8-ae1ba787ea13": {
-      "type": "prefab",
-      "name": "Hud.ButtonGoBack",
-      "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Claim All"
     }
   }
 }

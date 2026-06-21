@@ -5,7 +5,8 @@
       "type": "prefab",
       "name": "Story.ButtonSkipStory",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Skip"
     }
   }
 }

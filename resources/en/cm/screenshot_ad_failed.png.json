@@ -5,13 +5,8 @@
       "type": "prefab",
       "name": "Cm.TextCmFailed",
       "variant": "en",
-      "props": {}
-    },
-    "55658b39-fc12-401f-b3b2-9d2f8cfad57f": {
-      "type": "prefab",
-      "name": "Cm.ButtonClose",
-      "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": ""
     }
   }
 }

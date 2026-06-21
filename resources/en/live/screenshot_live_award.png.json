@@ -5,13 +5,15 @@
       "type": "prefab",
       "name": "Live.TextScoreRankReward",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Score Rank"
     },
     "45d56f50-66ae-4298-bc64-a840dc786286": {
       "type": "prefab",
       "name": "Live.ButtonCloseScoreRankReward",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Close"
     }
   }
 }

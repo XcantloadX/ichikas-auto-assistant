@@ -5,31 +5,38 @@
       "type": "prefab",
       "name": "Live.ButtonDecide",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 972.2476995633214,
+          "y1": 571,
+          "x2": 1048.3282873742141,
+          "y2": 601
+        }
+      },
+      "displayName": "Select"
     },
     "aa917d01-d177-494a-b945-5379122eeab0": {
       "type": "prefab",
       "name": "Live.ButtonToJacketView",
       "variant": "en",
-      "props": {}
-    },
-    "d95e210c-1094-4873-9551-0f25dc586a7d": {
-      "type": "prefab",
-      "name": "Live.SongSelect.IconSearch",
-      "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Cover Art"
     },
     "73c78678-59c9-4d6b-80ff-6c887f7cbaa1": {
       "type": "prefab",
       "name": "Live.SongSelect.TextVo",
       "variant": "en",
-      "props": {}
-    },
-    "7c27897f-70c5-4d24-a0af-95be8d45b5a9": {
-      "type": "prefab",
-      "name": "Live.SongSelect.ButtonRandom",
-      "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 818.82457324987,
+          "y1": 399.8126339580862,
+          "x2": 886.0116841097785,
+          "y2": 422.39854612297535
+        }
+      },
+      "displayName": "Vocals"
     }
   }
 }

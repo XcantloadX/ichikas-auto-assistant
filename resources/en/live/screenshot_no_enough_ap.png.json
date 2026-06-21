@@ -5,7 +5,16 @@
       "type": "prefab",
       "name": "Live.TextAtLeastOneAp",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 349.2954589853744,
+          "y1": 348,
+          "x2": 613.3253857912647,
+          "y2": 373
+        }
+      },
+      "displayName": "At least 1 Bonus Energy"
     }
   }
 }

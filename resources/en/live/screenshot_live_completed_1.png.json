@@ -5,7 +5,8 @@
       "type": "prefab",
       "name": "Live.ButtonLiveCompletedNext",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Next"
     }
   }
 }

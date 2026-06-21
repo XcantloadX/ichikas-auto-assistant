@@ -5,13 +5,23 @@
       "type": "prefab",
       "name": "Live.ApMultiplierDialog.TextTip",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 361.0170810810811,
+          "y1": 150.67984313287232,
+          "x2": 930.9803243243244,
+          "y2": 201.64714371046628
+        }
+      },
+      "displayName": "You may set this to a maximum of 10 during events."
     },
     "b6d937ba-7b8a-4908-9f2a-5e3c42c799c6": {
       "type": "prefab",
       "name": "Live.ApMultiplierDialog.ButtonConfirm",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Select"
     }
   }
 }

@@ -5,7 +5,16 @@
       "type": "prefab",
       "name": "Cm.TextApRecovered",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 489.9958918918919,
+          "y1": 346,
+          "x2": 783.0036756756757,
+          "y2": 375
+        }
+      },
+      "displayName": "5 Bonus Energy restored."
     }
   }
 }

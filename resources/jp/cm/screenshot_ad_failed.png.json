@@ -38,7 +38,7 @@
       "variant_policy": {
         "tw": "inherit",
         "cn": "exclude",
-        "en": "require"
+        "en": "inherit"
       }
     }
   }

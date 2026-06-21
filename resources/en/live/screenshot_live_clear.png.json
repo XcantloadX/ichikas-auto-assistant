@@ -5,7 +5,8 @@
       "type": "prefab",
       "name": "Live.TextScoreRank",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "SCORE RANK"
     }
   }
 }

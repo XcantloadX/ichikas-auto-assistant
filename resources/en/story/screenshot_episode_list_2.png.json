@@ -5,7 +5,16 @@
       "type": "prefab",
       "name": "Story.TextEventStory",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 743.9952432432431,
+          "y1": 88,
+          "x2": 870.2066594594593,
+          "y2": 120
+        }
+      },
+      "displayName": "Event Story Tab"
     },
     "246abd8d-887f-4f38-9be3-3bb8bcbcfa3a": {
       "type": "prefab",
@@ -14,24 +23,13 @@
       "props": {
         "template": {
           "kind": "image",
-          "x1": 688.6931203086249,
-          "y1": 181.5252414000724,
-          "x2": 806.4867295673719,
-          "y2": 210.5252414000724
+          "x1": 687,
+          "y1": 181.99633336835444,
+          "x2": 812.9368231010285,
+          "y2": 208.4505814008083
         }
-      }
-    },
-    "0f04012a-b093-48d3-8e5e-73eb785927fe": {
-      "type": "prefab",
-      "name": "Story.ButtonBookmark",
-      "variant": "en",
-      "props": {}
-    },
-    "7438ba2d-1971-482c-bd87-62e0ecdc7c53": {
-      "type": "prefab",
-      "name": "Story.ButtonGoBack",
-      "variant": "en",
-      "props": {}
+      },
+      "displayName": "Episode 8 Text"
     }
   }
 }

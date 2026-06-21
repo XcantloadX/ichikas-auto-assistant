@@ -4,41 +4,75 @@
     "1a5a0d64-9980-4b76-a9cf-f961ebe4f43d": {
       "type": "prefab",
       "name": "Shop.TextLv1",
+      "displayName": "Lv. 1 text on the card item",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 288.2908940494822,
+          "y1": 286.3356143279038,
+          "x2": 328.5087583435016,
+          "y2": 303.5543288586776
+        }
+      }
     },
     "c9269644-b1e1-430e-b4a6-8696175d3c90": {
       "type": "prefab",
       "name": "Shop.Icon5000EventCoin",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 294.2388569032944,
+          "y1": 373.18080630663144,
+          "x2": 375.3551711523497,
+          "y2": 398.6948043800295
+        }
+      }
     },
     "af2fa909-5a1c-4253-b4e6-e223f82773c2": {
       "type": "prefab",
       "name": "Shop.Icon15000EventCoin",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 546.4251777938666,
+          "y1": 373.7543658170628,
+          "x2": 642.6607816402703,
+          "y2": 400.5390328649332
+        }
+      }
     },
     "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
       "type": "prefab",
       "name": "Shop.TextEndTimeUntil",
+      "displayName": "Until",
       "variant": "en",
       "props": {
         "template": {
           "kind": "image",
-          "x1": 515,
-          "y1": 659,
-          "x2": 578,
-          "y2": 683
-        },
-        "fixed": false
+          "x1": 511.73279127538717,
+          "y1": 654.2816339754414,
+          "x2": 578.8778986518355,
+          "y2": 683.6417369908116
+        }
       }
     },
     "8dec26b6-85a8-4ece-afbb-6f2fb610fbe9": {
       "type": "prefab",
       "name": "Shop.EventShopListView",
       "variant": "en",
-      "props": {}
+      "props": {
+        "list_rect": {
+          "kind": "rect",
+          "x1": 185,
+          "y1": 131.80671851379495,
+          "x2": 1263.7886246072464,
+          "y2": 633.4463713173643
+        }
+      },
+      "displayName": "Event Shop item list"
     }
   }
 }

@@ -5,7 +5,16 @@
       "type": "prefab",
       "name": "Story.ButtonReadNext",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 576.0034594594595,
+          "y1": 405.99679169731013,
+          "x2": 704.9967567567567,
+          "y2": 449.00183331582275
+        }
+      },
+      "displayName": "View Next Episode"
     }
   }
 }

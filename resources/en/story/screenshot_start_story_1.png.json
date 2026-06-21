@@ -5,19 +5,38 @@
       "type": "prefab",
       "name": "Story.CheckboxContinuousReading",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 418.00886486486485,
+          "y1": 450.00366663164556,
+          "x2": 888.9868108108108,
+          "y2": 501
+        }
+      },
+      "displayName": "Automatically view the next episode."
     },
     "abbfd906-7b6d-4d5c-81ef-52a7d1cf460e": {
       "type": "prefab",
       "name": "Story.ButtonWithoutVoice",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "No Voice"
     },
     "052adf6d-e689-44ff-8fb0-f0d1f7239548": {
       "type": "prefab",
       "name": "Story.TextVoiceDataDownload",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 434.97772972972984,
+          "y1": 161,
+          "x2": 842.0235675675675,
+          "y2": 205
+        }
+      },
+      "displayName": "Download voice files and view story?"
     }
   }
 }

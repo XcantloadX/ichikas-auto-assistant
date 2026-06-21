@@ -5,7 +5,16 @@
       "type": "prefab",
       "name": "Shop.TextExchangeDone",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 549.8963197658672,
+          "y1": 406.9491477740562,
+          "x2": 729.9516920773132,
+          "y2": 434.3174836337623
+        }
+      },
+      "displayName": "Trade Complete"
     }
   }
 }

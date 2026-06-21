@@ -5,13 +5,23 @@
       "type": "prefab",
       "name": "CommonDialog.TextRecommendDownloadViaWifi",
       "variant": "en",
-      "props": {}
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 421.00139564885944,
+          "y1": 355,
+          "x2": 865.998006215915,
+          "y2": 423
+        }
+      },
+      "displayName": "a Wi-Fi connection is recommended."
     },
     "73b4fbe5-7a86-49d0-90e6-4792e1cda085": {
       "type": "prefab",
       "name": "CommonDialog.ButtonDownload",
       "variant": "en",
-      "props": {}
+      "props": {},
+      "displayName": "Download"
     }
   }
 }
