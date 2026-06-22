@@ -142,6 +142,9 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     if not callable(set_color_scheme) and not callable(unset_color_scheme):
         return
 
+    # 切换色彩方案前先清除旧的自定义调色板；主题色会在之后重新应用。
+    app.setPalette(QPalette())
+
     if color_scheme == 'auto':
         if callable(unset_color_scheme):
             unset_color_scheme()
@@ -153,6 +156,8 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     else:
         if callable(set_color_scheme):
             set_color_scheme(Qt.ColorScheme.Dark)
+
+    app.setPalette(QPalette())
 
 
 def apply_theme_color(app: QApplication, color_value: str | None) -> None:
