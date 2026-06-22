@@ -132,19 +132,12 @@ def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
         return int(current_multiplier[0])
 
     def _set_maximum() -> None:
-        previous_multiplier: int | None = None
         for i in range(12):
-            device.screenshot()
-            current_multiplier = _read_current_multiplier()
-            logger.debug(f'Current AP multiplier while finding maximum: {current_multiplier}')
-            if previous_multiplier is not None:
-                if current_multiplier == previous_multiplier:
-                    logger.info(f'Maximum AP multiplier reached: {current_multiplier}.')
-                    return
-                if current_multiplier < previous_multiplier:
-                    raise RuntimeError('AP multiplier decreased after clicking plus.')
-            previous_multiplier = current_multiplier
-            device.click(R.Live.ApMultiplierDialog.PointPlus)
+            plus_btn = R.Live.ApMultiplierDialog.ButtonPlus.q(enabled=True).find()
+            if plus_btn is None:
+                logger.info('Maximum AP multiplier reached.')
+                return
+            plus_btn.click()
             logger.debug(f'Clicked AP multiplier plus button while finding maximum. ({i + 1}/12)')
             sleep(0.3)
         raise RuntimeError('Failed to find maximum AP multiplier after 12 attempts.')
@@ -161,20 +154,20 @@ def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
             logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
             # 计算点击方向与次数
             if current_multiplier < ap_multiplier:
-                button = R.Live.ApMultiplierDialog.PointPlus
+                button = R.Live.ApMultiplierDialog.ButtonPlus
+                button_name = 'plus'
                 times = ap_multiplier - current_multiplier
             elif current_multiplier > ap_multiplier:
-                button = R.Live.ApMultiplierDialog.PointMinus
+                button = R.Live.ApMultiplierDialog.ButtonMinus
+                button_name = 'minus'
                 times = current_multiplier - ap_multiplier
             else:
                 logger.debug('Current AP multiplier already at target.')
                 return True
             # 执行
             for i in range(times):
-                device.click(button)
-                logger.debug(
-                    f'Clicked AP multiplier {"plus" if button == R.Live.ApMultiplierDialog.PointPlus else "minus"} button. ({i + 1}/{times})'
-                )
+                button.click()
+                logger.debug(f'Clicked AP multiplier {button_name} button. ({i + 1}/{times})')
                 sleep(0.3)
             return False
 

@@ -43,28 +43,6 @@
         "en": "require"
       }
     },
-    "2d6efdb5-633a-4251-ae5c-5d2b16638b9d": {
-      "type": "hint-point",
-      "props": {
-        "point": {
-          "kind": "point",
-          "x": 440,
-          "y": 319.70081874647497
-        }
-      },
-      "name": "Live.ApMultiplierDialog.PointMinus"
-    },
-    "43d64469-284d-41fd-b8ed-2fe7a6853367": {
-      "type": "hint-point",
-      "props": {
-        "point": {
-          "kind": "point",
-          "x": 837,
-          "y": 318.6373433970985
-        }
-      },
-      "name": "Live.ApMultiplierDialog.PointPlus"
-    },
     "ab7705f7-d074-4907-b461-bc943586b0bf": {
       "type": "hint-box",
       "props": {
@@ -77,6 +55,48 @@
         }
       },
       "name": "Live.ApMultiplierDialog.BoxApNumber"
+    },
+    "ddec2e5f-a019-4262-9198-45dfd129d789": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "Live.ApMultiplierDialog.ButtonMinus",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 421.93772370688447,
+          "y1": 295.87990790919713,
+          "x2": 464.8377423909715,
+          "y2": 342.1197399914993
+        },
+        "fixed": true,
+        "button_type": "normal"
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "inherit",
+        "en": "inherit"
+      }
+    },
+    "71defbdc-203c-432f-917f-516561076c73": {
+      "type": "prefab",
+      "prefab_id": "PjskButtonPrefab",
+      "name": "Live.ApMultiplierDialog.ButtonPlus",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 815.3139465316559,
+          "y1": 296.31646584690515,
+          "x2": 860.471860935958,
+          "y2": 343.1201983204549
+        },
+        "fixed": true,
+        "button_type": "normal"
+      },
+      "variant_policy": {
+        "tw": "inherit",
+        "cn": "inherit",
+        "en": "inherit"
+      }
     }
   }
 }

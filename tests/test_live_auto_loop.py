@@ -46,25 +46,24 @@ class AutoLiveLoopTests(unittest.TestCase):
 
     @mock.patch('iaa.tasks.live.live.task_reporter', return_value=_FakeReporter())
     @mock.patch('iaa.tasks.live.live.Loop', return_value=[None])
-    def test_maximum_ap_multiplier_stops_when_value_no_longer_increases(
+    def test_maximum_ap_multiplier_stops_when_plus_button_is_disabled(
         self,
         _loop: mock.Mock,
         _task_reporter: mock.Mock,
     ) -> None:
-        device = mock.Mock()
-        ocr = mock.Mock()
         resources = mock.Mock()
-        values = iter([3, 4, 5, 5])
-        ocr.ocr.return_value.squash.return_value.numbers.side_effect = lambda: [next(values)]
+        plus_btn = mock.Mock()
         resources.Live.ApMultiplierDialog.TextTip.find.return_value = True
+        resources.Live.ApMultiplierDialog.ButtonPlus.q.return_value.find.side_effect = [plus_btn, plus_btn, None]
 
         with mock.patch.dict(
             live.__dict__,
-            {'device': device, 'ocr': ocr, 'R': resources, 'sleep': mock.Mock()},
+            {'R': resources, 'sleep': mock.Mock()},
         ):
             live._configure_ap_multiplier('maximum')
 
-        self.assertEqual(device.click.call_count, 3)
+        self.assertEqual(plus_btn.click.call_count, 2)
+        resources.Live.ApMultiplierDialog.ButtonPlus.q.assert_called_with(enabled=True)
         resources.Live.ApMultiplierDialog.ButtonConfirm.wait.return_value.click.assert_called_once()
 
 
