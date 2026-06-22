@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 import "../components"
 
 PageContainer {
     id: root
-    title: "日志"
+    title: App.Globals.t("nav.logs")
     property var logBridge
     property int maxLines: 2000
     property string pendingText: ""
@@ -17,12 +18,12 @@ PageContainer {
     headerActions: RowLayout {
         spacing: 10
         CheckBox {
-            text: "自动换行"
+            text: App.Globals.t("log.wrap")
             checked: root.wrapEnabled
             onToggled: root.wrapEnabled = checked
         }
         Button {
-            text: "清空"
+            text: App.Globals.t("log.clear")
             onClicked: {
                 logModel.clear()
                 root.pendingText = ""
@@ -31,7 +32,7 @@ PageContainer {
                 logView.maxLineWidth = 0
             }
         }
-        Label { text: "最多保留 " + root.maxLines + " 行" }
+        Label { text: App.Globals.t("log.max_lines").replace("{count}", root.maxLines) }
     }
 
     ListModel {
@@ -101,7 +102,7 @@ PageContainer {
         GroupBox {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            title: "输出"
+            title: App.Globals.t("log.output")
 
             Rectangle {
                 anchors.fill: parent

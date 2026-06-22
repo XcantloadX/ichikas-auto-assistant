@@ -28,11 +28,11 @@ ApplicationWindow {
 
     function requestTelemetryConsent() {
         App.Modal.message({
-            title: "数据收集",
-            content: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa。",
+            title: App.Globals.t("modal.telemetry.title"),
+            content: App.Globals.t("modal.telemetry.content"),
             buttons: [
-                { text: "拒绝", value: "deny" },
-                { text: "允许", value: "allow", highlighted: true }
+                { text: App.Globals.t("modal.telemetry.deny"), value: "deny" },
+                { text: App.Globals.t("modal.telemetry.allow"), value: "allow", highlighted: true }
             ],
             width: 420,
             closePolicy: Popup.NoAutoClose
@@ -51,11 +51,11 @@ ApplicationWindow {
 
     function showMigrationMessage(text) {
         App.Modal.message({
-            title: "配置升级",
+            title: App.Globals.t("modal.migration.title"),
             content: text,
             textFormat: Text.RichText,
             buttons: [
-                { text: "确定", value: "ok", highlighted: true }
+                { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
             ],
             width: 520
         })
@@ -68,22 +68,22 @@ ApplicationWindow {
         }
         if (window.runCtrl && window.runCtrl.running) {
             App.Modal.message({
-                title: "确认退出",
-                content: "当前仍在执行任务，确定要退出吗？退出将先停止任务。",
+                title: App.Globals.t("modal.exit.title"),
+                content: App.Globals.t("modal.exit.content"),
                 buttons: [
-                    { text: "取消", value: "cancel" },
-                    { text: "退出", value: "ok", highlighted: true }
+                    { text: App.Globals.t("common.cancel"), value: "cancel" },
+                    { text: App.Globals.t("modal.exit.confirm"), value: "ok", highlighted: true }
                 ],
                 width: 420,
                 closePolicy: Popup.NoAutoClose
             }, function(result) {
                 if (result === "ok") {
-                    navigation.requestGuardedAction("关闭窗口", closeRunner)
+                    navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
                 }
             })
             return
         }
-        navigation.requestGuardedAction("关闭窗口", closeRunner)
+        navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
     }
 
     NavigationCoordinator {
@@ -110,13 +110,13 @@ ApplicationWindow {
             currentConfig: App.ProfileStore.currentProfileName
 
             onCurrentChanging: function(index, previousIndex) {
-                navigation.requestGuardedAction("切换页面", function() {
+                navigation.requestGuardedAction(App.Globals.t("guard.switch_page"), function() {
                     sideNav.confirmSwitch(index)
                 })
             }
 
             onProfileSwitchRequested: function(name) {
-                navigation.requestGuardedAction("切换配置", function() {
+                navigation.requestGuardedAction(App.Globals.t("guard.switch_config"), function() {
                     window.settingsCtrl.switchProfile(name)
                 })
             }
@@ -182,39 +182,39 @@ ApplicationWindow {
     Dialog {
         id: unsavedChangesDialog
         modal: true
-        title: "未保存更改"
+        title: App.Globals.t("modal.unsaved.title")
         standardButtons: Dialog.NoButton
         width: 420
         anchors.centerIn: Overlay.overlay
 
-        property string actionLabel: "继续此操作"
+        property string actionLabel: App.Globals.t("common.continue_action")
 
         contentItem: ColumnLayout {
             spacing: 12
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "当前配置有未保存的更改。" + unsavedChangesDialog.actionLabel + "前，请先选择处理方式。"
+                text: App.Globals.t("modal.unsaved.content").replace("{action}", unsavedChangesDialog.actionLabel)
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 spacing: 8
                 Button {
-                    text: "取消"
+                    text: App.Globals.t("common.cancel")
                     onClicked: {
                         navigation.clearPendingGuardedAction()
                         unsavedChangesDialog.close()
                     }
                 }
                 Button {
-                    text: "不保存并继续"
+                    text: App.Globals.t("common.do_not_save_and_continue")
                     onClicked: {
                         unsavedChangesDialog.close()
                         navigation.discardAndContinuePendingAction()
                     }
                 }
                 Button {
-                    text: "保存并继续"
+                    text: App.Globals.t("common.save_and_continue")
                     highlighted: true
                     onClicked: {
                         unsavedChangesDialog.close()

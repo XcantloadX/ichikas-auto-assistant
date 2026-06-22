@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 import "../components"
 
 PageContainer {
     id: root
-    title: "控制"
+    title: App.Globals.t("nav.control")
     property var tasks: []
     property var autoLiveDialog
 

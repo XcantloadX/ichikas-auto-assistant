@@ -7,7 +7,7 @@ import "../components"
 // import Iaa.Controllers 1.0
 
 PageContainer {
-    title: "关于"
+    title: App.Globals.t("nav.about")
     
     ColumnLayout {
         anchors.centerIn: parent
@@ -42,7 +42,7 @@ PageContainer {
             Layout.alignment: Qt.AlignHCenter
         }
         Label {
-            text: "版本 v" + appController.version
+            text: App.Globals.t("about.version").replace("{version}", appController.version)
             Layout.alignment: Qt.AlignHCenter
         }
 
@@ -50,8 +50,8 @@ PageContainer {
             Layout.alignment: Qt.AlignHCenter
             Link { label: "GitHub"; href: "https://github.com/XcantloadX/ichikas-auto-assistant" }
             Link { label: "Bilibili"; href: "https://space.bilibili.com/3546853903698457" }
-            Link { label: "教程文档"; href: "https://p.kdocs.cn/s/AGBH56RBAAAFS" }
-            Link { label: "QQ 群"; href: "https://qm.qq.com/q/Mu1SSfK1Gg" }
+            Link { label: App.Globals.t("about.docs"); href: "https://p.kdocs.cn/s/AGBH56RBAAAFS" }
+            Link { label: App.Globals.t("about.qq_group"); href: "https://qm.qq.com/q/Mu1SSfK1Gg" }
         }
     }
 }
