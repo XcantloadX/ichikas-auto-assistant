@@ -140,6 +140,7 @@ def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
             plus_btn.click()
             logger.debug(f'Clicked AP multiplier plus button while finding maximum. ({i + 1}/12)')
             sleep(0.3)
+            device.screenshot()
         raise RuntimeError('Failed to find maximum AP multiplier after 12 attempts.')
 
     # 执行
