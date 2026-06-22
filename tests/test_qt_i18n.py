@@ -32,6 +32,9 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('nav.preferences'), 'Preferences')
         self.assertEqual(controller.t('modal.exit.title'), 'Confirm Exit')
         self.assertEqual(controller.t('config_manager.delete_title'), 'Confirm Delete')
+        self.assertEqual(controller.t('control.export_report'), 'Export Report')
+        self.assertEqual(controller.t('task.auto_live'), 'Auto Live')
+        self.assertEqual(controller.t('task.activity_story'), 'Event Story')
 
     def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
         config_service = make_config_service()

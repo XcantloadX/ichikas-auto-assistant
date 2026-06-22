@@ -9,6 +9,12 @@ QtObject {
         return i18nController ? i18nController.t(key) : key
     }
 
+    function taskName(taskId, fallback) {
+        var key = "task." + taskId
+        var translated = t(key)
+        return translated === key ? (fallback || taskId) : translated
+    }
+
     function assetPath(relativePath) {
         if (!relativePath) {
             return "file:///" + appController.assetsRootPath
