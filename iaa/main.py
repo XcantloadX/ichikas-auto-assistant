@@ -62,9 +62,8 @@ def add_auto_live_args(parser: argparse.ArgumentParser) -> None:
     )
     parser.add_argument(
         '--ap-multiplier',
-        type=int,
-        choices=range(0, 11),
-        help='auto_live only: set AP multiplier to 0-10 before starting; omit to keep current',
+        choices=['maximum', *[str(i) for i in range(0, 11)]],
+        help='auto_live only: set AP multiplier to 0-10 or maximum before starting; omit to keep current',
     )
 
 

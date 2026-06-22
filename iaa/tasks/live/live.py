@@ -19,6 +19,7 @@ LiveMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None
 SoloPlayMode = Literal['game_auto', 'script_auto']
 SongChoiceMode = Literal['current', 'specified', 'random']
 LoopSongMode = Literal['list_next', 'random']
+ApMultiplier = int | Literal['maximum'] | None
 PrefabClass = TypeVar('PrefabClass', bound=Prefab)
 ChallengeCharacterPrefab = tuple[PrefabClass, PrefabClass | None]
 
@@ -28,7 +29,7 @@ class LivePlan(BaseModel):
     
     play_mode: SoloPlayMode = 'game_auto'
     debug_enabled: bool = False
-    ap_multiplier: int | None = None
+    ap_multiplier: ApMultiplier = None
     auto_set_unit: bool = False
 
 
@@ -112,7 +113,7 @@ def select_song(song_name: str):
         kbd.enter()
     sleep(0.5)
 
-def _configure_ap_multiplier(ap_multiplier: int) -> None:
+def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
     rep = task_reporter()
     logger.info(f'Setting AP multiplier to {ap_multiplier}.')
     rep.message('设置 AP 倍率')
@@ -124,44 +125,70 @@ def _configure_ap_multiplier(ap_multiplier: int) -> None:
             break
         elif R.Live.ButtonApMultiplierSettings.try_click():
             logger.debug('Clicked AP multiplier settings button.')
-    # 执行
-    retry_count = 0
-    def _set(ap_multiplier: int) -> bool:
-        # 设置 AP 倍率
+    def _read_current_multiplier() -> int:
         current_multiplier = ocr.ocr(R.Live.ApMultiplierDialog.BoxApNumber).squash().numbers()
         if not current_multiplier:
             raise RuntimeError('Failed to read current AP multiplier.')
-        current_multiplier = int(current_multiplier[0])
-        logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
-        # 计算点击方向与次数
-        if current_multiplier < ap_multiplier:
-            button = R.Live.ApMultiplierDialog.PointPlus
-            times = ap_multiplier - current_multiplier
-        elif current_multiplier > ap_multiplier:
-            button = R.Live.ApMultiplierDialog.PointMinus
-            times = current_multiplier - ap_multiplier
-        else:
-            logger.debug('Current AP multiplier already at target.')
-            return True
-        # 执行
-        for i in range(times):
-            device.click(button)
-            logger.debug(
-                f'Clicked AP multiplier {"plus" if button == R.Live.ApMultiplierDialog.PointPlus else "minus"} button. ({i + 1}/{times})'
-            )
+        return int(current_multiplier[0])
+
+    def _set_maximum() -> None:
+        previous_multiplier: int | None = None
+        for i in range(12):
+            device.screenshot()
+            current_multiplier = _read_current_multiplier()
+            logger.debug(f'Current AP multiplier while finding maximum: {current_multiplier}')
+            if previous_multiplier is not None:
+                if current_multiplier == previous_multiplier:
+                    logger.info(f'Maximum AP multiplier reached: {current_multiplier}.')
+                    return
+                if current_multiplier < previous_multiplier:
+                    raise RuntimeError('AP multiplier decreased after clicking plus.')
+            previous_multiplier = current_multiplier
+            device.click(R.Live.ApMultiplierDialog.PointPlus)
+            logger.debug(f'Clicked AP multiplier plus button while finding maximum. ({i + 1}/12)')
             sleep(0.3)
-        return False
-    while True:
-        device.screenshot()
-        try:
-            if _set(ap_multiplier):
-                break
-        except Exception:
-            logger.exception('Error setting AP multiplier')
-        sleep(0.5)
-        retry_count += 1
-        if retry_count >= 5:
-            raise RuntimeError('Failed to set AP multiplier after 5 attempts.')
+        raise RuntimeError('Failed to find maximum AP multiplier after 12 attempts.')
+
+    # 执行
+    if ap_multiplier == 'maximum':
+        _set_maximum()
+    else:
+        retry_count = 0
+
+        def _set(ap_multiplier: int) -> bool:
+            # 设置 AP 倍率
+            current_multiplier = _read_current_multiplier()
+            logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
+            # 计算点击方向与次数
+            if current_multiplier < ap_multiplier:
+                button = R.Live.ApMultiplierDialog.PointPlus
+                times = ap_multiplier - current_multiplier
+            elif current_multiplier > ap_multiplier:
+                button = R.Live.ApMultiplierDialog.PointMinus
+                times = current_multiplier - ap_multiplier
+            else:
+                logger.debug('Current AP multiplier already at target.')
+                return True
+            # 执行
+            for i in range(times):
+                device.click(button)
+                logger.debug(
+                    f'Clicked AP multiplier {"plus" if button == R.Live.ApMultiplierDialog.PointPlus else "minus"} button. ({i + 1}/{times})'
+                )
+                sleep(0.3)
+            return False
+
+        while True:
+            device.screenshot()
+            try:
+                if _set(ap_multiplier):
+                    break
+            except Exception:
+                logger.exception('Error setting AP multiplier')
+            sleep(0.5)
+            retry_count += 1
+            if retry_count >= 5:
+                raise RuntimeError('Failed to set AP multiplier after 5 attempts.')
     # 然后关闭弹窗
     R.Live.ApMultiplierDialog.ButtonConfirm.wait().click()
     sleep(0.5)
@@ -402,7 +429,7 @@ def _prepare_solo_live(song_select_mode: SongChoiceMode | Literal['list_next'], 
 def _start_single_live_run(
     live_mode: LiveMode,
     auto_set_unit: bool,
-    ap_multiplier: int | None,
+    ap_multiplier: ApMultiplier,
     song_select_mode: SongChoiceMode,
     song_name: str | None,
     debug_enabled: bool = False,
@@ -424,7 +451,7 @@ def start_auto_live(
     finish_pre_check: Callable[[], tuple[bool, bool]] | None = None,
     debug_enabled: bool = False,
     auto_set_unit: bool = False,
-    ap_multiplier: int | None = None,
+    ap_multiplier: ApMultiplier = None,
 ) -> bool:
     """
     前置：位于编队界面\n
@@ -447,7 +474,7 @@ def start_auto_live(
         如果 `should_skip` 为 True，则 `should_break` 会被忽略。
     :param debug_enabled: 是否启用调试模式，启用后会在自动演出时显示更多日志，并在脚本自动演出时显示节奏游戏分析器的调试信息。
     :param auto_set_unit: 是否在演出前自动编队
-    :param ap_multiplier: AP 倍率，范围 [0, 10]。若为数字，表示演出前自动设置倍率为对应值；若为 None，表示保持现状。
+    :param ap_multiplier: AP 倍率，范围 [0, 10]；若为 "maximum"，表示设置为当前可用最大值；若为 None，表示保持现状。
     :raises NotImplementedError: 如果未实现的功能被调用。
     :return: 若为 False，表示因为 AP 不足没有进行演出。
     """
@@ -500,8 +527,8 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
     """
     if isinstance(plan, (SingleLoopPlan, ListLoopPlan)) and plan.loop_count is not None and plan.loop_count <= 0:
         raise ValueError('loop_count must be positive.')
-    if plan.ap_multiplier is not None and not (0 <= plan.ap_multiplier <= 10):
-        raise ValueError('ap_multiplier must be between 0 and 10.')
+    if plan.ap_multiplier is not None and plan.ap_multiplier != 'maximum' and not (0 <= plan.ap_multiplier <= 10):
+        raise ValueError('ap_multiplier must be between 0 and 10, "maximum", or None.')
     if isinstance(plan, (OncePlan, SingleLoopPlan)) and plan.song_select_mode == 'specified' and not plan.song_name:
         raise ValueError('song_name is required when song_select_mode is specified.')
     reporter = task_reporter()
@@ -553,13 +580,16 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
             first_run = True
             for _ in Loop():
                 _prepare_solo_live(plan.loop_song_mode, None)
-                start_auto_live(
+                if not start_auto_live(
                     'once' if plan.play_mode == 'game_auto' else 'script',
                     return_to='home',
                     debug_enabled=plan.debug_enabled,
                     auto_set_unit=auto_set_unit,
                     ap_multiplier=plan.ap_multiplier if first_run else None,
-                )
+                ):
+                    logger.info('No AP left for list loop. Stopping.')
+                    go_home()
+                    break
                 first_run = False
                 count += 1
                 logger.info(f'Song looped. {count}/{max_count}')
