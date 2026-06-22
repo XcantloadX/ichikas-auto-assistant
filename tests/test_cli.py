@@ -65,6 +65,26 @@ class CliExecuteTests(unittest.TestCase):
 
     @mock.patch('iaa.main.manager.list', return_value=[])
     @mock.patch('iaa.main.IaaService')
+    def test_execute_auto_live_accepts_maximum_ap_multiplier(
+        self,
+        iaa_service_cls: mock.Mock,
+        _list_configs: mock.Mock,
+    ) -> None:
+        scheduler = mock.Mock()
+        iaa_service_cls.return_value = SimpleNamespace(scheduler=scheduler, config=mock.Mock())
+
+        action = parse_cli_action([
+            'invoke', 'auto_live',
+            '--ap-multiplier', 'maximum',
+        ])
+        code = execute_cli_action(action)
+
+        self.assertEqual(code, 0)
+        plan = scheduler.run_single.call_args.kwargs['kwargs']['plan']
+        self.assertEqual(plan.ap_multiplier, 'maximum')
+
+    @mock.patch('iaa.main.manager.list', return_value=[])
+    @mock.patch('iaa.main.IaaService')
     def test_execute_run_regular_calls_scheduler(
         self,
         iaa_service_cls: mock.Mock,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from iaa.config.live_presets import AutoLivePreset
-from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan
+from iaa.tasks.live.live import ApMultiplier, ListLoopPlan, SingleLoopPlan
 
 SONG_KEEP_UNCHANGED = '保持不变'
 SONG_NAME_OPTIONS = [
@@ -39,11 +39,13 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
         raise ValueError(f'未知的次数模式：{count_mode}')
 
     if ap_multiplier_raw in (None, '', '保持现状'):
-        ap_multiplier: int | None = None
+        ap_multiplier: ApMultiplier = None
+    elif ap_multiplier_raw == 'maximum':
+        ap_multiplier = 'maximum'
     else:
         ap_multiplier = int(ap_multiplier_raw)
         if not (0 <= ap_multiplier <= 10):
-            raise ValueError('AP 倍率必须在 0 到 10 之间。')
+            raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
 
     if loop_mode == 'single':
         return SingleLoopPlan(

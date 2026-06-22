@@ -103,8 +103,8 @@ class LiveConfig(BaseModel):
     """
     auto_set_unit: bool = False
     """演出前是否自动编队"""
-    ap_multiplier: int | None = 10
-    """AP 倍率。None 表示保持现状。"""
+    ap_multiplier: int | Literal['maximum'] | None = 'maximum'
+    """AP 倍率。'maximum' 表示当前可用最大值，None 表示保持现状。"""
     append_fc: bool = False
     """是否在常规演出后追加一次 Full Combo 演出。"""
     prepend_random: bool = False

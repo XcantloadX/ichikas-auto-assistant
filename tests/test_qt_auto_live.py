@@ -47,6 +47,19 @@ class AutoLivePayloadTests(unittest.TestCase):
         self.assertTrue(plan.debug_enabled)
         self.assertEqual(plan.ap_multiplier, 0)
 
+    def test_maximum_ap_multiplier_payload(self) -> None:
+        plan = auto_live_payload_to_plan(
+            {
+                'countMode': 'all',
+                'count': '',
+                'loopMode': 'list',
+                'playMode': 'game_auto',
+                'apMultiplier': 'maximum',
+            }
+        )
+        self.assertIsInstance(plan, ListLoopPlan)
+        self.assertEqual(plan.ap_multiplier, 'maximum')
+
     def test_invalid_count_raises(self) -> None:
         with self.assertRaises(ValueError):
             auto_live_payload_to_plan(
