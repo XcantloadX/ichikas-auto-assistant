@@ -35,12 +35,17 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('control.export_report'), 'Export Report')
         self.assertEqual(controller.t('task.auto_live'), 'Auto Live')
         self.assertEqual(controller.t('task.activity_story'), 'Event Story')
+        self.assertEqual(controller.t('status.ready'), 'Ready')
+        self.assertEqual(controller.t('notice.save_success'), 'Saved')
+        self.assertEqual(controller.t('dialog.save_report.title'), 'Save Report')
 
     def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
         config_service = make_config_service()
         controller = PreferencesController(SimpleNamespace(config=config_service))
         changed_languages: list[str] = []
+        succeeded: list[str] = []
         controller.languageChanged.connect(changed_languages.append)
+        controller.operationSucceeded.connect(succeeded.append)
 
         initial_runtime = json.loads(controller.getRuntime())
         self.assertEqual(initial_runtime['fieldMap']['interface.language']['label'], '界面语言')
@@ -54,6 +59,7 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(updated_runtime['fieldMap']['interface.language']['label'], 'Interface language')
 
         self.assertTrue(controller.save())
+        self.assertEqual(succeeded, ['Saved'])
         config_service.save_shared.assert_called_once()
 
 

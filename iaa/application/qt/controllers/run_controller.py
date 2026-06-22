@@ -8,6 +8,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
+from iaa.application.qt.i18n import translate
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
 
@@ -33,6 +34,10 @@ class RunController(QObject):
         self._timer.timeout.connect(self._refresh_state)
         self._timer.start()
         self.exportReady.connect(self._show_save_dialog)
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._iaa.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
 
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
@@ -158,14 +163,7 @@ class RunController(QObject):
         plan = auto_live_payload_to_plan(payload)
         LivePresetManager().save_last_auto(AutoLivePreset(name='上次设定', plan=plan))
         if plan.play_mode == 'script_auto':
-            self.scriptAutoWarningRequested.emit(
-                '使用“脚本自动”时必须满足：\n'
-                '1. 当前选中演出歌曲为 EASY 难度\n'
-                '2. 流速为 1，特效为轻量\n'
-                '3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n'
-                '4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n'
-                '5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担'
-            )
+            self.scriptAutoWarningRequested.emit(self._tr('notice.script_auto_warning'))
         self._iaa.scheduler.run_single('auto_live', run_in_thread=True, kwargs={'plan': plan})
         self.stateChanged.emit()
 
@@ -193,7 +191,7 @@ class RunController(QObject):
             except Exception as exc:  # noqa: BLE001
                 self._export_busy = False
                 self.stateChanged.emit()
-                self.operationFailed.emit(f'导出失败：{exc}')
+                self.operationFailed.emit(self._tr('notice.export_failed', error=exc))
                 return
             self.exportReady.emit(tmp_zip)
 
@@ -202,16 +200,16 @@ class RunController(QObject):
     def _show_save_dialog(self, tmp_zip: str) -> None:
         save_path, _ = QFileDialog.getSaveFileName(
             None,
-            '保存报告',
+            self._tr('dialog.save_report.title'),
             str(Path(tmp_zip).name),
-            'Zip 文件 (*.zip)',
+            self._tr('dialog.save_report.filter'),
         )
         try:
             if save_path:
                 shutil.copyfile(tmp_zip, save_path)
-                self.operationSucceeded.emit('报告已保存。')
+                self.operationSucceeded.emit(self._tr('notice.report_saved'))
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.report_save_failed', error=exc))
         finally:
             self._export_busy = False
             self.stateChanged.emit()

@@ -67,6 +67,25 @@ _TRANSLATIONS: dict[GuiLanguage, dict[str, str]] = {
         'control.exporting_report': '导出中...',
         'control.current_task': '当前任务：{task}',
         'control.run_task': '运行',
+        'status.ready': '就绪',
+        'status.stopped': '已停止',
+        'notice.save_success': '保存成功',
+        'notice.save_failed': '保存失败：{error}',
+        'notice.field_set_failed': '设置字段失败：{error}',
+        'notice.export_failed': '导出失败：{error}',
+        'notice.report_saved': '报告已保存。',
+        'notice.report_save_failed': '保存失败：{error}',
+        'notice.telemetry_effective': '数据收集设置将于下次启动时生效。',
+        'notice.script_auto_warning': (
+            '使用“脚本自动”时必须满足：\n'
+            '1. 当前选中演出歌曲为 EASY 难度\n'
+            '2. 流速为 1，特效为轻量\n'
+            '3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n'
+            '4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n'
+            '5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担'
+        ),
+        'dialog.save_report.title': '保存报告',
+        'dialog.save_report.filter': 'Zip 文件 (*.zip)',
         'task.start_game': '启动游戏',
         'task.cm': '自动 CM',
         'task.solo_live': '单人演出',
@@ -145,6 +164,25 @@ _TRANSLATIONS: dict[GuiLanguage, dict[str, str]] = {
         'control.exporting_report': 'Exporting...',
         'control.current_task': 'Current task: {task}',
         'control.run_task': 'Run',
+        'status.ready': 'Ready',
+        'status.stopped': 'Stopped',
+        'notice.save_success': 'Saved',
+        'notice.save_failed': 'Save failed: {error}',
+        'notice.field_set_failed': 'Failed to set field: {error}',
+        'notice.export_failed': 'Export failed: {error}',
+        'notice.report_saved': 'Report saved.',
+        'notice.report_save_failed': 'Save failed: {error}',
+        'notice.telemetry_effective': 'Data collection changes will take effect after restart.',
+        'notice.script_auto_warning': (
+            'Script auto requires:\n'
+            '1. The selected live song is on EASY difficulty\n'
+            '2. Note speed is 1 and effects are lightweight\n'
+            '3. MuMu uses the nemu_ipc control method, or other emulators use scrcpy\n'
+            '4. The resolution is 16:9, including 1280x720 and proportional scales\n'
+            '5. The user accepts all risks and consequences of using script auto'
+        ),
+        'dialog.save_report.title': 'Save Report',
+        'dialog.save_report.filter': 'Zip files (*.zip)',
         'task.start_game': 'Start Game',
         'task.cm': 'Auto CM',
         'task.solo_live': 'Solo Live',

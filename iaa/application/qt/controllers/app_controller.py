@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QMessageBox
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
+from iaa.application.qt.i18n import translate
 from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
@@ -93,6 +94,10 @@ class AppController(QObject):
     def _on_scheduler_error(self, exc: Exception) -> None:
         self.reportError(str(exc))
 
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self.service.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
+
     def _get_version(self) -> str:
         return self.service.version
 
@@ -156,7 +161,7 @@ class AppController(QObject):
         self.preferencesController.save()
         self._telemetry_consent_required = False
         self.telemetryConsentRequiredChanged.emit()
-        self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+        self.notificationRaised.emit('success', self._tr('notice.telemetry_effective'))
 
     @Slot()
     def refreshWindowStyle(self) -> None:

@@ -7,6 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
+from iaa.application.qt.i18n import translate
 from ..forms.context import FormContext
 from ..forms.settings_form import build_settings_form
 from ..models import DEFAULT_MUMU_INSTANCE_LABEL
@@ -84,6 +85,10 @@ class SettingsController(QObject):
             conf=self._iaa.config.conf,
             shared=self._iaa.config.shared,
         )
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._iaa.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
 
     def _sync_context_back(self) -> None:
         self._iaa.config.conf = self._state.context.conf
@@ -253,7 +258,7 @@ class SettingsController(QObject):
             self._recompute_runtime()
             self._emit_updates(old_runtime)
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'设置字段失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.field_set_failed', error=exc))
 
     @Slot(str, str, str)
     def triggerAction(self, field_id: str, action: str, payload_json: str = '{}') -> None:
@@ -287,10 +292,10 @@ class SettingsController(QObject):
             self._recompute_runtime()
             self.runtimeChanged.emit()
             self.dirtyChanged.emit(self._state.dirty)
-            self.operationSucceeded.emit('保存成功')
+            self.operationSucceeded.emit(self._tr('notice.save_success'))
             return True
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
             return False
 
     @Slot(result=bool)

@@ -14,6 +14,16 @@ PageContainer {
         tasks = JSON.parse(runController.tasksStateJson())
     }
 
+    function displayStatusText(text) {
+        if (text === "就绪") {
+            return App.Globals.t("status.ready")
+        }
+        if (text === "已停止") {
+            return App.Globals.t("status.stopped")
+        }
+        return text
+    }
+
     Component.onCompleted: reloadTasks()
 
     Connections {
@@ -99,7 +109,7 @@ PageContainer {
                 Label {
                     Layout.fillWidth: true
                     wrapMode: Text.Wrap
-                    text: progressBridge.statusText
+                    text: root.displayStatusText(progressBridge.statusText)
                 }
                 ProgressBar {
                     Layout.fillWidth: true
