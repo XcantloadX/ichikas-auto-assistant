@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "definitions": {
+    "3d9202a2-6881-42f2-bcb3-58c761db76cf": {
+      "type": "prefab",
+      "name": "Login.ButtonIconLink",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 348.9998006215915,
+          "y1": 241.0070480748314,
+          "x2": 406.9998006215915,
+          "y2": 289.0070480748314
+        }
+      },
+      "displayName": "Data transfer icon"
+    }
+  }
+}

@@ -19,7 +19,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     },
     "45d56f50-66ae-4298-bc64-a840dc786286": {
@@ -40,7 +40,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "inherit",
-        "en": "inherit"
+        "en": "require"
       }
     }
   }

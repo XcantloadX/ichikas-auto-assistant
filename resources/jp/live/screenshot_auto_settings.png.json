@@ -18,7 +18,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "require",
-        "en": "exclude"
+        "en": "require"
       }
     },
     "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
@@ -38,7 +38,7 @@
       "variant_policy": {
         "tw": "require",
         "cn": "require",
-        "en": "exclude"
+        "en": "require"
       }
     }
   }
