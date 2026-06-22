@@ -100,8 +100,13 @@ ApplicationWindow {
         SideNavigationBar {
             id: sideNav
             Layout.fillHeight: true
-            // model: ["控制", "配置", "偏好", "帮助", "关于"]
-            model: ["控制", "配置", "偏好", "日志", "关于"]
+            model: [
+                App.Globals.t("nav.control"),
+                App.Globals.t("nav.config"),
+                App.Globals.t("nav.preferences"),
+                App.Globals.t("nav.logs"),
+                App.Globals.t("nav.about")
+            ]
             currentConfig: App.ProfileStore.currentProfileName
 
             onCurrentChanging: function(index, previousIndex) {

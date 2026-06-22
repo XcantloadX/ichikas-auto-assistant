@@ -19,6 +19,7 @@ from .settings_controller import SettingsController
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 
 class AppController(QObject):
@@ -63,6 +64,7 @@ class AppController(QObject):
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
         self.settingsController = SettingsController(self.service, self)
         self.preferencesController = PreferencesController(self.service, self)
+        self.i18nController = I18nController(self.service.config.shared.interface.language, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
         self.helpController = HelpController(self.service, self)
         self.globalHotkeyController = GlobalHotkeyController(
@@ -82,6 +84,7 @@ class AppController(QObject):
         self.settingsController.configSwitched.connect(self._on_config_switched)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
+        self.preferencesController.languageChanged.connect(self.i18nController.setLanguage)
         self.service.scheduler.on_error = self._on_scheduler_error
 
     def _on_config_switched(self) -> None:

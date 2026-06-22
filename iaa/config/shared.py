@@ -1,6 +1,6 @@
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 VERSION = 2
 
@@ -17,6 +17,16 @@ class InterfaceConfig(BaseModel):
     window_style: str = ''
     theme_color: str | None = None
     color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
+    language: Literal['zh_CN', 'en_US'] = 'zh_CN'
+
+    @field_validator('language', mode='before')
+    @classmethod
+    def normalize_language(cls, value: object) -> object:
+        if value in ('zh', 'zh_CN', 'cn'):
+            return 'zh_CN'
+        if value in ('en', 'en_US'):
+            return 'en_US'
+        return value
 
 
 class CustomPushData(BaseModel):

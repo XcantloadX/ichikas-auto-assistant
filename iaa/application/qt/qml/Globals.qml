@@ -2,6 +2,13 @@ pragma Singleton
 import QtQuick
 
 QtObject {
+    readonly property string language: i18nController ? i18nController.language : "zh_CN"
+
+    function t(key) {
+        language
+        return i18nController ? i18nController.t(key) : key
+    }
+
     function assetPath(relativePath) {
         if (!relativePath) {
             return "file:///" + appController.assetsRootPath

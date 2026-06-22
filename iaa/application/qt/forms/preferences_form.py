@@ -3,6 +3,7 @@ from __future__ import annotations
 from iaa.application.framework.dsl import Checkbox, FormPage, FormSpec, Group, Hotkey, Select, Text, bind, custom_ref
 from typing import Callable, cast
 from .context import PreferencesContext
+from iaa.application.qt.i18n import translate
 from iaa.config.shared import CustomPushData, DiscordPushData
 
 ctx, ref = bind(PreferencesContext)
@@ -41,8 +42,11 @@ def _set_push_webhook_url(c: PreferencesContext, value: str) -> None:
         data.webhook_url = value
 
 
-def build_preferences_form() -> tuple[FormSpec[PreferencesContext], list[Callable[[PreferencesContext], None]]]:
-    with FormPage('设置') as page:
+def build_preferences_form(language: str) -> tuple[FormSpec[PreferencesContext], list[Callable[[PreferencesContext], None]]]:
+    def tr(key: str) -> str:
+        return translate(language, key)
+
+    with FormPage(tr('preferences.title')) as page:
         with Group('数据收集'):
             Checkbox(
                 key='telemetry.sentry',
@@ -50,7 +54,16 @@ def build_preferences_form() -> tuple[FormSpec[PreferencesContext], list[Callabl
                 ref=ref(ctx.shared.telemetry.sentry),
             )
 
-        with Group('界面'):
+        with Group(tr('preferences.group.interface')):
+            Select(
+                key='interface.language',
+                label=tr('preferences.field.language'),
+                ref=ref(ctx.shared.interface.language),
+                options=[
+                    {'value': 'zh_CN', 'label': tr('preferences.language.zh_CN')},
+                    {'value': 'en_US', 'label': tr('preferences.language.en_US')},
+                ],
+            )
             Select(
                 key='interface.window_style',
                 label='窗口背景样式',
