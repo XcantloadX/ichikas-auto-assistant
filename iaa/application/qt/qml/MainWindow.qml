@@ -184,7 +184,7 @@ ApplicationWindow {
         modal: true
         title: App.Globals.t("modal.unsaved.title")
         standardButtons: Dialog.NoButton
-        width: 420
+        width: Math.max(360, Math.min(540, window.width - 48))
         anchors.centerIn: Overlay.overlay
 
         property string actionLabel: App.Globals.t("common.continue_action")
@@ -196,10 +196,14 @@ ApplicationWindow {
                 wrapMode: Text.Wrap
                 text: App.Globals.t("modal.unsaved.content").replace("{action}", unsavedChangesDialog.actionLabel)
             }
-            RowLayout {
+            GridLayout {
+                Layout.fillWidth: true
                 Layout.alignment: Qt.AlignRight
-                spacing: 8
+                columns: width >= 470 ? 3 : 1
+                rowSpacing: 8
+                columnSpacing: 8
                 Button {
+                    Layout.fillWidth: parent.columns === 1
                     text: App.Globals.t("common.cancel")
                     onClicked: {
                         navigation.clearPendingGuardedAction()
@@ -207,6 +211,7 @@ ApplicationWindow {
                     }
                 }
                 Button {
+                    Layout.fillWidth: parent.columns === 1
                     text: App.Globals.t("common.do_not_save_and_continue")
                     onClicked: {
                         unsavedChangesDialog.close()
@@ -214,6 +219,7 @@ ApplicationWindow {
                     }
                 }
                 Button {
+                    Layout.fillWidth: parent.columns === 1
                     text: App.Globals.t("common.save_and_continue")
                     highlighted: true
                     onClicked: {

@@ -15,6 +15,10 @@ ColumnLayout {
     spacing: 4
 
     property bool recording: false
+    readonly property var fieldProps: root.field.props || ({})
+    readonly property string idlePlaceholder: root.fieldProps.idlePlaceholder || qsTr("点击设置")
+    readonly property string recordingPlaceholder: root.fieldProps.recordingPlaceholder || qsTr("按下快捷键…（按 ESC 取消）")
+    readonly property string clearText: root.fieldProps.clearText || qsTr("清除")
 
     // Convert portable Qt sequence string (e.g. "Ctrl+Meta+F9") to
     // platform-native display text.
@@ -128,7 +132,7 @@ ColumnLayout {
                 text: root.recording
                     ? ""
                     : (root.field.value ? root.toDisplayText(root.field.value) : "")
-                placeholderText: root.recording ? qsTr("按下快捷键…（按 ESC 取消）") : qsTr("点击设置")
+                placeholderText: root.recording ? root.recordingPlaceholder : root.idlePlaceholder
 
                 onActiveFocusChanged: {
                     if (!activeFocus) {
@@ -175,7 +179,7 @@ ColumnLayout {
             }
 
             Button {
-                text: qsTr("清除")
+                text: root.clearText
                 enabled: !!root.field.enabled && !!root.field.value && !root.recording
                 onClicked: {
                     root.formController.setValue(root.field.id, null)

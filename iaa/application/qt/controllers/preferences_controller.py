@@ -31,6 +31,7 @@ class PreferencesController(QObject):
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
     languageChanged = Signal(str)
+    interfaceChanged = Signal()
     runtimeChanged = Signal()
     dirtyChanged = Signal(bool)
     fieldUpdated = Signal(str, str)  # (field_id, field_json)
@@ -131,6 +132,7 @@ class PreferencesController(QObject):
             self._sync_context_back()
             old_runtime = self._runtime
             language_changed = self._state.context.shared.interface.language != old_language
+            interface_changed = field_id.startswith('interface.')
             if language_changed:
                 self._rebuild_form()
             self._recompute_runtime()
@@ -140,6 +142,8 @@ class PreferencesController(QObject):
                 self.dirtyChanged.emit(self._state.dirty)
             else:
                 self._emit_updates(old_runtime)
+            if interface_changed:
+                self.interfaceChanged.emit()
         except Exception as exc:
             self.operationFailed.emit(self._tr('notice.field_set_failed', error=exc))
 

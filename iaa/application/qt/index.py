@@ -216,6 +216,7 @@ def main() -> None:
         controller.refreshWindowStyle()
 
     controller.preferencesController.runtimeChanged.connect(apply_interface_preferences)
+    controller.preferencesController.interfaceChanged.connect(apply_interface_preferences)
     apply_interface_preferences()
 
     exit_code = app.exec()

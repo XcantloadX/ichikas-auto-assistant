@@ -47,10 +47,10 @@ def build_preferences_form(language: str) -> tuple[FormSpec[PreferencesContext],
         return translate(language, key)
 
     with FormPage(tr('preferences.title')) as page:
-        with Group('数据收集'):
+        with Group(tr('preferences.group.telemetry')):
             Checkbox(
                 key='telemetry.sentry',
-                label='自动发送匿名错误报告',
+                label=tr('preferences.field.telemetry_sentry'),
                 ref=ref(ctx.shared.telemetry.sentry),
             )
 
@@ -66,99 +66,112 @@ def build_preferences_form(language: str) -> tuple[FormSpec[PreferencesContext],
             )
             Select(
                 key='interface.window_style',
-                label='窗口背景样式',
+                label=tr('preferences.field.window_style'),
                 ref=ref(ctx.shared.interface.window_style),
                 options=[
-                    {'value': '', 'label': '自动'},
-                    {'value': 'mica', 'label': 'Mica（仅 Win 11）'},
-                    {'value': 'blur', 'label': '模糊背景'},
-                    {'value': 'acrylic', 'label': '亚克力（Win 10 1803+）'},
-                    {'value': 'solid', 'label': '纯色背景'},
+                    {'value': '', 'label': tr('preferences.option.auto')},
+                    {'value': 'mica', 'label': tr('preferences.option.window_style.mica')},
+                    {'value': 'blur', 'label': tr('preferences.option.window_style.blur')},
+                    {'value': 'acrylic', 'label': tr('preferences.option.window_style.acrylic')},
+                    {'value': 'solid', 'label': tr('preferences.option.window_style.solid')},
                 ],
             )
             Select(
                 key='interface.color_scheme',
-                label='色彩方案',
+                label=tr('preferences.field.color_scheme'),
                 ref=ref(ctx.shared.interface.color_scheme),
                 options=[
-                    {'value': 'auto', 'label': '跟随系统'},
-                    {'value': 'light', 'label': '浅色'},
-                    {'value': 'dark', 'label': '深色'},
+                    {'value': 'auto', 'label': tr('preferences.option.follow_system')},
+                    {'value': 'light', 'label': tr('preferences.option.color_scheme.light')},
+                    {'value': 'dark', 'label': tr('preferences.option.color_scheme.dark')},
                 ],
             )
             Select(
                 key='interface.theme_color',
-                label='主题色',
+                label=tr('preferences.field.theme_color'),
                 ref=ref(ctx.shared.interface.theme_color).map(
                     to_ui=lambda v: '' if v is None else str(v),
                     from_ui=lambda v: (str(v).strip() or None),
                 ),
                 options=[
-                    {'value': '', 'label': '跟随系统'},
-                    {'value': '#0078d4', 'label': '蓝色（#0078D4）'},
-                    {'value': '#e81123', 'label': '红色（#E81123）'},
-                    {'value': '#107c10', 'label': '绿色（#107C10）'},
-                    {'value': '#ff8c00', 'label': '橙色（#FF8C00）'},
-                    {'value': '#5c2d91', 'label': '紫色（#5C2D91）'},
-                    {'value': '#00b7c3', 'label': '青色（#00B7C3）'},
-                    {'value': '#6b69d6', 'label': '靛蓝（#6B69D6）'},
-                    {'value': '#4a5459', 'label': '石墨灰（#4A5459）'},
+                    {'value': '', 'label': tr('preferences.option.follow_system')},
+                    {'value': '#0078d4', 'label': tr('preferences.option.theme.blue')},
+                    {'value': '#e81123', 'label': tr('preferences.option.theme.red')},
+                    {'value': '#107c10', 'label': tr('preferences.option.theme.green')},
+                    {'value': '#ff8c00', 'label': tr('preferences.option.theme.orange')},
+                    {'value': '#5c2d91', 'label': tr('preferences.option.theme.purple')},
+                    {'value': '#00b7c3', 'label': tr('preferences.option.theme.cyan')},
+                    {'value': '#6b69d6', 'label': tr('preferences.option.theme.indigo')},
+                    {'value': '#4a5459', 'label': tr('preferences.option.theme.graphite')},
                 ],
             )
 
-        with Group('通知'):
+        with Group(tr('preferences.group.notify')):
             Checkbox(
                 key='notify.system',
-                label='系统通知',
+                label=tr('preferences.field.notify_system'),
                 ref=ref(ctx.shared.notify.system),
             )
             Checkbox(
                 key='notify.push.enabled',
-                label='推送通知',
+                label=tr('preferences.field.notify_push'),
                 ref=ref(ctx.shared.notify.push.enabled),
             )
             Select(
                 key='notify.push.type',
-                label='推送类型',
+                label=tr('preferences.field.notify_push_type'),
                 ref=custom_ref(_get_push_type, _set_push_type),
                 options=[
-                    {'value': 'custom', 'label': '自定义命令'},
-                    {'value': 'discord', 'label': 'Discord Webhook'},
+                    {'value': 'custom', 'label': tr('preferences.option.notify_push.custom')},
+                    {'value': 'discord', 'label': tr('preferences.option.notify_push.discord')},
                 ],
                 visible=lambda ctx: ctx.shared.notify.push.enabled,
             )
             Text(
                 key='notify.push.data.command',
-                label='自定义命令',
+                label=tr('preferences.field.notify_custom_command'),
                 ref=custom_ref(_get_push_command, _set_push_command),
-                placeholder='任务完成后执行的命令',
+                placeholder=tr('preferences.placeholder.notify_custom_command'),
                 visible=lambda ctx: ctx.shared.notify.push.enabled and _push_is_custom(ctx),
             )
             Text(
                 key='notify.push.data.webhook_url',
                 label='Webhook URL',
-                help_text='<a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">如何获取 Discord Webhook URL？</a>',
+                help_text=(
+                    '<a href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks">'
+                    f'{tr("preferences.help.discord_webhook")}</a>'
+                ),
                 ref=custom_ref(_get_push_webhook_url, _set_push_webhook_url),
                 placeholder='https://discord.com/api/webhooks/...',
                 visible=lambda ctx: ctx.shared.notify.push.enabled and _push_is_discord(ctx),
             )
 
-        with Group('快捷键'):
+        with Group(tr('preferences.group.hotkeys')):
             Hotkey(
                 key='hotkeys.start',
-                label='启动脚本',
+                label=tr('preferences.field.hotkey_start'),
                 ref=ref(ctx.shared.hotkeys.start).map(
                     to_ui=lambda v: '' if v is None else v,
                     from_ui=lambda v: None if not v else v,
                 ),
+                props={
+                    'idlePlaceholder': tr('preferences.hotkey.placeholder.idle'),
+                    'recordingPlaceholder': tr('preferences.hotkey.placeholder.recording'),
+                    'clearText': tr('preferences.hotkey.clear'),
+                },
             )
             Hotkey(
                 key='hotkeys.stop',
-                label='停止脚本',
+                label=tr('preferences.field.hotkey_stop'),
                 ref=ref(ctx.shared.hotkeys.stop).map(
                     to_ui=lambda v: '' if v is None else v,
                     from_ui=lambda v: None if not v else v,
                 ),
+                props={
+                    'idlePlaceholder': tr('preferences.hotkey.placeholder.idle'),
+                    'recordingPlaceholder': tr('preferences.hotkey.placeholder.recording'),
+                    'clearText': tr('preferences.hotkey.clear'),
+                },
             )
 
     return (
