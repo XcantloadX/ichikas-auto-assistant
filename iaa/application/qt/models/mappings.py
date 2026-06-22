@@ -93,14 +93,20 @@ CHALLENGE_CHARACTER_GROUPS: list[tuple[str, list[GameCharacter]]] = [
 ]
 
 
-def challenge_character_groups_for_ui() -> list[dict[str, object]]:
+def _character_label(character: GameCharacter, language: str) -> str:
+    if language == 'en_US':
+        return f'{character.first_name_en} {character.last_name_en}'.strip()
+    return f'{character.last_name_cn}{character.first_name_cn}'
+
+
+def challenge_character_groups_for_ui(language: str = 'zh_CN') -> list[dict[str, object]]:
     return [
         {
             'group': group_name,
             'options': [
                 {
                     'value': character.value,
-                    'label': f'{character.last_name_cn}{character.first_name_cn}',
+                    'label': _character_label(character, language),
                     'image': f'chibi/{character.value}.png',
                 }
                 for character in characters
@@ -110,13 +116,13 @@ def challenge_character_groups_for_ui() -> list[dict[str, object]]:
     ]
 
 
-def challenge_characters_for_ui() -> list[dict[str, str]]:
+def challenge_characters_for_ui(language: str = 'zh_CN') -> list[dict[str, str]]:
     all_characters = []
     for _, characters in CHALLENGE_CHARACTER_GROUPS:
         for character in characters:
             all_characters.append({
                 'value': character.value,
-                'label': f'{character.last_name_cn}{character.first_name_cn}'
+                'label': _character_label(character, language),
             })
     return all_characters
 
@@ -131,8 +137,19 @@ _CHALLENGE_AWARD_IMAGES: dict[ChallengeLiveAward, str] = {
 }
 
 
-def challenge_awards_for_ui() -> list[dict[str, str]]:
+_CHALLENGE_AWARD_LABELS_EN: dict[ChallengeLiveAward, str] = {
+    ChallengeLiveAward.Crystal: 'Crystals',
+    ChallengeLiveAward.MusicCard: 'Music Card',
+    ChallengeLiveAward.MiracleGem: 'Miracle Gem',
+    ChallengeLiveAward.MagicCloth: 'Magic Cloth',
+    ChallengeLiveAward.Coin: 'Coins',
+    ChallengeLiveAward.IntermediatePracticeScore: 'Practice Score (Intermediate)',
+}
+
+
+def challenge_awards_for_ui(language: str = 'zh_CN') -> list[dict[str, str]]:
+    labels = _CHALLENGE_AWARD_LABELS_EN if language == 'en_US' else ChallengeLiveAward.display_map_cn()
     return [
         {'value': award.value, 'label': label, 'image': _CHALLENGE_AWARD_IMAGES.get(award, '')}
-        for award, label in ChallengeLiveAward.display_map_cn().items()
+        for award, label in labels.items()
     ]

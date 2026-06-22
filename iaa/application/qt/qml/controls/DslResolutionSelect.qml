@@ -8,14 +8,18 @@ import "../../../framework/dsl/qml/components"
 import "../../../framework/dsl/qml/controls"
 
 ColumnLayout {
+    id: root
+
     // 由 FieldRenderer.customLoader 在 onLoaded 设初始值，onFieldChanged 同步后续更新
     property var field: null
     property var formController: null
+    readonly property var fieldProps: field && field.props ? field.props : ({})
+    readonly property string resetText: fieldProps.resetText || "恢复分辨率"
 
     spacing: 4
 
     property var normalizedOptions: {
-        let options = (field && field.options) ? field.options : []
+        let options = (root.field && root.field.options) ? root.field.options : []
         let mapped = []
         for (let i = 0; i < options.length; ++i) {
             let item = options[i]
@@ -42,40 +46,40 @@ ColumnLayout {
 
     // field 变化时（初始注入或后续更新）用 callLater 确保 model 先更新再设 currentIndex
     onFieldChanged: Qt.callLater(function() {
-        combo.currentIndex = indexOfValue(normalizedOptions, field ? field.value : null)
+        combo.currentIndex = root.indexOfValue(root.normalizedOptions, root.field ? root.field.value : null)
     })
 
     FormField {
         Layout.fillWidth: true
-        labelText: field ? field.label : ""
-        helpText: (field && field.helpText) ? field.helpText : ""
-        errorText: (field && field.error) ? field.error : ""
+        labelText: root.field ? root.field.label : ""
+        helpText: (root.field && root.field.helpText) ? root.field.helpText : ""
+        errorText: (root.field && root.field.error) ? root.field.error : ""
 
         RowLayout {
             Select {
                 id: combo
                 Layout.fillWidth: true
-                enabled: !!(field && field.enabled)
-                model: normalizedOptions
+                enabled: !!(root.field && root.field.enabled)
+                model: root.normalizedOptions
                 textRole: "label"
                 valueRole: "value"
 
                 onActivated: function(index) {
-                    if (!field || !formController) return
-                    let options = normalizedOptions
+                    if (!root.field || !root.formController) return
+                    let options = root.normalizedOptions
                     if (index < 0 || index >= options.length) return
                     let item = options[index]
                     let value = (item && typeof item === "object") ? item.value : item
-                    formController.setValue(field.id, value)
+                    root.formController.setValue(root.field.id, value)
                 }
             }
 
             Button {
-                text: "恢复分辨率"
-                enabled: !!(field && field.enabled)
+                text: root.resetText
+                enabled: !!(root.field && root.field.enabled)
                 onClicked: {
-                    if (field && formController)
-                        formController.triggerAction(field.id, "reset", "{}")
+                    if (root.field && root.formController)
+                        root.formController.triggerAction(root.field.id, "reset", "{}")
                 }
             }
         }

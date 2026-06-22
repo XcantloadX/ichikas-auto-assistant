@@ -86,6 +86,7 @@ class AppController(QObject):
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
         self.preferencesController.languageChanged.connect(self.i18nController.setLanguage)
+        self.preferencesController.languageChanged.connect(self.settingsController.setLanguage)
         self.service.scheduler.on_error = self._on_scheduler_error
 
     def _on_config_switched(self) -> None:

@@ -20,15 +20,10 @@ from iaa.application.framework.dsl import (
     custom_ref,
 )
 from .context import FormContext
+from iaa.application.qt.i18n import translate
 from ..models import (
     SONG_KEEP_UNCHANGED,
     normalize_song_name_input,
-    LIFECYCLE_TYPE_DISPLAY_MAP,
-    CONNECTION_TYPE_DISPLAY_MAP,
-    SERVER_DISPLAY_MAP,
-    LINK_DISPLAY_MAP,
-    CONTROL_IMPL_DISPLAY_MAP,
-    RESOLUTION_METHOD_DISPLAY_MAP,
     SONG_NAME_OPTIONS,
     challenge_character_groups_for_ui,
     challenge_awards_for_ui,
@@ -49,6 +44,20 @@ from iaa.definitions.enums import (
 )
 
 ctx, ref = bind(FormContext)
+
+
+def _tr(language: str, key: str) -> str:
+    return translate(language, key)
+
+
+def _ctx_tr(state: FormContext, key: str) -> str:
+    return translate(state.shared.interface.language, key)
+
+
+def _shop_item_label(item: ShopItem, language: str) -> str:
+    if language == 'en_US':
+        return _tr(language, f'settings.option.event_shop.{item.value}')
+    return item.display('cn')
 
 
 # ── 辅助判断 ──────────────────────────────────────────────────────────────────
@@ -91,26 +100,27 @@ def _validate_tcp_port(value: object, state: FormContext) -> str | None:
         return None
     port = str(value or '').strip()
     if not port:
-        return '端口不能为空'
+        return _ctx_tr(state, 'settings.error.tcp_port_required')
     if not port.isdigit():
-        return '端口必须是数字'
+        return _ctx_tr(state, 'settings.error.tcp_port_numeric')
     return None
 
 def _validate_start_command(value: object, state: FormContext) -> str | None:
     if not _is_custom(state):
         return None
     if not str(value or '').strip():
-        return '启动命令不能为空'
+        return _ctx_tr(state, 'settings.error.start_command_required')
     return None
 
 def _validate_watch_ad_wait_sec(value: object, _state: FormContext) -> str | None:
+    state = _state
     text = str(value or '').strip()
     if not text:
-        return 'CM 广告等待秒数不能为空'
+        return _ctx_tr(state, 'settings.error.watch_ad_wait_sec_required')
     if not text.isdigit():
-        return 'CM 广告等待秒数必须是数字'
+        return _ctx_tr(state, 'settings.error.watch_ad_wait_sec_numeric')
     if int(text) <= 0:
-        return 'CM 广告等待秒数必须大于 0'
+        return _ctx_tr(state, 'settings.error.watch_ad_wait_sec_positive')
     return None
 
 
@@ -362,218 +372,264 @@ def ResolutionSelect(
 def build_settings_form(
     mumu_instances: list[dict[str, Any]],
     *,
+    language: str = 'zh_CN',
     on_mumu_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
-    lifecycle_options = [
-        {'value': k, 'label': v} for k, v in LIFECYCLE_TYPE_DISPLAY_MAP.items()
-        if not (k in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
-        and not (k == 'playcover' and platform.system() != 'Darwin')
-    ]
-    control_impl_options = [{'value': k, 'label': v} for k, v in CONTROL_IMPL_DISPLAY_MAP.items()]
-    challenge_char_groups = challenge_character_groups_for_ui()
-    challenge_awards = challenge_awards_for_ui()
-    event_shop_items = [{'value': item.value, 'label': item.display('cn')} for item in ShopItem]
+    def tr(key: str) -> str:
+        return _tr(language, key)
 
-    with FormPage('配置') as page:
-        with Group('游戏设置'):
+    lifecycle_options = [
+        {'value': 'mumu_v5', 'label': 'MuMu 12 (v5)'},
+        {'value': 'mumu', 'label': 'MuMu 12 (v4)'},
+        {'value': 'custom', 'label': tr('settings.option.lifecycle.custom')},
+        {'value': 'none', 'label': tr('settings.option.lifecycle.none')},
+        {'value': 'playcover', 'label': 'PlayCover'},
+    ]
+    lifecycle_options = [
+        option for option in lifecycle_options
+        if not (option['value'] in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
+        and not (option['value'] == 'playcover' and platform.system() != 'Darwin')
+    ]
+    control_impl_options = [
+        {'value': 'nemu_ipc', 'label': 'Nemu IPC'},
+        {'value': 'adb', 'label': 'ADB'},
+        {'value': 'uiautomator', 'label': 'UIAutomator2'},
+        {'value': 'scrcpy', 'label': 'Scrcpy'},
+    ]
+    challenge_char_groups = challenge_character_groups_for_ui(language)
+    challenge_awards = challenge_awards_for_ui(language)
+    event_shop_items = [{'value': item.value, 'label': _shop_item_label(item, language)} for item in ShopItem]
+    server_options = [
+        {'value': 'jp', 'label': tr('settings.option.server.jp')},
+        {'value': 'tw', 'label': tr('settings.option.server.tw')},
+        {'value': 'cn', 'label': tr('settings.option.server.cn')},
+        {'value': 'en', 'label': tr('settings.option.server.en')},
+    ]
+    link_options = [
+        {'value': 'no', 'label': tr('settings.option.link.no')},
+        {'value': 'google', 'label': tr('settings.option.link.google')},
+        {'value': 'google_play', 'label': 'Google Play'},
+    ]
+    connection_options = [
+        {'value': 'usb', 'label': 'USB'},
+        {'value': 'tcp', 'label': tr('settings.option.connection.tcp')},
+    ]
+    resolution_options = [
+        {'value': 'auto', 'label': tr('settings.option.resolution.auto')},
+        {'value': 'keep', 'label': tr('settings.option.resolution.keep')},
+        {'value': 'wm_size', 'label': tr('settings.option.resolution.wm_size')},
+    ]
+    song_options = [
+        {'value': SONG_KEEP_UNCHANGED, 'label': tr('settings.option.live.song.keep')},
+        *[
+            {'value': song, 'label': song}
+            for song in SONG_NAME_OPTIONS
+            if song != SONG_KEEP_UNCHANGED
+        ],
+    ]
+    ap_keep = '保持现状'
+    ap_maximum = '最大值'
+    ap_options = [
+        {'value': ap_keep, 'label': tr('settings.option.live.ap.keep')},
+        {'value': ap_maximum, 'label': tr('settings.option.live.ap.maximum')},
+        *[str(i) for i in range(0, 11)],
+    ]
+
+    with FormPage(tr('settings.title')) as page:
+        with Group(tr('settings.group.game')):
             Segmented(
                 key='game.server',
-                label='服务器',
+                label=tr('settings.field.game.server'),
                 ref=ref(ctx.conf.game.server),
-                options=[{'value': k, 'label': v} for k, v in SERVER_DISPLAY_MAP.items()],
+                options=server_options,
                 on_change=_on_server_change,
-                help_text='''广告：现招募维护者维护除日服以外的服务器适配~ 如果你有兴趣参与维护，请联系作者。
-<hr>
-维护者：
-<ul>
-<li>日服：作者本人</li>
-<li>台服：空缺</li>
-<li>国服：空缺</li>
-<li>国际服：空缺</li>
-<li>韩服：空缺</li>
-</ul>
-'''
+                help_text=tr('settings.help.server'),
             )
             Segmented(
                 key='game.linkAccount',
-                label='引继账号',
+                label=tr('settings.field.game.link_account'),
                 ref=ref(ctx.conf.game.link_account),
                 visible=lambda s: s.conf.game.server == 'jp',
-                options=[{'value': k, 'label': v} for k, v in LINK_DISPLAY_MAP.items()],
-                help_text='每次启动游戏的时候是否使用引继账号登录（仅限日服）',
+                options=link_options,
+                help_text=tr('settings.help.link_account'),
             )
 
-        with Group('设备设置'):
+        with Group(tr('settings.group.device')):
             Segmented(
                 key='device.lifecycleType',
-                label='设备类型',
+                label=tr('settings.field.device.lifecycle_type'),
                 ref=custom_ref(_get_lifecycle_type, _set_lifecycle_type),
                 options=lifecycle_options,
             )
             # MuMu 专属
             Select(
                 key='device.mumuInstanceId',
-                label='多开实例',
+                label=tr('settings.field.device.mumu_instance'),
                 ref=custom_ref(_get_mumu_instance_id, _set_mumu_instance_id),
                 visible=_lifecycle_is(MuMuDevice),
                 options=mumu_instances,
                 refresh=on_mumu_refresh,
+                props={
+                    'refreshText': tr('settings.action.refresh'),
+                    'loadingText': tr('settings.action.loading'),
+                },
             )
             Checkbox(
                 key='device.checkAndStart',
-                label='检查并启动',
+                label=tr('settings.field.device.check_and_start'),
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
                 visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice),
             )
             # 自定义专属
             Text(
                 key='device.customStartCommand',
-                label='启动命令',
+                label=tr('settings.field.device.custom_start_command'),
                 ref=custom_ref(_get_custom_start_command, _set_custom_start_command),
                 visible=_lifecycle_is(CustomDevice),
                 validators=[_validate_start_command],
-                help_text='将会通过 shell 方式执行。因此编写时请注意转义等问题。<br>下面两个命令也是一样的。'
+                help_text=tr('settings.help.custom_start_command'),
             )
             Checkbox(
                 key='device.customWaitStartCommand',
-                label='等待启动命令退出后才继续',
+                label=tr('settings.field.device.custom_wait_start_command'),
                 ref=custom_ref(_get_custom_wait_start_command, _set_custom_wait_start_command),
                 visible=_lifecycle_is(CustomDevice),
             )
             Text(
                 key='device.customStopCommand',
-                label='结束命令',
+                label=tr('settings.field.device.custom_stop_command'),
                 ref=custom_ref(_get_custom_stop_command, _set_custom_stop_command),
                 visible=_lifecycle_is(CustomDevice),
-                placeholder='可选。如果为空，将会自动终止启动命令中的进程'
+                placeholder=tr('settings.placeholder.custom_stop_command'),
             )
             Text(
                 key='device.customRunningCommand',
-                label='运行检测命令',
+                label=tr('settings.field.device.custom_running_command'),
                 ref=custom_ref(_get_custom_running_command, _set_custom_running_command),
                 visible=_lifecycle_is(CustomDevice),
-                placeholder='可选。如果为空，将会使用默认的运行检测方式'
+                placeholder=tr('settings.placeholder.custom_running_command'),
             )
 
-        with Group('连接设置', visible=_show_connection_section):
+        with Group(tr('settings.group.connection'), visible=_show_connection_section):
             Segmented(
                 key='device.connectionType',
-                label='连接方式',
+                label=tr('settings.field.device.connection_type'),
                 ref=custom_ref(_get_connection_type, _set_connection_type),
                 visible=_show_connection_section,
-                options=[{'value': k, 'label': v} for k, v in CONNECTION_TYPE_DISPLAY_MAP.items()],
+                options=connection_options,
             )
             # USB 字段
             Text(
                 key='device.usbSerial',
-                label='设备序列号',
+                label=tr('settings.field.device.serial'),
                 ref=custom_ref(_get_usb_serial, _set_usb_serial),
                 visible=_show_usb_serial,
-                placeholder='留空自动选择第一个 USB 设备',
+                placeholder=tr('settings.placeholder.usb_serial'),
             )
             # TCP 字段
             Text(
                 key='device.tcpIp',
-                label='ADB IP',
+                label=tr('settings.field.device.tcp_ip'),
                 ref=custom_ref(_get_tcp_ip, _set_tcp_ip),
                 visible=_show_tcp_fields,
             )
             Text(
                 key='device.tcpPort',
-                label='ADB 端口',
+                label=tr('settings.field.device.tcp_port'),
                 ref=custom_ref(_get_tcp_port, _set_tcp_port),
                 visible=_show_tcp_fields,
                 validators=[_validate_tcp_port],
             )
             Checkbox(
                 key='device.tcpRunAdbConnect',
-                label='执行 adb connect',
+                label=tr('settings.field.device.tcp_run_adb_connect'),
                 ref=custom_ref(_get_tcp_run_adb_connect, _set_tcp_run_adb_connect),
                 visible=_show_tcp_fields,
-                help_text='如果需要通过「IP:端口」的形式连接设备，需要勾选。'
+                help_text=tr('settings.help.tcp_run_adb_connect'),
             )
             Text(
                 key='device.tcpDeviceSerial',
-                label='设备序列号',
+                label=tr('settings.field.device.serial'),
                 ref=custom_ref(_get_tcp_device_serial, _set_tcp_device_serial),
                 visible=_show_tcp_fields,
-                placeholder='留空则默认使用 IP:端口 作为序列号'
+                placeholder=tr('settings.placeholder.tcp_device_serial'),
             )
 
-        with Group('控制方式', visible=lambda s: not _is_playcover(s)):
+        with Group(tr('settings.group.control'), visible=lambda s: not _is_playcover(s)):
             Segmented(
                 key='device.controlImpl',
-                label='控制方式',
+                label=tr('settings.field.device.control_impl'),
                 ref=ref(ctx.conf.device.control_impl),
                 options=lambda s: [
                     o for o in control_impl_options
                     if not (o['value'] == 'nemu_ipc' and not isinstance(s.conf.device.lifecycle, MuMuDevice))
                 ],
-                help_text='对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式，对于其他模拟器与物理机，推荐使用 <b>scrcpy</b> 方式',
+                help_text=tr('settings.help.control_impl'),
             )
             NoticeBlock(
-                content='MuMu 模拟器选择 NemuIPC 效果最佳',
+                content=tr('settings.notice.nemu_ipc_tip'),
                 style='tip',
                 visible=lambda s: _is_mumu(s) and s.conf.device.control_impl != 'nemu_ipc'
             )
             Checkbox(
                 key='device.scrcpyVirtualDisplay',
-                label='使用虚拟显示器',
+                label=tr('settings.field.device.scrcpy_virtual_display'),
                 ref=ref(ctx.conf.device.scrcpy_virtual_display),
                 visible=lambda s: s.conf.device.control_impl == 'scrcpy',
             )
             ResolutionSelect(
                 key='device.resolutionMethod',
-                label='分辨率设置',
+                label=tr('settings.field.device.resolution_method'),
                 ref=ref(ctx.conf.device.resolution_method),
-                options=[{'value': k, 'label': v} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()],
+                options=resolution_options,
                 on_reset=on_reset_resolution,
+                props={'resetText': tr('settings.action.reset_resolution')},
             )
 
-        with Group('演出设置'):
+        with Group(tr('settings.group.live')):
             Select(
                 key='live.songName',
-                label='歌曲名称',
+                label=tr('settings.field.live.song_name'),
                 ref=ref(ctx.conf.live.song_name).map(
                     to_ui=lambda v: v or SONG_KEEP_UNCHANGED,
                     from_ui=lambda v: normalize_song_name_input(str(v)),
                 ),
-                options=SONG_NAME_OPTIONS,
+                options=song_options,
             )
             Select(
                 key='live.apMultiplier',
-                label='AP 倍率',
+                label=tr('settings.field.live.ap_multiplier'),
                 ref=ref(ctx.conf.live.ap_multiplier).map(
-                    to_ui=lambda v: '保持现状' if v is None else ('最大值' if v == 'maximum' else str(v)),
+                    to_ui=lambda v: ap_keep if v is None else (ap_maximum if v == 'maximum' else str(v)),
                     from_ui=lambda v: (
                         None
-                        if str(v) == '保持现状'
-                        else ('maximum' if str(v) == '最大值' else int(str(v)))
+                        if str(v) == ap_keep
+                        else ('maximum' if str(v) == ap_maximum else int(str(v)))
                     ),
                 ),
-                options=['保持现状', '最大值', *[str(i) for i in range(0, 11)]],
+                options=ap_options,
             )
             Checkbox(
                 key='live.autoSetUnit',
-                label='自动编队',
+                label=tr('settings.field.live.auto_set_unit'),
                 ref=ref(ctx.conf.live.auto_set_unit),
             )
             Checkbox(
                 key='live.appendFc',
-                label='追加一次 FullCombo 演出',
+                label=tr('settings.field.live.append_fc'),
                 ref=ref(ctx.conf.live.append_fc),
             )
             Checkbox(
                 key='live.appendRandom',
-                label='追加一首随机歌曲',
+                label=tr('settings.field.live.append_random'),
                 ref=ref(ctx.conf.live.prepend_random),
             )
 
-        with Group('挑战演出设置'):
+        with Group(tr('settings.group.challenge_live')):
             IconItemPicker(
                 key='challengeLive.characters',
-                label='角色',
+                label=tr('settings.field.challenge.characters'),
                 ref=ref(ctx.conf.challenge_live.characters).map(
                     to_ui=lambda values: values[0].value if values else None,
                     from_ui=lambda v: [GameCharacter(str(v))],
@@ -584,7 +640,7 @@ def build_settings_form(
             )
             IconItemPicker(
                 key='challengeLive.award',
-                label='奖励',
+                label=tr('settings.field.challenge.award'),
                 ref=ref(ctx.conf.challenge_live.award).map(
                     to_ui=lambda v: v.value,
                     from_ui=lambda v: ChallengeLiveAward(str(v)),
@@ -594,15 +650,15 @@ def build_settings_form(
                 icon_size=56,
             )
 
-        with Group('CM 设置'):
+        with Group(tr('settings.group.cm')):
             Text(
                 key='cm.watchAdWaitSec',
-                label='广告等待秒数',
+                label=tr('settings.field.cm.watch_ad_wait_sec'),
                 ref=custom_ref(_get_watch_ad_wait_sec, _set_watch_ad_wait_sec),
                 validators=[_validate_watch_ad_wait_sec],
             )
 
-        with Group('活动商店设置'):
+        with Group(tr('settings.group.event_shop')):
             TransferList(
                 key='eventShop.selectedItems',
                 label=None,
@@ -613,24 +669,30 @@ def build_settings_form(
                 options=event_shop_items,
                 reorderable=True,
                 height=220,
+                props={
+                    'addText': tr('settings.action.add'),
+                    'removeText': tr('settings.action.remove'),
+                    'moveUpText': tr('settings.action.move_up'),
+                    'moveDownText': tr('settings.action.move_down'),
+                },
             )
 
-        with Group('开发者设置（仅供开发使用！）'):
+        with Group(tr('settings.group.developer')):
             Checkbox(
                 key='scheduler.dumpSekaiHomeEnabled',
-                label='dump 烤森',
+                label=tr('settings.field.developer.dump_sekai_home'),
                 ref=ref(ctx.conf.scheduler.dump_sekai_home_enabled),
             )
             Checkbox(
                 key='developer.sekaiDumpPostProcess',
-                label='dump 烤森 - 后处理与预打标',
+                label=tr('settings.field.developer.sekai_dump_post_process'),
                 ref=ref(ctx.conf.developer.sekai_dump_post_process),
             )
             Checkbox(
                 key='developer.screenRecordingEnabled',
-                label='自动录屏（需安装 ffmpeg）',
+                label=tr('settings.field.developer.screen_recording'),
                 ref=ref(ctx.conf.developer.screen_recording_enabled),
-                help_text='脚本启动时自动录屏，结束时自动结束。输出到 dumps/screen_records/ 目录。',
+                help_text=tr('settings.help.screen_recording'),
             )
 
     return (

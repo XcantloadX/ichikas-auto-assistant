@@ -11,6 +11,9 @@ ColumnLayout {
 
     required property var field
     required property var formController
+    readonly property var fieldProps: root.field.props || ({})
+    readonly property string refreshText: root.fieldProps.refreshText || "刷新"
+    readonly property string loadingText: root.fieldProps.loadingText || "获取中..."
     property var normalizedOptions: {
         let options = root.field.options || []
         let mapped = []
@@ -78,7 +81,7 @@ ColumnLayout {
 
             Button {
                 visible: !!root.field.refreshable
-                text: root.field.loading ? "获取中..." : "刷新"
+                text: root.field.loading ? root.loadingText : root.refreshText
                 enabled: !!root.field.enabled
                 onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
             }

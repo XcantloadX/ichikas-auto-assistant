@@ -14,6 +14,11 @@ ColumnLayout {
 
     property int availableIndex: -1
     property int selectedIndex: -1
+    readonly property var fieldProps: root.field.props || ({})
+    readonly property string addText: root.fieldProps.addText || "← 添加"
+    readonly property string removeText: root.fieldProps.removeText || "移除 →"
+    readonly property string moveUpText: root.fieldProps.moveUpText || "上移"
+    readonly property string moveDownText: root.fieldProps.moveDownText || "下移"
     property var normalizedOptions: {
         let options = root.field.options || []
         let mapped = []
@@ -172,22 +177,22 @@ ColumnLayout {
 
             ColumnLayout {
                 Button {
-                    text: "← 添加"
+                    text: root.addText
                     enabled: !!root.field.enabled
                     onClicked: root.moveToSelected()
                 }
                 Button {
-                    text: "移除 →"
+                    text: root.removeText
                     enabled: !!root.field.enabled
                     onClicked: root.moveToAvailable()
                 }
                 Button {
-                    text: "上移"
+                    text: root.moveUpText
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveUp()
                 }
                 Button {
-                    text: "下移"
+                    text: root.moveDownText
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveDown()
                 }

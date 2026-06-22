@@ -5,6 +5,9 @@ from unittest.mock import Mock
 
 from iaa.application.qt.controllers.i18n_controller import I18nController
 from iaa.application.qt.controllers.preferences_controller import PreferencesController
+from iaa.application.qt.controllers.settings_controller import SettingsController
+from iaa.config.base import IaaConfig
+from iaa.config.schemas import GameConfig, LiveConfig
 from iaa.config.shared import SharedConfig
 
 
@@ -12,6 +15,21 @@ def make_config_service(shared: SharedConfig | None = None) -> SimpleNamespace:
     return SimpleNamespace(
         shared=shared or SharedConfig(),
         save_shared=Mock(),
+    )
+
+
+def make_iaa_service(shared: SharedConfig | None = None) -> SimpleNamespace:
+    config = SimpleNamespace(
+        conf=IaaConfig(name='test', description='test', game=GameConfig(), live=LiveConfig()),
+        shared=shared or SharedConfig(),
+        current_config_name='default',
+        save=Mock(),
+        save_shared=Mock(),
+        list=Mock(return_value=['default']),
+    )
+    return SimpleNamespace(
+        config=config,
+        scheduler=SimpleNamespace(device=None, connect_device=Mock()),
     )
 
 
@@ -38,6 +56,7 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('status.ready'), 'Ready')
         self.assertEqual(controller.t('notice.save_success'), 'Saved')
         self.assertEqual(controller.t('dialog.save_report.title'), 'Save Report')
+        self.assertEqual(controller.t('settings.group.game'), 'Game Settings')
 
     def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
         config_service = make_config_service()
@@ -103,6 +122,57 @@ class QtI18nTests(unittest.TestCase):
 
         self.assertEqual(config_service.shared.interface.color_scheme, 'dark')
         self.assertEqual(changed_interfaces, [True])
+
+    def test_settings_controller_rebuilds_config_labels_for_language(self) -> None:
+        service = make_iaa_service()
+        controller = SettingsController(service)
+
+        initial_runtime = json.loads(controller.getRuntime())
+        self.assertEqual(initial_runtime['title'], '配置')
+        self.assertEqual(initial_runtime['groups'][0]['title'], '游戏设置')
+        self.assertEqual(initial_runtime['fieldMap']['game.server']['label'], '服务器')
+
+        service.config.shared.interface.language = 'en_US'
+        controller.setLanguage('en_US')
+
+        updated_runtime = json.loads(controller.getRuntime())
+        self.assertFalse(updated_runtime['dirty'])
+        self.assertEqual(updated_runtime['title'], 'Config')
+        self.assertEqual(updated_runtime['groups'][0]['title'], 'Game Settings')
+        self.assertEqual(updated_runtime['groups'][1]['title'], 'Device Settings')
+        self.assertEqual(updated_runtime['fieldMap']['game.server']['label'], 'Server')
+        self.assertEqual(
+            updated_runtime['fieldMap']['game.server']['options'][3],
+            {'value': 'en', 'label': 'Global / EN'},
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['device.lifecycleType']['options'][2],
+            {'value': 'custom', 'label': 'Custom emulator'},
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['device.mumuInstanceId']['options'][0],
+            {'value': '', 'label': 'Default'},
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['device.mumuInstanceId']['props']['refreshText'],
+            'Refresh',
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['device.resolutionMethod']['props']['resetText'],
+            'Reset Resolution',
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['live.apMultiplier']['options'][0],
+            {'value': '保持现状', 'label': 'Keep current'},
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['challengeLive.characters']['options'][1]['options'][0]['label'],
+            'Ichika Hoshino',
+        )
+        self.assertEqual(
+            updated_runtime['fieldMap']['eventShop.selectedItems']['props']['addText'],
+            '← Add',
+        )
 
 
 if __name__ == '__main__':
