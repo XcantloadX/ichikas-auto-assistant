@@ -545,14 +545,14 @@ def build_settings_form(
                 key='live.apMultiplier',
                 label='AP 倍率',
                 ref=ref(ctx.conf.live.ap_multiplier).map(
-                    to_ui=lambda v: '保持现状' if v is None else str(v),
+                    to_ui=lambda v: '保持现状' if v is None else ('最大值' if v == 'maximum' else str(v)),
                     from_ui=lambda v: (
                         None
                         if str(v) == '保持现状'
-                        else ('maximum' if str(v) == 'maximum' else int(str(v)))
+                        else ('maximum' if str(v) == '最大值' else int(str(v)))
                     ),
                 ),
-                options=['保持现状', 'maximum', *[str(i) for i in range(0, 11)]],
+                options=['保持现状', '最大值', *[str(i) for i in range(0, 11)]],
             )
             Checkbox(
                 key='live.autoSetUnit',

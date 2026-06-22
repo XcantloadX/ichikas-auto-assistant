@@ -40,6 +40,14 @@ Dialog {
         }
     }
 
+    function apMultiplierLabel(value) {
+        return value === "maximum" ? "最大值" : value
+    }
+
+    function apMultiplierValue(label) {
+        return label === "最大值" ? "maximum" : label
+    }
+
     onOpened: {
         presets = JSON.parse(runController.builtinAutoPresetsJson())
         formData = defaultPayload()
@@ -129,10 +137,10 @@ Dialog {
         RowLayout {
             Label { text: "AP 倍率" }
             Select {
-                model: ["保持现状", "maximum", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+                model: ["保持现状", "最大值", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
                 enabled: formData.playMode !== "script_auto"
-                currentIndex: model.indexOf(formData.apMultiplier)
-                onActivated: formData = Object.assign({}, formData, { apMultiplier: model[currentIndex] })
+                currentIndex: model.indexOf(root.apMultiplierLabel(formData.apMultiplier))
+                onActivated: formData = Object.assign({}, formData, { apMultiplier: root.apMultiplierValue(model[currentIndex]) })
             }
         }
 
