@@ -320,12 +320,22 @@ class SchedulerService:
                     from iaa.notify import NotificationType, send_notification
                     from iaa.config.manager import read_shared
                     shared_config = read_shared()
-                    message_map = {
-                        'success': '任务执行完成',
-                        'interrupted': '任务已中断',
-                        'failed': '任务执行失败',
-                        'crashed': '调度器发生错误',
-                    }
+                    if shared_config.interface.language == 'en_US':
+                        message_map = {
+                            'success': 'Tasks completed',
+                            'interrupted': 'Tasks interrupted',
+                            'failed': 'Tasks failed',
+                            'crashed': 'Scheduler error',
+                        }
+                        fallback_message = 'Tasks finished'
+                    else:
+                        message_map = {
+                            'success': '任务执行完成',
+                            'interrupted': '任务已中断',
+                            'failed': '任务执行失败',
+                            'crashed': '调度器发生错误',
+                        }
+                        fallback_message = '任务结束'
                     type_map: dict[str, NotificationType] = {
                         'success': 'success',
                         'interrupted': 'info',
@@ -334,7 +344,7 @@ class SchedulerService:
                     }
                     send_notification(
                         'iaa',
-                        message_map.get(completion_status, '任务结束'),
+                        message_map.get(completion_status, fallback_message),
                         shared_config.notify,
                         type=type_map.get(completion_status, 'info'),
                     )

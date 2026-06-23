@@ -55,6 +55,7 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('task.activity_story'), 'Event Story')
         self.assertEqual(controller.t('status.ready'), 'Ready')
         self.assertEqual(controller.t('progress.task_started'), 'Starting')
+        self.assertEqual(controller.t('progress.returning_home'), 'Returning home')
         self.assertEqual(controller.t('notice.save_success'), 'Saved')
         self.assertEqual(controller.t('dialog.save_report.title'), 'Save Report')
         self.assertEqual(controller.t('settings.group.game'), 'Game Settings')
