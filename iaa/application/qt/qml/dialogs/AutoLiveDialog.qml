@@ -7,10 +7,13 @@ import "../../../framework/dsl/qml/controls"
 Dialog {
     id: root
     modal: true
-    title: "自动演出"
+    title: App.Globals.t("task.auto_live")
     width: 620
     anchors.centerIn: Overlay.overlay
     property var presets: []
+
+    readonly property string apKeepValue: "保持现状"
+    readonly property string songKeepValue: "保持不变"
 
     function defaultPayload() {
         return {
@@ -20,8 +23,8 @@ Dialog {
             playMode: "game_auto",
             debugEnabled: false,
             autoSetUnit: false,
-            apMultiplier: "保持现状",
-            songName: "保持不变"
+            apMultiplier: root.apKeepValue,
+            songName: root.songKeepValue
         }
     }
 
@@ -36,16 +39,65 @@ Dialog {
             debugEnabled: preset.debugEnabled,
             autoSetUnit: preset.autoSetUnit,
             apMultiplier: preset.apMultiplier,
-            songName: preset.songName || "保持不变"
+            songName: preset.songName || root.songKeepValue
         }
     }
 
     function apMultiplierLabel(value) {
-        return value === "maximum" ? "最大值" : value
+        if (value === root.apKeepValue) {
+            return App.Globals.t("auto_live.ap.keep")
+        }
+        if (value === "maximum") {
+            return App.Globals.t("auto_live.ap.maximum")
+        }
+        return value
     }
 
     function apMultiplierValue(label) {
-        return label === "最大值" ? "maximum" : label
+        if (label === App.Globals.t("auto_live.ap.keep")) {
+            return root.apKeepValue
+        }
+        if (label === App.Globals.t("auto_live.ap.maximum")) {
+            return "maximum"
+        }
+        return label
+    }
+
+    function apMultiplierOptions() {
+        return [
+            App.Globals.t("auto_live.ap.keep"),
+            App.Globals.t("auto_live.ap.maximum"),
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
+        ]
+    }
+
+    function songNameLabel(value) {
+        return value === root.songKeepValue ? App.Globals.t("auto_live.song.keep") : value
+    }
+
+    function songNameValue(label) {
+        return label === App.Globals.t("auto_live.song.keep") ? root.songKeepValue : label
+    }
+
+    function songNameOptions() {
+        return [
+            App.Globals.t("auto_live.song.keep"),
+            "メルト",
+            "独りんぼエンヴィー"
+        ]
+    }
+
+    function presetNameLabel(name) {
+        if (name === "CLEAR 10 首歌") {
+            return App.Globals.t("auto_live.preset.clear_10")
+        }
+        if (name === "FC 10 次") {
+            return App.Globals.t("auto_live.preset.fc_10")
+        }
+        if (name === "队长次数") {
+            return App.Globals.t("auto_live.preset.leader_count")
+        }
+        return name
     }
 
     onOpened: {
@@ -60,20 +112,20 @@ Dialog {
 
         RowLayout {
             Layout.fillWidth: true
-            Label { text: "预设" }
+            Label { text: App.Globals.t("auto_live.preset") }
             Repeater {
                 model: root.presets
                 delegate: Button {
-                    text: modelData.name
+                    text: root.presetNameLabel(modelData.name)
                     onClicked: root.applyPreset(modelData)
                 }
             }
             Button {
-                text: "上次设定"
+                text: App.Globals.t("auto_live.preset.last")
                 onClicked: {
                     var raw = runController.lastAutoPresetJson()
                     if (!raw) {
-                        App.Notice.show("error", "没有找到上次设定")
+                        App.Notice.show("error", App.Globals.t("auto_live.notice.no_last_preset"))
                         return
                     }
                     root.applyPreset(JSON.parse(raw))
@@ -82,97 +134,97 @@ Dialog {
         }
 
         RowLayout {
-            Label { text: "演出次数" }
+            Label { text: App.Globals.t("auto_live.count") }
             RadioButton {
-                text: "指定次数"
+                text: App.Globals.t("auto_live.count.specify")
                 checked: formData.countMode === "specify"
                 onClicked: formData = Object.assign({}, formData, { countMode: "specify" })
             }
             TextField {
                 enabled: formData.countMode === "specify"
                 text: formData.count
-                placeholderText: "次数"
+                placeholderText: App.Globals.t("auto_live.count.placeholder")
                 onTextEdited: formData = Object.assign({}, formData, { count: text })
             }
             RadioButton {
-                text: "直到 AP 耗尽"
+                text: App.Globals.t("auto_live.count.all")
                 checked: formData.countMode === "all"
                 onClicked: formData = Object.assign({}, formData, { countMode: "all" })
             }
         }
 
         RowLayout {
-            Label { text: "循环模式" }
+            Label { text: App.Globals.t("auto_live.loop_mode") }
             RadioButton {
-                text: "单曲循环"
+                text: App.Globals.t("auto_live.loop.single")
                 checked: formData.loopMode === "single"
                 onClicked: formData = Object.assign({}, formData, { loopMode: "single" })
             }
             RadioButton {
-                text: "列表顺序"
+                text: App.Globals.t("auto_live.loop.list")
                 checked: formData.loopMode === "list"
                 onClicked: formData = Object.assign({}, formData, { loopMode: "list" })
             }
             RadioButton {
-                text: "列表随机"
+                text: App.Globals.t("auto_live.loop.random")
                 checked: formData.loopMode === "random"
                 onClicked: formData = Object.assign({}, formData, { loopMode: "random" })
             }
         }
 
         RowLayout {
-            Label { text: "自动模式" }
+            Label { text: App.Globals.t("auto_live.play_mode") }
             RadioButton {
-                text: "游戏自动"
+                text: App.Globals.t("auto_live.play.game_auto")
                 checked: formData.playMode === "game_auto"
                 onClicked: formData = Object.assign({}, formData, { playMode: "game_auto" })
             }
             RadioButton {
-                text: "脚本自动"
+                text: App.Globals.t("auto_live.play.script_auto")
                 checked: formData.playMode === "script_auto"
                 onClicked: formData = Object.assign({}, formData, { playMode: "script_auto", apMultiplier: "0" })
             }
         }
 
         RowLayout {
-            Label { text: "AP 倍率" }
+            Label { text: App.Globals.t("auto_live.ap_multiplier") }
             Select {
-                model: ["保持现状", "最大值", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+                model: root.apMultiplierOptions()
                 enabled: formData.playMode !== "script_auto"
-                currentIndex: model.indexOf(root.apMultiplierLabel(formData.apMultiplier))
+                currentIndex: Math.max(0, model.indexOf(root.apMultiplierLabel(formData.apMultiplier)))
                 onActivated: formData = Object.assign({}, formData, { apMultiplier: root.apMultiplierValue(model[currentIndex]) })
             }
         }
 
         RowLayout {
-            Label { text: "歌曲名称" }
+            Label { text: App.Globals.t("auto_live.song_name") }
             ComboBox {
                 Layout.fillWidth: true
-                model: ["保持不变", "メルト", "独りんぼエンヴィー"]
+                model: root.songNameOptions()
                 editable: true
                 enabled: formData.loopMode === "single"
-                currentIndex: Math.max(0, model.indexOf(formData.songName))
-                onActivated: formData = Object.assign({}, formData, { songName: model[currentIndex] })
-                onEditTextChanged: formData = Object.assign({}, formData, { songName: editText })
+                currentIndex: Math.max(0, model.indexOf(root.songNameLabel(formData.songName)))
+                onActivated: formData = Object.assign({}, formData, { songName: root.songNameValue(model[currentIndex]) })
+                onEditTextChanged: formData = Object.assign({}, formData, { songName: root.songNameValue(editText) })
             }
         }
 
         CheckBox {
-            text: "调试显示（脚本自动）"
+            text: App.Globals.t("auto_live.debug_display")
             checked: formData.debugEnabled
             onToggled: formData = Object.assign({}, formData, { debugEnabled: checked })
         }
         CheckBox {
-            text: "自动编队"
+            text: App.Globals.t("auto_live.auto_set_unit")
             checked: formData.autoSetUnit
             onToggled: formData = Object.assign({}, formData, { autoSetUnit: checked })
         }
 
         RowLayout {
             Layout.alignment: Qt.AlignRight
-            Button { text: "取消"; onClicked: root.close() }
+            Button { text: App.Globals.t("common.cancel"); onClicked: root.close() }
             Button {
-                text: "开始"
+                text: App.Globals.t("common.start")
                 highlighted: true
                 onClicked: {
                     try {

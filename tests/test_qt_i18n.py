@@ -54,9 +54,13 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('task.auto_live'), 'Auto Live')
         self.assertEqual(controller.t('task.activity_story'), 'Event Story')
         self.assertEqual(controller.t('status.ready'), 'Ready')
+        self.assertEqual(controller.t('progress.task_started'), 'Starting')
         self.assertEqual(controller.t('notice.save_success'), 'Saved')
         self.assertEqual(controller.t('dialog.save_report.title'), 'Save Report')
         self.assertEqual(controller.t('settings.group.game'), 'Game Settings')
+        self.assertEqual(controller.t('auto_live.preset.clear_10'), 'Clear 10 songs')
+        self.assertEqual(controller.t('auto_live.ap.maximum'), 'Maximum')
+        self.assertEqual(controller.t('auto_live.song.keep'), 'Keep unchanged')
 
     def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
         config_service = make_config_service()

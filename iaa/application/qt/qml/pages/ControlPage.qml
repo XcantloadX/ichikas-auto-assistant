@@ -14,14 +14,41 @@ PageContainer {
         tasks = JSON.parse(runController.tasksStateJson())
     }
 
-    function displayStatusText(text) {
+    function taskIdFromDisplayName(name) {
+        for (var i = 0; i < tasks.length; i++) {
+            if (tasks[i].name === name) {
+                return tasks[i].id
+            }
+        }
+        return ""
+    }
+
+    function displayStatusPart(text) {
+        var taskId = root.taskIdFromDisplayName(text)
+        if (taskId) {
+            return App.Globals.taskName(taskId, text)
+        }
         if (text === "就绪") {
             return App.Globals.t("status.ready")
         }
         if (text === "已停止") {
             return App.Globals.t("status.stopped")
         }
+        if (text === "开始执行") {
+            return App.Globals.t("progress.task_started")
+        }
+        if (text === "执行完成") {
+            return App.Globals.t("progress.task_finished")
+        }
         return text
+    }
+
+    function displayStatusText(text) {
+        var parts = String(text || "").split(" > ")
+        for (var i = 0; i < parts.length; i++) {
+            parts[i] = root.displayStatusPart(parts[i])
+        }
+        return parts.join(" > ")
     }
 
     Component.onCompleted: reloadTasks()
