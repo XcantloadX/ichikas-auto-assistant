@@ -1,13 +1,13 @@
-from __future__ import annotations
-
+import locale
+from functools import cache
 from typing import Literal
 
-GuiLanguage = Literal['zh_CN', 'en_US']
+GuiLanguage = Literal['auto', 'zh_CN', 'en_US']
 
-DEFAULT_LANGUAGE: GuiLanguage = 'zh_CN'
-SUPPORTED_LANGUAGES: tuple[GuiLanguage, ...] = ('zh_CN', 'en_US')
+DEFAULT_LANGUAGE: GuiLanguage = 'auto'
+SUPPORTED_LANGUAGES: tuple[GuiLanguage, ...] = ('auto', 'zh_CN', 'en_US')
 
-_TRANSLATIONS: dict[GuiLanguage, dict[str, str]] = {
+_TRANSLATIONS: dict[str, dict[str, str]] = {
     'zh_CN': {
         'nav.control': '控制',
         'nav.config': '配置',
@@ -671,18 +671,22 @@ _TRANSLATIONS: dict[GuiLanguage, dict[str, str]] = {
 }
 
 
-def normalize_language(value: object) -> GuiLanguage:
-    if value in ('zh', 'zh_CN', 'cn'):
-        return 'zh_CN'
-    if value in ('en', 'en_US'):
-        return 'en_US'
-    return DEFAULT_LANGUAGE
+@cache
+def _detect_system_language() -> GuiLanguage:
+    try:
+        lang, _ = locale.getdefaultlocale()
+        if lang and lang.startswith('zh'):
+            return 'zh_CN'
+    except Exception:
+        pass
+    return 'en_US'
 
 
 def translate(language: str, key: str) -> str:
-    normalized = normalize_language(language)
+    if language == 'auto':
+        language = _detect_system_language()
     return (
-        _TRANSLATIONS.get(normalized, {}).get(key)
-        or _TRANSLATIONS[DEFAULT_LANGUAGE].get(key)
+        _TRANSLATIONS.get(language, {}).get(key)
+        or _TRANSLATIONS['zh_CN'].get(key)
         or key
     )

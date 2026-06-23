@@ -60,6 +60,7 @@ def build_preferences_form(language: str) -> tuple[FormSpec[PreferencesContext],
                 label=tr('preferences.field.language'),
                 ref=ref(ctx.shared.interface.language),
                 options=[
+                    {'value': 'auto', 'label': tr('preferences.option.follow_system')},
                     {'value': 'zh_CN', 'label': tr('preferences.language.zh_CN')},
                     {'value': 'en_US', 'label': tr('preferences.language.en_US')},
                 ],

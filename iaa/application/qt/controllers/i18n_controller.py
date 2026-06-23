@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import QObject, Property, Signal, Slot
 
-from iaa.application.qt.i18n import normalize_language, translate
+from iaa.application.qt.i18n import translate
 
 
 class I18nController(QObject):
@@ -10,7 +10,7 @@ class I18nController(QObject):
 
     def __init__(self, language: str, parent: QObject | None = None) -> None:
         super().__init__(parent)
-        self._language = normalize_language(language)
+        self._language = language
 
     def _get_language(self) -> str:
         return self._language
@@ -19,10 +19,9 @@ class I18nController(QObject):
 
     @Slot(str)
     def setLanguage(self, language: str) -> None:
-        normalized = normalize_language(language)
-        if normalized == self._language:
+        if language == self._language:
             return
-        self._language = normalized
+        self._language = language
         self.languageChanged.emit()
 
     @Slot(str, result=str)
