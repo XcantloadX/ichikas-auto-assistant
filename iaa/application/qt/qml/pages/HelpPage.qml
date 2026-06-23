@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 import "../components"
 
 PageContainer {
     id: root
-    title: "帮助"
+    title: App.Globals.t("nav.help")
     showTitle: false
 
     property var topics: []

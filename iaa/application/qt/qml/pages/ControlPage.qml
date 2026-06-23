@@ -86,6 +86,32 @@ PageContainer {
                 text.replace("通过 ", "").replace(" 进行引继", "")
             )
         }
+        if (text.indexOf("执行「") === 0 && text.indexOf("」时出错：") > 0) {
+            var errorDelimiter = "」时出错："
+            var taskEnd = text.indexOf(errorDelimiter)
+            var taskName = text.substring(3, taskEnd)
+            var taskError = text.substring(taskEnd + errorDelimiter.length)
+            var taskErrorId = root.taskIdFromDisplayName(taskName)
+            return App.Globals.t("progress.task_error")
+                .replace("{task}", taskErrorId ? App.Globals.taskName(taskErrorId, taskName) : taskName)
+                .replace("{error}", taskError === "未知错误" ? App.Globals.t("progress.unknown_error") : taskError)
+        }
+        if (text.indexOf("任务中断：") === 0) {
+            var interruptedTask = text.replace("任务中断：", "")
+            var interruptedTaskId = root.taskIdFromDisplayName(interruptedTask)
+            return App.Globals.t("progress.task_interrupted").replace(
+                "{task}",
+                interruptedTaskId ? App.Globals.taskName(interruptedTaskId, interruptedTask) : interruptedTask
+            )
+        }
+        if (text.indexOf("执行失败：") === 0) {
+            var failedTask = text.replace("执行失败：", "")
+            var failedTaskId = root.taskIdFromDisplayName(failedTask)
+            return App.Globals.t("progress.task_failed").replace(
+                "{task}",
+                failedTaskId ? App.Globals.taskName(failedTaskId, failedTask) : failedTask
+            )
+        }
         return text
     }
 
@@ -195,7 +221,7 @@ PageContainer {
                     visible: !!progressBridge.lastErrorText
                     color: "#b91c1c"
                     wrapMode: Text.Wrap
-                    text: progressBridge.lastErrorText
+                    text: root.displayStatusText(progressBridge.lastErrorText)
                 }
             }
         }

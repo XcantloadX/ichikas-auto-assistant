@@ -1,13 +1,28 @@
 import QtQuick
 import QtQuick.Controls
+import ".." as App
 
 Window {
     id: root
     width: 960
     height: 600
     visible: scrcpyController.visible
-    title: "Scrcpy 画面"
+    title: App.Globals.t("scrcpy.title")
     color: "transparent"
+
+    function displayStatusText(text) {
+        var value = String(text || "")
+        if (value === "等待画面...") {
+            return App.Globals.t("scrcpy.waiting_frame")
+        }
+        if (value.indexOf("等待画面... ") === 0) {
+            return App.Globals.t("scrcpy.waiting_frame_error").replace(
+                "{error}",
+                value.replace("等待画面... ", "")
+            )
+        }
+        return value
+    }
 
     Image {
         id: frameImage
@@ -37,7 +52,7 @@ Window {
         anchors.top: parent.top
         anchors.margins: 12
         color: "white"
-        text: scrcpyController.statusText
+        text: root.displayStatusText(scrcpyController.statusText)
     }
 
     MouseArea {

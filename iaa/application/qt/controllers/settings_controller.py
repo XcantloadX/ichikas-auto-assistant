@@ -170,9 +170,13 @@ class SettingsController(QObject):
 
         if show_notice:
             if payload.get('ok'):
-                self.operationSucceeded.emit(str(payload.get('statusText', '已刷新 MuMu 实例')))
+                self.operationSucceeded.emit(
+                    str(payload.get('statusText') or self._tr('settings.status.mumu_refreshed'))
+                )
             else:
-                self.operationFailed.emit(str(payload.get('statusText', '刷新 MuMu 实例失败')))
+                self.operationFailed.emit(
+                    str(payload.get('statusText') or self._tr('settings.status.mumu_refresh_failed_plain'))
+                )
 
     def _build_mumu_instances_payload(self, emulator: str, preferred_id: str = '') -> str:
         if emulator not in {'mumu', 'mumu_v5'}:

@@ -69,7 +69,7 @@ Item {
         if (options.buttons && Array.isArray(options.buttons) && options.buttons.length > 0) {
             buttons = options.buttons
         } else {
-            buttons = [{ text: "OK", value: "ok", highlighted: true }]
+            buttons = [{ text: App.Globals.t("common.ok"), value: "ok", highlighted: true }]
         }
 
         root.buttonsModel = buttons

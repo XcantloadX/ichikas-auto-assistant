@@ -15,8 +15,8 @@ PageContainer {
 
         Image {
             source: App.Globals.assetPath("marry_with_6_mikus.png")
-            width: 160
-            height: 160
+            Layout.preferredWidth: 160
+            Layout.preferredHeight: 160
             fillMode: Image.PreserveAspectFit
             HoverHandler {
                 id: hoverHandler
@@ -24,7 +24,7 @@ PageContainer {
         }
 
         Label {
-            text: "我同时和六个初音未来结婚"
+            text: App.Globals.t("about.tagline")
             opacity: hoverHandler.hovered ? 1 : 0
             font.pixelSize: 10
             font.weight: Font.Light

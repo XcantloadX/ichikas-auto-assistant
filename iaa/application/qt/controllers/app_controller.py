@@ -37,8 +37,16 @@ class AppController(QObject):
         except ConfigValidationError as e:
             from iaa.config import manager
 
+            language = 'zh_CN'
+            try:
+                language = manager.read_shared().interface.language
+            except Exception:
+                pass
             field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
-            msg = f"以下配置项校验失败：\n{field_list}\n\n错误详情：\n{e.error_details}\n\n是否重置这些为默认值？"
+            msg = translate(language, 'startup.config_validation_prompt').format(
+                fields=field_list,
+                error=e.error_details,
+            )
 
             reply = QMessageBox.question(
                 None,
@@ -55,7 +63,7 @@ class AppController(QObject):
                 QMessageBox.warning(
                     None,
                     "一歌小助手",
-                    "配置校验失败，未重置。程序即将退出。",
+                    translate(language, 'startup.config_validation_aborted'),
                     QMessageBox.StandardButton.Ok
                 )
                 QCoreApplication.exit(1)
@@ -186,7 +194,7 @@ class AppController(QObject):
         if not messages:
             return ""
 
-        html = [f"<b>配置文件已升级到 v{self.service.version}。</b>"]
+        html = [self._tr('modal.migration.content_title', version=self.service.version)]
         if messages:
             html.append("<ol>")
             for msg in messages:

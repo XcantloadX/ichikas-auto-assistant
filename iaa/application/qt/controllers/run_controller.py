@@ -39,6 +39,17 @@ class RunController(QObject):
         text = translate(self._iaa.config.shared.interface.language, key)
         return text.format(**kwargs) if kwargs else text
 
+    def _auto_live_error_text(self, message: str) -> str:
+        if message == '指定次数必须为正整数。':
+            return self._tr('auto_live.error.count_positive')
+        if message.startswith('未知的次数模式：'):
+            return self._tr('auto_live.error.unknown_count_mode', mode=message.removeprefix('未知的次数模式：'))
+        if message == 'AP 倍率必须在 0 到 10 之间，或为 maximum。':
+            return self._tr('auto_live.error.ap_multiplier')
+        if message.startswith('未知的循环模式：'):
+            return self._tr('auto_live.error.unknown_loop_mode', mode=message.removeprefix('未知的循环模式：'))
+        return message
+
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
         self._scrcpy.sync_visibility()
@@ -160,7 +171,10 @@ class RunController(QObject):
     @Slot(str)
     def runAutoLive(self, payload_json: str) -> None:
         payload = json.loads(payload_json)
-        plan = auto_live_payload_to_plan(payload)
+        try:
+            plan = auto_live_payload_to_plan(payload)
+        except ValueError as exc:
+            raise ValueError(self._auto_live_error_text(str(exc))) from exc
         LivePresetManager().save_last_auto(AutoLivePreset(name='上次设定', plan=plan))
         if plan.play_mode == 'script_auto':
             self.scriptAutoWarningRequested.emit(self._tr('notice.script_auto_warning'))
