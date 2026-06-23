@@ -229,18 +229,21 @@ PageContainer {
         GroupBox {
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.minimumWidth: 0
+            implicitWidth: 0
             title: App.Globals.t("control.group.tasks")
 
             ScrollView {
                 id: taskScroll
                 anchors.fill: parent
+                implicitWidth: 0
                 clip: true
-                contentWidth: availableWidth
+                contentWidth: width
                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 GridLayout {
                     id: taskGrid
-                    width: taskScroll.availableWidth
+                    width: taskScroll.width
                     columns: 3
                     rowSpacing: 8
                     columnSpacing: 8
@@ -253,6 +256,7 @@ PageContainer {
                             Layout.preferredWidth: (
                                 taskGrid.width - taskGrid.columnSpacing * (taskGrid.columns - 1)
                             ) / taskGrid.columns
+                            Layout.preferredHeight: 76
                             padding: 10
 
                             RowLayout {
@@ -269,6 +273,8 @@ PageContainer {
                                 Label {
                                     Layout.fillWidth: true
                                     text: App.Globals.taskName(modelData.id, modelData.name)
+                                    wrapMode: Text.WordWrap
+                                    maximumLineCount: 2
                                     elide: Text.ElideRight
                                     verticalAlignment: Text.AlignVCenter
                                 }
