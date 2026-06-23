@@ -469,7 +469,7 @@ _TRANSLATIONS: dict[GuiLanguage, dict[str, str]] = {
         'task.challenge_live': 'Challenge Live',
         'task.activity_story': 'Event Story',
         'task.gift': 'Claim Gifts',
-        'task.area_convos': 'Area Conversations',
+        'task.area_convos': 'Area Convos',
         'task.event_shop': 'Event Shop',
         'task.mission_rewards': 'Mission Rewards',
         'task.auto_live': 'Auto Live',

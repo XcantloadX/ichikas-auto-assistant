@@ -232,11 +232,15 @@ PageContainer {
             title: App.Globals.t("control.group.tasks")
 
             ScrollView {
+                id: taskScroll
                 anchors.fill: parent
                 clip: true
+                contentWidth: availableWidth
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 GridLayout {
-                    width: parent.width
+                    id: taskGrid
+                    width: taskScroll.availableWidth
                     columns: 3
                     rowSpacing: 8
                     columnSpacing: 8
@@ -245,22 +249,32 @@ PageContainer {
                         model: root.tasks
                         delegate: Frame {
                             Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+                            Layout.preferredWidth: (
+                                taskGrid.width - taskGrid.columnSpacing * (taskGrid.columns - 1)
+                            ) / taskGrid.columns
                             padding: 10
+
                             RowLayout {
                                 anchors.fill: parent
+                                spacing: 10
+
                                 Switch {
                                     visible: !!modelData.checkable
                                     checked: !!modelData.enabled
                                     enabled: !runController.running && !runController.isStarting && !runController.isStopping
-                                    text: App.Globals.taskName(modelData.id, modelData.name)
+                                    text: ""
                                     onToggled: runController.setRegularTaskEnabled(modelData.id, checked)
                                 }
                                 Label {
-                                    visible: !modelData.checkable
+                                    Layout.fillWidth: true
                                     text: App.Globals.taskName(modelData.id, modelData.name)
+                                    elide: Text.ElideRight
+                                    verticalAlignment: Text.AlignVCenter
                                 }
-                                Item { Layout.fillWidth: true }
                                 Button {
+                                    Layout.preferredWidth: 78
+                                    Layout.minimumWidth: 68
                                     text: App.Globals.t("control.run_task")
                                     enabled: !runController.running && !runController.isStarting && !runController.isStopping
                                     onClicked: {
