@@ -43,7 +43,7 @@ class SettingsController(QObject):
         super().__init__(parent)
         self._iaa = iaa_service
         self._mumu_instances: list[dict[str, Any]] = []
-        self._rebuild_form(reset_mumu_instances=True)
+        self._rebuild_form(language=self._iaa.config.shared.interface.language, reset_mumu_instances=True)
         self._state = SnapshotState(
             self._make_context(),
             snapshot_fn=self._snapshot_context,
@@ -63,14 +63,14 @@ class SettingsController(QObject):
         if str(self._mumu_instances[0].get('value', '')) == '':
             self._mumu_instances[0]['label'] = self._tr('settings.option.mumu_instance.default')
 
-    def _rebuild_form(self, *, reset_mumu_instances: bool = False) -> None:
+    def _rebuild_form(self, *, language: str, reset_mumu_instances: bool = False) -> None:
         if reset_mumu_instances:
             self._mumu_instances[:] = [self._default_mumu_instance_item()]
         else:
             self._sync_mumu_default_label()
         self._spec, self._form_hooks = build_settings_form(
             self._mumu_instances,
-            language=self._iaa.config.shared.interface.language,
+            language=language,
             on_mumu_refresh=self._action_mumu_refresh,
             on_reset_resolution=self._action_reset_resolution,
         )
@@ -108,7 +108,7 @@ class SettingsController(QObject):
         self._iaa.config.shared = self._state.context.shared
 
     def _reload(self) -> None:
-        self._rebuild_form(reset_mumu_instances=True)
+        self._rebuild_form(language=self._iaa.config.shared.interface.language, reset_mumu_instances=True)
         self._state.reset(self._make_context())
         self._recompute_runtime()
         self.runtimeChanged.emit()
@@ -325,9 +325,9 @@ class SettingsController(QObject):
         return True
 
     @Slot(str)
-    def setLanguage(self, _language: str) -> None:
+    def setLanguage(self, language: str) -> None:
         self._state.context.shared = self._iaa.config.shared
-        self._rebuild_form()
+        self._rebuild_form(language=language)
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)

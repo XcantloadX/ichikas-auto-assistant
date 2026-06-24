@@ -40,7 +40,7 @@ class PreferencesController(QObject):
     def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
-        self._rebuild_form()
+        self._rebuild_form(language=self._iaa.config.shared.interface.language)
         self._state = SnapshotState(
             self._make_context(),
             snapshot_fn=self._snapshot_context,
@@ -50,8 +50,7 @@ class PreferencesController(QObject):
         self._runtime: dict[str, Any] = {}
         self._recompute_runtime()
 
-    def _rebuild_form(self) -> None:
-        language = self._iaa.config.shared.interface.language
+    def _rebuild_form(self, *, language: str) -> None:
         self._spec, self._form_hooks = build_preferences_form(language)
         self._engine = RuntimeEngine(self._spec)
 
@@ -79,7 +78,7 @@ class PreferencesController(QObject):
 
     def _reload(self) -> None:
         self._state.reset(self._make_context())
-        self._rebuild_form()
+        self._rebuild_form(language=self._iaa.config.shared.interface.language)
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
@@ -133,12 +132,13 @@ class PreferencesController(QObject):
             old_runtime = self._runtime
             language_changed = self._state.context.shared.interface.language != old_language
             interface_changed = field_id.startswith('interface.')
+            new_language = self._state.context.shared.interface.language
             if language_changed:
-                self._rebuild_form()
+                self._rebuild_form(language=new_language)
             self._recompute_runtime()
             if language_changed:
                 self.runtimeChanged.emit()
-                self.languageChanged.emit(self._state.context.shared.interface.language)
+                self.languageChanged.emit(new_language)
                 self.dirtyChanged.emit(self._state.dirty)
             else:
                 self._emit_updates(old_runtime)
@@ -167,14 +167,15 @@ class PreferencesController(QObject):
         old_language = self._iaa.config.shared.interface.language
         self._state.discard()
         self._sync_context_back()
-        language_changed = self._iaa.config.shared.interface.language != old_language
+        new_language = self._iaa.config.shared.interface.language
+        language_changed = new_language != old_language
         if language_changed:
-            self._rebuild_form()
+            self._rebuild_form(language=new_language)
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
         if language_changed:
-            self.languageChanged.emit(self._iaa.config.shared.interface.language)
+            self.languageChanged.emit(new_language)
         return True
 
     @Slot(result=str)
