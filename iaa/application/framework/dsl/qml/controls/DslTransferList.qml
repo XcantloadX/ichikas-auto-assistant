@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "../../../../qt/qml" as App
 
 ColumnLayout {
     id: root
@@ -14,11 +15,6 @@ ColumnLayout {
 
     property int availableIndex: -1
     property int selectedIndex: -1
-    readonly property var fieldProps: root.field.props || ({})
-    readonly property string addText: root.fieldProps.addText || "← 添加"
-    readonly property string removeText: root.fieldProps.removeText || "移除 →"
-    readonly property string moveUpText: root.fieldProps.moveUpText || "上移"
-    readonly property string moveDownText: root.fieldProps.moveDownText || "下移"
     property var normalizedOptions: {
         let options = root.field.options || []
         let mapped = []
@@ -177,22 +173,22 @@ ColumnLayout {
 
             ColumnLayout {
                 Button {
-                    text: root.addText
+                    text: App.Globals.t("settings.action.add")
                     enabled: !!root.field.enabled
                     onClicked: root.moveToSelected()
                 }
                 Button {
-                    text: root.removeText
+                    text: App.Globals.t("settings.action.remove")
                     enabled: !!root.field.enabled
                     onClicked: root.moveToAvailable()
                 }
                 Button {
-                    text: root.moveUpText
+                    text: App.Globals.t("settings.action.move_up")
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveUp()
                 }
                 Button {
-                    text: root.moveDownText
+                    text: App.Globals.t("settings.action.move_down")
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveDown()
                 }

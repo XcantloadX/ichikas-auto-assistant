@@ -5,15 +5,13 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "../../../../qt/qml" as App
 
 ColumnLayout {
     id: root
 
     required property var field
     required property var formController
-    readonly property var fieldProps: root.field.props || ({})
-    readonly property string refreshText: root.fieldProps.refreshText || "刷新"
-    readonly property string loadingText: root.fieldProps.loadingText || "获取中..."
     property var normalizedOptions: {
         let options = root.field.options || []
         let mapped = []
@@ -81,7 +79,7 @@ ColumnLayout {
 
             Button {
                 visible: !!root.field.refreshable
-                text: root.field.loading ? root.loadingText : root.refreshText
+                text: root.field.loading ? App.Globals.t("settings.action.loading") : App.Globals.t("settings.action.refresh")
                 enabled: !!root.field.enabled
                 onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
             }

@@ -470,10 +470,6 @@ def build_settings_form(
                 visible=_lifecycle_is(MuMuDevice),
                 options=mumu_instances,
                 refresh=on_mumu_refresh,
-                props={
-                    'refreshText': tr('settings.action.refresh'),
-                    'loadingText': tr('settings.action.loading'),
-                },
             )
             Checkbox(
                 key='device.checkAndStart',
@@ -669,12 +665,6 @@ def build_settings_form(
                 options=event_shop_items,
                 reorderable=True,
                 height=220,
-                props={
-                    'addText': tr('settings.action.add'),
-                    'removeText': tr('settings.action.remove'),
-                    'moveUpText': tr('settings.action.move_up'),
-                    'moveDownText': tr('settings.action.move_down'),
-                },
             )
 
         with Group(tr('settings.group.developer')):

@@ -168,11 +168,6 @@ def build_preferences_form(language: str) -> tuple[FormSpec[PreferencesContext],
                     to_ui=lambda v: '' if v is None else v,
                     from_ui=lambda v: None if not v else v,
                 ),
-                props={
-                    'idlePlaceholder': tr('preferences.hotkey.placeholder.idle'),
-                    'recordingPlaceholder': tr('preferences.hotkey.placeholder.recording'),
-                    'clearText': tr('preferences.hotkey.clear'),
-                },
             )
 
     return (
