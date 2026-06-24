@@ -6,6 +6,7 @@ from typing import Any, Callable, Generic, Literal, TypeVar, cast
 import uuid
 
 from .refs import Ref
+from .i18n import LabelT
 
 TCtx = TypeVar('TCtx')
 
@@ -33,9 +34,9 @@ class FieldSpec(Generic[TCtx]):
 
     key: str
     kind: str
-    label: str | None
+    label: LabelT | None
     ref: Ref[TCtx, Any]
-    help_text: str | None = None
+    help_text: LabelT | None = None
 
     default: Any = None
     visible: Callable[[TCtx], bool] | bool = True
@@ -56,7 +57,7 @@ class GroupSpec(Generic[TCtx]):
     QML 渲染层会按 groups 顺序逐个绘制。
     """
 
-    title: str
+    title: LabelT
     fields: list[FieldSpec[TCtx]]
     visible: Callable[[TCtx], bool] | bool = True
 
@@ -69,7 +70,7 @@ class FormSpec(Generic[TCtx]):
     FormEngine 以此为输入，结合 state 生成 runtime JSON。
     """
 
-    title: str
+    title: LabelT
     groups: list[GroupSpec[TCtx]]
 
 
@@ -92,7 +93,7 @@ class FormPage:
     退出上下文后，构建器状态会恢复，避免跨页面污染。
     """
 
-    def __init__(self, title: str) -> None:
+    def __init__(self, title: LabelT) -> None:
         """创建一个新的页面构建器。
 
         Args:
@@ -149,7 +150,7 @@ class Group:
     在 Group 上下文内创建的字段会自动挂到当前分组。
     """
 
-    def __init__(self, title: str, visible: Callable[[Any], bool] | bool = True) -> None:
+    def __init__(self, title: LabelT, visible: Callable[[Any], bool] | bool = True) -> None:
         """创建一个分组构建器。
 
         Args:
@@ -209,15 +210,15 @@ def register_field(field: FieldSpec[TCtx]) -> FieldSpec[TCtx]:
 
 def Text(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    placeholder: str | None = None,
-    help_text: str | None = None,
+    placeholder: LabelT | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -260,7 +261,7 @@ def Text(
 
 def Select(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
@@ -268,7 +269,7 @@ def Select(
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
     refresh: Callable[[TCtx], None] | None = None,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -302,7 +303,7 @@ def Select(
 
 def IconItemPicker(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
@@ -316,7 +317,7 @@ def IconItemPicker(
     popup_padding: int | None = None,
     show_label: bool | None = None,
     cell_radius: int | None = None,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -364,14 +365,14 @@ def IconItemPicker(
 
 def Segmented(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -400,14 +401,14 @@ def Segmented(
 
 def Checkbox(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -436,7 +437,7 @@ def Checkbox(
 
 def Custom(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     kind: str,
     *,
     ref: Ref[TCtx, Any],
@@ -444,7 +445,7 @@ def Custom(
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -474,7 +475,7 @@ def Custom(
 
 def TransferList(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
@@ -483,7 +484,7 @@ def TransferList(
     options: Callable[[TCtx], list[Any]] | list[Any] | None = None,
     reorderable: bool = False,
     height: int = 220,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -512,13 +513,13 @@ def TransferList(
 
 def Hotkey(
     key: str,
-    label: str | None,
+    label: LabelT | None,
     *,
     ref: Ref[TCtx, Any],
     default: Any = None,
     visible: Callable[[TCtx], bool] | bool = True,
     enabled: Callable[[TCtx], bool] | bool = True,
-    help_text: str | None = None,
+    help_text: LabelT | None = None,
     props: dict[str, Any] | None = None,
     validators: list[Callable[[Any, TCtx], str | None]] | None = None,
     on_change: Callable[[TCtx, Any], None] | None = None,
@@ -546,8 +547,8 @@ def Hotkey(
 
 
 def NoticeBlock(
-    content: str,
-    title: str | None = None,
+    content: LabelT,
+    title: LabelT | None = None,
     *,
     style: Literal['tip', 'warning', 'error', 'note'] = 'note',
     visible: Callable[[Any], bool] | bool = True,

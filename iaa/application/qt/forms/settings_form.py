@@ -10,6 +10,7 @@ from iaa.application.framework.dsl import (
     FormSpec,
     Group,
     IconItemPicker,
+    LabelT,
     NoticeBlock,
     Segmented,
     Select,
@@ -20,7 +21,7 @@ from iaa.application.framework.dsl import (
     custom_ref,
 )
 from .context import FormContext
-from iaa.application.qt.i18n import translate
+from iaa.application.qt.i18n import translate, tstr
 from ..models import (
     SONG_KEEP_UNCHANGED,
     normalize_song_name_input,
@@ -46,18 +47,8 @@ from iaa.definitions.enums import (
 ctx, ref = bind(FormContext)
 
 
-def _tr(language: str, key: str) -> str:
-    return translate(language, key)
-
-
 def _ctx_tr(state: FormContext, key: str) -> str:
     return translate(state.shared.interface.language, key)
-
-
-def _shop_item_label(item: ShopItem, language: str) -> str:
-    if language == 'en_US':
-        return _tr(language, f'settings.option.event_shop.{item.value}')
-    return item.display('cn')
 
 
 # ── 辅助判断 ──────────────────────────────────────────────────────────────────
@@ -338,7 +329,7 @@ def _on_server_change(state: FormContext, value: object) -> None:
 
 def ResolutionSelect(
     key: str,
-    label: str | None,
+    label: 'LabelT | None',
     *,
     ref: Any,
     options: Any = None,
@@ -369,21 +360,21 @@ def ResolutionSelect(
     )
 
 
+_AP_KEEP = '__ap_keep__'
+_AP_MAX = '__ap_max__'
+
+
 def build_settings_form(
     mumu_instances: list[dict[str, Any]],
     *,
-    language: str = 'zh_CN',
     on_mumu_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
-    def tr(key: str) -> str:
-        return _tr(language, key)
-
     lifecycle_options = [
         {'value': 'mumu_v5', 'label': 'MuMu 12 (v5)'},
         {'value': 'mumu', 'label': 'MuMu 12 (v4)'},
-        {'value': 'custom', 'label': tr('settings.option.lifecycle.custom')},
-        {'value': 'none', 'label': tr('settings.option.lifecycle.none')},
+        {'value': 'custom', 'label': tstr('settings.option.lifecycle.custom')},
+        {'value': 'none', 'label': tstr('settings.option.lifecycle.none')},
         {'value': 'playcover', 'label': 'PlayCover'},
     ]
     lifecycle_options = [
@@ -397,75 +388,76 @@ def build_settings_form(
         {'value': 'uiautomator', 'label': 'UIAutomator2'},
         {'value': 'scrcpy', 'label': 'Scrcpy'},
     ]
-    challenge_char_groups = challenge_character_groups_for_ui(language)
-    challenge_awards = challenge_awards_for_ui(language)
-    event_shop_items = [{'value': item.value, 'label': _shop_item_label(item, language)} for item in ShopItem]
+    challenge_char_groups = challenge_character_groups_for_ui()
+    challenge_awards = challenge_awards_for_ui()
+    event_shop_items = [
+        {'value': item.value, 'label': tstr(f'settings.option.event_shop.{item.value}')}
+        for item in ShopItem
+    ]
     server_options = [
-        {'value': 'jp', 'label': tr('settings.option.server.jp')},
-        {'value': 'tw', 'label': tr('settings.option.server.tw')},
-        {'value': 'cn', 'label': tr('settings.option.server.cn')},
-        {'value': 'en', 'label': tr('settings.option.server.en')},
+        {'value': 'jp', 'label': tstr('settings.option.server.jp')},
+        {'value': 'tw', 'label': tstr('settings.option.server.tw')},
+        {'value': 'cn', 'label': tstr('settings.option.server.cn')},
+        {'value': 'en', 'label': tstr('settings.option.server.en')},
     ]
     link_options = [
-        {'value': 'no', 'label': tr('settings.option.link.no')},
-        {'value': 'google', 'label': tr('settings.option.link.google')},
+        {'value': 'no', 'label': tstr('settings.option.link.no')},
+        {'value': 'google', 'label': tstr('settings.option.link.google')},
         {'value': 'google_play', 'label': 'Google Play'},
     ]
     connection_options = [
         {'value': 'usb', 'label': 'USB'},
-        {'value': 'tcp', 'label': tr('settings.option.connection.tcp')},
+        {'value': 'tcp', 'label': tstr('settings.option.connection.tcp')},
     ]
     resolution_options = [
-        {'value': 'auto', 'label': tr('settings.option.resolution.auto')},
-        {'value': 'keep', 'label': tr('settings.option.resolution.keep')},
-        {'value': 'wm_size', 'label': tr('settings.option.resolution.wm_size')},
+        {'value': 'auto', 'label': tstr('settings.option.resolution.auto')},
+        {'value': 'keep', 'label': tstr('settings.option.resolution.keep')},
+        {'value': 'wm_size', 'label': tstr('settings.option.resolution.wm_size')},
     ]
     song_options = [
-        {'value': SONG_KEEP_UNCHANGED, 'label': tr('settings.option.live.song.keep')},
+        {'value': SONG_KEEP_UNCHANGED, 'label': tstr('settings.option.live.song.keep')},
         *[
             {'value': song, 'label': song}
             for song in SONG_NAME_OPTIONS
             if song != SONG_KEEP_UNCHANGED
         ],
     ]
-    ap_keep = '保持现状'
-    ap_maximum = '最大值'
     ap_options = [
-        {'value': ap_keep, 'label': tr('settings.option.live.ap.keep')},
-        {'value': ap_maximum, 'label': tr('settings.option.live.ap.maximum')},
-        *[str(i) for i in range(0, 11)],
+        {'value': _AP_KEEP, 'label': tstr('settings.option.live.ap.keep')},
+        {'value': _AP_MAX, 'label': tstr('settings.option.live.ap.maximum')},
+        *[{'value': str(i), 'label': str(i)} for i in range(0, 11)],
     ]
 
-    with FormPage(tr('settings.title')) as page:
-        with Group(tr('settings.group.game')):
+    with FormPage(tstr('settings.title')) as page:
+        with Group(tstr('settings.group.game')):
             Segmented(
                 key='game.server',
-                label=tr('settings.field.game.server'),
+                label=tstr('settings.field.game.server'),
                 ref=ref(ctx.conf.game.server),
                 options=server_options,
                 on_change=_on_server_change,
-                help_text=tr('settings.help.server'),
+                help_text=tstr('settings.help.server'),
             )
             Segmented(
                 key='game.linkAccount',
-                label=tr('settings.field.game.link_account'),
+                label=tstr('settings.field.game.link_account'),
                 ref=ref(ctx.conf.game.link_account),
                 visible=lambda s: s.conf.game.server == 'jp',
                 options=link_options,
-                help_text=tr('settings.help.link_account'),
+                help_text=tstr('settings.help.link_account'),
             )
 
-        with Group(tr('settings.group.device')):
+        with Group(tstr('settings.group.device')):
             Segmented(
                 key='device.lifecycleType',
-                label=tr('settings.field.device.lifecycle_type'),
+                label=tstr('settings.field.device.lifecycle_type'),
                 ref=custom_ref(_get_lifecycle_type, _set_lifecycle_type),
                 options=lifecycle_options,
             )
             # MuMu 专属
             Select(
                 key='device.mumuInstanceId',
-                label=tr('settings.field.device.mumu_instance'),
+                label=tstr('settings.field.device.mumu_instance'),
                 ref=custom_ref(_get_mumu_instance_id, _set_mumu_instance_id),
                 visible=_lifecycle_is(MuMuDevice),
                 options=mumu_instances,
@@ -473,44 +465,44 @@ def build_settings_form(
             )
             Checkbox(
                 key='device.checkAndStart',
-                label=tr('settings.field.device.check_and_start'),
+                label=tstr('settings.field.device.check_and_start'),
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
                 visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice),
             )
             # 自定义专属
             Text(
                 key='device.customStartCommand',
-                label=tr('settings.field.device.custom_start_command'),
+                label=tstr('settings.field.device.custom_start_command'),
                 ref=custom_ref(_get_custom_start_command, _set_custom_start_command),
                 visible=_lifecycle_is(CustomDevice),
                 validators=[_validate_start_command],
-                help_text=tr('settings.help.custom_start_command'),
+                help_text=tstr('settings.help.custom_start_command'),
             )
             Checkbox(
                 key='device.customWaitStartCommand',
-                label=tr('settings.field.device.custom_wait_start_command'),
+                label=tstr('settings.field.device.custom_wait_start_command'),
                 ref=custom_ref(_get_custom_wait_start_command, _set_custom_wait_start_command),
                 visible=_lifecycle_is(CustomDevice),
             )
             Text(
                 key='device.customStopCommand',
-                label=tr('settings.field.device.custom_stop_command'),
+                label=tstr('settings.field.device.custom_stop_command'),
                 ref=custom_ref(_get_custom_stop_command, _set_custom_stop_command),
                 visible=_lifecycle_is(CustomDevice),
-                placeholder=tr('settings.placeholder.custom_stop_command'),
+                placeholder=tstr('settings.placeholder.custom_stop_command'),
             )
             Text(
                 key='device.customRunningCommand',
-                label=tr('settings.field.device.custom_running_command'),
+                label=tstr('settings.field.device.custom_running_command'),
                 ref=custom_ref(_get_custom_running_command, _set_custom_running_command),
                 visible=_lifecycle_is(CustomDevice),
-                placeholder=tr('settings.placeholder.custom_running_command'),
+                placeholder=tstr('settings.placeholder.custom_running_command'),
             )
 
-        with Group(tr('settings.group.connection'), visible=_show_connection_section):
+        with Group(tstr('settings.group.connection'), visible=_show_connection_section):
             Segmented(
                 key='device.connectionType',
-                label=tr('settings.field.device.connection_type'),
+                label=tstr('settings.field.device.connection_type'),
                 ref=custom_ref(_get_connection_type, _set_connection_type),
                 visible=_show_connection_section,
                 options=connection_options,
@@ -518,75 +510,75 @@ def build_settings_form(
             # USB 字段
             Text(
                 key='device.usbSerial',
-                label=tr('settings.field.device.serial'),
+                label=tstr('settings.field.device.serial'),
                 ref=custom_ref(_get_usb_serial, _set_usb_serial),
                 visible=_show_usb_serial,
-                placeholder=tr('settings.placeholder.usb_serial'),
+                placeholder=tstr('settings.placeholder.usb_serial'),
             )
             # TCP 字段
             Text(
                 key='device.tcpIp',
-                label=tr('settings.field.device.tcp_ip'),
+                label=tstr('settings.field.device.tcp_ip'),
                 ref=custom_ref(_get_tcp_ip, _set_tcp_ip),
                 visible=_show_tcp_fields,
             )
             Text(
                 key='device.tcpPort',
-                label=tr('settings.field.device.tcp_port'),
+                label=tstr('settings.field.device.tcp_port'),
                 ref=custom_ref(_get_tcp_port, _set_tcp_port),
                 visible=_show_tcp_fields,
                 validators=[_validate_tcp_port],
             )
             Checkbox(
                 key='device.tcpRunAdbConnect',
-                label=tr('settings.field.device.tcp_run_adb_connect'),
+                label=tstr('settings.field.device.tcp_run_adb_connect'),
                 ref=custom_ref(_get_tcp_run_adb_connect, _set_tcp_run_adb_connect),
                 visible=_show_tcp_fields,
-                help_text=tr('settings.help.tcp_run_adb_connect'),
+                help_text=tstr('settings.help.tcp_run_adb_connect'),
             )
             Text(
                 key='device.tcpDeviceSerial',
-                label=tr('settings.field.device.serial'),
+                label=tstr('settings.field.device.serial'),
                 ref=custom_ref(_get_tcp_device_serial, _set_tcp_device_serial),
                 visible=_show_tcp_fields,
-                placeholder=tr('settings.placeholder.tcp_device_serial'),
+                placeholder=tstr('settings.placeholder.tcp_device_serial'),
             )
 
-        with Group(tr('settings.group.control'), visible=lambda s: not _is_playcover(s)):
+        with Group(tstr('settings.group.control'), visible=lambda s: not _is_playcover(s)):
             Segmented(
                 key='device.controlImpl',
-                label=tr('settings.field.device.control_impl'),
+                label=tstr('settings.field.device.control_impl'),
                 ref=ref(ctx.conf.device.control_impl),
                 options=lambda s: [
                     o for o in control_impl_options
                     if not (o['value'] == 'nemu_ipc' and not isinstance(s.conf.device.lifecycle, MuMuDevice))
                 ],
-                help_text=tr('settings.help.control_impl'),
+                help_text=tstr('settings.help.control_impl'),
             )
             NoticeBlock(
-                content=tr('settings.notice.nemu_ipc_tip'),
+                content=tstr('settings.notice.nemu_ipc_tip'),
                 style='tip',
                 visible=lambda s: _is_mumu(s) and s.conf.device.control_impl != 'nemu_ipc'
             )
             Checkbox(
                 key='device.scrcpyVirtualDisplay',
-                label=tr('settings.field.device.scrcpy_virtual_display'),
+                label=tstr('settings.field.device.scrcpy_virtual_display'),
                 ref=ref(ctx.conf.device.scrcpy_virtual_display),
                 visible=lambda s: s.conf.device.control_impl == 'scrcpy',
             )
             ResolutionSelect(
                 key='device.resolutionMethod',
-                label=tr('settings.field.device.resolution_method'),
+                label=tstr('settings.field.device.resolution_method'),
                 ref=ref(ctx.conf.device.resolution_method),
                 options=resolution_options,
                 on_reset=on_reset_resolution,
-                props={'resetText': tr('settings.action.reset_resolution')},
+                props={'resetText': tstr('settings.action.reset_resolution')},
             )
 
-        with Group(tr('settings.group.live')):
+        with Group(tstr('settings.group.live')):
             Select(
                 key='live.songName',
-                label=tr('settings.field.live.song_name'),
+                label=tstr('settings.field.live.song_name'),
                 ref=ref(ctx.conf.live.song_name).map(
                     to_ui=lambda v: v or SONG_KEEP_UNCHANGED,
                     from_ui=lambda v: normalize_song_name_input(str(v)),
@@ -595,37 +587,37 @@ def build_settings_form(
             )
             Select(
                 key='live.apMultiplier',
-                label=tr('settings.field.live.ap_multiplier'),
+                label=tstr('settings.field.live.ap_multiplier'),
                 ref=ref(ctx.conf.live.ap_multiplier).map(
-                    to_ui=lambda v: ap_keep if v is None else (ap_maximum if v == 'maximum' else str(v)),
+                    to_ui=lambda v: _AP_KEEP if v is None else (_AP_MAX if v == 'maximum' else str(v)),
                     from_ui=lambda v: (
                         None
-                        if str(v) == ap_keep
-                        else ('maximum' if str(v) == ap_maximum else int(str(v)))
+                        if str(v) == _AP_KEEP
+                        else ('maximum' if str(v) == _AP_MAX else int(str(v)))
                     ),
                 ),
                 options=ap_options,
             )
             Checkbox(
                 key='live.autoSetUnit',
-                label=tr('settings.field.live.auto_set_unit'),
+                label=tstr('settings.field.live.auto_set_unit'),
                 ref=ref(ctx.conf.live.auto_set_unit),
             )
             Checkbox(
                 key='live.appendFc',
-                label=tr('settings.field.live.append_fc'),
+                label=tstr('settings.field.live.append_fc'),
                 ref=ref(ctx.conf.live.append_fc),
             )
             Checkbox(
                 key='live.appendRandom',
-                label=tr('settings.field.live.append_random'),
+                label=tstr('settings.field.live.append_random'),
                 ref=ref(ctx.conf.live.prepend_random),
             )
 
-        with Group(tr('settings.group.challenge_live')):
+        with Group(tstr('settings.group.challenge_live')):
             IconItemPicker(
                 key='challengeLive.characters',
-                label=tr('settings.field.challenge.characters'),
+                label=tstr('settings.field.challenge.characters'),
                 ref=ref(ctx.conf.challenge_live.characters).map(
                     to_ui=lambda values: values[0].value if values else None,
                     from_ui=lambda v: [GameCharacter(str(v))],
@@ -636,7 +628,7 @@ def build_settings_form(
             )
             IconItemPicker(
                 key='challengeLive.award',
-                label=tr('settings.field.challenge.award'),
+                label=tstr('settings.field.challenge.award'),
                 ref=ref(ctx.conf.challenge_live.award).map(
                     to_ui=lambda v: v.value,
                     from_ui=lambda v: ChallengeLiveAward(str(v)),
@@ -646,15 +638,15 @@ def build_settings_form(
                 icon_size=56,
             )
 
-        with Group(tr('settings.group.cm')):
+        with Group(tstr('settings.group.cm')):
             Text(
                 key='cm.watchAdWaitSec',
-                label=tr('settings.field.cm.watch_ad_wait_sec'),
+                label=tstr('settings.field.cm.watch_ad_wait_sec'),
                 ref=custom_ref(_get_watch_ad_wait_sec, _set_watch_ad_wait_sec),
                 validators=[_validate_watch_ad_wait_sec],
             )
 
-        with Group(tr('settings.group.event_shop')):
+        with Group(tstr('settings.group.event_shop')):
             TransferList(
                 key='eventShop.selectedItems',
                 label=None,
@@ -667,22 +659,22 @@ def build_settings_form(
                 height=220,
             )
 
-        with Group(tr('settings.group.developer')):
+        with Group(tstr('settings.group.developer')):
             Checkbox(
                 key='scheduler.dumpSekaiHomeEnabled',
-                label=tr('settings.field.developer.dump_sekai_home'),
+                label=tstr('settings.field.developer.dump_sekai_home'),
                 ref=ref(ctx.conf.scheduler.dump_sekai_home_enabled),
             )
             Checkbox(
                 key='developer.sekaiDumpPostProcess',
-                label=tr('settings.field.developer.sekai_dump_post_process'),
+                label=tstr('settings.field.developer.sekai_dump_post_process'),
                 ref=ref(ctx.conf.developer.sekai_dump_post_process),
             )
             Checkbox(
                 key='developer.screenRecordingEnabled',
-                label=tr('settings.field.developer.screen_recording'),
+                label=tstr('settings.field.developer.screen_recording'),
                 ref=ref(ctx.conf.developer.screen_recording_enabled),
-                help_text=tr('settings.help.screen_recording'),
+                help_text=tstr('settings.help.screen_recording'),
             )
 
     return (

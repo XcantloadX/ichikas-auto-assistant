@@ -43,7 +43,7 @@ class SettingsController(QObject):
         super().__init__(parent)
         self._iaa = iaa_service
         self._mumu_instances: list[dict[str, Any]] = []
-        self._rebuild_form(language=self._iaa.config.shared.interface.language, reset_mumu_instances=True)
+        self._rebuild_form(reset_mumu_instances=True)
         self._state = SnapshotState(
             self._make_context(),
             snapshot_fn=self._snapshot_context,
@@ -53,24 +53,15 @@ class SettingsController(QObject):
         self._runtime: dict[str, Any] = {}
         self._recompute_runtime()
 
-    def _default_mumu_instance_item(self) -> dict[str, str]:
-        return {'value': '', 'label': self._tr('settings.option.mumu_instance.default')}
+    def _default_mumu_instance_item(self) -> dict[str, Any]:
+        from iaa.application.qt.i18n import tstr
+        return {'value': '', 'label': tstr('settings.option.mumu_instance.default')}
 
-    def _sync_mumu_default_label(self) -> None:
-        if not self._mumu_instances:
-            self._mumu_instances[:] = [self._default_mumu_instance_item()]
-            return
-        if str(self._mumu_instances[0].get('value', '')) == '':
-            self._mumu_instances[0]['label'] = self._tr('settings.option.mumu_instance.default')
-
-    def _rebuild_form(self, *, language: str, reset_mumu_instances: bool = False) -> None:
+    def _rebuild_form(self, *, reset_mumu_instances: bool = False) -> None:
         if reset_mumu_instances:
             self._mumu_instances[:] = [self._default_mumu_instance_item()]
-        else:
-            self._sync_mumu_default_label()
         self._spec, self._form_hooks = build_settings_form(
             self._mumu_instances,
-            language=language,
             on_mumu_refresh=self._action_mumu_refresh,
             on_reset_resolution=self._action_reset_resolution,
         )
@@ -108,14 +99,15 @@ class SettingsController(QObject):
         self._iaa.config.shared = self._state.context.shared
 
     def _reload(self) -> None:
-        self._rebuild_form(language=self._iaa.config.shared.interface.language, reset_mumu_instances=True)
+        self._rebuild_form(reset_mumu_instances=True)
         self._state.reset(self._make_context())
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
 
     def _recompute_runtime(self) -> None:
-        runtime = self._engine.build_runtime(self._state.context)
+        language = self._iaa.config.shared.interface.language
+        runtime = self._engine.build_runtime(self._state.context, language)
         runtime['dirty'] = self._state.dirty
         runtime['profileName'] = self._iaa.config.current_config_name
         self._runtime = runtime
@@ -155,9 +147,12 @@ class SettingsController(QObject):
         lc = self._state.context.conf.device.lifecycle
         emulator = lc.type if isinstance(lc, MuMuDevice) else ''
         payload = json.loads(self._build_mumu_instances_payload(emulator, preferred_id))
-        self._mumu_instances[:] = payload.get(
-            'items', [self._default_mumu_instance_item()]
-        )
+        raw_items: list[dict[str, Any]] = payload.get('items', [])
+        # Replace the placeholder default item (resolved string) with the TStr version
+        # so that the label updates automatically when the language changes.
+        if raw_items and str(raw_items[0].get('value', '')) == '':
+            raw_items[0] = self._default_mumu_instance_item()
+        self._mumu_instances[:] = raw_items or [self._default_mumu_instance_item()]
 
         selected_id = str(payload.get('selectedId', '') or '')
         if selected_id != self._get_mumu_instance_id():
@@ -179,11 +174,12 @@ class SettingsController(QObject):
                 )
 
     def _build_mumu_instances_payload(self, emulator: str, preferred_id: str = '') -> str:
+        default_item_str = {'value': '', 'label': self._tr('settings.option.mumu_instance.default')}
         if emulator not in {'mumu', 'mumu_v5'}:
             return json.dumps(
                 {
                     'ok': True,
-                    'items': [self._default_mumu_instance_item()],
+                    'items': [default_item_str],
                     'selectedId': '',
                     'statusText': self._tr('settings.status.mumu_no_instance_needed'),
                 },
@@ -204,7 +200,7 @@ class SettingsController(QObject):
                 and lc.instance_id
             ):
                 saved_id = lc.instance_id
-            items = [self._default_mumu_instance_item()] + [
+            items = [default_item_str] + [
                 {'value': str(instance.id), 'label': f'[{instance.id}] {instance.name}'}
                 for instance in instances
             ]
@@ -232,7 +228,7 @@ class SettingsController(QObject):
             return json.dumps(
                 {
                     'ok': False,
-                    'items': [self._default_mumu_instance_item()],
+                    'items': [default_item_str],
                     'selectedId': '',
                     'statusText': self._tr('settings.status.mumu_refresh_failed', error=exc),
                 },
@@ -327,7 +323,6 @@ class SettingsController(QObject):
     @Slot(str)
     def setLanguage(self, language: str) -> None:
         self._state.context.shared = self._iaa.config.shared
-        self._rebuild_form(language=language)
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)

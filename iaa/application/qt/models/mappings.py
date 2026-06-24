@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
+from iaa.application.qt.i18n import TStr
 from iaa.definitions.enums import (
     ChallengeLiveAward,
     GameCharacter,
@@ -93,20 +94,21 @@ CHALLENGE_CHARACTER_GROUPS: list[tuple[str, list[GameCharacter]]] = [
 ]
 
 
-def _character_label(character: GameCharacter, language: str) -> str:
-    if language == 'en_US':
-        return f'{character.first_name_en} {character.last_name_en}'.strip()
-    return f'{character.last_name_cn}{character.first_name_cn}'
+def _character_label(character: GameCharacter) -> TStr:
+    return TStr(
+        zh_CN=f'{character.last_name_cn}{character.first_name_cn}',
+        en_US=f'{character.first_name_en} {character.last_name_en}'.strip(),
+    )
 
 
-def challenge_character_groups_for_ui(language: str = 'zh_CN') -> list[dict[str, object]]:
+def challenge_character_groups_for_ui() -> list[dict[str, object]]:
     return [
         {
             'group': group_name,
             'options': [
                 {
                     'value': character.value,
-                    'label': _character_label(character, language),
+                    'label': _character_label(character),
                     'image': f'chibi/{character.value}.png',
                 }
                 for character in characters
@@ -116,13 +118,13 @@ def challenge_character_groups_for_ui(language: str = 'zh_CN') -> list[dict[str,
     ]
 
 
-def challenge_characters_for_ui(language: str = 'zh_CN') -> list[dict[str, str]]:
+def challenge_characters_for_ui() -> list[dict[str, Any]]:
     all_characters = []
     for _, characters in CHALLENGE_CHARACTER_GROUPS:
         for character in characters:
             all_characters.append({
                 'value': character.value,
-                'label': _character_label(character, language),
+                'label': _character_label(character),
             })
     return all_characters
 
@@ -137,6 +139,15 @@ _CHALLENGE_AWARD_IMAGES: dict[ChallengeLiveAward, str] = {
 }
 
 
+_CHALLENGE_AWARD_LABELS_CN: dict[ChallengeLiveAward, str] = {
+    ChallengeLiveAward.Crystal: '水晶',
+    ChallengeLiveAward.MusicCard: '音乐卡',
+    ChallengeLiveAward.MiracleGem: '奇迹晶石',
+    ChallengeLiveAward.MagicCloth: '魔法之布',
+    ChallengeLiveAward.Coin: '硬币',
+    ChallengeLiveAward.IntermediatePracticeScore: '中级练习乐谱',
+}
+
 _CHALLENGE_AWARD_LABELS_EN: dict[ChallengeLiveAward, str] = {
     ChallengeLiveAward.Crystal: 'Crystals',
     ChallengeLiveAward.MusicCard: 'Music Card',
@@ -147,9 +158,15 @@ _CHALLENGE_AWARD_LABELS_EN: dict[ChallengeLiveAward, str] = {
 }
 
 
-def challenge_awards_for_ui(language: str = 'zh_CN') -> list[dict[str, str]]:
-    labels = _CHALLENGE_AWARD_LABELS_EN if language == 'en_US' else ChallengeLiveAward.display_map_cn()
+def challenge_awards_for_ui() -> list[dict[str, Any]]:
     return [
-        {'value': award.value, 'label': label, 'image': _CHALLENGE_AWARD_IMAGES.get(award, '')}
-        for award, label in labels.items()
+        {
+            'value': award.value,
+            'label': TStr(
+                zh_CN=_CHALLENGE_AWARD_LABELS_CN.get(award, award.value),
+                en_US=_CHALLENGE_AWARD_LABELS_EN.get(award, award.value),
+            ),
+            'image': _CHALLENGE_AWARD_IMAGES.get(award, ''),
+        }
+        for award in ChallengeLiveAward
     ]

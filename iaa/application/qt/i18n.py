@@ -14,6 +14,11 @@ class TStr:
     zh_CN: str
     en_US: str
 
+    def resolve(self, language: str) -> str:
+        if language == 'auto':
+            language = _detect_system_language()
+        return getattr(self, language, self.zh_CN)
+
 
 _TRANSLATIONS: dict[str, TStr] = {
         'nav.control': TStr(
@@ -1325,3 +1330,9 @@ def translate(language: str, key: str) -> str:
     if t is not None:
         return getattr(t, language, t.zh_CN)
     return key
+
+
+def tstr(key: str) -> TStr:
+    """返回 key 对应的 TStr；key 不存在时返回两侧均为 key 本身的占位对象。"""
+    t = _TRANSLATIONS.get(key)
+    return t if t is not None else TStr(zh_CN=key, en_US=key)
