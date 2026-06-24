@@ -37,11 +37,7 @@ class AppController(QObject):
         except ConfigValidationError as e:
             from iaa.config import manager
 
-            language = 'zh_CN'
-            try:
-                language = manager.read_shared().interface.language
-            except Exception:
-                pass
+            language = manager.read_shared().interface.language
             field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
             msg = translate(language, 'startup.config_validation_prompt').format(
                 fields=field_list,
