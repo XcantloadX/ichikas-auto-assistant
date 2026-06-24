@@ -3,6 +3,7 @@ from kotonebot import device, task, Loop, action, sleep, logging
 from iaa.definitions.enums import LinkAccountOptions
 from iaa.definitions.consts import package_name as get_package_name
 from iaa.context import conf, task_reporter, server
+from iaa.application.qt.i18n import TStr
 from . import R
 from .common import go_home
 
@@ -87,7 +88,7 @@ def start_game():
         # 检查是否需要登录
         link_account = conf().game.link_account
         if server() == 'jp' and link_account != 'no':
-            rep.message(f'通过 {link_account} 进行引继')
+            rep.message(TStr(zh_CN=f'通过 {link_account} 进行引继', en_US=f'Transferring with {link_account}'))
             login(link_account)
 
         go_home(check_alive=True)

@@ -9,6 +9,7 @@ from kotonebot.backend import image
 from . import R
 from iaa.definitions.enums import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
+from iaa.application.qt.i18n import TStr
 from iaa.game_ui.list_view import ListViewItem
 from iaa.game_ui.side_tabbar import SideTabbar
 
@@ -183,7 +184,7 @@ def _do_single() -> None:
     assert view.scrollable is not None
     view.scrollable.measure_bounds()
 
-    rep.message('扫描列表')
+    rep.message(TStr(zh_CN='扫描列表', en_US='Scanning list'))
     view.scrollable.to_top()
     remaining = set(targets)
     available_targets: set[ShopItem] = set()

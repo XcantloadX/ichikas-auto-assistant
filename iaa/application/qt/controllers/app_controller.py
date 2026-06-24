@@ -64,12 +64,13 @@ class AppController(QObject):
                 )
                 QCoreApplication.exit(1)
         
-        self.progressBridge = ProgressBridge(self)
+        self.i18nController = I18nController(self.service.config.shared.interface.language, self)
+        self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
+        self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
         self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
         self.settingsController = SettingsController(self.service, self)
         self.preferencesController = PreferencesController(self.service, self)
-        self.i18nController = I18nController(self.service.config.shared.interface.language, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
         self.helpController = HelpController(self.service, self)
         self.globalHotkeyController = GlobalHotkeyController(

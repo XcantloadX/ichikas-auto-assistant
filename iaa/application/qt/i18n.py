@@ -20,6 +20,7 @@ class TStr:
         return getattr(self, language, self.zh_CN)
 
 
+
 _TRANSLATIONS: dict[str, TStr] = {
         'nav.control': TStr(
             zh_CN='控制',

@@ -5,6 +5,7 @@ from kotonebot import device, Loop, action, color
 from . import R
 from iaa.context import task_reporter, server
 from iaa.definitions.consts import package_name
+from iaa.application.qt.i18n import TStr
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ def at_home() -> bool:
 @action('返回首页', screenshot_mode='manual')
 def go_home(*, check_alive: bool = False):
     rep = task_reporter()
-    rep.message('正在返回首页')
+    rep.message(TStr(zh_CN='正在返回首页', en_US='Returning home'))
     logger.info('Try to go home.')
     from kotonebot.client.device import AndroidDevice
     for _ in Loop(interval=0.5):

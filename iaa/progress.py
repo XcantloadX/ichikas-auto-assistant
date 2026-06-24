@@ -1,7 +1,15 @@
 import time
 from threading import Lock
 from dataclasses import dataclass
-from typing import Any, Callable, Literal
+from typing import Any, Callable, Literal, Protocol, Union, runtime_checkable
+
+
+@runtime_checkable
+class Translatable(Protocol):
+    def resolve(self, language: str) -> str: ...
+
+
+MessageT = Union[str, Translatable]
 
 ProgressEventType = Literal[
     'task_started',
@@ -88,7 +96,7 @@ class TaskReporter:
         self.task_name = task_name
         self._phase_stack: list[_PhaseState] = []
 
-    def message(self, text: str, *, extra: dict[str, Any] | None = None) -> None:
+    def message(self, text: MessageT, *, extra: dict[str, Any] | None = None) -> None:
         payload: dict[str, Any] = {'message': text}
         payload['phase_path'] = self._phase_path()
         current_phase = self._current_phase()
@@ -233,7 +241,7 @@ class DummyPhase:
 
 
 class DummyTaskReporter:
-    def message(self, text: str, *, extra: dict[str, Any] | None = None) -> None:
+    def message(self, text: MessageT, *, extra: dict[str, Any] | None = None) -> None:
         return None
 
     def phase(self, name: str, total: int | None = None) -> DummyPhase:
