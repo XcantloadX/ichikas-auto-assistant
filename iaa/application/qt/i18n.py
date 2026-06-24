@@ -432,6 +432,26 @@ _TRANSLATIONS: dict[str, TStr] = {
             zh_CN='未知错误',
             en_US='unknown error'
         ),
+        'notice.tasks_completed': TStr(
+            zh_CN='任务执行完成',
+            en_US='Tasks completed'
+        ),
+        'notice.tasks_interrupted': TStr(
+            zh_CN='任务已中断',
+            en_US='Tasks interrupted'
+        ),
+        'notice.tasks_failed': TStr(
+            zh_CN='任务执行失败',
+            en_US='Tasks failed'
+        ),
+        'notice.tasks_crashed': TStr(
+            zh_CN='调度器发生错误',
+            en_US='Scheduler error'
+        ),
+        'notice.tasks_finished': TStr(
+            zh_CN='任务结束',
+            en_US='Tasks finished'
+        ),
         'notice.save_success': TStr(
             zh_CN='保存成功',
             en_US='Saved'
