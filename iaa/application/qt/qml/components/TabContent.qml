@@ -28,20 +28,21 @@ Item {
             id: sideNav
             Layout.fillHeight: true
             visible: !root.prefsMode
-            model: ["控制", "配置", "日志", "关于"]
+            model: ["控制", "画面", "配置", "日志", "关于"]
 
-            onCurrentChanging: function(index, previousIndex) {
+            onCurrentChanging: function(navIndex, previousIndex) {
                 if (root.navigation) {
                     root.navigation.requestGuardedAction("切换页面", function() {
-                        sideNav.confirmSwitch(index)
+                        sideNav.confirmSwitch(navIndex)
                     })
                 } else {
-                    sideNav.confirmSwitch(index)
+                    sideNav.confirmSwitch(navIndex)
                 }
             }
         }
 
         StackLayout {
+            id: pageStack
             Layout.fillWidth: true
             Layout.fillHeight: true
             visible: !root.prefsMode
@@ -51,6 +52,12 @@ Item {
                 autoLiveDialog: autoLiveDialog
                 runCtrl: root.runCtrl
                 progBridge: root.progBridge
+            }
+
+            DevicePage {
+                tabIndex: index
+                formController: root.formController
+                runCtrl: root.runCtrl
             }
 
             SettingsPage {

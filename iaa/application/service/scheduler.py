@@ -1,17 +1,15 @@
 import time
 import logging
 import threading
-import os
 import uuid
 from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from kotonebot.errors import DeviceConnectionError, UserFriendlyError
-from iaa.config.schemas import MuMuDevice, CustomDevice, NoDevice, PlayCoverDevice, AvdDevice, TcpConnection, UsbConnection
-from iaa.application.service.custom_emulator import CustomEmulatorInstance
+from kotonebot.errors import DeviceConnectionError
+from iaa.config.schemas import NoDevice, PlayCoverDevice, AvdDevice
+from iaa.application.service.device_factory import DeviceFactory, LifecyclePolicy
 from iaa.definitions.consts import package_by_server
-from iaa.utils import asset_path
 
 if TYPE_CHECKING:
     from .iaa_service import IaaService
@@ -21,7 +19,6 @@ from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
-SCRCPY_BUNDLED_VERSION = '3.3.1'
 TARGET_RESOLUTION = '1280x720'
 
 
@@ -141,6 +138,16 @@ class SchedulerService:
         """设备连接线程"""
         self._stop_lifecycle: 'Callable[[], None] | None' = None
         """完成后关闭模拟器的回调，仅本次由 iaa 启动时设置"""
+        # TODO: _ensure_device_started 放在这里看起来有点 hacky。需要讨论一个更好的设计？
+        self._ensure_device_started: Callable[[], None] | None = None
+        """scrcpy 虚拟屏模式下由 Tab 注入，任务启动前同步等待 UI 虚拟屏就绪。"""
+        self._device_factory: DeviceFactory | None = DeviceFactory(iaa_service.config)
+        """设备创建入口；GUI 下由 TabManager 按 tab 注入，与 config 绑定。"""
+
+    def _require_device_factory(self) -> DeviceFactory:
+        if self._device_factory is None:
+            raise RuntimeError('DeviceFactory is not available.')
+        return self._device_factory
 
     @property
     def running(self) -> bool:
@@ -174,8 +181,9 @@ class SchedulerService:
                 self.__prepare_context()
                 if self.device is None:
                     raise RuntimeError("Device not initialized after context preparation.")
-                self.device.start()
-                self._device_started = True
+                if not self._device_started:
+                    self.device.start()
+                    self._device_started = True
                 logger.info("Scheduler started.")
                 tasks = get_tasks()
                 if not tasks:
@@ -404,261 +412,6 @@ class SchedulerService:
             return [(task_id, _call)]
         self.__start_tasks(_get, thread_name="IAA-Scheduler-Manual", run_in_thread=run_in_thread)
 
-    def __create_device(self) -> 'Device':
-        """
-        创建设备实例。
-
-        .. NOTE::
-            需要和任务执行在同一个线程中调用。
-        """
-        from kotonebot.client.host import Mumu12Host, Mumu12V5Host
-        from kotonebot.client.host import AdbHostConfig
-        from kotonebot.client.host.protocol import HostProtocol, Instance
-
-        device_conf = self.iaa.config.conf.device
-        lifecycle = device_conf.lifecycle
-        connection = device_conf.connection
-        impl = device_conf.control_impl
-        use_vd = device_conf.scrcpy_virtual_display
-
-        def _maybe_start(instance: Instance) -> bool:
-            """启动实例（若需要）。返回 True 表示本次由 iaa 启动，False 表示已在运行或不检查。"""
-            check = lifecycle.check_and_start if isinstance(lifecycle, (MuMuDevice, CustomDevice, AvdDevice)) else False
-            if check and not instance.running():
-                logger.info('Device is not running, starting: %s', instance)
-                instance.start()
-                instance.wait_available()
-                return True
-            return False
-
-
-        def _resolve_mumu_instance(host_cls: type[HostProtocol], host_name: str, instance_id: str | None) -> Instance:
-            def _check(id: str):
-                if host_cls is Mumu12V5Host and host_cls.check_app_keptlive(id):
-                    raise RuntimeError(
-                        '检测到当前模拟器 MuMu 12 已开启"应用保活"功能。\n'
-                        '请前往 MuMu 模拟器设置 → 其他 → 后台挂机时保活运行 中关闭，然后重新尝试。'
-                    )
-
-            if instance_id is not None:
-                instance = host_cls.query(id=instance_id)
-                if instance is None:
-                    raise RuntimeError(f'{host_name} instance not found: {instance_id}')
-                _check(instance.id)
-                return instance
-
-            hosts = host_cls.list()
-            if not hosts:
-                raise RuntimeError(f'No {host_name} host found.')
-            _check(hosts[0].id)
-            return hosts[0]
-
-        def _build_scrcpy_config(timeout: float, use_virtual_display: bool):
-            from kotonebot.client.implements.scrcpy import ScrcpyConfig, VirtualDisplayConfig
-
-            jar_path = asset_path('scrcpy.jar')
-            if not os.path.isfile(jar_path):
-                raise FileNotFoundError(f'Scrcpy jar not found: {jar_path}')
-
-            virtual_display_config = None
-            if use_virtual_display:
-                virtual_display_config = VirtualDisplayConfig(
-                    enabled=True,
-                    reuse_existing=True,
-                    launch_package=package_by_server(self.iaa.config.conf.game.server),
-                    width=1280,
-                    height=720,
-                    system_decorations=False
-                )
-
-            return ScrcpyConfig(
-                timeout=timeout,
-                server_jar_path=jar_path,
-                server_version=SCRCPY_BUNDLED_VERSION,
-                virtual_display=virtual_display_config,
-            )
-
-        def _apply_impl(host) -> 'Device':
-            if impl == 'nemu_ipc':
-                from kotonebot.client.host.mumu12_host import MuMu12HostConfig
-                return host.create_device('nemu_ipc', MuMu12HostConfig())
-            elif impl == 'adb':
-                return host.create_device('adb', AdbHostConfig())
-            elif impl == 'scrcpy':
-                return host.create_device('scrcpy', _build_scrcpy_config(AdbHostConfig().timeout, use_vd))
-            elif impl == 'uiautomator':
-                return host.create_device('uiautomator2', AdbHostConfig())
-            elif impl == 'qemu_grpc':
-                raise ValueError("'qemu_grpc' 仅支持 AVD 设备，不支持当前设备类型。")
-            else:
-                raise ValueError(f"Unknown control implementation: {impl}")
-
-        # ── Step 1：按 lifecycle 类型解析 host ────────────────────────────────
-
-        if isinstance(lifecycle, MuMuDevice):
-            host_cls = Mumu12Host if lifecycle.type == 'mumu' else Mumu12V5Host
-            host_name = 'MuMu' if lifecycle.type == 'mumu' else 'MuMu v5'
-            host = _resolve_mumu_instance(host_cls, host_name, lifecycle.instance_id)
-            if _maybe_start(host):
-                self._stop_lifecycle = host.stop
-            elif not host.running():
-                raise UserFriendlyError(
-                    f'模拟器 {host_name}（实例 {lifecycle.instance_id}）未运行。请手动启动模拟器，或在设备设置中勾选「检测并自动启动」。'
-                )
-            if impl == 'nemu_ipc':
-                pass  # nemu_ipc 支持 MuMu
-            elif impl in ('adb', 'scrcpy', 'uiautomator'):
-                pass
-            else:
-                raise ValueError(f"Unknown control implementation: {impl}")
-            return _apply_impl(host)
-
-        elif isinstance(lifecycle, CustomDevice):
-            start_command = (lifecycle.start_command or '').strip()
-            if not start_command:
-                raise ValueError('自定义设备的启动命令不能为空。')
-
-            if isinstance(connection, TcpConnection):
-                if connection.run_adb_connect and connection.port is None:
-                    raise ValueError('TCP 连接已启用 adb connect，但未填写端口。')
-                adb_ip = connection.ip
-                adb_port = connection.port if connection.run_adb_connect else None
-                device_serial = (connection.device_serial or '').strip() or None
-                run_adb_connect = connection.run_adb_connect
-            elif isinstance(connection, UsbConnection):
-                adb_ip = '127.0.0.1'
-                adb_port = None
-                device_serial = (connection.device_serial or '').strip() or None
-                run_adb_connect = False
-                if not device_serial:
-                    raise ValueError('USB 连接模式下，自定义设备需要填写设备序列号。')
-            else:
-                raise ValueError('自定义设备不支持自动连接（auto）模式，请选择 USB 或 TCP。')
-
-            custom_instance = CustomEmulatorInstance(
-                adb_ip=adb_ip,
-                adb_port=adb_port,
-                device_serial=device_serial,
-                run_adb_connect=run_adb_connect,
-                wait_start_command=lifecycle.wait_start_command,
-                start_command=start_command,
-                stop_command=(lifecycle.stop_command or '').strip(),
-                running_command=(lifecycle.running_command or '').strip(),
-            )
-            self._custom_emulator_instance = custom_instance
-            if _maybe_start(custom_instance):
-                self._stop_lifecycle = custom_instance.stop
-            if impl == 'nemu_ipc':
-                raise UserFriendlyError("'nemu_ipc' 控制方式仅支持 MuMu 模拟器，不支持自定义设备。请在设备设置中更换控制方式。")
-            return _apply_impl(custom_instance)
-
-        elif isinstance(lifecycle, NoDevice):
-            from kotonebot.client.host import PhysicalAndroidHost
-
-            if isinstance(connection, UsbConnection):
-                adb_serial = (connection.device_serial or '').strip()
-                if not adb_serial:
-                    devices = PhysicalAndroidHost.list()
-                    if not devices:
-                        raise UserFriendlyError('未找到任何 USB 设备，请连接设备后重试。')
-                    host = devices[0]
-                    logger.info('自动选择 USB 设备: %s', host.id)
-                else:
-                    host = PhysicalAndroidHost.query(id=adb_serial)
-                    if host is None:
-                        raise UserFriendlyError(f'找不到 ADB USB 设备：{adb_serial}。请确认设备已连接并授权 ADB 调试。')
-                if not host.running():
-                    raise UserFriendlyError(f'ADB USB 设备不可用: {host.id}')
-                if impl == 'nemu_ipc':
-                    raise UserFriendlyError("'nemu_ipc' 控制方式仅支持 MuMu 模拟器，不支持物理设备。请在设备设置中更换控制方式。")
-                return _apply_impl(host)
-
-            elif isinstance(connection, TcpConnection):
-                if connection.port is None:
-                    raise UserFriendlyError('TCP 连接需要填写端口。')
-                tcp_instance = CustomEmulatorInstance(
-                    adb_ip=connection.ip,
-                    adb_port=connection.port,
-                    device_serial=(connection.device_serial or '').strip() or None,
-                    run_adb_connect=connection.run_adb_connect,
-                    wait_start_command=False,
-                    start_command='',
-                    stop_command='',
-                    running_command='',
-                )
-                if impl == 'nemu_ipc':
-                    raise UserFriendlyError("'nemu_ipc' 控制方式仅支持 MuMu 模拟器，不支持物理设备。请在设备设置中更换控制方式。")
-                return _apply_impl(tcp_instance)
-
-            else:
-                raise UserFriendlyError('设备类型为"无"时，连接方式不能为自动，请选择 USB 或 TCP。')
-
-        elif isinstance(lifecycle, AvdDevice):
-            from iaa.application.service.avd import AvdHost
-
-            avd_host = AvdHost(sdk_path=lifecycle.sdk_path)
-            if lifecycle.avd_name:
-                avd_instance = avd_host.query(lifecycle.avd_name)
-                if avd_instance is None:
-                    raise RuntimeError(f'未找到 AVD："{lifecycle.avd_name}"')
-            else:
-                instances = avd_host.list()
-                if not instances:
-                    raise RuntimeError('未找到任何 AVD，请先通过 Android Studio 创建 AVD。')
-                avd_instance = instances[0]
-            avd_instance._extra_args = lifecycle.extra_args.split() if lifecycle.extra_args.strip() else []
-
-            # qemu_grpc 直接读取硬件帧缓冲，wm size 无法改变实际分辨率。
-            if impl == 'qemu_grpc' and device_conf.resolution_method != 'keep':
-                raise UserFriendlyError(
-                    'QEMU gRPC 模式不支持自动修改分辨率，请在「分辨率设置」中选择「保持原始分辨率」，'
-                    '并在 AVD Manager 中预先将 LCD 分辨率配置为 1280x720。'
-                )
-
-            # qemu_grpc 需要 AVD 以 -grpc <port> 启动；若用户未在 extra_args 中指定则注入默认端口。
-            if impl == 'qemu_grpc' and '-grpc' not in avd_instance._extra_args:
-                avd_instance._extra_args += ['-grpc', '8554']
-            # emulator 的 gRPC 服务默认拒绝所有未鉴权请求（streamScreenshot/sendTouch
-            # 均在 allowlist 的 protected 列表中），需要显式启用 -grpc-use-token，
-            # 配合 qemu_grpc.py 从 discovery 文件读取明文 token 并附加到每次调用。
-            # 若用户已自行配置了 -grpc-use-token/-grpc-use-jwt 则尊重其选择。
-            if impl == 'qemu_grpc' and not any(
-                a.startswith('-grpc-use-') for a in avd_instance._extra_args
-            ):
-                avd_instance._extra_args += ['-grpc-use-token']
-
-            if _maybe_start(avd_instance):
-                self._stop_lifecycle = avd_instance.stop
-            if impl == 'nemu_ipc':
-                raise UserFriendlyError("'nemu_ipc' 控制方式仅支持 MuMu 模拟器，不支持 AVD。请在设备设置中更换控制方式。")
-            if impl == 'qemu_grpc':
-                from iaa.application.service.qemu_grpc import create_qemu_grpc_device
-                return create_qemu_grpc_device(avd_instance)
-            return _apply_impl(avd_instance)
-
-        elif isinstance(lifecycle, PlayCoverDevice):
-            from kotonebot.client.playcover import Playcover
-            from iaa.definitions.consts import bundle_id_by_server
-
-            bundle_id = bundle_id_by_server(self.iaa.config.conf.game.server)
-            app = Playcover.find(bundle_id)
-            if app is None:
-                raise ValueError(f'未找到 PlayCover 应用：{bundle_id}')
-
-            if lifecycle.check_and_start and not app.running():
-                logger.info('PlayCover app not running, launching: %s', bundle_id)
-                app.launch()
-                app.wait_available(timeout=60)
-                self._stop_lifecycle = app.terminate
-
-            if not app.running():
-                raise RuntimeError('游戏未在运行。请启动游戏，或在配置里启用「检查并启动」。')
-
-            return app.create_device()
-
-        else:
-            raise ValueError(f"Unknown lifecycle type: {type(lifecycle)}")
-
     def connect_device(self, on_success: Callable[[], None] | None = None, on_error: Callable[[Exception], None] | None = None) -> None:
         """
         在后台线程中连接设备。
@@ -677,7 +430,10 @@ class SchedulerService:
         def _connect() -> None:
             try:
                 logger.info("Connecting to device...")
-                device = self.__create_device()
+                resolved, device = self._require_device_factory().create_device_for_current_config(
+                    policy=LifecyclePolicy.CHECK_AND_START
+                )
+                self._stop_lifecycle = resolved.stop_callback
                 device.orientation = 'landscape'
                 device.start()
                 self.device = device
@@ -704,7 +460,9 @@ class SchedulerService:
             return self.device.screenshot()
 
         logger.info("No active scheduler device. Creating a temporary device for screenshot capture.")
-        device = self.__create_device()
+        resolved, device = self._require_device_factory().create_device_for_current_config(
+            policy=LifecyclePolicy.CHECK_AND_START
+        )
         device.orientation = 'landscape'
         started = False
         try:
@@ -717,6 +475,12 @@ class SchedulerService:
                     device.stop()
                 except Exception:
                     logger.exception("Failed to stop temporary screenshot device.")
+            # 若本次由 factory 启动了 lifecycle 实例，截图后一并回收。
+            if resolved.stop_callback is not None:
+                try:
+                    resolved.stop_callback()
+                except Exception:
+                    logger.exception("Failed to stop temporary screenshot lifecycle.")
 
     def __prepare_context(self) -> None:
         """
@@ -728,7 +492,13 @@ class SchedulerService:
         # 因为导入 kotonebot 开销较大，这里延迟导入
         from kotonebot.backend.context.context import init_context
 
-        device = self.__create_device()
+        if self._ensure_device_started is not None:
+            self._ensure_device_started()
+
+        resolved, device = self._require_device_factory().create_device_for_current_config(
+            policy=LifecyclePolicy.CHECK_AND_START
+        )
+        self._stop_lifecycle = resolved.stop_callback  # 原本在 _maybe_start 里设置
         device.orientation = 'landscape'
 
         # 设置分辨率（PlayCover 不走 ADB，直接跳过）

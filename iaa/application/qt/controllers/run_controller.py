@@ -14,7 +14,6 @@ from iaa.tasks.registry import TASK_INFOS
 
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
 from .progress_bridge import ProgressBridge
-from .scrcpy_controller import ScrcpyController
 
 
 class RunController(QObject):
@@ -25,11 +24,10 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-    def __init__(self, iaa_service: IaaService, progress_bridge: ProgressBridge, scrcpy_controller: ScrcpyController | None, parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: IaaService, progress_bridge: ProgressBridge, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
-        self._scrcpy = scrcpy_controller
         self._export_busy = False
         self._queued = False
         self._timer = QTimer(self)
@@ -40,8 +38,6 @@ class RunController(QObject):
 
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
-        if self._scrcpy is not None:
-            self._scrcpy.sync_visibility()
 
     def _get_running(self) -> bool:
         return bool(self._iaa.scheduler.running)

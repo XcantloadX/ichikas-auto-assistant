@@ -96,6 +96,7 @@ def main() -> None:
     qmlRegisterSingletonType(HelpController,       _URI, *_VER, "HelpController",       lambda _: controller.helpController)  # type: ignore[arg-type]
 
     engine = QQmlApplicationEngine()
+    engine.addImageProvider('scrcpy', controller.scrcpyImageProvider)
     # maxHoverBridge / tabBarBridge 平台条件可为 None，保留 context property
     engine.rootContext().setContextProperty('maxHoverBridge', max_hover_bridge)
     engine.rootContext().setContextProperty('tabBarBridge', tab_bar_bridge)

@@ -216,9 +216,6 @@ ApplicationWindow {
         id: noticeHost
     }
 
-    // ScrcpyWindow {}
-
-
     Dialog {
         id: unsavedChangesDialog
         modal: true

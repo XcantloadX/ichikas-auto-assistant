@@ -11,6 +11,7 @@ from iaa.telemetry import setup as setup_telemetry
 
 
 from .log_bridge import LogBridge
+from .scrcpy_image_provider import ScrcpyImageProvider
 from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
@@ -27,8 +28,9 @@ class AppController(QObject):
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
         self.logBridge = log_bridge
+        self.scrcpyImageProvider = ScrcpyImageProvider()
 
-        self.tabManager = TabManager(self)
+        self.tabManager = TabManager(self, image_provider=self.scrcpyImageProvider)
 
         self.preferencesController = PreferencesController(self)
         self.helpController = HelpController(self)
@@ -153,5 +155,6 @@ class AppController(QObject):
 
     @Slot()
     def shutdown(self) -> None:
+        self.tabManager.shutdown_device_sessions()
         self.globalHotkeyController.shutdown()
         self.logBridge.close()

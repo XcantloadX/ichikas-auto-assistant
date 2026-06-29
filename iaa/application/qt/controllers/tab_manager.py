@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from .settings_controller import SettingsController
     from .progress_bridge import ProgressBridge
     from .log_bridge import LogBridge
+    from .scrcpy_image_provider import ScrcpyImageProvider
+    from .virtual_device_session import VirtualDeviceSession
 
 logger = logging.getLogger(__name__)
 
@@ -27,6 +29,7 @@ class _TabEntry:
     run_ctrl: 'RunController'
     settings_ctrl: 'SettingsController'
     progress_bridge: 'ProgressBridge'
+    device_session: 'VirtualDeviceSession | None' = None
 
     @property
     def config_name(self) -> str:
@@ -65,8 +68,9 @@ class TabManager(QObject):
     activeProfileChanged = Signal(str)
     activeProfilesChanged = Signal()
 
-    def __init__(self, parent: QObject | None = None) -> None:
+    def __init__(self, parent: QObject | None = None, *, image_provider: 'ScrcpyImageProvider | None' = None) -> None:
         super().__init__(parent)
+        self._image_provider = image_provider
         self._tabs: list[_TabEntry] = []
         self._active_index: int = 0
         self._batch_mode: str = ''        # '' | 'sequential' | 'parallel'
@@ -81,15 +85,42 @@ class TabManager(QObject):
         from .run_controller import RunController
         from .settings_controller import SettingsController
         from .progress_bridge import ProgressBridge
+        from iaa.application.service.device_factory import DeviceFactory
+        from .virtual_device_session import VirtualDeviceSession
 
         bundle = TabSession(config_name)
+        # per-tab factory，与 config 绑定，避免跨 tab 状态污染。
+        device_factory = DeviceFactory(bundle.iaa.config)
+        bundle.iaa.scheduler._device_factory = device_factory
         pb = ProgressBridge(self, hub=bundle.progress_hub)
-        rc = RunController(bundle.iaa, pb, None, self)
+        rc = RunController(bundle.iaa, pb, self)
         sc = SettingsController(bundle.iaa, self)
         bundle.iaa.scheduler.on_error = lambda exc: QMetaObject.invokeMethod(
             self, '_on_scheduler_error', Qt.ConnectionType.QueuedConnection, Q_ARG(str, str(exc))
         )
-        return _TabEntry(bundle=bundle, run_ctrl=rc, settings_ctrl=sc, progress_bridge=pb)
+
+        device_session: VirtualDeviceSession | None = None
+        device_conf = bundle.iaa.config.conf.device
+        if device_conf.control_impl == 'scrcpy' and device_conf.scrcpy_virtual_display:
+            if self._image_provider is None:
+                raise RuntimeError('Scrcpy image provider is required for virtual display sessions.')
+            device_session = VirtualDeviceSession(
+                config_name,
+                bundle.iaa.config,
+                self._image_provider,
+                device_factory=device_factory,
+                parent=self,
+            )
+            # _ensure_device_started 管的是"预览设备就绪"，与"设备创建"正交。
+            bundle.iaa.scheduler._ensure_device_started = device_session.ensure_started
+
+        return _TabEntry(
+            bundle=bundle,
+            run_ctrl=rc,
+            settings_ctrl=sc,
+            progress_bridge=pb,
+            device_session=device_session,
+        )
 
     def _destroy_entry(self, entry: _TabEntry) -> None:
         try:
@@ -100,6 +131,13 @@ class TabManager(QObject):
             entry.progress_bridge.close()
         except Exception:
             pass
+        if entry.device_session is not None:
+            try:
+                entry.bundle.iaa.scheduler._ensure_device_started = None
+                entry.bundle.iaa.scheduler._device_factory = None
+                entry.device_session.shutdown()
+            except Exception:
+                logger.exception('Failed to shutdown device session for %s', entry.config_name)
 
     def _save_tabs(self) -> None:
         if not self._tabs:
@@ -242,6 +280,9 @@ class TabManager(QObject):
         if entry.is_running:
             self.closeTabBlocked.emit('请先停止正在运行的任务')
             return
+        if entry.device_session is not None and entry.device_session.is_device_running():
+            self.closeTabBlocked.emit('请先停止设备')
+            return
         self.readyToCloseTab.emit(index)
 
     @Slot(int)
@@ -268,6 +309,8 @@ class TabManager(QObject):
         for i, entry in enumerate(self._tabs):
             if entry.config_name == config_name:
                 if entry.is_running:
+                    return False
+                if entry.device_session is not None and entry.device_session.is_device_running():
                     return False
                 if len(self._tabs) <= 1:
                     return False
@@ -474,7 +517,22 @@ class TabManager(QObject):
     def _get_active_tab_index(self) -> int:
         return self._active_index
 
+    def _get_active_device_session(self) -> QObject | None:
+        e = self._active_entry()
+        return e.device_session if e else None
+
+    def shutdown_device_sessions(self) -> None:
+        for entry in self._tabs:
+            if entry.device_session is not None:
+                try:
+                    entry.bundle.iaa.scheduler._ensure_device_started = None
+                    entry.bundle.iaa.scheduler._device_factory = None
+                    entry.device_session.shutdown()
+                except Exception:
+                    logger.exception('Failed to shutdown device session for %s', entry.config_name)
+
     activeRunController = Property(QObject, _get_active_run_controller, notify=activeTabChanged)
+    activeDeviceSession = Property(QObject, _get_active_device_session, notify=activeTabChanged)
     activeSettingsController = Property(QObject, _get_active_settings_controller, notify=activeTabChanged)
     activeProgressBridge = Property(QObject, _get_active_progress_bridge, notify=activeTabChanged)
     activeLogBridge = Property(QObject, _get_active_log_bridge, notify=activeTabChanged)
@@ -522,6 +580,20 @@ class TabManager(QObject):
         if 0 <= index < len(self._tabs):
             return self._tabs[index].log_bridge
         return None
+
+    @Slot(int, result=QObject)
+    def deviceSessionAt(self, index: int) -> 'QObject | None':
+        """返回指定 index 的 tab 的 VirtualDeviceSession。"""
+        if 0 <= index < len(self._tabs):
+            return self._tabs[index].device_session
+        return None
+
+    @Slot(int, result=str)
+    def deviceControlImplAt(self, index: int) -> str:
+        """返回指定 index 的 tab 当前控制方式（device.control_impl）。"""
+        if 0 <= index < len(self._tabs):
+            return self._tabs[index].bundle.iaa.config.conf.device.control_impl
+        return ''
 
     def _get_any_running(self) -> bool:
         return any(t.is_running for t in self._tabs)
