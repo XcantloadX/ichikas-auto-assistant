@@ -176,17 +176,11 @@ def prune_dist_directory(dist_dir: Path) -> int:
             removed += dll.stat().st_size
             dll.unlink()
 
+    # 仅删除 _internal 根目录下 Qt 附带的 FFmpeg DLL；勿动 av.libs/（PyAV/scrcpy 运行时依赖）。
     for pattern in ('avcodec-*', 'avformat-*', 'avutil-*', 'swscale-*', 'swresample-*'):
         for dll in internal_dir.glob(pattern):
             removed += dll.stat().st_size
             dll.unlink()
-
-    av_libs = internal_dir / 'av.libs'
-    if av_libs.is_dir():
-        for pattern in ('avcodec-*', 'avformat-*', 'avutil-*', 'swscale-*', 'swresample-*'):
-            for dll in av_libs.glob(pattern):
-                removed += dll.stat().st_size
-                dll.unlink()
 
     return removed
 

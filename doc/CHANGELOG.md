@@ -8,6 +8,7 @@
 
 修复：
 * 修复了在使用 QEMU gRPC 控制方法时发生的 RESOURCE_EXHAUSTED 与 RESOURCE_EXHAUSTED 错误
+* 修复了使用 Scrcpy 控制方法报错的问题
 
 ## v26.06b1
 新增：
