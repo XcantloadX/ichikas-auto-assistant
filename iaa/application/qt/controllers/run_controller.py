@@ -23,11 +23,12 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, i18n_controller, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
         self._scrcpy = scrcpy_controller
+        self._i18n = i18n_controller
         self._export_busy = False
         self._timer = QTimer(self)
         self._timer.setInterval(300)

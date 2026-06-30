@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import cast
 
 from PySide6.QtCore import QObject, Property, Signal, Slot
 
@@ -15,7 +16,7 @@ class I18nController(QObject):
     def _get_language(self) -> str:
         return self._language
 
-    language = Property(str, _get_language, notify=languageChanged)
+    language: str = cast(str, Property(str, _get_language, notify=languageChanged))
 
     @Slot(str)
     def setLanguage(self, language: str) -> None:

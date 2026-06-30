@@ -12,6 +12,7 @@ from ..forms.context import PreferencesContext
 from ..forms.preferences_form import build_preferences_form
 
 if TYPE_CHECKING:
+    from iaa.application.qt.controllers.i18n_controller import I18nController
     from iaa.application.service.iaa_service import IaaService
 
 
@@ -37,9 +38,10 @@ class PreferencesController(QObject):
     fieldUpdated = Signal(str, str)  # (field_id, field_json)
     groupUpdated = Signal(int, bool)  # (group_index, visible)
 
-    def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: 'IaaService', i18n_controller: 'I18nController', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
+        self._i18n = i18n_controller
         self._rebuild_form()
         self._state = SnapshotState(
             self._make_context(),
@@ -134,6 +136,8 @@ class PreferencesController(QObject):
             new_language = self._state.context.shared.interface.language
             language_changed = new_language != old_language
             interface_changed = field_id.startswith('interface.')
+            if language_changed:
+                self._i18n.setLanguage(new_language)
             self._recompute_runtime()
             if language_changed:
                 self.runtimeChanged.emit()

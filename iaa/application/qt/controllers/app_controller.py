@@ -68,9 +68,9 @@ class AppController(QObject):
         self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
         self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
         self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
-        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
-        self.settingsController = SettingsController(self.service, self)
-        self.preferencesController = PreferencesController(self.service, self)
+        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self.i18nController, self)
+        self.settingsController = SettingsController(self.service, self.i18nController, self)
+        self.preferencesController = PreferencesController(self.service, self.i18nController, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
         self.helpController = HelpController(self.service, self)
         self.globalHotkeyController = GlobalHotkeyController(
@@ -104,7 +104,7 @@ class AppController(QObject):
         self.reportError(str(exc))
 
     def _tr(self, key: str, **kwargs: object) -> str:
-        text = translate(self.service.config.shared.interface.language, key)
+        text = translate(self.i18nController.language, key)
         return text.format(**kwargs) if kwargs else text
 
     def _get_version(self) -> str:

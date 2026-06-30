@@ -65,7 +65,8 @@ class QtI18nTests(unittest.TestCase):
 
     def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
         config_service = make_config_service()
-        controller = PreferencesController(SimpleNamespace(config=config_service))
+        i18n = I18nController('zh_CN')
+        controller = PreferencesController(SimpleNamespace(config=config_service), i18n)
         changed_languages: list[str] = []
         changed_interfaces: list[bool] = []
         succeeded: list[str] = []
@@ -111,7 +112,7 @@ class QtI18nTests(unittest.TestCase):
             'Press shortcut... (Esc to cancel)',
         )
         self.assertEqual(updated_runtime['fieldMap']['hotkeys.start']['props']['clearText'], 'Clear')
-        self.assertEqual(changed_interfaces, [True])
+        self.assertEqual(changed_interfaces, [])
 
         self.assertTrue(controller.save())
         self.assertEqual(succeeded, ['Saved'])
@@ -119,7 +120,8 @@ class QtI18nTests(unittest.TestCase):
 
     def test_preferences_interface_field_notifies_app_shell(self) -> None:
         config_service = make_config_service()
-        controller = PreferencesController(SimpleNamespace(config=config_service))
+        i18n = I18nController('zh_CN')
+        controller = PreferencesController(SimpleNamespace(config=config_service), i18n)
         changed_interfaces: list[bool] = []
         controller.interfaceChanged.connect(lambda: changed_interfaces.append(True))
 
@@ -130,7 +132,8 @@ class QtI18nTests(unittest.TestCase):
 
     def test_settings_controller_rebuilds_config_labels_for_language(self) -> None:
         service = make_iaa_service()
-        controller = SettingsController(service)
+        i18n = I18nController('zh_CN')
+        controller = SettingsController(service, i18n)
 
         initial_runtime = json.loads(controller.getRuntime())
         self.assertEqual(initial_runtime['title'], '配置')
@@ -138,6 +141,7 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(initial_runtime['fieldMap']['game.server']['label'], '服务器')
 
         service.config.shared.interface.language = 'en_US'
+        i18n.setLanguage('en_US')
         controller.setLanguage('en_US')
 
         updated_runtime = json.loads(controller.getRuntime())

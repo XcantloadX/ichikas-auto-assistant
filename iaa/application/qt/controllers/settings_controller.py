@@ -13,6 +13,7 @@ from ..forms.settings_form import build_settings_form
 
 if TYPE_CHECKING:
     from iaa.application.service.iaa_service import IaaService
+    from iaa.application.qt.controllers.i18n_controller import I18nController
 
 
 def _normalize_qt_value(value: Any) -> Any:
@@ -39,9 +40,10 @@ class SettingsController(QObject):
     fieldUpdated = Signal(str, str)  # (field_id, field_json)
     groupUpdated = Signal(int, bool)  # (group_index, visible)
 
-    def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: 'IaaService', i18n_controller: 'I18nController', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
+        self._i18n = i18n_controller
         self._mumu_instances: list[dict[str, Any]] = []
         self._rebuild_form(reset_mumu_instances=True)
         self._state = SnapshotState(
@@ -106,7 +108,7 @@ class SettingsController(QObject):
         self.dirtyChanged.emit(self._state.dirty)
 
     def _recompute_runtime(self) -> None:
-        language = self._iaa.config.shared.interface.language
+        language = self._i18n.language
         runtime = self._engine.build_runtime(self._state.context, language)
         runtime['dirty'] = self._state.dirty
         runtime['profileName'] = self._iaa.config.current_config_name
