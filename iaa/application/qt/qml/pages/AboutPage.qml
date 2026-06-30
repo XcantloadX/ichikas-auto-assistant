@@ -3,8 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ".." as App
 import "../components"
-
-// import Iaa.Controllers 1.0
+import IaaApp 1.0
 
 PageContainer {
     title: "关于"
@@ -42,7 +41,7 @@ PageContainer {
             Layout.alignment: Qt.AlignHCenter
         }
         Label {
-            text: "版本 v" + appController.version
+            text: "版本 v" + AppController.version
             Layout.alignment: Qt.AlignHCenter
         }
 

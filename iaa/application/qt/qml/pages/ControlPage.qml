@@ -8,15 +8,25 @@ PageContainer {
     title: "控制"
     property var tasks: []
     property var autoLiveDialog
+    required property var runCtrl
+    required property var progBridge
+
+    readonly property bool ctrl_running:    runCtrl ? runCtrl.running    : false
+    readonly property bool ctrl_isStarting: runCtrl ? runCtrl.isStarting : false
+    readonly property bool ctrl_isStopping: runCtrl ? runCtrl.isStopping : false
+    readonly property bool ctrl_isQueued:   runCtrl ? runCtrl.isQueued   : false
+    readonly property bool ctrl_exportBusy: runCtrl ? runCtrl.exportBusy : false
+    readonly property string ctrl_taskName: runCtrl ? runCtrl.currentTaskName : ""
+    readonly property bool ctrl_busy: ctrl_isStarting || ctrl_isStopping || ctrl_isQueued
 
     function reloadTasks() {
-        tasks = JSON.parse(runController.tasksStateJson())
+        tasks = root.runCtrl ? JSON.parse(root.runCtrl.tasksStateJson()) : []
     }
 
     Component.onCompleted: reloadTasks()
 
     Connections {
-        target: runController
+        target: root.runCtrl
         function onTasksChanged() { root.reloadTasks() }
     }
 
@@ -42,7 +52,7 @@ PageContainer {
                     highlighted: true
                     onClicked: {
                         mainStoryDialog.close()
-                        runController.runTask("main_story")
+                        if (root.runCtrl) root.runCtrl.runTask("main_story")
                     }
                 }
             }
@@ -64,43 +74,46 @@ PageContainer {
                 RowLayout {
                     Layout.fillWidth: true
                     Button {
-                        text: runController.isStarting ? "启动中" : (runController.isStopping ? "停止中" : (runController.running ? "停止" : "启动"))
-                        enabled: !runController.isStarting && !runController.isStopping
-                        highlighted: !runController.running
+                        text: {
+                            if (root.ctrl_isQueued)   return "排队中"
+                            if (root.ctrl_isStarting) return "启动中"
+                            if (root.ctrl_isStopping) return "停止中"
+                            if (root.ctrl_running)    return "停止"
+                            return "启动"
+                        }
+                        enabled: !root.ctrl_busy
+                        highlighted: !root.ctrl_running
                         onClicked: {
-                            if (runController.running) {
-                                runController.stop()
-                            } else {
-                                runController.startRegular()
-                            }
+                            if (root.ctrl_running) root.runCtrl.stop()
+                            else if (root.runCtrl) root.runCtrl.startRegular()
                         }
                     }
                     Button {
-                        text: runController.exportBusy ? "导出中..." : "导出报告"
-                        enabled: !runController.exportBusy
-                        onClicked: runController.exportReport()
+                        text: root.ctrl_exportBusy ? "导出中..." : "导出报告"
+                        enabled: !root.ctrl_exportBusy
+                        onClicked: { if (root.runCtrl) root.runCtrl.exportReport() }
                     }
                     Item { Layout.fillWidth: true }
-                    Label { text: runController.currentTaskName ? ("当前任务：" + runController.currentTaskName) : "" }
+                    Label { text: root.ctrl_taskName ? "当前任务：" + root.ctrl_taskName : "" }
                 }
 
                 Label {
                     Layout.fillWidth: true
                     wrapMode: Text.Wrap
-                    text: progressBridge.statusText
+                    text: root.progBridge ? root.progBridge.statusText : ""
                 }
                 ProgressBar {
                     Layout.fillWidth: true
                     from: 0
                     to: 100
-                    value: progressBridge.progressPercent
+                    value: root.progBridge ? root.progBridge.progressPercent : 0
                 }
                 Label {
                     Layout.fillWidth: true
-                    visible: !!progressBridge.lastErrorText
+                    visible: !!(root.progBridge && root.progBridge.lastErrorText)
                     color: "#b91c1c"
                     wrapMode: Text.Wrap
-                    text: progressBridge.lastErrorText
+                    text: root.progBridge ? root.progBridge.lastErrorText : ""
                 }
             }
         }
@@ -130,9 +143,9 @@ PageContainer {
                                 Switch {
                                     visible: !!modelData.checkable
                                     checked: !!modelData.enabled
-                                    enabled: !runController.running && !runController.isStarting && !runController.isStopping
+                                    enabled: !root.ctrl_busy
                                     text: modelData.name
-                                    onToggled: runController.setRegularTaskEnabled(modelData.id, checked)
+                                    onToggled: { if (root.runCtrl) root.runCtrl.setRegularTaskEnabled(modelData.id, checked) }
                                 }
                                 Label {
                                     visible: !modelData.checkable
@@ -141,14 +154,14 @@ PageContainer {
                                 Item { Layout.fillWidth: true }
                                 Button {
                                     text: "运行"
-                                    enabled: !runController.running && !runController.isStarting && !runController.isStopping
+                                    enabled: !root.ctrl_busy
                                     onClicked: {
                                         if (modelData.id === "auto_live") {
                                             root.autoLiveDialog.open()
                                         } else if (modelData.id === "main_story") {
                                             mainStoryDialog.open()
-                                        } else {
-                                            runController.runTask(modelData.id)
+                                        } else if (root.runCtrl) {
+                                            root.runCtrl.runTask(modelData.id)
                                         }
                                     }
                                 }

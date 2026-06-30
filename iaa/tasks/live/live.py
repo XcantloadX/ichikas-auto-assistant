@@ -614,7 +614,7 @@ def challenge_live(
     def claim_reward():
         # 选择奖励
         if R.Live.ChallengeLive.TextWeeklyAward.find():
-            if CHALLENGE_AWARD_PREFABS[conf().challenge_live.award].try_click():
+            if CHALLENGE_AWARD_PREFABS[conf().tasks.challenge_live.award].try_click():
                 logger.debug('Clicked award.')
                 sleep(0.3)
                 return True, False

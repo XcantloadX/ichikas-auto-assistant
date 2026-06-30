@@ -74,6 +74,15 @@ def build_preferences_form() -> tuple[FormSpec[PreferencesContext], list[Callabl
                 ],
             )
             Select(
+                key='interface.startup_page',
+                label='启动时打开',
+                ref=ref(ctx.shared.interface.startup_page),
+                options=[
+                    {'value': 'overview', 'label': '总览页面'},
+                    {'value': 'last_opened', 'label': '上次打开的配置'},
+                ],
+            )
+            Select(
                 key='interface.theme_color',
                 label='主题色',
                 ref=ref(ctx.shared.interface.theme_color).map(

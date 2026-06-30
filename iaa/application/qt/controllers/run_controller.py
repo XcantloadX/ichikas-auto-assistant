@@ -8,10 +8,12 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
+from iaa.application.service.iaa_service import IaaService
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
-from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
+from iaa.tasks.registry import TASK_INFOS
 
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
+from .progress_bridge import ProgressBridge
 
 
 class RunController(QObject):
@@ -22,12 +24,12 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: IaaService, progress_bridge: ProgressBridge, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
-        self._scrcpy = scrcpy_controller
         self._export_busy = False
+        self._queued = False
         self._timer = QTimer(self)
         self._timer.setInterval(300)
         self._timer.timeout.connect(self._refresh_state)
@@ -36,7 +38,6 @@ class RunController(QObject):
 
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
-        self._scrcpy.sync_visibility()
 
     def _get_running(self) -> bool:
         return bool(self._iaa.scheduler.running)
@@ -53,81 +54,50 @@ class RunController(QObject):
     def _get_current_task_name(self) -> str:
         return self._iaa.scheduler.current_task_name or ''
 
+    def _get_is_queued(self) -> bool:
+        return self._queued
+
+    def _set_queued(self, v: bool) -> None:
+        self._queued = v
+        self.stateChanged.emit()
+
     def _get_export_busy(self) -> bool:
         return self._export_busy
 
     running = Property(bool, _get_running, notify=stateChanged)
     isStarting = Property(bool, _get_is_starting, notify=stateChanged)
     isStopping = Property(bool, _get_is_stopping, notify=stateChanged)
+    isQueued = Property(bool, _get_is_queued, notify=stateChanged)
     currentTaskId = Property(str, _get_current_task_id, notify=stateChanged)
     currentTaskName = Property(str, _get_current_task_name, notify=stateChanged)
     exportBusy = Property(bool, _get_export_busy, notify=stateChanged)
 
     @Slot(result=str)
     def tasksStateJson(self) -> str:
-        scheduler_conf = self._iaa.config.conf.scheduler
+        conf = self._iaa.config.conf
         items: list[dict[str, object]] = []
-        ordered_ids = [
-            'start_game',
-            'solo_live',
-            'challenge_live',
-            'activity_story',
-            'cm',
-            'gift',
-            'area_convos',
-            'event_shop',
-            'mission_rewards',
-            'auto_live',
-            'main_story',
-        ]
-        checkable_ids = {
-            'start_game',
-            'solo_live',
-            'challenge_live',
-            'activity_story',
-            'cm',
-            'gift',
-            'area_convos',
-            'event_shop',
-            'mission_rewards',
-        }
-        for task_id in ordered_ids:
-            info = TASK_INFOS[task_id]
+        for info in TASK_INFOS.values():
+            if info.task_id.startswith('_'):  # 内部任务，不在主界面展示
+                continue
             items.append(
                 {
-                    'id': task_id,
+                    'id': info.task_id,
                     'name': info.display_name,
                     'kind': info.kind,
-                    'enabled': scheduler_conf.is_enabled(task_id) if task_id in checkable_ids else False,
+                    'enabled': info.get_enabled(conf) if info.get_enabled is not None else False,
                     'runnable': True,
-                    'checkable': task_id in checkable_ids,
+                    'checkable': info.get_enabled is not None,
                 }
             )
         return json.dumps(items, ensure_ascii=False)
 
     @Slot(str, bool)
     def setRegularTaskEnabled(self, task_id: str, enabled: bool) -> None:
-        scheduler_conf = self._iaa.config.conf.scheduler
-        if task_id == 'start_game':
-            scheduler_conf.start_game_enabled = enabled
-        elif task_id == 'solo_live':
-            scheduler_conf.solo_live_enabled = enabled
-        elif task_id == 'challenge_live':
-            scheduler_conf.challenge_live_enabled = enabled
-        elif task_id == 'activity_story':
-            scheduler_conf.activity_story_enabled = enabled
-        elif task_id == 'cm':
-            scheduler_conf.cm_enabled = enabled
-        elif task_id == 'gift':
-            scheduler_conf.gift_enabled = enabled
-        elif task_id == 'area_convos':
-            scheduler_conf.area_convos_enabled = enabled
-        elif task_id == 'event_shop':
-            scheduler_conf.event_shop_enabled = enabled
-        elif task_id == 'mission_rewards':
-            scheduler_conf.mission_rewards_enabled = enabled
-        else:
-            return
+        tasks_conf = self._iaa.config.conf.tasks
+        task_conf = getattr(tasks_conf, task_id, None)
+        if task_conf is None or not hasattr(task_conf, 'enabled'):
+            raise ValueError(f"Unknown or non-toggleable task: {task_id!r}")
+        task_conf.enabled = enabled
         self._iaa.config.save()
         self.tasksChanged.emit()
 

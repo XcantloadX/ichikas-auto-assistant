@@ -10,6 +10,7 @@ Dialog {
     title: "自动演出"
     width: 620
     anchors.centerIn: Overlay.overlay
+    property var runCtrl: null
     property var presets: []
 
     function defaultPayload() {
@@ -41,7 +42,7 @@ Dialog {
     }
 
     onOpened: {
-        presets = JSON.parse(runController.builtinAutoPresetsJson())
+        presets = JSON.parse(root.runCtrl.builtinAutoPresetsJson())
         formData = defaultPayload()
     }
 
@@ -63,7 +64,7 @@ Dialog {
             Button {
                 text: "上次设定"
                 onClicked: {
-                    var raw = runController.lastAutoPresetJson()
+                    var raw = root.runCtrl.lastAutoPresetJson()
                     if (!raw) {
                         App.Notice.show("error", "没有找到上次设定")
                         return
@@ -168,7 +169,7 @@ Dialog {
                 highlighted: true
                 onClicked: {
                     try {
-                        runController.runAutoLive(JSON.stringify(root.formData))
+                        root.runCtrl.runAutoLive(JSON.stringify(root.formData))
                         root.close()
                     } catch (error) {
                         App.Notice.show("error", String(error))

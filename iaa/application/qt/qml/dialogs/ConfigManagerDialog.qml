@@ -15,6 +15,7 @@ Dialog {
     property var configNames: []
     required property var navigation
     required property var settingsCtrl
+    required property var tabManager
 
     function reload() {
         root.configNames = JSON.parse(App.ProfileStore.profilesJson).profiles || []
@@ -49,9 +50,8 @@ Dialog {
                 onClicked: {
                     var name = newConfigName.text.trim()
                     if (name.length > 0) {
-                        root.navigation.requestGuardedAction("切换到新配置", function() {
-                            root.settingsCtrl.createProfile(name)
-                        })
+                        let doCreate = function () { root.tabManager.createProfile(name); }
+                        root.navigation.requestGuardedAction("切换到新配置", doCreate)
                         newConfigName.text = ""
                     }
                 }
@@ -63,7 +63,14 @@ Dialog {
             Layout.fillWidth: true
             Layout.fillHeight: true
             Layout.preferredHeight: 200
+            clip: true
             model: root.configNames
+
+            ScrollBar.vertical: ScrollBar {
+                policy: configList.contentHeight > configList.height
+                        ? ScrollBar.AlwaysOn
+                        : ScrollBar.AlwaysOff
+            }
 
             delegate: RowLayout {
                 width: ListView.view.width
@@ -145,11 +152,11 @@ Dialog {
                 Button {
                     text: "确定"
                     highlighted: true
-                    enabled: renameDialog.newName.trim().length > 0
+                    enabled: renameDialog.newName.trim().length > 0 && root.settingsCtrl !== null
                     onClicked: {
                         var oldName = renameDialog.targetConfigName
                         var newName = renameDialog.newName.trim()
-                        var isCurrent = oldName === App.ProfileStore.currentProfileName
+                        var isCurrent = root.tabManager.isTabOpen(oldName)
                         var runner = function() {
                             root.settingsCtrl.renameProfile(oldName, newName)
                         }
@@ -193,15 +200,16 @@ Dialog {
                     highlighted: true
                     onClicked: {
                         var name = deleteConfirmDialog.targetConfigName
-                        var isCurrent = name === App.ProfileStore.currentProfileName
-                        var runner = function() {
-                            root.settingsCtrl.deleteProfile(name)
+                        if (root.settingsCtrl === null) {
+                            deleteConfirmDialog.close()
+                            return
                         }
-                        if (isCurrent) {
-                            root.navigation.requestGuardedAction("删除当前配置", runner)
-                        } else {
-                            runner()
+                        // 如果该配置的 tab 正在运行，拒绝删除
+                        if (!root.tabManager.closeTabForConfig(name)) {
+                            deleteConfirmDialog.close()
+                            return
                         }
+                        root.settingsCtrl.deleteProfile(name)
                         deleteConfirmDialog.close()
                     }
                 }

@@ -7,4 +7,4 @@ from .live import challenge_live as do_challenge_live
 @task('挑战演出')
 def challenge_live():
     go_home()
-    do_challenge_live(conf().challenge_live.characters[0])
+    do_challenge_live(conf().tasks.challenge_live.characters[0])

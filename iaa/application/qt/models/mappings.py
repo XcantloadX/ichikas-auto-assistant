@@ -11,6 +11,7 @@ from iaa.definitions.enums import (
 LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'mumu_v5': 'MuMu 12 (v5)',
     'mumu': 'MuMu 12 (v4)',
+    'avd': 'AVD',
     'custom': '自定义模拟器',
     'none': '物理机 / 手动管理',
     'playcover': 'PlayCover',
@@ -35,20 +36,21 @@ LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
 }
 LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {value: key for key, value in LINK_DISPLAY_MAP.items()}
 
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], str] = {
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'], str] = {
     'nemu_ipc': 'Nemu IPC',
     'adb': 'ADB',
     'uiautomator': 'UIAutomator2',
     'scrcpy': 'Scrcpy',
+    'qemu_grpc': 'QEMU gRPC',
 }
-CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy']] = {
+CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc']] = {
     value: key for key, value in CONTROL_IMPL_DISPLAY_MAP.items()
 }
 
 RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], str] = {
-    'auto': '智能决定',
+    'auto': '自动',
     'keep': '保持原始分辨率',
-    'wm_size': '修改分辨率（wm size）',
+    'wm_size': '强制修改分辨率',
 }
 RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['auto', 'keep', 'wm_size']] = {
     value: key for key, value in RESOLUTION_METHOD_DISPLAY_MAP.items()

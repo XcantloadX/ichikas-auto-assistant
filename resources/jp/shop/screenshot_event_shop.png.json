@@ -17,7 +17,8 @@
       },
       "displayName": "卡片商品 Lv1 文本",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "c9269644-b1e1-430e-b4a6-8696175d3c90": {
@@ -35,7 +36,8 @@
         "fixed": true
       },
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "af2fa909-5a1c-4253-b4e6-e223f82773c2": {
@@ -53,7 +55,8 @@
         "fixed": true
       },
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
@@ -72,7 +75,8 @@
       },
       "displayName": "活动商店最下方的まで",
       "variant_policy": {
-        "tw": "require"
+        "tw": "require",
+        "cn": "require"
       }
     },
     "8dec26b6-85a8-4ece-afbb-6f2fb610fbe9": {
@@ -90,7 +94,8 @@
       },
       "displayName": "活动商店 列表",
       "variant_policy": {
-        "tw": "inherit"
+        "tw": "inherit",
+        "cn": "require"
       }
     }
   }

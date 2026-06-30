@@ -1,12 +1,10 @@
 import os
-from typing import TYPE_CHECKING
+from typing import Callable
 
 from kotonebot import logging
 from pydantic_core import ValidationError
 from iaa.config import manager
 from iaa.config.manager import ConfigValidationError
-if TYPE_CHECKING:
-    from .iaa_service import IaaService
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +12,12 @@ DEFAULT_CONFIG_NAME = 'default'
 
 
 class ConfigService:
-    def __init__(self, iaa_service: 'IaaService', config_name: str | None = None):
-        self.iaa = iaa_service
-        manager.config_path = os.path.join(self.iaa.root, 'conf')
+    def __init__(self, config_name: str | None = None, is_running: 'Callable[[], bool] | None' = None):
+        # is_running: 可选的调度器运行状态查询函数，由 IaaService 在构造完 SchedulerService 后注入。
+        # 可在此处通过替换 is_running 来自定义"切换配置前的前置检查"。
+        self._is_running = is_running or (lambda: False)
+        from .iaa_service import IaaService
+        manager.config_path = os.path.join(IaaService.app_root(), 'conf')
 
         self.shared = manager.read_shared()
 
@@ -67,7 +68,7 @@ class ConfigService:
         manager.write_shared(self.shared)
 
     def switch_config(self, name: str) -> None:
-        if self.iaa.scheduler.running:
+        if self._is_running():
             raise RuntimeError("运行时不能切换配置，请先停止任务")
 
         self._config_name = name

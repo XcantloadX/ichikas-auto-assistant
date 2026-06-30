@@ -48,7 +48,8 @@ PageContainer {
         }
     }
 
-    readonly property bool scriptRunning: runController.running || runController.isStarting || runController.isStopping
+    property var runCtrl: null
+    readonly property bool scriptRunning: runCtrl ? (runCtrl.running || runCtrl.isStarting || runCtrl.isStopping) : false
 
     headerActions: Button {
         text: "保存"

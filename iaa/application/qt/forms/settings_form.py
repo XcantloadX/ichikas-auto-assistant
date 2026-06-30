@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from typing import Any, Callable, Literal, cast
+from typing import Any, Callable, Literal, TypedDict, cast
 import platform
 
 from iaa.application.framework.dsl import (
+    ActionSpec,
     Checkbox,
     FieldSpec,
     FormPage,
     FormSpec,
     Group,
+    Hook,
     IconItemPicker,
+    InstancePicker,
     NoticeBlock,
     Segmented,
     Select,
     Text,
-    TransferList,
+    SortableChecklist,
     register_field,
     bind,
     custom_ref,
@@ -38,6 +41,7 @@ from iaa.config.schemas import (
     CustomDevice,
     NoDevice,
     PlayCoverDevice,
+    AvdDevice,
     AutoConnection,
     UsbConnection,
     TcpConnection,
@@ -49,6 +53,11 @@ from iaa.definitions.enums import (
 )
 
 ctx, ref = bind(FormContext)
+
+
+class PickerOption(TypedDict):
+    value: str
+    label: str
 
 
 # ── 辅助判断 ──────────────────────────────────────────────────────────────────
@@ -71,11 +80,14 @@ def _is_no_device(s: FormContext) -> bool:
 def _is_playcover(s: FormContext) -> bool:
     return isinstance(s.conf.device.lifecycle, PlayCoverDevice)
 
+def _is_avd(s: FormContext) -> bool:
+    return isinstance(s.conf.device.lifecycle, AvdDevice)
+
 def _is_tcp(s: FormContext) -> bool:
     return isinstance(s.conf.device.connection, TcpConnection)
 
 def _show_connection_section(s: FormContext) -> bool:
-    return not _is_mumu(s) and not _is_playcover(s)
+    return not _is_mumu(s) and not _is_playcover(s) and not _is_avd(s)
 
 def _show_tcp_fields(s: FormContext) -> bool:
     return _show_connection_section(s) and _is_tcp(s)
@@ -122,6 +134,8 @@ def _get_lifecycle_type(state: FormContext) -> str:
         return lc.type
     if isinstance(lc, CustomDevice):
         return 'custom'
+    if isinstance(lc, AvdDevice):
+        return 'avd'
     if isinstance(lc, PlayCoverDevice):
         return 'playcover'
     return 'none'
@@ -134,32 +148,26 @@ def _set_lifecycle_type(state: FormContext, value: object) -> None:
             return
         t: Literal['mumu', 'mumu_v5'] = 'mumu' if val == 'mumu' else 'mumu_v5'
         state.conf.device.lifecycle = MuMuDevice(type=t)
-        state.conf.device.connection = AutoConnection(type='auto')
-        # 切到 MuMu 时，若 control_impl 不支持则重置
-        if state.conf.device.control_impl == 'nemu_ipc':
-            pass  # nemu_ipc 是 MuMu 的推荐
     elif val == 'custom':
         if isinstance(current, CustomDevice):
             return
         state.conf.device.lifecycle = CustomDevice(type='custom')
-        if isinstance(state.conf.device.connection, AutoConnection):
-            state.conf.device.connection = TcpConnection(type='tcp')
-        if state.conf.device.control_impl == 'nemu_ipc':
-            state.conf.device.control_impl = 'adb'
     elif val == 'none':
         if isinstance(current, NoDevice):
             return
         state.conf.device.lifecycle = NoDevice(type='none')
-        if isinstance(state.conf.device.connection, AutoConnection):
-            state.conf.device.connection = UsbConnection(type='usb')
-        if state.conf.device.control_impl == 'nemu_ipc':
-            state.conf.device.control_impl = 'adb'
+    elif val == 'avd':
+        if isinstance(current, AvdDevice):
+            return
+        state.conf.device.lifecycle = AvdDevice(type='avd')
     elif val == 'playcover':
         if isinstance(current, PlayCoverDevice):
             return
         state.conf.device.lifecycle = PlayCoverDevice(type='playcover')
-        if state.conf.device.control_impl == 'nemu_ipc':
-            state.conf.device.control_impl = 'adb'
+
+
+def _set_control_impl(state: FormContext, value: object) -> None:
+    state.conf.device.control_impl = str(value)  # type: ignore[assignment]
 
 
 # ── MuMu instance id ──────────────────────────────────────────────────────────
@@ -180,13 +188,49 @@ def _set_mumu_instance_id(state: FormContext, value: object) -> None:
 
 def _get_check_and_start(state: FormContext) -> bool:
     lc = state.conf.device.lifecycle
-    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)) else False
+    return lc.check_and_start if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)) else False
 
 def _set_check_and_start(state: FormContext, value: object) -> None:
     lc = state.conf.device.lifecycle
-    if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice)):
+    if isinstance(lc, (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)):
         lc.check_and_start = bool(value)
 
+
+
+# ── AVD fields ────────────────────────────────────────────────────────────────
+
+def _get_avd_name(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.avd_name or ''
+    return ''
+
+def _set_avd_name(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.avd_name = str(value or '').strip() or None
+
+def _get_avd_sdk_path(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.sdk_path or ''
+    return ''
+
+def _set_avd_sdk_path(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.sdk_path = str(value or '').strip() or None
+
+def _get_avd_extra_args(state: FormContext) -> str:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        return lc.extra_args
+    return ''
+
+def _set_avd_extra_args(state: FormContext, value: object) -> None:
+    lc = state.conf.device.lifecycle
+    if isinstance(lc, AvdDevice):
+        lc.extra_args = str(value or '').strip()
 
 
 # ── CustomDevice lifecycle fields ─────────────────────────────────────────────
@@ -308,7 +352,7 @@ def _set_tcp_device_serial(state: FormContext, value: object) -> None:
 # ── CM ────────────────────────────────────────────────────────────────────────
 
 def _get_watch_ad_wait_sec(state: FormContext) -> str:
-    return str(int(state.conf.cm.watch_ad_wait_sec))
+    return str(int(state.conf.tasks.cm.watch_ad_wait_sec))
 
 def _set_watch_ad_wait_sec(state: FormContext, value: object) -> None:
     text = str(value or '').strip()
@@ -317,11 +361,99 @@ def _set_watch_ad_wait_sec(state: FormContext, value: object) -> None:
     num = int(text)
     if num <= 0:
         return
-    state.conf.cm.watch_ad_wait_sec = num
+    state.conf.tasks.cm.watch_ad_wait_sec = num
 
-def _on_server_change(state: FormContext, value: object) -> None:
-    if value != 'jp':
-        state.conf.game.link_account = 'no'
+# ── 归一化钩子 ────────────────────────────────────────────────────────────────
+
+def _normalize_game(ctx: FormContext) -> None:
+    if ctx.conf.game.server != 'jp':
+        ctx.conf.game.link_account = 'no'
+
+def _normalize_device(ctx: FormContext) -> None:
+    lc = ctx.conf.device.lifecycle
+
+    # connection 约束
+    if isinstance(lc, (MuMuDevice, AvdDevice)):
+        if not isinstance(ctx.conf.device.connection, AutoConnection):
+            ctx.conf.device.connection = AutoConnection(type='auto')
+    elif isinstance(lc, CustomDevice):
+        if isinstance(ctx.conf.device.connection, AutoConnection):
+            ctx.conf.device.connection = TcpConnection(type='tcp')
+    elif isinstance(lc, NoDevice):
+        if isinstance(ctx.conf.device.connection, AutoConnection):
+            ctx.conf.device.connection = UsbConnection(type='usb')
+
+    # control_impl 约束：nemu_ipc 仅 MuMu，qemu_grpc 仅 AVD
+    impl = ctx.conf.device.control_impl
+    if impl == 'nemu_ipc' and not isinstance(lc, MuMuDevice):
+        ctx.conf.device.control_impl = 'adb'
+        impl = 'adb'
+    elif impl == 'qemu_grpc' and not isinstance(lc, AvdDevice):
+        ctx.conf.device.control_impl = 'adb'
+        impl = 'adb'
+
+    # resolution_method 约束：qemu_grpc 强制 keep
+    if impl == 'qemu_grpc':
+        ctx.conf.device.resolution_method = 'keep'
+
+
+# ── MuMu 实例刷新 ActionSpec ──────────────────────────────────────────────────
+
+def _fetch_mumu_instances(ctx: FormContext) -> list[PickerOption]:
+    """从 MuMu 模拟器宿主查询实例列表，返回下拉选项。
+
+    若当前 lifecycle 不是 MuMuDevice，直接返回默认占位项。
+    """
+    from ..models import DEFAULT_MUMU_INSTANCE_LABEL
+
+    lc = ctx.conf.device.lifecycle
+    if not isinstance(lc, MuMuDevice):
+        return [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+
+    emulator = lc.type
+    if emulator not in {'mumu', 'mumu_v5'}:
+        return [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}]
+
+    from kotonebot.client.host import Mumu12Host, Mumu12V5Host
+
+    host_cls = Mumu12Host if emulator == 'mumu' else Mumu12V5Host
+    instances = host_cls.list()
+    items: list[PickerOption] = [
+        PickerOption(value='', label=DEFAULT_MUMU_INSTANCE_LABEL)
+    ] + [
+        PickerOption(value=str(inst.id), label=f'[{inst.id}] {inst.name}')
+        for inst in instances
+    ]
+    return items
+
+
+# 模块级 ActionSpec —— 持有刷新函数和执行状态
+_mumu_refresh: ActionSpec[FormContext, list[PickerOption]] = ActionSpec(
+    fn=_fetch_mumu_instances, name='refresh'
+)
+
+
+def _fetch_avd_instances(ctx: FormContext) -> list[PickerOption]:
+    """从 AVD 查询实例列表，返回下拉选项。"""
+    DEFAULT_LABEL = '（默认第一个）'
+    lc = ctx.conf.device.lifecycle
+    sdk_path = lc.sdk_path if isinstance(lc, AvdDevice) else None
+    from iaa.application.service.avd import AvdHost
+    host = AvdHost(sdk_path=sdk_path)
+    instances = host.list()
+    return [PickerOption(value='', label=DEFAULT_LABEL)] + [
+        PickerOption(
+            value=inst._avd_name,
+            label=f'{inst._avd_name}{"  [运行中]" if inst.adb_serial else ""}',
+        )
+        for inst in instances
+    ]
+
+
+# 模块级 ActionSpec —— 持有刷新函数和执行状态
+_avd_refresh: ActionSpec[FormContext, list[PickerOption]] = ActionSpec(
+    fn=_fetch_avd_instances, name='refresh'
+)
 
 
 # ── Form ──────────────────────────────────────────────────────────────────────
@@ -341,9 +473,9 @@ def ResolutionSelect(
 
     ``on_reset`` 是点击「恢复分辨率」时的回调，由 controller 注入。
     """
-    field_actions: dict[str, Callable[[FormContext], None]] = {}
+    action_list: list[ActionSpec] = []
     if on_reset is not None:
-        field_actions['reset'] = on_reset
+        action_list.append(ActionSpec(fn=on_reset, name='reset', threaded=False))
     return register_field(
         FieldSpec(
             key=key,
@@ -353,16 +485,14 @@ def ResolutionSelect(
             options=options,
             visible=visible,
             enabled=enabled,
-            actions=field_actions,
+            actions=action_list,
             **kwargs,
         )
     )
 
 
 def build_settings_form(
-    mumu_instances: list[dict[str, Any]],
     *,
-    on_mumu_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
     lifecycle_options = [
@@ -376,13 +506,14 @@ def build_settings_form(
     event_shop_items = [{'value': item.value, 'label': item.display('cn')} for item in ShopItem]
 
     with FormPage('配置') as page:
+        Hook(_normalize_game)
+        Hook(_normalize_device)
         with Group('游戏设置'):
             Segmented(
                 key='game.server',
                 label='服务器',
                 ref=ref(ctx.conf.game.server),
                 options=[{'value': k, 'label': v} for k, v in SERVER_DISPLAY_MAP.items()],
-                on_change=_on_server_change,
                 help_text='''广告：现招募维护者维护除日服以外的服务器适配~ 如果你有兴趣参与维护，请联系作者。
 <hr>
 维护者：
@@ -412,19 +543,66 @@ def build_settings_form(
                 options=lifecycle_options,
             )
             # MuMu 专属
-            Select(
+            InstancePicker(
                 key='device.mumuInstanceId',
                 label='多开实例',
                 ref=custom_ref(_get_mumu_instance_id, _set_mumu_instance_id),
                 visible=_lifecycle_is(MuMuDevice),
-                options=mumu_instances,
-                refresh=on_mumu_refresh,
+                options=lambda ctx: _mumu_refresh.result or [],
+                loading=lambda ctx: _mumu_refresh.loading,
+                actions=[_mumu_refresh],
+            )
+            # AVD 专属
+            Text(
+                key='device.avdSdkPath',
+                label='SDK 路径',
+                ref=custom_ref(_get_avd_sdk_path, _set_avd_sdk_path),
+                visible=_lifecycle_is(AvdDevice),
+                placeholder='留空自动查找',
+                help_text=(
+                    'Android SDK 路径。自动查找顺序：<ol>'
+                    '<li>环境变量 <code>ANDROID_HOME</code> / <code>ANDROID_SDK_ROOT</code></li>'
+                    '<li>Windows：<code>%LOCALAPPDATA%\\Android\\Sdk</code></li>'
+                    '<li>macOS：<code>~/Library/Android/sdk</code></li>'
+                    '<li>Linux：<code>~/Android/Sdk</code></li>'
+                    '<li><code>PATH</code> 中的 <code>emulator</code></li>'
+                    '</ol>'
+                    '填写后将只在该目录下查找，忽略以上自动查找逻辑。'
+                ),
+            )
+            Text(
+                key='device.avdExtraArgs',
+                label='额外启动参数',
+                ref=custom_ref(_get_avd_extra_args, _set_avd_extra_args),
+                visible=_lifecycle_is(AvdDevice),
+                placeholder='可选，例如 -gpu swiftshader_indirect -no-audio',
+                help_text='追加到 emulator 命令行末尾的参数，以空格分隔。',
+            )
+            InstancePicker(
+                key='device.avdName',
+                label='AVD 实例',
+                ref=custom_ref(_get_avd_name, _set_avd_name),
+                visible=_lifecycle_is(AvdDevice),
+                options=lambda ctx: _avd_refresh.result or [],
+                loading=lambda ctx: _avd_refresh.loading,
+                actions=[_avd_refresh],
             )
             Checkbox(
                 key='device.checkAndStart',
                 label='检查并启动',
                 ref=custom_ref(_get_check_and_start, _set_check_and_start),
-                visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice),
+                visible=_lifecycle_is(MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice),
+            )
+            Checkbox(
+                key='device.stopOnFinish',
+                label='完成后关闭模拟器',
+                ref=ref(ctx.conf.device.stop_on_finish),
+                # 展示条件：是模拟器设备，而且选中了启动模拟器
+                visible=lambda s: isinstance(
+                    s.conf.device.lifecycle,
+                    (MuMuDevice, CustomDevice, PlayCoverDevice, AvdDevice)
+                ) and s.conf.device.lifecycle.check_and_start,
+                help_text='所有任务执行完毕后，自动停止由 iaa 本次启动的模拟器。若模拟器在启动前已在运行，则不会关闭。',
             )
             # 自定义专属
             Text(
@@ -505,12 +683,22 @@ def build_settings_form(
             Segmented(
                 key='device.controlImpl',
                 label='控制方式',
-                ref=ref(ctx.conf.device.control_impl),
+                ref=custom_ref(
+                    lambda s: s.conf.device.control_impl,
+                    _set_control_impl,
+                ),
                 options=lambda s: [
                     o for o in control_impl_options
+                    # nemu_ipc 仅 MuMu 可用
                     if not (o['value'] == 'nemu_ipc' and not isinstance(s.conf.device.lifecycle, MuMuDevice))
+                    # qemu_grpc 仅 AVD 可用
+                    and not (o['value'] == 'qemu_grpc' and not isinstance(s.conf.device.lifecycle, AvdDevice))
                 ],
-                help_text='对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式，对于其他模拟器与物理机，推荐使用 <b>scrcpy</b> 方式',
+                help_text=(
+                    '对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式；'
+                    '对于 AVD，推荐使用 <b>QEMU gRPC</b>（直接读取模拟器帧缓冲，速度最快）或 <b>ADB</b>；'
+                    '对于其他模拟器与物理机，推荐使用 <b>Scrcpy</b> 方式'
+                ),
             )
             NoticeBlock(
                 content='MuMu 模拟器选择 NemuIPC 效果最佳',
@@ -527,50 +715,70 @@ def build_settings_form(
                 key='device.resolutionMethod',
                 label='分辨率设置',
                 ref=ref(ctx.conf.device.resolution_method),
-                options=[{'value': k, 'label': v} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()],
+                options=lambda s: (
+                    # qemu_grpc 只展示保持不变
+                    [{'value': 'keep', 'label': RESOLUTION_METHOD_DISPLAY_MAP['keep']}]
+                    if s.conf.device.control_impl == 'qemu_grpc'
+                    # 其他的正常展示
+                    else [{'value': k, 'label': v} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()]
+                ),
+                enabled=lambda s: s.conf.device.control_impl != 'qemu_grpc',
                 on_reset=on_reset_resolution,
+                help_text=(
+                    '<b>自动</b>：物理设备执行 <code>wm size</code>；其他模拟器不修改。<br>'
+                    '<b>强制修改分辨率</b>：对所有设备执行 <code>wm size</code>。<br>'
+                    '<b>保持原始分辨率</b>：不做任何修改。'
+                ),
+            )
+            NoticeBlock(
+                content=(
+                    '使用 QEMU gRPC 控制方式时，'
+                    '请在 Android Studio AVD Manager 中预先将分辨率配置为 <b>1280x720</b>。'
+                ),
+                style='tip',
+                visible=lambda s: _is_avd(s) and s.conf.device.control_impl == 'qemu_grpc',
             )
 
         with Group('演出设置'):
             Select(
-                key='live.songName',
+                key='tasks.soloLive.songName',
                 label='歌曲名称',
-                ref=ref(ctx.conf.live.song_name).map(
+                ref=ref(ctx.conf.tasks.solo_live.song_name).map(
                     to_ui=lambda v: v or SONG_KEEP_UNCHANGED,
                     from_ui=lambda v: normalize_song_name_input(str(v)),
                 ),
                 options=SONG_NAME_OPTIONS,
             )
             Select(
-                key='live.apMultiplier',
+                key='tasks.soloLive.apMultiplier',
                 label='AP 倍率',
-                ref=ref(ctx.conf.live.ap_multiplier).map(
+                ref=ref(ctx.conf.tasks.solo_live.ap_multiplier).map(
                     to_ui=lambda v: '保持现状' if v is None else str(v),
                     from_ui=lambda v: None if str(v) == '保持现状' else int(str(v)),
                 ),
                 options=['保持现状', *[str(i) for i in range(0, 11)]],
             )
             Checkbox(
-                key='live.autoSetUnit',
+                key='tasks.soloLive.autoSetUnit',
                 label='自动编队',
-                ref=ref(ctx.conf.live.auto_set_unit),
+                ref=ref(ctx.conf.tasks.solo_live.auto_set_unit),
             )
             Checkbox(
-                key='live.appendFc',
+                key='tasks.soloLive.appendFc',
                 label='追加一次 FullCombo 演出',
-                ref=ref(ctx.conf.live.append_fc),
+                ref=ref(ctx.conf.tasks.solo_live.append_fc),
             )
             Checkbox(
-                key='live.appendRandom',
+                key='tasks.soloLive.appendRandom',
                 label='追加一首随机歌曲',
-                ref=ref(ctx.conf.live.prepend_random),
+                ref=ref(ctx.conf.tasks.solo_live.prepend_random),
             )
 
         with Group('挑战演出设置'):
             IconItemPicker(
-                key='challengeLive.characters',
+                key='tasks.challengeLive.characters',
                 label='角色',
-                ref=ref(ctx.conf.challenge_live.characters).map(
+                ref=ref(ctx.conf.tasks.challenge_live.characters).map(
                     to_ui=lambda values: values[0].value if values else None,
                     from_ui=lambda v: [GameCharacter(str(v))],
                 ),
@@ -579,9 +787,9 @@ def build_settings_form(
                 icon_size=70,
             )
             IconItemPicker(
-                key='challengeLive.award',
+                key='tasks.challengeLive.award',
                 label='奖励',
-                ref=ref(ctx.conf.challenge_live.award).map(
+                ref=ref(ctx.conf.tasks.challenge_live.award).map(
                     to_ui=lambda v: v.value,
                     from_ui=lambda v: ChallengeLiveAward(str(v)),
                 ),
@@ -599,23 +807,29 @@ def build_settings_form(
             )
 
         with Group('活动商店设置'):
-            TransferList(
-                key='eventShop.selectedItems',
+            SortableChecklist(
+                key='tasks.eventShop.selectedItems',
                 label=None,
-                ref=ref(ctx.conf.event_shop.purchase_items).map(
+                ref=ref(ctx.conf.tasks.event_shop.purchase_items).map(
                     to_ui=lambda values: [item.value for item in values],
                     from_ui=lambda values: [ShopItem(str(v)) for v in values],
                 ),
                 options=event_shop_items,
-                reorderable=True,
-                height=220,
+                height=300,
+            )
+
+        with Group('调度设置'):
+            Checkbox(
+                key='scheduler.continueOnError',
+                label='错误时继续执行后续任务',
+                ref=ref(ctx.conf.scheduler.continue_on_error),
             )
 
         with Group('开发者设置（仅供开发使用！）'):
             Checkbox(
-                key='scheduler.dumpSekaiHomeEnabled',
+                key='developer.dumpSekaiHomeEnabled',
                 label='dump 烤森',
-                ref=ref(ctx.conf.scheduler.dump_sekai_home_enabled),
+                ref=ref(ctx.conf.developer.dump_sekai_home_enabled),
             )
             Checkbox(
                 key='developer.sekaiDumpPostProcess',

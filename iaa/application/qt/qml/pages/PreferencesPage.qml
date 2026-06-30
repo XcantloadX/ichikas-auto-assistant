@@ -9,7 +9,7 @@ import "../../../framework/dsl/qml"
 
 PageContainer {
     id: root
-    title: "设置"
+    title: "偏好"
 
     titleRightContent: Rectangle {
         visible: root.dirty

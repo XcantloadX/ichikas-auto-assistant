@@ -1,8 +1,15 @@
 from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING, cast
 from pynput import keyboard
 from PySide6.QtCore import QObject, QMetaObject, Qt
+
+from iaa.config import manager as config_manager
+
+if TYPE_CHECKING:
+    from .tab_manager import TabManager
+    from .preferences_controller import PreferencesController
 
 if sys.platform == 'darwin':
     # macOS 14+ workaround for pynput EXC_BREAKPOINT in background thread
@@ -28,20 +35,22 @@ if sys.platform == 'darwin':
 
 
 class GlobalHotkeyController(QObject):
-    def __init__(self, service, run_controller, preferences_controller, parent: QObject | None = None) -> None:
+    def __init__(self, tab_manager: 'TabManager', preferences_controller: 'PreferencesController', parent: QObject | None = None) -> None:
         super().__init__(parent)
-        self._service = service
-        self._run = run_controller
+        self._tab_manager = tab_manager
         self._prefs = preferences_controller
         self._listener: keyboard.GlobalHotKeys | None = None
 
         self._prefs.runtimeChanged.connect(self.reload_hotkeys)
         self.reload_hotkeys()
 
+    def _resolve_run(self):
+        """返回当前激活 tab 的 RunController。"""
+        return self._tab_manager.activeRunController
+
     def reload_hotkeys(self) -> None:
-        start = self._service.config.shared.hotkeys.start or ''
-        stop = self._service.config.shared.hotkeys.stop or ''
-        self._register_hotkeys(start, stop)
+        hotkeys = config_manager.read_shared().hotkeys
+        self._register_hotkeys(hotkeys.start or '', hotkeys.stop or '')
 
     def shutdown(self) -> None:
         self._stop_listener()
@@ -121,10 +130,17 @@ class GlobalHotkeyController(QObject):
         mapped = mapping.get(key)
         if mapped:
             return mapped
+        # Function keys F1–F35: pynput requires angle-bracket form <f1>, <f9>, etc.
+        if len(key) >= 2 and key[0] == 'F' and key[1:].isdigit():
+            return f'<{key.lower()}>'
         return key.lower()
 
     def _on_start(self) -> None:
-        QMetaObject.invokeMethod(self._run, 'startRegular', Qt.QueuedConnection)
+        run = self._resolve_run()
+        if run is not None:
+            QMetaObject.invokeMethod(cast(QObject, run), 'startRegular', Qt.ConnectionType.QueuedConnection)
 
     def _on_stop(self) -> None:
-        QMetaObject.invokeMethod(self._run, 'stop', Qt.QueuedConnection)
+        run = self._resolve_run()
+        if run is not None:
+            QMetaObject.invokeMethod(cast(QObject, run), 'stop', Qt.ConnectionType.QueuedConnection)

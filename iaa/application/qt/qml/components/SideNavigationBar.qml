@@ -2,9 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import ".." as App
-import "../../../framework/dsl/qml/controls"
-
-// import Iaa.Controllers 1.0
+import IaaApp 1.0
 
 Rectangle {
     id: root
@@ -14,30 +12,10 @@ Rectangle {
     property var model: []
     property int currentIndex: 0
     property int previousIndex: 0
-    property var configNames: []
-    property string currentConfig: "default"
     signal currentChanging(int index, int previousIndex)
-    signal profileSwitchRequested(string name)
-    signal openConfigManager()
 
     function confirmSwitch(index) {
         root.currentIndex = index
-    }
-
-    function reloadConfigs() {
-        configNames = JSON.parse(App.ProfileStore.profilesJson).profiles || [];
-    }
-
-    Component.onCompleted: {
-        reloadConfigs();
-    }
-
-    Connections {
-        target: App.ProfileStore
-
-        function onProfilesChanged() {
-            root.reloadConfigs()
-        }
     }
 
     ColumnLayout {
@@ -52,6 +30,13 @@ Rectangle {
             Layout.fillWidth: true
             implicitHeight: 82
             color: "transparent"
+
+            // Drag handle: clicking anywhere on the header (avatar + title area)
+            // triggers a native OS window move, equivalent to HTCAPTION drag.
+            MouseArea {
+                anchors.fill: parent
+                onPressed: window.startSystemMove()
+            }
 
             RowLayout {
                 anchors.fill: parent
@@ -89,47 +74,13 @@ Rectangle {
 
                     Label {
                         Layout.fillWidth: true
-                        text: "版本 v" + appController.version
+                        text: "版本 v" + AppController.version
                         font.pixelSize: 12
                         color: palette.placeholderText
                         verticalAlignment: Text.AlignVCenter
                     }
                 }
 
-            }
-        }
-
-        RowLayout {
-            Layout.fillWidth: true
-            spacing: 8
-
-            Select {
-                Layout.fillWidth: true
-                model: root.configNames
-                textRole: "label"
-                valueRole: "value"
-                currentIndex: {
-                    for (var i = 0; i < model.length; i++) {
-                        if (model[i].value === root.currentConfig) return i;
-                    }
-                    return 0;
-                }
-                enabled: !runController.running && !runController.isStarting && !runController.isStopping
-                onActivated: {
-                    var selected = currentValue;
-                    if (selected && selected !== root.currentConfig) {
-                        root.profileSwitchRequested(selected);
-                    }
-                }
-            }
-
-            Button {
-                Layout.preferredWidth: 32
-                Layout.preferredHeight: 32
-                text: "⚙"
-                font.pixelSize: 16
-                enabled: !runController.running && !runController.isStarting && !runController.isStopping
-                onClicked: root.openConfigManager()
             }
         }
 

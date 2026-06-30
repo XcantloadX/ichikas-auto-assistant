@@ -4,8 +4,8 @@ import QtQuick.Layouts
 import "." as App
 import "pages"
 import "dialogs"
-
 import "components"
+import IaaApp 1.0
 
 ApplicationWindow {
     id: window
@@ -13,18 +13,65 @@ ApplicationWindow {
     height: 680
     visible: true
     title: window.appCtrl ? window.appCtrl.windowTitle : ""
+    flags: Qt.platform.os === "windows"
+        ? (Qt.Window | Qt.FramelessWindowHint)
+        : Qt.Window
     font.family: Qt.platform.os === "windows"
         ? "Microsoft YaHei UI"
         : Qt.platform.os === "osx"
             ? "PingFang SC"
             : "Noto Sans CJK SC"
 
-    readonly property var appCtrl: appController
-    readonly property var runCtrl: runController
-    readonly property var settingsCtrl: settingsController
-    readonly property var prefsCtrl: preferencesController
-    readonly property var logBridgeObj: logBridge
+    // 加载 FluentSystemIcons-Regular（MIT），注册后全局可用 font.family: "FluentSystemIcons-Regular"
+    FontLoader {
+        source: Globals.assetPath("fonts/FluentSystemIcons-Regular.ttf")
+    }
+
+    readonly property var appCtrl: AppController
+    readonly property var prefsCtrl: PreferencesController
     property bool allowImmediateClose: false
+    property bool prefsMode: false
+    property int _prevTitleBarIndex: 0
+
+    function enterPrefsMode() {
+        _prevTitleBarIndex = titleBar.currentIndex
+        titleBar.setCurrentIndex(1)
+        prefsMode = true
+    }
+
+    function exitPrefsMode() {
+        prefsMode = false
+        titleBar.setCurrentIndex(_prevTitleBarIndex)
+    }
+
+    // Per-tab 实例模型
+    property var tabList: []
+    property int activeTabIndex: 0
+    property var activeSettingsCtrl: null   // 仅供 NavigationCoordinator / ConfigManagerDialog 使用
+
+    // 仅在 tabs 增删时更新 tabList（避免 Repeater 模型重建）
+    function _onTabsChanged() {
+        tabList = JSON.parse(TabManager.tabsJson())
+        activeTabIndex = TabManager.activeTabIndex
+        activeSettingsCtrl = TabManager.activeSettingsController
+        if (activeTabIndex >= 0) titleBar.setCurrentIndex(1)
+    }
+
+    // 切换 tab 时只更新 activeIndex，不碰 tabList（Repeater 模型保持不变）
+    function _onActiveTabChanged() {
+        activeTabIndex = TabManager.activeTabIndex
+        activeSettingsCtrl = TabManager.activeSettingsController
+        if (activeTabIndex < 0) titleBar.setCurrentIndex(0)
+    }
+
+    function navigateTo(pageKey, tabIndex) {
+        if (pageKey === "tab") {
+            titleBar.setCurrentIndex(1)
+            if (tabIndex !== undefined) TabManager.setActiveTab(tabIndex)
+        } else if (pageKey === "overview") {
+            titleBar.setCurrentIndex(0)
+        }
+    }
 
     function requestTelemetryConsent() {
         App.Modal.message({
@@ -62,11 +109,12 @@ ApplicationWindow {
     }
 
     function requestAppClose() {
+        var anyRunning = TabManager.anyRunning
         var closeRunner = function() {
             window.allowImmediateClose = true
             window.close()
         }
-        if (window.runCtrl && window.runCtrl.running) {
+        if (anyRunning) {
             App.Modal.message({
                 title: "确认退出",
                 content: "当前仍在执行任务，确定要退出吗？退出将先停止任务。",
@@ -88,79 +136,76 @@ ApplicationWindow {
 
     NavigationCoordinator {
         id: navigation
-        settingsCtrl: window.settingsCtrl
+        settingsCtrl: window.activeSettingsCtrl
         prefsCtrl: window.prefsCtrl
         unsavedChangesDialog: unsavedChangesDialog
     }
 
-    RowLayout {
+    ColumnLayout {
         anchors.fill: parent
         spacing: 0
 
-        SideNavigationBar {
-            id: sideNav
-            Layout.fillHeight: true
-            // model: ["控制", "配置", "偏好", "帮助", "关于"]
-            model: ["控制", "配置", "偏好", "日志", "关于"]
-            currentConfig: App.ProfileStore.currentProfileName
-
-            onCurrentChanging: function(index, previousIndex) {
-                navigation.requestGuardedAction("切换页面", function() {
-                    sideNav.confirmSwitch(index)
-                })
-            }
-
-            onProfileSwitchRequested: function(name) {
-                navigation.requestGuardedAction("切换配置", function() {
-                    window.settingsCtrl.switchProfile(name)
-                })
-            }
-
-            onOpenConfigManager: {
-                configManagerDialog.open()
-            }
+        TitleBar {
+            id: titleBar
+            Layout.fillWidth: true
+            configManagerDialog: configManagerDialog
+            prefsMode: window.prefsMode
+            onSettingsRequested: window.enterPrefsMode()
+            onBackRequested: window.exitPrefsMode()
+            onMinimizeRequested: window.showMinimized()
+            onCloseRequested: window.requestAppClose()
         }
 
         StackLayout {
-            id: stack
             Layout.fillWidth: true
             Layout.fillHeight: true
-            currentIndex: sideNav.currentIndex
+            currentIndex: titleBar.currentIndex
 
-            ControlPage {
-                id: controlPage
-                autoLiveDialog: autoLiveDialogView
+            // ── index 0：总览页 ─────────────────────────────────────
+            OverviewPage {
+                configManagerDialog: configManagerDialog
             }
 
-            SettingsPage {
-                id: settingsPage
-                formController: window.settingsCtrl
+            // ── index 1：per-tab 内容区 ─────────────────────────────
+            Item {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+
+                StackLayout {
+                    anchors.fill: parent
+                    currentIndex: window.activeTabIndex
+
+                    Repeater {
+                        id: tabContentRepeater
+                        model: window.tabList
+                        delegate: TabContent {
+                            required property int index
+                            runCtrl: TabManager.runControllerAt(index)
+                            progBridge: TabManager.progressBridgeAt(index)
+                            logBridge: TabManager.logBridgeAt(index)
+                            formController: TabManager.settingsControllerAt(index)
+                            navigation: navigation
+                            prefsMode: window.prefsMode
+                        }
+                    }
+                }
+
+                // ── 偏好设置（全局单例，模式驱动，覆盖整个内容区）──────────────────────────
+                PreferencesPage {
+                    id: preferencesPage
+                    anchors.fill: parent
+                    visible: window.prefsMode
+                    prefsController: window.prefsCtrl
+                }
             }
-
-            PreferencesPage {
-                id: preferencesPage
-                prefsController: window.prefsCtrl
-            }
-
-            LogPage {
-                id: logPage
-                logBridge: window.logBridgeObj
-            }
-
-            // HelpPage {}
-
-            AboutPage {}
         }
-    }
-
-    AutoLiveDialog {
-        id: autoLiveDialogView
     }
 
     ConfigManagerDialog {
         id: configManagerDialog
         navigation: navigation
-        settingsCtrl: window.settingsCtrl
+        settingsCtrl: window.activeSettingsCtrl
+        tabManager: TabManager
     }
 
     ModalHost {
@@ -170,9 +215,6 @@ ApplicationWindow {
     NoticeHost {
         id: noticeHost
     }
-
-    // ScrcpyWindow {}
-
 
     Dialog {
         id: unsavedChangesDialog
@@ -225,6 +267,22 @@ ApplicationWindow {
         function onNotificationRaised(kind, text) {
             App.Notice.show(kind, text)
         }
+        function onErrorDialogRequested(title, message) {
+            App.Modal.custom({
+                title: title,
+                content: message,
+                buttons: [
+                    {
+                        text: "复制",
+                        onClick: function() {
+                            App.Clipboard.copyText(message)
+                            App.Notice.show("success", "已复制到剪贴板")
+                        }
+                    },
+                    { text: "确定", highlighted: true, onClick: "close" }
+                ]
+            })
+        }
         function onTelemetryConsentRequiredChanged() {
             if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
                 window.requestTelemetryConsent()
@@ -232,14 +290,40 @@ ApplicationWindow {
         }
     }
 
-    Connections {
-        target: window.runCtrl
-        function onScriptAutoWarningRequested(text) {
-            App.Notice.show("error", text)
-        }
+    function requestConfigReset(configName, invalidFieldsJson, errorDetails) {
+        var fields = JSON.parse(invalidFieldsJson)
+        var fieldList = fields.map(function(f) { return "&nbsp;&nbsp;• " + f }).join("<br>")
+        App.Modal.message({
+            title: "配置校验失败",
+            content: "配置 <b>" + configName + "</b> 中以下字段校验失败：<br>"
+                + fieldList
+                + "<br><br>错误详情：<br>" + errorDetails
+                + "<br><br>是否将这些字段重置为默认值？",
+            buttons: [
+                { text: "不重置", value: "cancel" },
+                { text: "重置", value: "reset", highlighted: true }
+            ],
+            width: 480
+        }, function(result) {
+            if (result === "reset") {
+                TabManager.resetAndOpenTab(configName, invalidFieldsJson)
+            }
+        })
     }
 
     Component.onCompleted: {
+        _onTabsChanged()
+        TabManager.tabsChanged.connect(window._onTabsChanged)
+        TabManager.activeTabChanged.connect(window._onActiveTabChanged)
+
+        // 根据 startup_page 设置决定初始页面（无 tab 时保持总览）
+        if (window.appCtrl && window.appCtrl.startupPage === "last_opened" && window.tabList.length > 0) {
+            titleBar.setCurrentIndex(1)
+        }
+        TabManager.scriptAutoWarningRequested.connect(function(text) {
+            App.Notice.show("error", text)
+        })
+        TabManager.configValidationFailed.connect(window.requestConfigReset)
         if (window.appCtrl && window.appCtrl.telemetryConsentRequired) {
             window.requestTelemetryConsent()
         }
@@ -263,7 +347,8 @@ ApplicationWindow {
             return
         }
         close.accepted = false
-        if (window.runCtrl && window.runCtrl.running) {
+        var anyRunning = TabManager.anyRunning
+        if (anyRunning) {
             window.requestAppClose()
             return
         }

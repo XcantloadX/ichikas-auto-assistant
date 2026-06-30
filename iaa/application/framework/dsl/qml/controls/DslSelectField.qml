@@ -56,31 +56,22 @@ ColumnLayout {
         labelText: root.field.label
         helpText: root.field.helpText || ""
         errorText: root.field.error || ""
-        RowLayout {
-            Select {
-                id: combo
-                Layout.fillWidth: true
-                enabled: !!root.field.enabled
-                model: root.normalizedOptions
-                textRole: "label"
-                valueRole: "value"
-                currentIndex: root.indexOfValue(root.normalizedOptions, root.field.value)
+        Select {
+            id: combo
+            Layout.fillWidth: true
+            enabled: !!root.field.enabled
+            model: root.normalizedOptions
+            textRole: "label"
+            valueRole: "value"
+            currentIndex: root.indexOfValue(root.normalizedOptions, root.field.value)
 
-                onActivated: function(index) {
-                    let options = root.normalizedOptions
-                    if (index < 0 || index >= options.length) {
-                        return
-                    }
-                    let selected = options[index]
-                    root.formController.setValue(root.field.id, root.itemValue(selected))
+            onActivated: function(index) {
+                let options = root.normalizedOptions
+                if (index < 0 || index >= options.length) {
+                    return
                 }
-            }
-
-            Button {
-                visible: !!root.field.refreshable
-                text: root.field.loading ? "获取中..." : "刷新"
-                enabled: !!root.field.enabled
-                onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
+                let selected = options[index]
+                root.formController.setValue(root.field.id, root.itemValue(selected))
             }
         }
     }

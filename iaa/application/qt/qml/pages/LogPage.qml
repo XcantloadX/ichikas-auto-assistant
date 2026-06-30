@@ -7,6 +7,15 @@ PageContainer {
     id: root
     title: "日志"
     property var logBridge
+    Component.onCompleted: {
+        if (root.logBridge) {
+            var entries = root.logBridge.bufferedEntries()
+            for (var i = 0; i < entries.length; i++) {
+                var e = entries[i]
+                root.appendText(e.text || "", e.stream || "normal")
+            }
+        }
+    }
     property int maxLines: 2000
     property string pendingText: ""
     property var pendingLines: []

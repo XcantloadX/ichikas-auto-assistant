@@ -8,17 +8,19 @@ Item {
     id: root
     visible: false
 
-    /** 待显示的弹窗请求队列 */
+    /** 待显示的弹窗请求队列，元素为 { kind, options, callback } */
     property var queue: []
-    /** 当前弹窗的回调 */
+    /** 当前弹窗类型："message"（选择型，统一走 callback）或 "custom"（自定义，按钮自理） */
+    property string dialogKind: "message"
+    /** 当前弹窗的回调（仅 "message" 类型使用） */
     property var pendingCallback: null
     /** 当前按钮数据模型 */
     property var buttonsModel: []
-    /** 当前弹窗是否已回调 */
+    /** 当前弹窗是否已回调（仅 "message" 类型使用） */
     property bool resolved: false
     /** 弹窗是否处于打开或打开中 */
     property bool isOpen: false
-    /** 关闭/取消时回调的默认值 */
+    /** 关闭/取消时回调的默认值（仅 "message" 类型使用） */
     property var dismissValue: null
     /** 当前弹窗宽度 */
     property int dialogWidth: 420
@@ -26,13 +28,17 @@ Item {
     property int dialogClosePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     /** 当前弹窗标题 */
     property string dialogTitle: ""
-    /** 当前弹窗内容（可富文本） */
+    /** 当前弹窗纯文本内容（可富文本），"custom" 类型若指定了 contentComponent 则不使用 */
     property string dialogContent: ""
     /** 内容文本格式 */
     property int dialogTextFormat: Text.RichText
+    /** "custom" 类型下用于替换正文的自定义组件，为 null 时回退到 dialogContent 文本 */
+    property Component dialogContentComponent: null
+    /** 传给 dialogContentComponent 实例的属性，加载完成后逐一赋值 */
+    property var dialogContentProps: null
 
     /**
-     * 弹出消息框。如果之前的消息框还没有被关闭，会进入消息队列，在前面的消息都展示完毕后再弹出。
+     * 弹出「选择型」消息框。如果之前的弹窗还没关闭，会进入队列，按顺序展示。
      * @param {object} options - 弹窗配置对象
      *   @param {string} [options.title] - 弹窗标题
      *   @param {string} [options.content] - 弹窗正文（可富文本）
@@ -40,11 +46,34 @@ Item {
      *   @param {int} [options.width] - 弹窗宽度
      *   @param {int} [options.closePolicy] - 关闭策略（Popup.CloseOnEscape 等）
      *   @param {var} [options.dismissValue] - 关闭/取消时的回调值
-     *   @param {array} [options.buttons] - 按钮数组，元素可为字符串或对象
+     *   @param {array} [options.buttons] - 按钮数组，元素为字符串或 { text, value, enabled, highlighted }
      * @param {function} callback - 回调函数，入参为用户选择的 value 或 dismissValue
      */
     function message(options, callback) {
-        var payload = { options: options || {}, callback: callback }
+        root._show({ kind: "message", options: options, callback: callback })
+    }
+
+    /**
+     * 弹出「自定义型」弹窗：内容可替换为任意组件，按钮自己决定点击行为，不强制走统一回调。
+     * 适用于「内容/按钮行为比简单选择更复杂」的场景（如带复制按钮的错误详情）。
+     * @param {object} options - 弹窗配置对象，title/width/closePolicy 同 message()
+     *   @param {string} [options.content] - 正文文本，contentComponent 未指定时使用
+     *   @param {Component} [options.contentComponent] - 自定义正文组件，替代默认的文本 Label
+     *   @param {object} [options.contentProps] - 加载 contentComponent 后赋给实例的属性
+     *   @param {array} [options.buttons] - 按钮数组，元素为 { text, enabled, highlighted, onClick }
+     *     onClick 可以是函数（点击时调用，不自动关闭弹窗），也可以是字面量 "close"（点击即关闭）
+     */
+    function custom(options) {
+        root._show({ kind: "custom", options: options, callback: null })
+    }
+
+    /** Modal 单例转发待处理/新请求时的统一入口，payload 形如 { kind, options, callback } */
+    function show(payload) {
+        root._show(payload)
+    }
+
+    /** 内部统一入口：决定立即展示还是排队 */
+    function _show(payload) {
         if (root.isOpen) {
             root.queue.push(payload)
             return
@@ -52,13 +81,16 @@ Item {
         root._present(payload)
     }
 
-    /** 解析 options 并显示弹窗 */
+    /** 解析 payload 并显示弹窗 */
     function _present(payload) {
         var options = payload.options || {}
+        root.dialogKind = payload.kind
         root.pendingCallback = typeof payload.callback === "function" ? payload.callback : null
         root.dialogTitle = options.title ? String(options.title) : ""
         root.dialogContent = options.content !== undefined ? String(options.content) : ""
         root.dialogTextFormat = options.textFormat !== undefined ? options.textFormat : Text.RichText
+        root.dialogContentComponent = options.contentComponent !== undefined ? options.contentComponent : null
+        root.dialogContentProps = options.contentProps !== undefined ? options.contentProps : null
         root.dialogWidth = options.width !== undefined ? options.width : 420
         root.dialogClosePolicy = options.closePolicy !== undefined
             ? options.closePolicy
@@ -78,7 +110,7 @@ Item {
         modalDialog.open()
     }
 
-    /** 以指定结果结束弹窗并回调 */
+    /** "message" 类型：以指定结果结束弹窗并回调 */
     function _resolve(value) {
         if (root.resolved) {
             return
@@ -90,6 +122,13 @@ Item {
         if (cb) {
             cb(value)
         }
+    }
+
+    /** "custom" 类型：按钮点击 onClick === "close" 时使用，仅关闭，不产生回调结果 */
+    function _close() {
+        root.resolved = true
+        root.pendingCallback = null
+        modalDialog.close()
     }
 
     /** 处理关闭后的回调与队列继续 */
@@ -120,8 +159,23 @@ Item {
         contentItem: ColumnLayout {
             spacing: 12
 
+            Loader {
+                Layout.fillWidth: true
+                active: root.dialogContentComponent !== null
+                visible: active
+                sourceComponent: root.dialogContentComponent
+                onLoaded: {
+                    if (root.dialogContentProps && item) {
+                        for (var key in root.dialogContentProps) {
+                            item[key] = root.dialogContentProps[key]
+                        }
+                    }
+                }
+            }
+
             Label {
                 Layout.fillWidth: true
+                visible: root.dialogContentComponent === null
                 wrapMode: Text.Wrap
                 textFormat: root.dialogTextFormat
                 text: root.dialogContent
@@ -139,6 +193,16 @@ Item {
                         enabled: typeof modelData === "object" ? modelData.enabled !== false : true
                         highlighted: typeof modelData === "object" ? modelData.highlighted === true : false
                         onClicked: {
+                            var onClick = typeof modelData === "object" ? modelData.onClick : undefined
+                            if (typeof onClick === "function") {
+                                onClick()
+                                return
+                            }
+                            if (onClick === "close") {
+                                root._close()
+                                return
+                            }
+                            // "message" 类型的默认行为：按钮的 value 即回调结果
                             var value = typeof modelData === "object" ? modelData.value : modelData
                             root._resolve(value)
                         }

@@ -176,7 +176,7 @@ def _purchase(item: ListViewItem):
 
 def _do_single() -> None:
     rep = task_reporter()
-    targets = list(get_conf().event_shop.purchase_items)
+    targets = list(get_conf().tasks.event_shop.purchase_items)
     all_items = list(ShopItem)
     
     view = R.Shop.EventShopListView.require()

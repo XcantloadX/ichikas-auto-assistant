@@ -3,6 +3,8 @@ import os
 import sys
 from asyncio import CancelledError
 
+from kotonebot.errors import UserFriendlyError
+
 from iaa import __VERSION__
 from iaa.config import manager
 
@@ -52,7 +54,7 @@ def setup() -> None:
         traces_sample_rate=0,
         send_client_reports=False,
         auto_session_tracking=False,
-        ignore_errors=[KeyboardInterrupt, CancelledError],
+        ignore_errors=[KeyboardInterrupt, CancelledError, UserFriendlyError],
     )
     logger.info('Telemetry initialized.')
 

@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "definitions": {
+    "1a5a0d64-9980-4b76-a9cf-f961ebe4f43d": {
+      "type": "prefab",
+      "name": "Shop.TextLv1",
+      "variant": "cn",
+      "props": {}
+    },
+    "c9269644-b1e1-430e-b4a6-8696175d3c90": {
+      "type": "prefab",
+      "name": "Shop.Icon5000EventCoin",
+      "variant": "cn",
+      "props": {}
+    },
+    "af2fa909-5a1c-4253-b4e6-e223f82773c2": {
+      "type": "prefab",
+      "name": "Shop.Icon15000EventCoin",
+      "variant": "cn",
+      "props": {}
+    },
+    "121a6893-e007-4bb7-b41f-cbe608dc45f2": {
+      "type": "prefab",
+      "name": "Shop.TextEndTimeUntil",
+      "variant": "cn",
+      "props": {}
+    },
+    "8dec26b6-85a8-4ece-afbb-6f2fb610fbe9": {
+      "type": "prefab",
+      "name": "Shop.EventShopListView",
+      "variant": "cn",
+      "props": {}
+    }
+  }
+}

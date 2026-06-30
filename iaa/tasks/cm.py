@@ -89,7 +89,10 @@ def open_cm() -> bool:
     swipe_count = 0
     MAX_SWIPE_COUNT = 5
     for _ in Loop(interval=0.6):
-        if ret := R.Scene.Intersection.IconCm.q(threshold=0.6).find():
+        if R.Cm.ButtonPlayCm.find():
+            logger.debug('Now at CM.')
+            return True
+        elif ret := R.Scene.Intersection.IconCm.q(threshold=0.6).find():
             # TODO: 改用 image.find 的 rect 参数重构
             x1, y1, x2, y2 = R.Cm.BoxCmIconDetectRect.xyxy
             x, y = ret.rect.center
@@ -99,9 +102,6 @@ def open_cm() -> bool:
                 logger.debug('Clicked CM icon.')
                 continue
             sleep(0.4)
-        elif R.Cm.ButtonPlayCm.find():
-            logger.debug('Now at CM.')
-            return True
         
         # 向左滑
         device.swipe_scaled(x1=0.7, x2=0.4, y1=0.5, y2=0.5)
@@ -122,7 +122,7 @@ def clear_common_cm():
     rep = task_reporter()
     d = device.of_android()
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
-    wait_sec = get_conf().cm.watch_ad_wait_sec
+    wait_sec = get_conf().tasks.cm.watch_ad_wait_sec
     for _ in Loop(interval=0.6):
         if state == 1:
             # 开始看
@@ -179,7 +179,7 @@ def clear_common_cm():
                 logger.info('Close button clicked. (Applovin/GP ad?)')
                 sleep(1)
                 state = 1
-            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
+            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.6).try_click():
                 logger.info('Skip button clicked. (Applovin/GP ad?)')
                 sleep(1)
             # GooglePlay App 广告特判：
@@ -188,7 +188,7 @@ def clear_common_cm():
                 logger.info('Returning to game from ad. (GP ad?)')
                 # device.commands.launch_app(package_name())
                 # 有些广告，调用 launch_app 会触发重新播放，导致无限循环
-                device.commands.adb_shell('adb shell am force-stop com.android.vending')
+                device.commands.adb_shell('am force-stop com.android.vending')
                 sleep(1)
             # 还在加载
             else:

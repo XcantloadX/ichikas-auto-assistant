@@ -4,8 +4,8 @@ from .profile_store_backend import ProfileStoreBackend
 from .progress_bridge import ProgressBridge
 from .log_bridge import LogBridge
 from .run_controller import RunController
-from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
+from .virtual_device_session import VirtualDeviceSession
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
 
@@ -16,7 +16,7 @@ __all__ = [
     'ProgressBridge',
     'LogBridge',
     'RunController',
-    'ScrcpyController',
+    'VirtualDeviceSession',
     'SettingsController',
     'HelpController',
     'GlobalHotkeyController',

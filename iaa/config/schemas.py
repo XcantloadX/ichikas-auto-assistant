@@ -1,6 +1,6 @@
 # ruff: noqa: E701
-from typing import Annotated, Literal, Optional
-from pydantic import BaseModel, ConfigDict, Field
+from typing import Annotated, Literal
+from pydantic import BaseModel, Field
 from iaa.definitions.enums import (
     LinkAccountOptions,
     GameCharacter,
@@ -31,8 +31,15 @@ class PlayCoverDevice(BaseModel):
     type: Literal['playcover']
     check_and_start: bool = False
 
+class AvdDevice(BaseModel):
+    type: Literal['avd']
+    avd_name: str | None = None     # None 表示取第一个可用 AVD
+    sdk_path: str | None = None     # Android SDK 根目录；None 则自动查找
+    extra_args: str = ''            # 追加到 emulator 命令行的额外参数（空格分隔）
+    check_and_start: bool = False
+
 DeviceLifecycle = Annotated[
-    MuMuDevice | CustomDevice | NoDevice | PlayCoverDevice,
+    MuMuDevice | CustomDevice | NoDevice | PlayCoverDevice | AvdDevice,
     Field(discriminator='type')
 ]
 
@@ -65,9 +72,10 @@ DeviceConnection = Annotated[
 class DeviceConfig(BaseModel):
     lifecycle: DeviceLifecycle = Field(default_factory=lambda: MuMuDevice(type='mumu_v5'))
     connection: DeviceConnection = Field(default_factory=lambda: AutoConnection(type='auto'))
-    control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'] = 'nemu_ipc'
+    control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'] = 'nemu_ipc'
     scrcpy_virtual_display: bool = False
     resolution_method: Literal['auto', 'keep', 'wm_size'] = 'auto'
+    stop_on_finish: bool = False
 
 
 # ── 游戏配置（仅游戏层面） ────────────────────────────────────────────────────
@@ -111,71 +119,69 @@ class LiveConfig(BaseModel):
 
 
 class ChallengeLiveConfig(BaseModel):
+    enabled: bool = True
     characters: list[GameCharacter] = [GameCharacter.Ichika]
     award: ChallengeLiveAward = ChallengeLiveAward.Crystal
 
 
 class CmConfig(BaseModel):
+    enabled: bool = True
     watch_ad_wait_sec: int = 70
 
 
 
-
 class EventStoreConfig(BaseModel):
+    enabled: bool = False
     purchase_items: list[ShopItem] = [
         ShopItem.ITEM_CRYSTAL,
         ShopItem.ITEM_3STAR_MEMBER,
     ]
 
 
+class StartGameConfig(BaseModel):
+    enabled: bool = True
+
+
+class ActivityStoryConfig(BaseModel):
+    enabled: bool = False
+
+
+class GiftConfig(BaseModel):
+    enabled: bool = True
+
+
+class AreaConvosConfig(BaseModel):
+    enabled: bool = False
+
+
+class MissionRewardsConfig(BaseModel):
+    enabled: bool = True
+
+
+class TasksConfig(BaseModel):
+    """所有常规任务的配置，task_id 与字段名一一对应。"""
+    start_game: StartGameConfig = StartGameConfig()
+    solo_live: LiveConfig = LiveConfig()
+    challenge_live: ChallengeLiveConfig = ChallengeLiveConfig()
+    activity_story: ActivityStoryConfig = ActivityStoryConfig()
+    cm: CmConfig = CmConfig()
+    gift: GiftConfig = GiftConfig()
+    area_convos: AreaConvosConfig = AreaConvosConfig()
+    event_shop: EventStoreConfig = EventStoreConfig()
+    mission_rewards: MissionRewardsConfig = MissionRewardsConfig()
+
+    def is_enabled(self, task_id: str) -> bool:
+        task_conf = getattr(self, task_id, None)
+        if task_conf is None or not hasattr(task_conf, 'enabled'):
+            raise ValueError(f"Unknown or non-toggleable task: {task_id!r}")
+        return bool(task_conf.enabled)
+
+
 class DeveloperConfig(BaseModel):
+    dump_sekai_home_enabled: bool = False
     sekai_dump_post_process: bool = False
     screen_recording_enabled: bool = False
 
+
 class SchedulerConfig(BaseModel):
-    start_game_enabled: bool = True
-    solo_live_enabled: bool = True
-    challenge_live_enabled: bool = True
-    activity_story_enabled: bool = True
-    cm_enabled: bool = True
-    gift_enabled: bool = True
-    area_convos_enabled: bool = True
-    mission_rewards_enabled: bool = True
-    event_shop_enabled: bool = True
-    dump_sekai_home_enabled: bool = False
-
-    def is_enabled(self, task_id: str) -> bool:
-        """根据任务标识判断是否启用。
-
-        任务标识应与 `iaa.tasks.registry.REGULAR_TASKS` 的键一致，例如：
-        - "start_game"
-        - "cm"
-        - "solo_live"
-        - "challenge_live"
-        - "activity_story"
-        - "gift"
-        - "area_convos"
-        - "mission_rewards"
-        - "_dump_sekai_home"
-        """
-        if task_id == 'start_game':
-            return bool(self.start_game_enabled)
-        if task_id == 'cm':
-            return bool(self.cm_enabled)
-        if task_id == 'solo_live':
-            return bool(self.solo_live_enabled)
-        if task_id == 'challenge_live':
-            return bool(self.challenge_live_enabled)
-        if task_id == 'activity_story':
-            return bool(self.activity_story_enabled)
-        if task_id == 'gift':
-            return bool(self.gift_enabled)
-        if task_id == 'area_convos':
-            return bool(self.area_convos_enabled)
-        if task_id == 'mission_rewards':
-            return bool(self.mission_rewards_enabled)
-        if task_id == 'event_shop':
-            return bool(self.event_shop_enabled)
-        if task_id == '_dump_sekai_home':
-            return bool(self.dump_sekai_home_enabled)
-        return False
+    continue_on_error: bool = False

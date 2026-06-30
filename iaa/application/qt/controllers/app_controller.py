@@ -1,21 +1,18 @@
+import os
 import sys
 import platform
 
-from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl, QCoreApplication
+from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl
 from PySide6.QtGui import QDesktopServices
-from PySide6.QtWidgets import QMessageBox
 
+from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
-from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
-from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
-from .progress_bridge import ProgressBridge
+
 from .log_bridge import LogBridge
-from .profile_store_backend import ProfileStoreBackend
-from .run_controller import RunController
-from .scrcpy_controller import ScrcpyController
-from .settings_controller import SettingsController
+from .scrcpy_image_provider import ScrcpyImageProvider
+from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
@@ -23,6 +20,7 @@ from .global_hotkey_controller import GlobalHotkeyController
 
 class AppController(QObject):
     notificationRaised = Signal(str, str)
+    errorDialogRequested = Signal(str, str)    # title, message
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
     windowStyleChanged = Signal()
@@ -30,81 +28,44 @@ class AppController(QObject):
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
         self.logBridge = log_bridge
-        try:
-            self.service = IaaService()
-        except ConfigValidationError as e:
-            from iaa.config import manager
+        self.scrcpyImageProvider = ScrcpyImageProvider()
 
-            field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
-            msg = f"以下配置项校验失败：\n{field_list}\n\n错误详情：\n{e.error_details}\n\n是否重置这些为默认值？"
+        self.tabManager = TabManager(self, image_provider=self.scrcpyImageProvider)
 
-            reply = QMessageBox.question(
-                None,
-                "一歌小助手",
-                msg,
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
-            )
-
-            if reply == QMessageBox.StandardButton.Yes:
-                manager.fallback_invalid_fields(DEFAULT_CONFIG_NAME, e.invalid_fields)
-                self.service = IaaService()
-            else:
-                QMessageBox.warning(
-                    None,
-                    "一歌小助手",
-                    "配置校验失败，未重置。程序即将退出。",
-                    QMessageBox.StandardButton.Ok
-                )
-                QCoreApplication.exit(1)
-        
-        self.progressBridge = ProgressBridge(self)
-        self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
-        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
-        self.settingsController = SettingsController(self.service, self)
-        self.preferencesController = PreferencesController(self.service, self)
-        self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
-        self.helpController = HelpController(self.service, self)
+        self.preferencesController = PreferencesController(self)
+        self.helpController = HelpController(self)
         self.globalHotkeyController = GlobalHotkeyController(
-            self.service,
-            self.runController,
+            self.tabManager,
             self.preferencesController,
             self,
         )
+
         self._global_error = ''
-        self._telemetry_consent_required = self.service.config.shared.telemetry.sentry is None
+        self._telemetry_consent_required = config_manager.read_shared().telemetry.sentry is None
         setup_telemetry()
 
-        self.runController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
-        self.runController.operationFailed.connect(self.reportError)
-        self.settingsController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
-        self.settingsController.operationFailed.connect(self.reportError)
-        self.settingsController.configSwitched.connect(self._on_config_switched)
+        # 转发活跃 tab 的操作信号到 AppController
+        self.tabManager.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
+        self.tabManager.operationFailed.connect(self.reportError)
+        self.tabManager.errorDialogRequested.connect(self.errorDialogRequested)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
-        self.service.scheduler.on_error = self._on_scheduler_error
-
-    def _on_config_switched(self) -> None:
-        self.runController.tasksChanged.emit()
-
-    def _on_scheduler_error(self, exc: Exception) -> None:
-        self.reportError(str(exc))
 
     def _get_version(self) -> str:
-        return self.service.version
+        return IaaService.app_version()
 
     def _get_window_title(self) -> str:
         if platform.system() == 'Windows':
-            return f'一歌小助手'
+            return '一歌小助手'
         elif platform.system() == 'Darwin':
-            return f'一歌小助手 (on macOS)'
+            return '一歌小助手 (on macOS)'
         elif platform.system() == 'Linux':
-            return f'一歌小助手 (on Linux)'
+            return '一歌小助手 (on Linux)'
         else:
-            return f'一歌小助手'
+            return '一歌小助手'
 
     def _get_assets_root_path(self) -> str:
-        return self.service.assets.assets_root_path.replace('\\', '/')
+        return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
 
     def _get_global_error(self) -> str:
         return self._global_error
@@ -113,15 +74,18 @@ class AppController(QObject):
         return self._telemetry_consent_required
 
     def _get_window_style(self) -> str:
-        style = self.service.config.shared.interface.window_style
+        style = config_manager.read_shared().interface.window_style
         if platform.system() != 'Windows':
             return 'solid'
-        
+
         if style in ('mica', 'acrylic', 'blur', 'solid'):
             return style
         if sys.getwindowsversion().build >= 22000:
             return 'mica'
         return 'solid'
+
+    def _get_startup_page(self) -> str:
+        return config_manager.read_shared().interface.startup_page
 
     version = Property(str, _get_version, constant=True)
     windowTitle = Property(str, _get_window_title, constant=True)
@@ -129,6 +93,7 @@ class AppController(QObject):
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
     windowStyle = Property(str, _get_window_style, notify=windowStyleChanged)
+    startupPage = Property(str, _get_startup_page, constant=True)
 
     @Slot(str)
     def openExternalUrl(self, url: str) -> None:
@@ -161,13 +126,12 @@ class AppController(QObject):
 
     @Slot(result=bool)
     def confirmClose(self) -> bool:
-        scheduler = self.service.scheduler
-        if not scheduler.running:
-            return True
-        try:
-            scheduler.stop(block=True)
-        except Exception:
-            pass
+        for entry in self.tabManager._tabs:
+            if entry.scheduler.running:
+                try:
+                    entry.scheduler.stop(block=True)
+                except Exception:
+                    pass
         return True
 
     @Slot(result=str)
@@ -175,23 +139,22 @@ class AppController(QObject):
         from iaa.config.migration import get_deferred_messages
         messages = get_deferred_messages()
         if not messages:
-            return ""
+            return ''
 
-        html = [f"<b>配置文件已升级到 v{self.service.version}。</b>"]
-        if messages:
-            html.append("<ol>")
-            for msg in messages:
-                if msg.old_version and msg.new_version:
-                    html.append(f"<li>v{msg.old_version} → v{msg.new_version}：{msg.text}</li>")
-                else:
-                    html.append(f"<li>{msg.text}</li>")
-            html.append("</ol>")
-        
-        return "".join(html)
+        version = self._get_version()
+        html = [f'<b>配置文件已升级到 v{version}。</b>']
+        html.append('<ol>')
+        for msg in messages:
+            if msg.old_version and msg.new_version:
+                html.append(f'<li>v{msg.old_version} → v{msg.new_version}：{msg.text}</li>')
+            else:
+                html.append(f'<li>{msg.text}</li>')
+        html.append('</ol>')
+
+        return ''.join(html)
 
     @Slot()
     def shutdown(self) -> None:
+        self.tabManager.shutdown_device_sessions()
         self.globalHotkeyController.shutdown()
-        self.progressBridge.close()
         self.logBridge.close()
-        self.scrcpyController.set_visible(False)

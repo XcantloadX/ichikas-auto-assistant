@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../components"
+import IaaApp 1.0
 
 PageContainer {
     id: root
@@ -12,7 +13,7 @@ PageContainer {
     property int currentTopicIndex: -1
 
     function loadTopics() {
-        var data = JSON.parse(helpController.topicsJson())
+        var data = JSON.parse(HelpController.topicsJson())
         root.topics = data
         if (data.length > 0) {
             root.currentTopicIndex = 0
@@ -20,7 +21,7 @@ PageContainer {
     }
 
     function loadContent(topicId) {
-        var html = helpController.contentHtml(topicId)
+        var html = HelpController.contentHtml(topicId)
         contentEdit.text = html
     }
 

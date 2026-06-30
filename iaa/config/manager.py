@@ -4,10 +4,10 @@ from pathlib import Path
 
 from pydantic_core import ValidationError
 
-from .base import IaaConfig, GameConfig, LiveConfig, CONFIG_VERSION_CODE
+from .base import IaaConfig, GameConfig
 from .shared import SharedConfig
 from .migration import MigrationChain, add_deferred_messages
-from .migrations import ProfileV1ToV2, ProfileV2ToV3, SharedV1ToV2
+from .migrations import ProfileV1ToV2, ProfileV2ToV3, ProfileV3ToV4, SharedV1ToV2
 
 
 class ConfigValidationError(Exception):
@@ -35,6 +35,8 @@ def get_invalid_field_names(e: ValidationError) -> tuple[List[str], str]:
 
 config_path: str = './conf'
 
+_shared: 'SharedConfig | None' = None
+
 
 # --- 迁移定义 ---
 
@@ -44,6 +46,7 @@ shared_migration_chain = MigrationChain(steps=[
 profile_migration_chain = MigrationChain(steps=[
     ProfileV1ToV2(),
     ProfileV2ToV3(),
+    ProfileV3ToV4(),
 ])
 
 
@@ -62,30 +65,42 @@ def list() -> list[str]:
 
 
 def read_shared() -> SharedConfig:
-    """读取 _shared.json 共享配置。"""
+    """返回共享配置单例。首次调用从磁盘读取，后续调用直接返回缓存对象。"""
+    global _shared
+    if _shared is not None:
+        return _shared
+
     conf_dir = Path(config_path)
     conf_dir.mkdir(parents=True, exist_ok=True)
-    
-    # 迁移
+
     messages = shared_migration_chain.run(conf_dir)
     if messages:
         add_deferred_messages(messages)
 
     shared_file = conf_dir / '_shared.json'
-    
+
     if not shared_file.exists():
-        shared_config = SharedConfig()
-        write_shared(shared_config)
-        return shared_config
-    
+        _shared = SharedConfig()
+        write_shared(_shared)
+        return _shared
+
     with open(shared_file, 'r', encoding='utf-8') as f:
         config_data = json.load(f)
-    
-    return SharedConfig.model_validate(config_data)
+
+    _shared = SharedConfig.model_validate(config_data)
+    return _shared
+
+
+def update_shared(config: SharedConfig) -> None:
+    """仅更新内存缓存，不写磁盘。用于编辑中间状态。"""
+    global _shared
+    _shared = config
 
 
 def write_shared(config: SharedConfig) -> None:
-    """写入 _shared.json 共享配置。"""
+    """写入 _shared.json，同时更新内存缓存。"""
+    global _shared
+    _shared = config
     conf_dir = Path(config_path)
     conf_dir.mkdir(parents=True, exist_ok=True)
 
@@ -108,19 +123,15 @@ def create(name: str, *, exist: Literal['raise', 'ok'] = 'raise') -> None:
         return
     
     # 创建默认配置
-    from .base import GameConfig, LiveConfig
-    from .schemas import ChallengeLiveConfig, DeviceConfig, DeveloperConfig, EventStoreConfig, SchedulerConfig
+    from .schemas import DeviceConfig, DeveloperConfig, TasksConfig
 
     default_config = IaaConfig(
         name=name,
         description=f"Configuration for {name}",
         device=DeviceConfig(),
         game=GameConfig(),
-        live=LiveConfig(),
-        challenge_live=ChallengeLiveConfig(),
-        event_shop=EventStoreConfig(),
         developer=DeveloperConfig(),
-        scheduler=SchedulerConfig(),
+        tasks=TasksConfig(),
     )
     
     with open(config_file, 'w', encoding='utf-8') as f:
@@ -220,15 +231,15 @@ def fallback_invalid_fields(name: str, invalid_fields: List[str]) -> IaaConfig:
     with open(config_file, 'r', encoding='utf-8') as f:
         config_data = json.load(f)
 
-    from .schemas import DeviceConfig, DeveloperConfig
+    from .schemas import DeviceConfig, DeveloperConfig, TasksConfig
 
     default = IaaConfig.model_construct(
         name=config_data.get('name', name),
         description=config_data.get('description', f"Configuration for {name}"),
         device=DeviceConfig(),
         game=GameConfig(),
-        live=LiveConfig(),
         developer=DeveloperConfig(),
+        tasks=TasksConfig(),
     )
     default_dict = default.model_dump()
 

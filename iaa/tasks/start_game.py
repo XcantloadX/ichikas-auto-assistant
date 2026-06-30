@@ -59,6 +59,23 @@ def login(link_account: LinkAccountOptions):
             elif R.Login.ButtonMenu.try_click():
                 logger.debug('Clicked 右上角菜单按钮')
 
+def _cn_login():
+    d = device.android()
+    activity = d.adb_shell('dumpsys activity activities | grep ResumedActivity')
+    # 判断是否弹出国服登录界面
+    if server() == 'cn' and 'com.hermes.mk/com.bytedance.ttgame.sdk.module.account.login.ui.LoginActivity' in activity:
+        # Tab x 3, Enter
+        logger.debug('ZXGN login screen detected')
+        d.adb_shell('input keyevent 61')  # TAB
+        sleep(0.3)
+        d.adb_shell('input keyevent 61')  # TAB
+        sleep(0.3)
+        d.adb_shell('input keyevent 61')  # TAB
+        sleep(0.3)
+        d.adb_shell('input keyevent 66')  # ENTER
+        logger.debug('Sent key events to select ZXGN account')
+
+
 @task('启动游戏', screenshot_mode='manual')
 def start_game():
     rep = task_reporter()
@@ -90,8 +107,14 @@ def start_game():
             rep.message(f'通过 {link_account} 进行引继')
             login(link_account)
 
-        go_home(check_alive=True)
+        go_home(
+            check_alive=True,
+            extra_callback=_cn_login if server() == 'cn' else None
+        )
     else:
         logger.info('Already at game.')
-        go_home(check_alive=True)
+        go_home(
+            check_alive=True,
+            extra_callback=_cn_login if server() == 'cn' else None
+        )
     

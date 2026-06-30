@@ -4,132 +4,35 @@ from .controllers.log_bridge import LogBridge
 log_bridge = LogBridge(None)
 log_bridge.install()
 
-import ctypes
 import os
-import platform
-from ctypes import wintypes
 from pathlib import Path
 from typing import cast
 
 from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QColor, QFont, QIcon, QPalette
-from PySide6.QtQml import QQmlApplicationEngine
+from PySide6.QtGui import QColor, QIcon, QPalette
+from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
 from PySide6.QtQuick import QQuickWindow
 from PySide6.QtWidgets import QApplication
 from PySide6.QtQuickControls2 import QQuickStyle
 
-from .controllers import AppController
+from iaa.config import manager as config_manager
+from iaa.application.service.iaa_service import IaaService
+from .controllers import (
+    AppController,
+    HelpController,
+    PreferencesController,
+    ProfileStoreBackend,
+)
+from .controllers.tab_manager import TabManager
 
-DWMWA_USE_IMMERSIVE_DARK_MODE = 20
-DWMWA_SYSTEMBACKDROP_TYPE = 38
-
-# 常见值：
-# 1 = None
-# 2 = MainWindow (Mica)
-# 3 = TransientWindow (Acrylic-like)
-# 4 = TabbedWindow
-DWM_SYSTEMBACKDROP_MAINWINDOW = 2
-
-WNDCA_ACCENT_POLICY = 19
-
-ACCENT_DISABLED = 0
-ACCENT_ENABLE_BLURBEHIND = 3
-ACCENT_ENABLE_ACRYLICBLURBEHIND = 4
-
-
-class ACCENT_POLICY(ctypes.Structure):
-    _fields_ = [
-        ("AccentState", ctypes.c_uint),
-        ("AccentFlags", ctypes.c_uint),
-        ("GradientColor", ctypes.c_uint),
-        ("AnimationId", ctypes.c_uint),
-    ]
-
-
-class WINDOWCOMPOSITIONATTRIBDATA(ctypes.Structure):
-    _fields_ = [
-        ("Attrib", ctypes.c_uint),
-        ("pvData", ctypes.c_void_p),
-        ("cbData", ctypes.c_size_t),
-    ]
-
-
-def is_windows_11() -> bool:
-    return sys.getwindowsversion().build >= 22000
-
-
-def is_windows_10_1803() -> bool:
-    return sys.getwindowsversion().build >= 17134
-
-
-def enable_mica(hwnd: int) -> int:
-    dwmapi = ctypes.windll.dwmapi
-
-    value = ctypes.c_int(DWM_SYSTEMBACKDROP_MAINWINDOW)
-    return dwmapi.DwmSetWindowAttribute(
-        wintypes.HWND(hwnd),
-        ctypes.c_uint(DWMWA_SYSTEMBACKDROP_TYPE),
-        ctypes.byref(value),
-        ctypes.sizeof(value)
+if sys.platform == 'win32':
+    from .platform_win32 import (
+        _MaxHoverBridge,
+        TabBarHitTestBridge,
+        WindowEventFilter,
+        apply_window_style,
+        setup_frameless_window,
     )
-
-
-def enable_blur(hwnd: int) -> int:
-    user32 = ctypes.windll.user32
-    set_window_composition = user32.SetWindowCompositionAttribute
-    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
-    set_window_composition.restype = ctypes.c_bool
-
-    accent = ACCENT_POLICY(ACCENT_ENABLE_BLURBEHIND, 0, 0, 0)
-    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
-
-    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
-
-
-def enable_acrylic(hwnd: int) -> int:
-    user32 = ctypes.windll.user32
-    set_window_composition = user32.SetWindowCompositionAttribute
-    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
-    set_window_composition.restype = ctypes.c_bool
-
-    accent = ACCENT_POLICY(ACCENT_ENABLE_ACRYLICBLURBEHIND, 0, 0, 0)
-    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
-
-    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
-
-
-def disable_blur(hwnd: int) -> int:
-    user32 = ctypes.windll.user32
-    set_window_composition = user32.SetWindowCompositionAttribute
-    set_window_composition.argtypes = [wintypes.HWND, ctypes.POINTER(WINDOWCOMPOSITIONATTRIBDATA)]
-    set_window_composition.restype = ctypes.c_bool
-
-    accent = ACCENT_POLICY(ACCENT_DISABLED, 0, 0, 0)
-    data = WINDOWCOMPOSITIONATTRIBDATA(WNDCA_ACCENT_POLICY, ctypes.addressof(accent), ctypes.sizeof(accent))
-
-    return 0 if set_window_composition(wintypes.HWND(hwnd), ctypes.byref(data)) else -1
-
-
-def resolve_window_style(style: str) -> str:
-    if style in ('mica', 'acrylic', 'blur', 'solid'):
-        return style
-    if is_windows_11():
-        return 'mica'
-    return 'solid'
-
-
-def apply_window_style(hwnd: int, style: str) -> None:
-    if platform.system() != 'Windows':
-        return
-    resolved = resolve_window_style(style)
-    if resolved == 'mica':
-        enable_mica(hwnd)
-    elif resolved == 'acrylic':
-        enable_acrylic(hwnd)
-    elif resolved == 'blur':
-        enable_blur(hwnd)
-    elif resolved == 'solid':
-        disable_blur(hwnd)
 
 
 def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
@@ -156,20 +59,14 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
 
 
 def apply_theme_color(app: QApplication, color_value: str | None) -> None:
-    if not color_value:
-        # Clear custom palette override and let Fluent/system palette drive colors.
-        app.setPalette(QPalette())
-        return
-
-    color = QColor(color_value)
-    if not color.isValid():
-        return
-
-    palette = QPalette(app.palette())
-    palette.setColor(QPalette.ColorRole.Highlight, color)
-    accent_role = getattr(QPalette.ColorRole, 'Accent', None)
-    if accent_role is not None:
-        palette.setColor(accent_role, color)
+    palette = QPalette()
+    if color_value:
+        color = QColor(color_value)
+        if color.isValid():
+            palette.setColor(QPalette.ColorRole.Highlight, color)
+            accent_role = getattr(QPalette.ColorRole, 'Accent', None)
+            if accent_role is not None:
+                palette.setColor(accent_role, color)
     app.setPalette(palette)
 
 
@@ -181,22 +78,31 @@ def main() -> None:
     QQuickStyle.setStyle("FluentWinUI3")
 
     controller = AppController(log_bridge=log_bridge)
-    interface = controller.service.config.shared.interface
+
+    interface = config_manager.read_shared().interface
     apply_color_scheme(app, interface.color_scheme)
 
-    engine = QQmlApplicationEngine()
-    engine.rootContext().setContextProperty('appController', controller)
-    engine.rootContext().setContextProperty('runController', controller.runController)
-    engine.rootContext().setContextProperty('settingsController', controller.settingsController)
-    engine.rootContext().setContextProperty('preferencesController', controller.preferencesController)
-    engine.rootContext().setContextProperty('profileStoreBackend', controller.profileStoreBackend)
-    engine.rootContext().setContextProperty('progressBridge', controller.progressBridge)
-    engine.rootContext().setContextProperty('logBridge', controller.logBridge)
-    engine.rootContext().setContextProperty('scrcpyController', controller.scrcpyController)
-    engine.rootContext().setContextProperty('helpController', controller.helpController)
-    engine.addImageProvider('scrcpy', controller.scrcpyController.image_provider)
+    profileStoreBackend = ProfileStoreBackend(controller.tabManager, controller)
 
-    icon_path = Path(controller.service.root) / 'assets' / 'icon_round.ico'
+    max_hover_bridge = _MaxHoverBridge() if sys.platform == 'win32' else None
+    tab_bar_bridge = TabBarHitTestBridge() if sys.platform == 'win32' else None
+
+    # PySide6 stub 把 qml_name 标注为 bytes，但运行时实际接受 str，故忽略类型错误
+    _URI, _VER = "IaaApp", (1, 0)
+    qmlRegisterSingletonType(AppController,        _URI, *_VER, "AppController",        lambda _: controller)           # type: ignore[arg-type]
+    qmlRegisterSingletonType(TabManager,           _URI, *_VER, "TabManager",           lambda _: controller.tabManager)  # type: ignore[arg-type]
+    qmlRegisterSingletonType(ProfileStoreBackend,  _URI, *_VER, "ProfileStoreBackend",  lambda _: profileStoreBackend)    # type: ignore[arg-type]
+    qmlRegisterSingletonType(PreferencesController,_URI, *_VER, "PreferencesController",lambda _: controller.preferencesController)  # type: ignore[arg-type]
+    qmlRegisterSingletonType(HelpController,       _URI, *_VER, "HelpController",       lambda _: controller.helpController)  # type: ignore[arg-type]
+
+    engine = QQmlApplicationEngine()
+    engine.addImageProvider('scrcpy', controller.scrcpyImageProvider)
+    # maxHoverBridge / tabBarBridge 平台条件可为 None，保留 context property
+    engine.rootContext().setContextProperty('maxHoverBridge', max_hover_bridge)
+    engine.rootContext().setContextProperty('tabBarBridge', tab_bar_bridge)
+
+    root_path = Path(IaaService.app_root())
+    icon_path = root_path / 'assets' / 'ichika.ico'
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
@@ -207,14 +113,33 @@ def main() -> None:
     window = cast(QQuickWindow, engine.rootObjects()[0])
     hwnd = int(window.winId())
 
+    if sys.platform == 'win32':
+        setup_frameless_window(hwnd)
+        _win_event_filter = WindowEventFilter(window, max_hover_bridge, tab_bar_bridge)
+        app.installNativeEventFilter(_win_event_filter)
+
+    _startup_iface = config_manager.read_shared().interface
+    _startup_color_scheme = _startup_iface.color_scheme
+    _startup_theme_color = _startup_iface.theme_color
+
     def apply_interface_preferences() -> None:
-        interface_conf = controller.service.config.shared.interface
+        interface_conf = config_manager.read_shared().interface
         apply_color_scheme(app, interface_conf.color_scheme)
         apply_theme_color(app, interface_conf.theme_color)
-        apply_window_style(hwnd, interface_conf.window_style)
+        if sys.platform == 'win32':
+            apply_window_style(hwnd, interface_conf.window_style)
         controller.refreshWindowStyle()
 
-    controller.preferencesController.runtimeChanged.connect(apply_interface_preferences)
+    def apply_runtime_preferences() -> None:
+        interface_conf = config_manager.read_shared().interface
+        if sys.platform == 'win32':
+            apply_window_style(hwnd, interface_conf.window_style)
+        controller.refreshWindowStyle()
+        if (interface_conf.color_scheme != _startup_color_scheme
+                or interface_conf.theme_color != _startup_theme_color):
+            controller.notificationRaised.emit('info', '配色方案将在重启后生效。')
+
+    controller.preferencesController.runtimeChanged.connect(apply_runtime_preferences)
     apply_interface_preferences()
 
     exit_code = app.exec()

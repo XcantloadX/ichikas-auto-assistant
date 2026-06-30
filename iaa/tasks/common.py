@@ -1,3 +1,5 @@
+from typing import Callable
+
 from kotonebot import logging, sleep
 from kotonebot.backend.core import HintBox
 from kotonebot import device, Loop, action, color
@@ -13,12 +15,15 @@ def at_home() -> bool:
     return R.Hud.ButtonLive.find() is not None
 
 @action('返回首页', screenshot_mode='manual')
-def go_home(*, check_alive: bool = False):
+def go_home(*, check_alive: bool = False, extra_callback: Callable[[], None] | None = None):
     rep = task_reporter()
     rep.message('正在返回首页')
     logger.info('Try to go home.')
     from kotonebot.client.device import AndroidDevice
     for _ in Loop(interval=0.5):
+        if extra_callback:
+            extra_callback()
+        
         if isinstance(device._device, AndroidDevice) and check_alive and device.of_android().current_package() != package_name():
             device.of_android().launch_app(package_name())
             sleep(5)

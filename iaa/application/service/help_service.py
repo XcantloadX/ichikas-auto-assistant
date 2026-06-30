@@ -1,20 +1,16 @@
 import os
 import re
 from pathlib import Path
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .iaa_service import IaaService
 
 
 class HelpService:
-    def __init__(self, iaa_service: 'IaaService'):
-        self._iaa = iaa_service
+    def __init__(self):
         self._topics: list[dict] | None = None
 
     @property
     def help_dir(self) -> str:
-        return os.path.join(self._iaa.assets.assets_root_path, 'help')
+        from .iaa_service import IaaService
+        return os.path.join(IaaService.app_root(), 'assets', 'help')
 
     def scan_topics(self) -> list[dict]:
         if self._topics is not None:

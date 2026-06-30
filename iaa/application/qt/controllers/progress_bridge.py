@@ -3,7 +3,7 @@ from __future__ import annotations
 from PySide6.QtCore import QObject, Property, Signal
 
 from iaa.context import hub as progress_hub
-from iaa.progress import TaskProgressEvent
+from iaa.progress import ProgressHub, TaskProgressEvent
 
 from ..models import ProgressState, progress_event_to_state
 
@@ -11,10 +11,11 @@ from ..models import ProgressState, progress_event_to_state
 class ProgressBridge(QObject):
     changed = Signal()
 
-    def __init__(self, parent: QObject | None = None) -> None:
+    def __init__(self, parent: QObject | None = None, hub: ProgressHub | None = None) -> None:
         super().__init__(parent)
         self._state = ProgressState()
-        self._unsubscribe = progress_hub().subscribe(self._on_event)
+        _hub = hub if hub is not None else progress_hub()
+        self._unsubscribe = _hub.subscribe(self._on_event)
 
     def close(self) -> None:
         if self._unsubscribe is not None:
