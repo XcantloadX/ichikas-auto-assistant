@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from PySide6.QtCore import QObject, Property, Signal, Slot
 
-from iaa.application.qt.i18n import translate
+from iaa.i18n import translate
 
 
 class I18nController(QObject):

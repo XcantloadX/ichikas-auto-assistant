@@ -318,7 +318,7 @@ class SchedulerService:
                 # 发送通知
                 if completion_status != 'no_tasks':
                     from iaa.notify import NotificationType, send_notification
-                    from iaa.application.qt.i18n import translate
+                    from iaa.i18n import translate
                     shared_config = self.iaa.config.shared
                     language = shared_config.interface.language
                     message_map = {

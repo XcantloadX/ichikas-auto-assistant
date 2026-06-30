@@ -3,7 +3,7 @@ from kotonebot import task
 from iaa.tasks.common import go_home
 from iaa.context import task_reporter
 from .live import ListLoopPlan, SingleLoopPlan, solo_live as do_solo_live
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 
 
 @task('自动演出')

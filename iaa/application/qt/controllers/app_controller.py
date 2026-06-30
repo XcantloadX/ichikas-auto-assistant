@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QMessageBox
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
-from iaa.application.qt.i18n import translate
+from iaa.i18n import translate
 from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 

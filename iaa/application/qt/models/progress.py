@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from iaa.progress import TaskProgressEvent, Translatable
-from iaa.application.qt.i18n import TStr, tstr
+from iaa.i18n import TStr, tstr
 
 StatusT = list[Translatable | str] | Translatable | str
 

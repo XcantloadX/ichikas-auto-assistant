@@ -4,7 +4,7 @@ from . import R
 from .common import go_home, at_home
 from ..context import task_reporter
 from iaa.game_ui.side_tabbar import SideTabbar
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 
 logger = logging.getLogger(__name__)
 

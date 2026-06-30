@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
-from iaa.application.qt.i18n import translate
+from iaa.i18n import translate
 from ..forms.context import PreferencesContext
 from ..forms.preferences_form import build_preferences_form
 

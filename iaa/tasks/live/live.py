@@ -9,7 +9,7 @@ from kotonebot import device, Loop, action, sleep, color, ocr
 from .. import R
 from ..common import at_home, go_home
 from iaa.context import conf, server, task_reporter, keyboard
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_core import RhythmGameAnalyzer

@@ -6,7 +6,7 @@ from . import R
 from ._fragments import scan_area
 from .common import at_home, go_home
 from iaa.context import task_reporter
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 from .story._common import skip_stories
 
 logger = logging.getLogger(__name__)

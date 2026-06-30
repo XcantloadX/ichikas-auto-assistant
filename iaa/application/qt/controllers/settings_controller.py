@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
-from iaa.application.qt.i18n import translate
+from iaa.i18n import translate
 from ..forms.context import FormContext
 from ..forms.settings_form import build_settings_form
 
@@ -54,7 +54,7 @@ class SettingsController(QObject):
         self._recompute_runtime()
 
     def _default_mumu_instance_item(self) -> dict[str, Any]:
-        from iaa.application.qt.i18n import tstr
+        from iaa.i18n import tstr
         return {'value': '', 'label': tstr('settings.option.mumu_instance.default')}
 
     def _rebuild_form(self, *, reset_mumu_instances: bool = False) -> None:

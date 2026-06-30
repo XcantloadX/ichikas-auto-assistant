@@ -3,7 +3,7 @@ from kotonebot import device, task, Loop, action, sleep, logging
 from iaa.definitions.enums import LinkAccountOptions
 from iaa.definitions.consts import package_name as get_package_name
 from iaa.context import conf, task_reporter, server
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 from . import R
 from .common import go_home
 

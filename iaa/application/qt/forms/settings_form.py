@@ -21,7 +21,7 @@ from iaa.application.framework.dsl import (
     custom_ref,
 )
 from .context import FormContext
-from iaa.application.qt.i18n import translate, tstr
+from iaa.i18n import translate, tstr
 from ..models import (
     SONG_KEEP_UNCHANGED,
     normalize_song_name_input,

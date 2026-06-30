@@ -9,7 +9,7 @@ from kotonebot.backend import image
 from . import R
 from iaa.definitions.enums import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 from iaa.game_ui.list_view import ListViewItem
 from iaa.game_ui.side_tabbar import SideTabbar
 

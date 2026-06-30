@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 from iaa.definitions.enums import (
     ChallengeLiveAward,
     GameCharacter,

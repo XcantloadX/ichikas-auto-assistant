@@ -3,7 +3,7 @@ from __future__ import annotations
 from iaa.application.framework.dsl import Checkbox, FormPage, FormSpec, Group, Hotkey, Select, Text, bind, custom_ref
 from typing import Callable, cast
 from .context import PreferencesContext
-from iaa.application.qt.i18n import tstr
+from iaa.i18n import tstr
 from iaa.config.shared import CustomPushData, DiscordPushData
 
 ctx, ref = bind(PreferencesContext)

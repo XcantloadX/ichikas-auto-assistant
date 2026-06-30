@@ -5,7 +5,7 @@ from kotonebot import device, Loop, action, color
 from . import R
 from iaa.context import task_reporter, server
 from iaa.definitions.consts import package_name
-from iaa.application.qt.i18n import TStr
+from iaa.i18n import TStr
 
 logger = logging.getLogger(__name__)
 

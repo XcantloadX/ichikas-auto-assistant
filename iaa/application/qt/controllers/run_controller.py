@@ -8,7 +8,7 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
-from iaa.application.qt.i18n import translate
+from iaa.i18n import translate
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
 
