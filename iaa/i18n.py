@@ -27,7 +27,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'nav.config': TStr(
         zh_CN='配置',
-        en_US='Config',
+        en_US='Configuration',
     ),
     'nav.preferences': TStr(
         zh_CN='偏好',
@@ -79,7 +79,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'common.do_not_save_and_continue': TStr(
         zh_CN='不保存并继续',
-        en_US='Continue without saving',
+        en_US='Discard',
     ),
     'common.save_and_continue': TStr(
         zh_CN='保存并继续',
@@ -87,7 +87,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'common.continue_action': TStr(
         zh_CN='继续此操作',
-        en_US='continue this action',
+        en_US='continuing this action',
     ),
     'page.settings.script_running': TStr(
         zh_CN='脚本运行时无法修改配置',
@@ -115,7 +115,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'about.tagline': TStr(
         zh_CN='我同时和六个初音未来结婚',
-        en_US='I married six Hatsune Mikus at the same time',
+        en_US="I'm married to six Hatsune Mikus simultaneously",
     ),
     'about.docs': TStr(
         zh_CN='教程文档',
@@ -143,7 +143,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'modal.telemetry.content': TStr(
         zh_CN='是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa。',
-        en_US='Allow iaa to send anonymous error reports automatically? The information is only used to improve iaa.',
+        en_US='Allow iaa to send anonymous error reports automatically? The data is used solely to improve iaa.',
     ),
     'modal.telemetry.deny': TStr(
         zh_CN='拒绝',
@@ -163,7 +163,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'modal.exit.content': TStr(
         zh_CN='当前仍在执行任务，确定要退出吗？退出将先停止任务。',
-        en_US='Tasks are still running. Exit anyway? The app will stop the tasks first.',
+        en_US='Tasks are still running. Exit anyway? Tasks will be stopped automatically.',
     ),
     'modal.exit.confirm': TStr(
         zh_CN='退出',
@@ -175,31 +175,31 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'modal.unsaved.content': TStr(
         zh_CN='当前配置有未保存的更改。{action}前，请先选择处理方式。',
-        en_US='The current config has unsaved changes. Before {action}, choose how to handle them.',
+        en_US='You have unsaved changes. Before {action}, choose how to handle them.',
     ),
     'guard.close_window': TStr(
         zh_CN='关闭窗口',
-        en_US='close the window',
+        en_US='closing the window',
     ),
     'guard.switch_page': TStr(
         zh_CN='切换页面',
-        en_US='switch pages',
+        en_US='switching pages',
     ),
     'guard.switch_config': TStr(
         zh_CN='切换配置',
-        en_US='switch config',
+        en_US='switching config',
     ),
     'guard.switch_new_config': TStr(
         zh_CN='切换到新配置',
-        en_US='switch to the new config',
+        en_US='switching to the new config',
     ),
     'guard.rename_current_config': TStr(
         zh_CN='重命名当前配置',
-        en_US='rename the current config',
+        en_US='renaming the current config',
     ),
     'guard.delete_current_config': TStr(
         zh_CN='删除当前配置',
-        en_US='delete the current config',
+        en_US='deleting the current config',
     ),
     'config_manager.title': TStr(
         zh_CN='配置管理',
@@ -223,7 +223,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'config_manager.delete_prompt': TStr(
         zh_CN="确定要删除配置 '{name}' 吗？此操作不可撤销。",
-        en_US="Delete config '{name}'? This cannot be undone.",
+        en_US="Delete '{name}'? This cannot be undone.",
     ),
     'control.main_story_confirm.title': TStr(
         zh_CN='确认开始',
@@ -299,11 +299,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.reading_story': TStr(
         zh_CN='阅读剧情',
-        en_US='Reading story',
+        en_US='Reading the story',
     ),
     'progress.playing_ad': TStr(
         zh_CN='播放广告',
-        en_US='Playing ad',
+        en_US='Playing the ad',
     ),
     'progress.waiting_ad_load': TStr(
         zh_CN='等待广告载入',
@@ -331,19 +331,19 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.scanning_list': TStr(
         zh_CN='扫描列表',
-        en_US='Scanning list',
+        en_US='Scanning the list',
     ),
     'progress.opening_mission_rewards': TStr(
         zh_CN='前往任务奖励页面',
-        en_US='Opening mission rewards',
+        en_US='Opening the mission rewards',
     ),
     'progress.mission_reward': TStr(
         zh_CN='任务奖励 {value}',
-        en_US='Mission rewards {value}',
+        en_US='Mission reward {value}',
     ),
     'progress.transfer_account': TStr(
         zh_CN='通过 {account} 进行引继',
-        en_US='Transferring with {account}',
+        en_US='Logging in via transfer account: {account}',
     ),
     'progress.preparing_auto_live': TStr(
         zh_CN='准备自动演出参数',
@@ -351,7 +351,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.returning_home_before_live': TStr(
         zh_CN='返回首页准备进入演出',
-        en_US='Returning home before live',
+        en_US='Returning home before the live',
     ),
     'progress.entering_auto_live': TStr(
         zh_CN='进入自动演出流程',
@@ -367,7 +367,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.auto_team_setup': TStr(
         zh_CN='自动编队中',
-        en_US='Auto team setup',
+        en_US='Setting up auto team',
     ),
     'progress.settling_results': TStr(
         zh_CN='结算中',
@@ -375,11 +375,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.entering_solo_live': TStr(
         zh_CN='进入单人演出',
-        en_US='Entering solo live',
+        en_US='Entering Solo Live',
     ),
     'progress.preparing_live': TStr(
         zh_CN='准备开始演出',
-        en_US='Preparing live',
+        en_US='Preparing for live',
     ),
     'progress.live_in_progress': TStr(
         zh_CN='演出中',
@@ -395,11 +395,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.single_loop_complete': TStr(
         zh_CN='单曲循环完成，返回首页',
-        en_US='Single-song loop complete, returning home',
+        en_US='Single-song loop complete. Returning home',
     ),
     'progress.list_loop_start': TStr(
         zh_CN='开始列表循环',
-        en_US='Starting list loop',
+        en_US='Starting the list loop',
     ),
     'progress.list_loop_complete': TStr(
         zh_CN='列表循环完成',
@@ -407,7 +407,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.entering_challenge_live': TStr(
         zh_CN='进入挑战演出',
-        en_US='Entering challenge live',
+        en_US='Entering Challenge Live',
     ),
     'progress.select_character': TStr(
         zh_CN='选择角色：{character}',
@@ -415,11 +415,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.starting_challenge_live': TStr(
         zh_CN='开始挑战演出',
-        en_US='Starting challenge live',
+        en_US='Starting Challenge Live',
     ),
     'progress.challenge_live_complete': TStr(
         zh_CN='挑战演出完成，返回首页',
-        en_US='Challenge live complete, returning home',
+        en_US='Challenge Live complete, returning home',
     ),
     'progress.task_error': TStr(
         zh_CN='执行「{task}」时出错：{error}',
@@ -435,7 +435,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'progress.unknown_error': TStr(
         zh_CN='未知错误',
-        en_US='unknown error',
+        en_US='Unknown error',
     ),
     'notice.tasks_completed': TStr(
         zh_CN='任务执行完成',
@@ -483,11 +483,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'notice.telemetry_effective': TStr(
         zh_CN='数据收集设置将于下次启动时生效。',
-        en_US='Data collection changes will take effect after restart.',
+        en_US='Data collection settings take effect on next launch.',
     ),
     'notice.script_auto_warning': TStr(
         zh_CN='使用"脚本自动"时必须满足：\n1. 当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担',
-        en_US='Script auto requires:\n1. The selected live song is on EASY difficulty\n2. Note speed is 1 and effects are lightweight\n3. MuMu uses the nemu_ipc control method, or other emulators use scrcpy\n4. The resolution is 16:9, including 1280x720 and proportional scales\n5. The user accepts all risks and consequences of using script auto',
+        en_US='Script auto requires:\n1. The selected live song must be on EASY difficulty\n2. Note speed must be 1 and effects must be lightweight\n3. MuMu must use the nemu_ipc control method; other emulators must use scrcpy\n4. The resolution must be 16:9, including 1280x720 and proportional scales\n5. All risks and consequences of using script auto are borne by the user',
     ),
     'dialog.save_report.title': TStr(
         zh_CN='保存报告',
@@ -583,7 +583,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.notice.no_last_preset': TStr(
         zh_CN='没有找到上次设定',
-        en_US='No last settings found',
+        en_US='No previous settings found',
     ),
     'auto_live.count': TStr(
         zh_CN='演出次数',
@@ -591,7 +591,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.count.specify': TStr(
         zh_CN='指定次数',
-        en_US='Specified count',
+        en_US='Specified',
     ),
     'auto_live.count.placeholder': TStr(
         zh_CN='次数',
@@ -607,15 +607,15 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.loop.single': TStr(
         zh_CN='单曲循环',
-        en_US='Single song',
+        en_US='Repeat One',
     ),
     'auto_live.loop.list': TStr(
         zh_CN='列表顺序',
-        en_US='List order',
+        en_US='Sequential',
     ),
     'auto_live.loop.random': TStr(
         zh_CN='列表随机',
-        en_US='Random list',
+        en_US='Shuffle',
     ),
     'auto_live.play_mode': TStr(
         zh_CN='自动模式',
@@ -623,7 +623,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.play.game_auto': TStr(
         zh_CN='游戏自动',
-        en_US='Game auto',
+        en_US='In-Game auto',
     ),
     'auto_live.play.script_auto': TStr(
         zh_CN='脚本自动',
@@ -643,11 +643,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.song_name': TStr(
         zh_CN='歌曲名称',
-        en_US='Song name',
+        en_US='Song',
     ),
     'auto_live.song.keep': TStr(
         zh_CN='保持不变',
-        en_US='Keep unchanged',
+        en_US='Keep current',
     ),
     'auto_live.debug_display': TStr(
         zh_CN='调试显示（脚本自动）',
@@ -655,7 +655,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'auto_live.auto_set_unit': TStr(
         zh_CN='自动编队',
-        en_US='Auto team setup',
+        en_US='Use Recommended Team',
     ),
     'preferences.title': TStr(
         zh_CN='设置',
@@ -671,7 +671,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'preferences.group.notify': TStr(
         zh_CN='通知',
-        en_US='Notifications',
+        en_US='Notification',
     ),
     'preferences.group.hotkeys': TStr(
         zh_CN='快捷键',
@@ -687,7 +687,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'preferences.field.window_style': TStr(
         zh_CN='窗口背景样式',
-        en_US='Window background style',
+        en_US='Window style',
     ),
     'preferences.field.color_scheme': TStr(
         zh_CN='色彩方案',
@@ -699,11 +699,11 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'preferences.field.notify_system': TStr(
         zh_CN='系统通知',
-        en_US='System notifications',
+        en_US='System notification',
     ),
     'preferences.field.notify_push': TStr(
         zh_CN='推送通知',
-        en_US='Push notifications',
+        en_US='Push notification',
     ),
     'preferences.field.notify_push_type': TStr(
         zh_CN='推送类型',
@@ -751,7 +751,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'preferences.option.window_style.blur': TStr(
         zh_CN='模糊背景',
-        en_US='Blur background',
+        en_US='Blur',
     ),
     'preferences.option.window_style.acrylic': TStr(
         zh_CN='亚克力（Win 10 1803+）',
@@ -759,7 +759,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'preferences.option.window_style.solid': TStr(
         zh_CN='纯色背景',
-        en_US='Solid color',
+        en_US='Solid',
     ),
     'preferences.option.follow_system': TStr(
         zh_CN='跟随系统',
@@ -823,7 +823,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.title': TStr(
         zh_CN='配置',
-        en_US='Config',
+        en_US='Configuration',
     ),
     'settings.group.game': TStr(
         zh_CN='游戏设置',
@@ -895,15 +895,15 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.field.device.custom_running_command': TStr(
         zh_CN='运行检测命令',
-        en_US='Running check command',
+        en_US='Run check command',
     ),
     'settings.field.device.connection_type': TStr(
         zh_CN='连接方式',
-        en_US='Connection method',
+        en_US='Connection',
     ),
     'settings.field.device.serial': TStr(
         zh_CN='设备序列号',
-        en_US='Device serial',
+        en_US='Serial',
     ),
     'settings.field.device.tcp_ip': TStr(
         zh_CN='ADB IP',
@@ -919,7 +919,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.field.device.control_impl': TStr(
         zh_CN='控制方式',
-        en_US='Control method',
+        en_US='Control',
     ),
     'settings.field.device.scrcpy_virtual_display': TStr(
         zh_CN='使用虚拟显示器',
@@ -927,7 +927,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.field.device.resolution_method': TStr(
         zh_CN='分辨率设置',
-        en_US='Resolution setting',
+        en_US='Resolution',
     ),
     'settings.field.live.song_name': TStr(
         zh_CN='歌曲名称',
@@ -943,7 +943,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.field.live.append_fc': TStr(
         zh_CN='追加一次 FullCombo 演出',
-        en_US='Append one Full Combo live',
+        en_US='Append one Full-Combo live',
     ),
     'settings.field.live.append_random': TStr(
         zh_CN='追加一首随机歌曲',
@@ -959,7 +959,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.field.cm.watch_ad_wait_sec': TStr(
         zh_CN='广告等待秒数',
-        en_US='Ad wait seconds',
+        en_US='Ad wait time (seconds)',
     ),
     'settings.field.developer.dump_sekai_home': TStr(
         zh_CN='dump 烤森',
@@ -975,15 +975,15 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.help.server': TStr(
         zh_CN='广告：现招募维护者维护除日服以外的服务器适配~ 如果你有兴趣参与维护，请联系作者。<hr>维护者：<ul><li>日服：作者本人</li><li>台服：空缺</li><li>国服：空缺</li><li>国际服：空缺</li><li>韩服：空缺</li></ul>',
-        en_US='Maintainers are wanted for non-JP server adaptation. Contact the author if you are interested.<hr>Maintainers:<ul><li>JP: author</li><li>TW: vacant</li><li>CN: vacant</li><li>Global / EN: vacant</li><li>KR: vacant</li></ul>',
+        en_US='Maintainers needed for non-JP server adaptation. Contact the author if you are interested.<hr>Maintainers:<ul><li>JP: author</li><li>TW: vacant</li><li>CN: vacant</li><li>Global / EN: vacant</li><li>KR: vacant</li></ul>',
     ),
     'settings.help.link_account': TStr(
         zh_CN='每次启动游戏的时候是否使用引继账号登录（仅限日服）',
-        en_US='Whether to log in with a transfer account when starting the game. JP only.',
+        en_US='Log in with a transfer account when starting the game. JP only.',
     ),
     'settings.help.custom_start_command': TStr(
         zh_CN='将会通过 shell 方式执行。因此编写时请注意转义等问题。<br>下面两个命令也是一样的。',
-        en_US='Runs through the shell. Escape command text carefully.<br>The following two commands behave the same way.',
+        en_US='Executed via shell. Escape carefully.<br>The next two commands work the same way.',
     ),
     'settings.help.tcp_run_adb_connect': TStr(
         zh_CN='如果需要通过"IP:端口"的形式连接设备，需要勾选。',
@@ -1055,15 +1055,15 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.option.resolution.auto': TStr(
         zh_CN='智能决定',
-        en_US='Decide automatically',
+        en_US='Auto',
     ),
     'settings.option.resolution.keep': TStr(
         zh_CN='保持原始分辨率',
-        en_US='Keep original resolution',
+        en_US='Keep original',
     ),
     'settings.option.resolution.wm_size': TStr(
         zh_CN='修改分辨率（wm size）',
-        en_US='Change resolution (wm size)',
+        en_US='Change (wm size)',
     ),
     'settings.option.mumu_instance.default': TStr(
         zh_CN='默认',
@@ -1191,15 +1191,15 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.error.watch_ad_wait_sec_required': TStr(
         zh_CN='CM 广告等待秒数不能为空',
-        en_US='CM ad wait seconds is required',
+        en_US='CM ad wait time is required',
     ),
     'settings.error.watch_ad_wait_sec_numeric': TStr(
         zh_CN='CM 广告等待秒数必须是数字',
-        en_US='CM ad wait seconds must be numeric',
+        en_US='CM ad wait time must be numeric',
     ),
     'settings.error.watch_ad_wait_sec_positive': TStr(
         zh_CN='CM 广告等待秒数必须大于 0',
-        en_US='CM ad wait seconds must be greater than 0',
+        en_US='CM ad wait time must be greater than 0',
     ),
     'settings.error.unknown_field': TStr(
         zh_CN='未知字段: {field}',
@@ -1227,7 +1227,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.status.mumu_no_instance_needed': TStr(
         zh_CN='当前模拟器无需选择实例',
-        en_US='Current emulator does not need an instance',
+        en_US='The current emulator does not need an instance',
     ),
     'settings.status.mumu_refreshed': TStr(
         zh_CN='已刷新 MuMu 实例',
@@ -1235,7 +1235,7 @@ _TRANSLATIONS: dict[str, TStr] = {
     ),
     'settings.status.mumu_loaded': TStr(
         zh_CN='已载入 {count} 个实例',
-        en_US='Loaded {count} instance(s)',
+        en_US='Loaded instances: {count}',
     ),
     'settings.status.mumu_not_found': TStr(
         zh_CN='未找到可用实例',
