@@ -17,6 +17,7 @@ PageContainer {
             source: App.Globals.assetPath("marry_with_6_mikus.png")
             Layout.preferredWidth: 220
             Layout.preferredHeight: 220
+            Layout.alignment: Qt.AlignHCenter
             fillMode: Image.PreserveAspectFit
             HoverHandler {
                 id: hoverHandler
