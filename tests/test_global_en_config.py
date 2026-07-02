@@ -1,8 +1,9 @@
 import unittest
 
-from iaa.application.qt.models.mappings import SERVER_DISPLAY_MAP, SERVER_VALUE_MAP
+from iaa.application.qt.models.mappings import SERVER_DISPLAY_MAP
 from iaa.config.schemas import GameConfig
 from iaa.definitions.consts import bundle_id_by_server, package_by_server
+from iaa.i18n import TStr
 
 
 class GlobalEnConfigTests(unittest.TestCase):
@@ -17,7 +18,7 @@ class GlobalEnConfigTests(unittest.TestCase):
 
     def test_global_server_is_exposed_to_settings_options(self) -> None:
         self.assertIn('en', SERVER_DISPLAY_MAP)
-        self.assertEqual(SERVER_VALUE_MAP[SERVER_DISPLAY_MAP['en']], 'en')
+        self.assertIsInstance(SERVER_DISPLAY_MAP['en'], TStr)
 
 
 if __name__ == '__main__':

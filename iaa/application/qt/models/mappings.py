@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from iaa.i18n import TStr
+from iaa.i18n import TStr, tstr
 from iaa.definitions.enums import (
     ChallengeLiveAward,
     GameCharacter,
@@ -10,51 +10,43 @@ from iaa.definitions.enums import (
 )
 from iaa.definitions.consts import ServerName
 
-LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
-    'mumu_v5': 'MuMu 12 (v5)',
-    'mumu': 'MuMu 12 (v4)',
-    'custom': '自定义模拟器',
-    'none': '物理机 / 手动管理',
-    'playcover': 'PlayCover',
+LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, TStr] = {
+    'mumu_v5': TStr(zh_CN='MuMu 12 (v5)', en_US='MuMu 12 (v5)'),
+    'mumu': TStr(zh_CN='MuMu 12 (v4)', en_US='MuMu 12 (v4)'),
+    'custom': tstr('settings.option.lifecycle.custom'),
+    'none': tstr('settings.option.lifecycle.none'),
+    'playcover': TStr(zh_CN='PlayCover', en_US='PlayCover'),
 }
 
-CONNECTION_TYPE_DISPLAY_MAP: dict[str, str] = {
-    'usb': 'USB',
-    'tcp': 'TCP / 无线',
+CONNECTION_TYPE_DISPLAY_MAP: dict[str, TStr] = {
+    'usb': TStr(zh_CN='USB', en_US='USB'),
+    'tcp': tstr('settings.option.connection.tcp'),
 }
 
-SERVER_DISPLAY_MAP: dict[ServerName, str] = {
-    'jp': '日服',
-    'tw': '台服',
-    'cn': '国服',
-    'en': '国际服',
-}
-SERVER_VALUE_MAP: dict[str, ServerName] = {value: key for key, value in SERVER_DISPLAY_MAP.items()}
-
-LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
-    'no': '不引继账号',
-    'google': 'Google 账号',
-    'google_play': 'Google Play',
-}
-LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {value: key for key, value in LINK_DISPLAY_MAP.items()}
-
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], str] = {
-    'nemu_ipc': 'Nemu IPC',
-    'adb': 'ADB',
-    'uiautomator': 'UIAutomator2',
-    'scrcpy': 'Scrcpy',
-}
-CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy']] = {
-    value: key for key, value in CONTROL_IMPL_DISPLAY_MAP.items()
+SERVER_DISPLAY_MAP: dict[ServerName, TStr] = {
+    'jp': tstr('settings.option.server.jp'),
+    'tw': tstr('settings.option.server.tw'),
+    'cn': tstr('settings.option.server.cn'),
+    'en': tstr('settings.option.server.en'),
 }
 
-RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], str] = {
-    'auto': '智能决定',
-    'keep': '保持原始分辨率',
-    'wm_size': '修改分辨率（wm size）',
+LINK_DISPLAY_MAP: dict[LinkAccountOptions, TStr] = {
+    'no': tstr('settings.option.link.no'),
+    'google': tstr('settings.option.link.google'),
+    'google_play': TStr(zh_CN='Google Play', en_US='Google Play'),
 }
-RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['auto', 'keep', 'wm_size']] = {
-    value: key for key, value in RESOLUTION_METHOD_DISPLAY_MAP.items()
+
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], TStr] = {
+    'nemu_ipc': TStr(zh_CN='Nemu IPC', en_US='Nemu IPC'),
+    'adb': TStr(zh_CN='ADB', en_US='ADB'),
+    'uiautomator': TStr(zh_CN='UIAutomator2', en_US='UIAutomator2'),
+    'scrcpy': TStr(zh_CN='Scrcpy', en_US='Scrcpy'),
+}
+
+RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], TStr] = {
+    'auto': tstr('settings.option.resolution.auto'),
+    'keep': tstr('settings.option.resolution.keep'),
+    'wm_size': tstr('settings.option.resolution.wm_size'),
 }
 
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'

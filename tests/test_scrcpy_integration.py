@@ -3,14 +3,15 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 import sys
 
-from iaa.application.qt.models.mappings import CONTROL_IMPL_DISPLAY_MAP, CONTROL_IMPL_VALUE_MAP
+from iaa.application.qt.models.mappings import CONTROL_IMPL_DISPLAY_MAP
 from iaa.application.service.scheduler import SchedulerService
 from iaa.config.base import IaaConfig
 
 class ScrcpyIntegrationTests(unittest.TestCase):
     def test_control_impl_maps_include_scrcpy(self):
-        self.assertEqual(CONTROL_IMPL_DISPLAY_MAP['scrcpy'], 'Scrcpy')
-        self.assertEqual(CONTROL_IMPL_VALUE_MAP['Scrcpy'], 'scrcpy')
+        label = CONTROL_IMPL_DISPLAY_MAP['scrcpy']
+        self.assertEqual(label.zh_CN, 'Scrcpy')
+        self.assertEqual(label.en_US, 'Scrcpy')
 
     def test_config_accepts_scrcpy_control_impl(self):
         conf = IaaConfig.model_validate(

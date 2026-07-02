@@ -21,10 +21,16 @@ from iaa.application.framework.dsl import (
     custom_ref,
 )
 from .context import FormContext
-from iaa.i18n import translate, tstr
+from iaa.i18n import TStr, translate, tstr
 from ..models import (
     AP_KEEP_UNCHANGED,
     SONG_KEEP_UNCHANGED,
+    CONNECTION_TYPE_DISPLAY_MAP,
+    CONTROL_IMPL_DISPLAY_MAP,
+    LIFECYCLE_TYPE_DISPLAY_MAP,
+    LINK_DISPLAY_MAP,
+    RESOLUTION_METHOD_DISPLAY_MAP,
+    SERVER_DISPLAY_MAP,
     normalize_song_name_input,
     SONG_NAME_OPTIONS,
     challenge_character_groups_for_ui,
@@ -114,6 +120,12 @@ def _validate_watch_ad_wait_sec(value: object, _state: FormContext) -> str | Non
     if int(text) <= 0:
         return _ctx_tr(state, 'settings.error.watch_ad_wait_sec_positive')
     return None
+
+
+# ── helper ────────────────────────────────────────────────────────────────────
+
+def _options_from_map(m: dict[str, TStr]) -> list[dict[str, Any]]:
+    return [{'value': k, 'label': v} for k, v in m.items()]
 
 
 # ── lifecycle type ────────────────────────────────────────────────────────────
@@ -370,50 +382,23 @@ def build_settings_form(
     on_mumu_refresh: Callable[[FormContext], None] | None = None,
     on_reset_resolution: Callable[[FormContext], None] | None = None,
 ) -> tuple[FormSpec[FormContext], list[Callable[[FormContext], None]]]:
-    lifecycle_options = [
-        {'value': 'mumu_v5', 'label': 'MuMu 12 (v5)'},
-        {'value': 'mumu', 'label': 'MuMu 12 (v4)'},
-        {'value': 'custom', 'label': tstr('settings.option.lifecycle.custom')},
-        {'value': 'none', 'label': tstr('settings.option.lifecycle.none')},
-        {'value': 'playcover', 'label': 'PlayCover'},
-    ]
+    lifecycle_options = _options_from_map(LIFECYCLE_TYPE_DISPLAY_MAP)
     lifecycle_options = [
         option for option in lifecycle_options
         if not (option['value'] in {'mumu', 'mumu_v5'} and platform.system() != 'Windows')
         and not (option['value'] == 'playcover' and platform.system() != 'Darwin')
     ]
-    control_impl_options = [
-        {'value': 'nemu_ipc', 'label': 'Nemu IPC'},
-        {'value': 'adb', 'label': 'ADB'},
-        {'value': 'uiautomator', 'label': 'UIAutomator2'},
-        {'value': 'scrcpy', 'label': 'Scrcpy'},
-    ]
+    control_impl_options = _options_from_map(CONTROL_IMPL_DISPLAY_MAP)
     challenge_char_groups = challenge_character_groups_for_ui()
     challenge_awards = challenge_awards_for_ui()
     event_shop_items = [
         {'value': item.value, 'label': tstr(f'settings.option.event_shop.{item.value}')}
         for item in ShopItem
     ]
-    server_options = [
-        {'value': 'jp', 'label': tstr('settings.option.server.jp')},
-        {'value': 'tw', 'label': tstr('settings.option.server.tw')},
-        {'value': 'cn', 'label': tstr('settings.option.server.cn')},
-        {'value': 'en', 'label': tstr('settings.option.server.en')},
-    ]
-    link_options = [
-        {'value': 'no', 'label': tstr('settings.option.link.no')},
-        {'value': 'google', 'label': tstr('settings.option.link.google')},
-        {'value': 'google_play', 'label': 'Google Play'},
-    ]
-    connection_options = [
-        {'value': 'usb', 'label': 'USB'},
-        {'value': 'tcp', 'label': tstr('settings.option.connection.tcp')},
-    ]
-    resolution_options = [
-        {'value': 'auto', 'label': tstr('settings.option.resolution.auto')},
-        {'value': 'keep', 'label': tstr('settings.option.resolution.keep')},
-        {'value': 'wm_size', 'label': tstr('settings.option.resolution.wm_size')},
-    ]
+    server_options = _options_from_map(SERVER_DISPLAY_MAP)
+    link_options = _options_from_map(LINK_DISPLAY_MAP)
+    connection_options = _options_from_map(CONNECTION_TYPE_DISPLAY_MAP)
+    resolution_options = _options_from_map(RESOLUTION_METHOD_DISPLAY_MAP)
     song_options = [
         {'value': SONG_KEEP_UNCHANGED, 'label': tstr('settings.option.live.song.keep')},
         *[
