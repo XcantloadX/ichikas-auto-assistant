@@ -1,5 +1,6 @@
 import unittest
 
+from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED, SONG_KEEP_UNCHANGED
 from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
 from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan
 
@@ -36,7 +37,7 @@ class AutoLivePayloadTests(unittest.TestCase):
                 'debugEnabled': True,
                 'autoSetUnit': False,
                 'apMultiplier': '0',
-                'songName': '保持不变',
+                'songName': SONG_KEEP_UNCHANGED,
             }
         )
         self.assertIsInstance(plan, ListLoopPlan)
@@ -68,7 +69,7 @@ class AutoLivePayloadTests(unittest.TestCase):
                     'count': '0',
                     'loopMode': 'list',
                     'playMode': 'game_auto',
-                    'apMultiplier': '保持现状',
+                    'apMultiplier': AP_KEEP_UNCHANGED,
                 }
             )
 

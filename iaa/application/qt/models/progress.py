@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from iaa.progress import TaskProgressEvent, Translatable
-from iaa.i18n import TStr, tstr
+from iaa.i18n import TStr, tstr, translate_error
 
 StatusT = list[Translatable | str] | Translatable | str
 
@@ -63,11 +63,21 @@ def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None
         for item in phase_path:
             if not isinstance(item, dict):
                 continue
-            name = str(item.get('name') or '')
+            raw_name = item.get('name') or ''
+            if isinstance(raw_name, TStr):
+                name = raw_name
+            else:
+                name = str(raw_name)
             p_current = item.get('current')
             p_total = item.get('total')
             if isinstance(p_current, int) and isinstance(p_total, int):
-                phase_parts.append(f'{name} ({p_current}/{p_total})')
+                if isinstance(name, TStr):
+                    phase_parts.append(TStr(
+                        zh_CN=f'{name.zh_CN} ({p_current}/{p_total})',
+                        en_US=f'{name.en_US} ({p_current}/{p_total})',
+                    ))
+                else:
+                    phase_parts.append(f'{name} ({p_current}/{p_total})')
             elif name:
                 phase_parts.append(name)
 
@@ -84,11 +94,11 @@ def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None
         error_text = TStr(
             zh_CN=tstr('progress.task_error').zh_CN.format(
                 task=task_tstr.zh_CN,
-                error=err_msg or unknown_error.zh_CN,
+                error=translate_error('zh_CN', err_msg) if err_msg else unknown_error.zh_CN,
             ),
             en_US=tstr('progress.task_error').en_US.format(
                 task=task_tstr.en_US,
-                error=err_msg or unknown_error.en_US,
+                error=translate_error('en_US', err_msg) if err_msg else unknown_error.en_US,
             ),
         )
         state.last_error_text = error_text

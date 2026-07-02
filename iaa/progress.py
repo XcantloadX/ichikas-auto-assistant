@@ -3,6 +3,8 @@ from threading import Lock
 from dataclasses import dataclass
 from typing import Any, Callable, Literal, Protocol, Union, runtime_checkable
 
+from iaa.i18n import tstr
+
 
 @runtime_checkable
 class Translatable(Protocol):
@@ -38,12 +40,12 @@ class TaskProgressSnapshot:
     timestamp: float
     status: Literal['running', 'finished', 'failed']
     percent: int | None = None
-    message: str | None = None
+    message: MessageT | None = None
     current_steps: int | None = None
     total_steps: int | None = None
     phase: str | None = None
     phase_path: list[dict[str, Any]] | None = None
-    error: str | None = None
+    error: MessageT | None = None
 
 
 class ProgressHub:
@@ -83,7 +85,7 @@ class ProgressHub:
 
 @dataclass
 class _PhaseState:
-    name: str
+    name: MessageT
     current_steps: int = 0
     total_steps: int | None = None
 
@@ -110,13 +112,17 @@ class TaskReporter:
             payload['extra'] = extra
         self._publish('message', payload)
 
-    def phase(self, name: str, total: int | None = None) -> 'Phase':
+    def phase(self, name: MessageT, total: int | None = None) -> 'Phase':
         return Phase(self, name=name, total=total)
 
-    def _push_phase(self, name: str, total: int | None) -> _PhaseState:
+    def _push_phase(self, name: MessageT, total: int | None) -> _PhaseState:
         state = _PhaseState(name=name, current_steps=0, total_steps=total)
         self._phase_stack.append(state)
-        payload: dict[str, Any] = {'message': f'开始阶段：{name}', 'phase': name, 'phase_path': self._phase_path()}
+        payload: dict[str, Any] = {
+            'message': tstr('progress.phase_started').format(name=name),
+            'phase': name,
+            'phase_path': self._phase_path(),
+        }
         if total is not None:
             payload['total_steps'] = total
             payload['current_steps'] = 0
@@ -137,9 +143,9 @@ class TaskReporter:
         elif state in self._phase_stack:
             self._phase_stack.remove(state)
 
-        message = f'阶段失败：{state.name}' if failed else f'阶段完成：{state.name}'
+        message_key = 'progress.phase_failed' if failed else 'progress.phase_completed'
         payload: dict[str, Any] = {
-            'message': message,
+            'message': tstr(message_key).format(name=state.name),
             'phase': state.name,
             'current_steps': state.current_steps,
             'phase_path': phase_path,
@@ -206,7 +212,7 @@ class TaskReporter:
 
 
 class Phase:
-    def __init__(self, reporter: TaskReporter, *, name: str, total: int | None) -> None:
+    def __init__(self, reporter: TaskReporter, *, name: MessageT, total: int | None) -> None:
         if total is not None and total <= 0:
             raise ValueError('total must be > 0')
         self._reporter = reporter
@@ -244,7 +250,7 @@ class DummyTaskReporter:
     def message(self, text: MessageT, *, extra: dict[str, Any] | None = None) -> None:
         return None
 
-    def phase(self, name: str, total: int | None = None) -> DummyPhase:
+    def phase(self, name: MessageT, total: int | None = None) -> DummyPhase:
         return DummyPhase()
 
 
@@ -290,7 +296,7 @@ def _next_snapshot(prev: TaskProgressSnapshot | None, event: TaskProgressEvent) 
 
     if event.type == 'task_started':
         percent = 0
-        message = payload.get('message', '任务开始')
+        message = payload.get('message', tstr('progress.task_started_default'))
         current_steps = None
         total_steps = None
         phase = None
@@ -300,11 +306,11 @@ def _next_snapshot(prev: TaskProgressSnapshot | None, event: TaskProgressEvent) 
         if percent is None:
             percent = 100
         if message is None:
-            message = '任务完成'
+            message = tstr('progress.task_finished_default')
         error = None
     elif event.type == 'task_failed':
         if message is None:
-            message = '任务失败'
+            message = tstr('progress.task_failed_default')
         if error is None:
             error = message
 

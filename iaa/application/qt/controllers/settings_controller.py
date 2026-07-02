@@ -7,7 +7,7 @@ from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
-from iaa.i18n import translate
+from iaa.i18n import translate, translate_error
 from ..forms.context import FormContext
 from ..forms.settings_form import build_settings_form
 
@@ -289,7 +289,7 @@ class SettingsController(QObject):
         try:
             callback(self._state.context)
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(str(exc))
+            self.operationFailed.emit(translate_error(self._i18n.language, exc))
 
     def _action_mumu_refresh(self, _ctx: object) -> None:
         preferred_id = self._get_mumu_instance_id()
@@ -365,7 +365,7 @@ class SettingsController(QObject):
             self.operationSucceeded.emit(self._tr('settings.status.profile_switched', name=name))
             return True
         except RuntimeError as e:
-            self.operationFailed.emit(str(e))
+            self.operationFailed.emit(translate_error(self._i18n.language, e))
             return False
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(self._tr('settings.status.profile_switch_failed', error=exc))
@@ -400,7 +400,7 @@ class SettingsController(QObject):
             self.operationFailed.emit(self._tr('settings.status.profile_missing', name=name))
             return False
         except RuntimeError as e:
-            self.operationFailed.emit(str(e))
+            self.operationFailed.emit(translate_error(self._i18n.language, e))
             return False
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(self._tr('settings.status.profile_delete_failed', error=exc))

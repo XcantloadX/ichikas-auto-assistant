@@ -80,7 +80,7 @@ Rectangle {
 
                     Label {
                         Layout.fillWidth: true
-                        text: "一歌小助手"
+                        text: App.Globals.t("app.name_sidebar")
                         font.pixelSize: 18
                         font.weight: Font.DemiBold
                         color: palette.text

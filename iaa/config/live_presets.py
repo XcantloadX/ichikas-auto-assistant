@@ -6,6 +6,8 @@ from pydantic import BaseModel, ConfigDict
 
 from iaa.tasks.live.live import SingleLoopPlan, ListLoopPlan
 
+from iaa.tasks.live.auto_live_constants import LAST_PRESET_NAME
+
 
 LIVE_PRESET_VERSION = 1
 
@@ -28,12 +30,11 @@ class LivePresetManager:
         self.last_auto_file = self.preset_dir / "last_auto.json"
     
     def save_last_auto(self, preset: AutoLivePreset) -> None:
-        """保存上次自动演出设定，强制设置 name 为"上次设定" """
+        """保存上次自动演出设定，强制设置 name 为 LAST_PRESET_NAME。"""
         self.preset_dir.mkdir(parents=True, exist_ok=True)
-        # 强制使用固定名称
         preset_to_save = AutoLivePreset(
             version=preset.version,
-            name="上次设定",
+            name=LAST_PRESET_NAME,
             plan=preset.plan,
         )
         with open(self.last_auto_file, 'w', encoding='utf-8') as f:

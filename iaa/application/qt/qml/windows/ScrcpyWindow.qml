@@ -10,20 +10,6 @@ Window {
     title: App.Globals.t("scrcpy.title")
     color: "transparent"
 
-    function displayStatusText(text) {
-        var value = String(text || "")
-        if (value === "等待画面...") {
-            return App.Globals.t("scrcpy.waiting_frame")
-        }
-        if (value.indexOf("等待画面... ") === 0) {
-            return App.Globals.t("scrcpy.waiting_frame_error").replace(
-                "{error}",
-                value.replace("等待画面... ", "")
-            )
-        }
-        return value
-    }
-
     Image {
         id: frameImage
         anchors.fill: parent
@@ -52,7 +38,7 @@ Window {
         anchors.top: parent.top
         anchors.margins: 12
         color: "white"
-        text: root.displayStatusText(scrcpyController.statusText)
+        text: scrcpyController.statusText
     }
 
     MouseArea {

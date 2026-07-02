@@ -29,6 +29,13 @@ PageContainer {
         loadTopics()
     }
 
+    Connections {
+        target: i18nController
+        function onLanguageChanged() {
+            root.loadTopics()
+        }
+    }
+
     RowLayout {
         anchors.fill: parent
         spacing: 1

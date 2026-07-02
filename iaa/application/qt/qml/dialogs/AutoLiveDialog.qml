@@ -12,8 +12,8 @@ Dialog {
     anchors.centerIn: Overlay.overlay
     property var presets: []
 
-    readonly property string apKeepValue: "保持现状"
-    readonly property string songKeepValue: "保持不变"
+    readonly property string apKeepValue: runController.apKeepValue
+    readonly property string songKeepValue: runController.songKeepValue
 
     function defaultPayload() {
         return {
@@ -88,16 +88,7 @@ Dialog {
     }
 
     function presetNameLabel(name) {
-        if (name === "CLEAR 10 首歌") {
-            return App.Globals.t("auto_live.preset.clear_10")
-        }
-        if (name === "FC 10 次") {
-            return App.Globals.t("auto_live.preset.fc_10")
-        }
-        if (name === "队长次数") {
-            return App.Globals.t("auto_live.preset.leader_count")
-        }
-        return name
+        return runController.autoLivePresetLabel(name)
     }
 
     onOpened: {

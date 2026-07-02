@@ -14,13 +14,41 @@ class TStr:
     zh_CN: str
     en_US: str
 
+    def __str__(self) -> str:
+        return self.resolve('auto')
+
     def resolve(self, language: str) -> str:
         if language == 'auto':
             language = _detect_system_language()
         return getattr(self, language, self.zh_CN)
 
+    def format(self, **kwargs: object) -> 'TStr':
+        zh = {k: v.zh_CN if isinstance(v, TStr) else v for k, v in kwargs.items()}
+        en = {k: v.en_US if isinstance(v, TStr) else v for k, v in kwargs.items()}
+        return TStr(zh_CN=self.zh_CN.format(**zh), en_US=self.en_US.format(**en))
+
 
 _TRANSLATIONS: dict[str, TStr] = {
+    'app.name': TStr(
+        zh_CN='一歌小助手',
+        en_US='Ichika Auto Assistant',
+    ),
+    'app.name_full': TStr(
+        zh_CN='一歌小助手 iaa',
+        en_US='Ichika Auto Assistant (iaa)',
+    ),
+    'app.name_sidebar': TStr(
+        zh_CN='一歌小助手',
+        en_US='IAA',
+    ),
+    'app.window_title_macos': TStr(
+        zh_CN='一歌小助手 (macOS)',
+        en_US='Ichika Auto Assistant (macOS)',
+    ),
+    'app.window_title_linux': TStr(
+        zh_CN='一歌小助手 (Linux)',
+        en_US='Ichika Auto Assistant (Linux)',
+    ),
     'nav.control': TStr(
         zh_CN='控制',
         en_US='Control',
@@ -658,7 +686,7 @@ _TRANSLATIONS: dict[str, TStr] = {
         en_US='Use Recommended Team',
     ),
     'preferences.title': TStr(
-        zh_CN='设置',
+        zh_CN='偏好',
         en_US='Preferences',
     ),
     'preferences.group.telemetry': TStr(
@@ -1309,6 +1337,168 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='重命名失败：{error}',
         en_US='Rename failed: {error}',
     ),
+    'dsl.error.unsupported_field': TStr(
+        zh_CN='不支持的字段类型: {kind}',
+        en_US='Unsupported field type: {kind}',
+    ),
+    'progress.executing': TStr(
+        zh_CN='开始执行',
+        en_US='Executing',
+    ),
+    'progress.executed': TStr(
+        zh_CN='执行完成',
+        en_US='Completed',
+    ),
+    'progress.interrupted_with_task': TStr(
+        zh_CN='任务中断：{task}',
+        en_US='Task interrupted: {task}',
+    ),
+    'progress.failed_with_task': TStr(
+        zh_CN='执行失败：{task}',
+        en_US='Execution failed: {task}',
+    ),
+    'progress.phase_started': TStr(
+        zh_CN='开始阶段：{name}',
+        en_US='Starting phase: {name}',
+    ),
+    'progress.phase_completed': TStr(
+        zh_CN='阶段完成：{name}',
+        en_US='Phase completed: {name}',
+    ),
+    'progress.phase_failed': TStr(
+        zh_CN='阶段失败：{name}',
+        en_US='Phase failed: {name}',
+    ),
+    'progress.task_started_default': TStr(
+        zh_CN='任务开始',
+        en_US='Task started',
+    ),
+    'progress.task_finished_default': TStr(
+        zh_CN='任务完成',
+        en_US='Task finished',
+    ),
+    'progress.task_failed_default': TStr(
+        zh_CN='任务失败',
+        en_US='Task failed',
+    ),
+    'progress.phase.single_loop': TStr(
+        zh_CN='单曲循环',
+        en_US='Single-song loop',
+    ),
+    'progress.phase.list_loop': TStr(
+        zh_CN='列表循环',
+        en_US='List loop',
+    ),
+    'progress.phase.purchase_items': TStr(
+        zh_CN='购买商品',
+        en_US='Purchasing items',
+    ),
+    'progress.phase.event': TStr(
+        zh_CN='活动',
+        en_US='Event',
+    ),
+    'progress.dump_item_saved': TStr(
+        zh_CN='已保存 {count} 个图标到 {path}',
+        en_US='Saved {count} icons to {path}',
+    ),
+    'progress.dump_item_failed': TStr(
+        zh_CN='保存图标失败: {error}',
+        en_US='Failed to save icons: {error}',
+    ),
+    'error.config.switch_while_running': TStr(
+        zh_CN='运行时不能切换配置，请先停止任务',
+        en_US='Cannot switch config while tasks are running. Stop tasks first.',
+    ),
+    'error.config.keep_one_profile': TStr(
+        zh_CN='至少需要保留一个配置',
+        en_US='At least one config must remain',
+    ),
+    'error.device.mumu_app_keptalive': TStr(
+        zh_CN='检测到当前模拟器 MuMu 12 已开启"应用保活"功能。\n'
+             '请前往 MuMu 模拟器设置 → 其他 → 后台挂机时保活运行 中关闭，然后重新尝试。',
+        en_US='MuMu 12 "App Keep-Alive" is enabled on the current emulator.\n'
+              'Go to MuMu Settings → Other → Keep apps running in background and disable it, then try again.',
+    ),
+    'error.device.mumu_instance_not_found': TStr(
+        zh_CN='{host} 实例未找到: {id}',
+        en_US='{host} instance not found: {id}',
+    ),
+    'error.device.mumu_host_not_found': TStr(
+        zh_CN='未找到 {host} 主机',
+        en_US='No {host} host found',
+    ),
+    'error.device.unknown_control_impl': TStr(
+        zh_CN='未知的控制实现: {impl}',
+        en_US='Unknown control implementation: {impl}',
+    ),
+    'error.device.start_command_required': TStr(
+        zh_CN='自定义设备的启动命令不能为空。',
+        en_US='Custom device start command is required.',
+    ),
+    'error.device.tcp_port_required_for_connect': TStr(
+        zh_CN='TCP 连接已启用 adb connect，但未填写端口。',
+        en_US='TCP connection has adb connect enabled but no port is set.',
+    ),
+    'error.device.usb_serial_required': TStr(
+        zh_CN='USB 连接模式下，自定义设备需要填写设备序列号。',
+        en_US='USB connection requires a device serial for custom devices.',
+    ),
+    'error.device.custom_no_auto_connection': TStr(
+        zh_CN='自定义设备不支持自动连接（auto）模式，请选择 USB 或 TCP。',
+        en_US='Custom devices do not support auto connection. Choose USB or TCP.',
+    ),
+    'error.device.nemu_ipc_mumu_only': TStr(
+        zh_CN="'nemu_ipc' 仅支持 MuMu，不支持自定义设备。",
+        en_US="'nemu_ipc' only supports MuMu, not custom devices.",
+    ),
+    'error.device.no_usb_device': TStr(
+        zh_CN='未找到任何 USB 设备，请连接设备后重试。',
+        en_US='No USB device found. Connect a device and try again.',
+    ),
+    'error.device.usb_device_not_found': TStr(
+        zh_CN='找不到 ADB USB 设备: {serial}',
+        en_US='ADB USB device not found: {serial}',
+    ),
+    'error.device.usb_device_unavailable': TStr(
+        zh_CN='ADB USB 设备不可用: {device}',
+        en_US='ADB USB device unavailable: {device}',
+    ),
+    'error.device.nemu_ipc_physical_unsupported': TStr(
+        zh_CN="'nemu_ipc' 仅支持 MuMu，不支持物理设备。",
+        en_US="'nemu_ipc' only supports MuMu, not physical devices.",
+    ),
+    'error.device.tcp_port_required': TStr(
+        zh_CN='TCP 连接需要填写端口。',
+        en_US='TCP connection requires a port.',
+    ),
+    'error.device.no_device_no_auto': TStr(
+        zh_CN='设备类型为"无"时，连接方式不能为自动，请选择 USB 或 TCP。',
+        en_US='When device type is "None", connection cannot be auto. Choose USB or TCP.',
+    ),
+    'error.device.playcover_not_found': TStr(
+        zh_CN='未找到 PlayCover 应用：{bundle}',
+        en_US='PlayCover app not found: {bundle}',
+    ),
+    'error.device.game_not_running': TStr(
+        zh_CN='游戏未在运行。请启动游戏，或在配置里启用「检查并启动」。',
+        en_US='Game is not running. Launch the game or enable "Check and start" in settings.',
+    ),
+    'error.device.unknown_lifecycle': TStr(
+        zh_CN='未知的生命周期类型: {type}',
+        en_US='Unknown lifecycle type: {type}',
+    ),
+    'error.device.not_initialized': TStr(
+        zh_CN='上下文准备后设备未初始化',
+        en_US='Device not initialized after context preparation',
+    ),
+    'error.task.unknown_manual': TStr(
+        zh_CN='未知的手动任务: {task_id}',
+        en_US='Unknown manual task: {task_id}',
+    ),
+    'error.scrcpy.jar_not_found': TStr(
+        zh_CN='未找到 Scrcpy jar: {path}',
+        en_US='Scrcpy jar not found: {path}',
+    ),
 }
 
 
@@ -1323,12 +1513,13 @@ def _detect_system_language() -> GuiLanguage:
     return 'en_US'
 
 
-def translate(language: str, key: str) -> str:
+def translate(language: str, key: str, **kwargs: object) -> str:
     if language == 'auto':
         language = _detect_system_language()
     t = _TRANSLATIONS.get(key)
     if t is not None:
-        return getattr(t, language, t.zh_CN)
+        text = getattr(t, language, t.zh_CN)
+        return text.format(**kwargs) if kwargs else text
     return key
 
 
@@ -1336,3 +1527,10 @@ def tstr(key: str) -> TStr:
     """返回 key 对应的 TStr；key 不存在时返回两侧均为 key 本身的占位对象。"""
     t = _TRANSLATIONS.get(key)
     return t if t is not None else TStr(zh_CN=key, en_US=key)
+
+def translate_error(language: str, error: str | BaseException) -> str:
+    if language == 'auto':
+        language = _detect_system_language()
+    if isinstance(error, BaseException) and error.args and isinstance(error.args[0], TStr):
+        return error.args[0].resolve(language)
+    return str(error)

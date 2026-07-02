@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 from threading import Lock
+from typing import Callable
 
 import cv2
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtGui import QImage
 from PySide6.QtQuick import QQuickImageProvider
+
+from iaa.i18n import translate
 
 from ..models import DisplayMapping, map_canvas_to_image
 
@@ -41,13 +44,22 @@ class ScrcpyController(QObject):
     visibleChanged = Signal()
     statusTextChanged = Signal()
 
-    def __init__(self, scheduler, config_service, parent: QObject | None = None) -> None:
+    def __init__(
+        self,
+        scheduler,
+        config_service,
+        get_language: Callable[[], str],
+        parent: QObject | None = None,
+    ) -> None:
         super().__init__(parent)
         self._scheduler = scheduler
         self._config_service = config_service
+        self._get_language = get_language
         self._provider = _ScrcpyImageProvider()
         self._frame_token = 0
-        self._status_text = '等待画面...'
+        self._status_text = ''
+        self._waiting = True
+        self._waiting_error: str | None = None
         self._visible = False
         self._active = False
         self._mapping: DisplayMapping | None = None
@@ -55,6 +67,19 @@ class ScrcpyController(QObject):
         self._refresh_timer = QTimer(self)
         self._refresh_timer.setInterval(33)
         self._refresh_timer.timeout.connect(self._refresh_frame)
+        self.refresh_status_text()
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._get_language(), key)
+        return text.format(**kwargs) if kwargs else text
+
+    def refresh_status_text(self) -> None:
+        if self._waiting:
+            if self._waiting_error:
+                self._status_text = self._tr('scrcpy.waiting_frame_error', error=self._waiting_error)
+            else:
+                self._status_text = self._tr('scrcpy.waiting_frame')
+            self.statusTextChanged.emit()
 
     @property
     def image_provider(self) -> _ScrcpyImageProvider:
@@ -100,8 +125,9 @@ class ScrcpyController(QObject):
         else:
             self._touch_active = False
             self._mapping = None
-            self._status_text = '等待画面...'
-            self.statusTextChanged.emit()
+            self._waiting = True
+            self._waiting_error = None
+            self.refresh_status_text()
             self._refresh_timer.stop()
 
     def _refresh_frame(self) -> None:
@@ -121,11 +147,14 @@ class ScrcpyController(QObject):
             self._provider.update_image(qimage)
             self._frame_token += 1
             self.frameChanged.emit()
+            self._waiting = False
+            self._waiting_error = None
             self._status_text = f'{width}x{height}'
             self.statusTextChanged.emit()
         except Exception as exc:  # noqa: BLE001
-            self._status_text = f'等待画面... {exc}'
-            self.statusTextChanged.emit()
+            self._waiting = True
+            self._waiting_error = str(exc)
+            self.refresh_status_text()
 
     @Slot(int, int, int, int, int, int)
     def updateDisplayMetrics(

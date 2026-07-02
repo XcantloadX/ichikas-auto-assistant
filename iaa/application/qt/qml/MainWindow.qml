@@ -105,6 +105,7 @@ ApplicationWindow {
                 App.Globals.t("nav.config"),
                 App.Globals.t("nav.preferences"),
                 App.Globals.t("nav.logs"),
+                // App.Globals.t("nav.help"),
                 App.Globals.t("nav.about")
             ]
             currentConfig: App.ProfileStore.currentProfileName
@@ -152,7 +153,9 @@ ApplicationWindow {
                 logBridge: window.logBridgeObj
             }
 
-            // HelpPage {}
+            // HelpPage {
+            //     id: helpPage
+            // }
 
             AboutPage {}
         }

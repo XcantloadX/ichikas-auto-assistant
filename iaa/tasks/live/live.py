@@ -9,7 +9,7 @@ from kotonebot import device, Loop, action, sleep, color, ocr
 from .. import R
 from ..common import at_home, go_home
 from iaa.context import conf, server, task_reporter, keyboard
-from iaa.i18n import TStr
+from iaa.i18n import TStr, tstr
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_core import RhythmGameAnalyzer
@@ -546,7 +546,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
         else:
             total = (int(max_count) if max_count != float('inf') else None)
             reporter.message(TStr(zh_CN='开始单曲循环（脚本自动）', en_US='Starting single-song loop (script auto)'))
-            with reporter.phase('单曲循环', total=total) as phase:
+            with reporter.phase(tstr('progress.phase.single_loop'), total=total) as phase:
                 first_run = True
                 while True:
                     if not _start_single_live_run(
@@ -571,7 +571,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
         max_count = plan.loop_count or float('inf')
         total = (int(max_count) if max_count != float('inf') else None)
         reporter.message(TStr(zh_CN='开始列表循环', en_US='Starting list loop'))
-        with reporter.phase('列表循环', total=total) as phase:
+        with reporter.phase(tstr('progress.phase.list_loop'), total=total) as phase:
             first_run = True
             for _ in Loop():
                 _prepare_solo_live(plan.loop_song_mode, None)

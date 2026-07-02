@@ -3,6 +3,7 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock
 
+from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED
 from iaa.application.qt.controllers.i18n_controller import I18nController
 from iaa.application.qt.controllers.preferences_controller import PreferencesController
 from iaa.application.qt.controllers.settings_controller import SettingsController
@@ -43,11 +44,18 @@ class QtI18nTests(unittest.TestCase):
         controller = I18nController('zh_CN')
 
         self.assertEqual(controller.t('nav.preferences'), '偏好')
+        self.assertEqual(controller.t('app.name'), '一歌小助手')
+        self.assertEqual(controller.t('app.name_full'), '一歌小助手 iaa')
+        self.assertEqual(controller.t('app.name_sidebar'), '一歌小助手')
 
         controller.setLanguage('en_US')
 
         self.assertEqual(controller.language, 'en_US')
         self.assertEqual(controller.t('nav.preferences'), 'Preferences')
+        self.assertEqual(controller.t('app.name'), 'Ichika Auto Assistant')
+        self.assertEqual(controller.t('app.name_full'), 'Ichika Auto Assistant (iaa)')
+        self.assertEqual(controller.t('app.name_sidebar'), 'iaa')
+        self.assertEqual(controller.t('app.window_title_macos'), 'Ichika Auto Assistant (macOS)')
         self.assertEqual(controller.t('modal.exit.title'), 'Confirm Exit')
         self.assertEqual(controller.t('config_manager.delete_title'), 'Confirm Delete')
         self.assertEqual(controller.t('control.export_report'), 'Export Report')
@@ -75,6 +83,7 @@ class QtI18nTests(unittest.TestCase):
         controller.operationSucceeded.connect(succeeded.append)
 
         initial_runtime = json.loads(controller.getRuntime())
+        self.assertEqual(initial_runtime['title'], '偏好')
         self.assertEqual(initial_runtime['fieldMap']['interface.language']['label'], '界面语言')
 
         controller.setValue('interface.language', 'en_US')
@@ -146,7 +155,7 @@ class QtI18nTests(unittest.TestCase):
 
         updated_runtime = json.loads(controller.getRuntime())
         self.assertFalse(updated_runtime['dirty'])
-        self.assertEqual(updated_runtime['title'], 'Config')
+        self.assertEqual(updated_runtime['title'], 'Configuration')
         self.assertEqual(updated_runtime['groups'][0]['title'], 'Game Settings')
         self.assertEqual(updated_runtime['groups'][1]['title'], 'Device Settings')
         self.assertEqual(updated_runtime['fieldMap']['game.server']['label'], 'Server')
@@ -172,7 +181,7 @@ class QtI18nTests(unittest.TestCase):
         )
         self.assertEqual(
             updated_runtime['fieldMap']['live.apMultiplier']['options'][0],
-            {'value': '保持现状', 'label': 'Keep current'},
+            {'value': AP_KEEP_UNCHANGED, 'label': 'Keep current'},
         )
         self.assertEqual(
             updated_runtime['fieldMap']['challengeLive.characters']['options'][1]['options'][0]['label'],

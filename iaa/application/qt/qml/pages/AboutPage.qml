@@ -37,7 +37,7 @@ PageContainer {
         }
 
         Label {
-            text: "一歌小助手 iaa"
+            text: App.Globals.t("app.name_full")
             font.pixelSize: 28
             Layout.alignment: Qt.AlignHCenter
         }

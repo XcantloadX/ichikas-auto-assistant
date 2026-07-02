@@ -9,7 +9,7 @@ from kotonebot.backend import image
 from . import R
 from iaa.definitions.enums import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
-from iaa.i18n import TStr
+from iaa.i18n import TStr, tstr
 from iaa.game_ui.list_view import ListViewItem
 from iaa.game_ui.side_tabbar import SideTabbar
 
@@ -210,7 +210,7 @@ def _do_single() -> None:
         logger.info("No configured target items found in event shop.")
         return
 
-    with rep.phase('购买商品', total=len(purchasable_targets)) as phase:
+    with rep.phase(tstr('progress.phase.purchase_items'), total=len(purchasable_targets)) as phase:
         for target in purchasable_targets:
             phase.step(target.display(server()))
             view.scrollable.to_top()
@@ -239,7 +239,7 @@ def event_shop():
     if len(tabs) == 0:
         logger.warning("No tabs found in sidebar. Continuing without switching tabs.")
         
-    with rep.phase('活动', total=len(tabs)):
+    with rep.phase(tstr('progress.phase.event'), total=len(tabs)):
         for tab in tabs:
             sidebar.switch_to(tab)
             _do_single()

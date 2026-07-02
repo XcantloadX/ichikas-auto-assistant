@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "./controls"
+import "../../../qt/qml" as App
 
 Item {
     id: root
@@ -150,7 +151,7 @@ Item {
         id: unsupportedComponent
         Label {
             color: "#DC3545"
-            text: "不支持的字段类型: " + (root.field.kind || "")
+            text: App.Globals.t("dsl.error.unsupported_field").replace("{kind}", root.field.kind || "")
         }
     }
 }

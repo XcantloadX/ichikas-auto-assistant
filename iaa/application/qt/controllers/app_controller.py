@@ -7,7 +7,7 @@ from PySide6.QtWidgets import QMessageBox
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
-from iaa.i18n import translate
+from iaa.i18n import translate, translate_error
 from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
@@ -28,6 +28,7 @@ class AppController(QObject):
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
     windowStyleChanged = Signal()
+    windowTitleChanged = Signal()
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
@@ -46,7 +47,7 @@ class AppController(QObject):
 
             reply = QMessageBox.question(
                 None,
-                "一歌小助手",
+                translate(language, 'app.name'),
                 msg,
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
@@ -58,7 +59,7 @@ class AppController(QObject):
             else:
                 QMessageBox.warning(
                     None,
-                    "一歌小助手",
+                    translate(language, 'app.name'),
                     translate(language, 'startup.config_validation_aborted'),
                     QMessageBox.StandardButton.Ok
                 )
@@ -67,12 +68,24 @@ class AppController(QObject):
         self.i18nController = I18nController(self.service.config.shared.interface.language, self)
         self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
         self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
-        self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
+        self.i18nController.languageChanged.connect(self.windowTitleChanged.emit)
+        self.scrcpyController = ScrcpyController(
+            self.service.scheduler,
+            self.service.config,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.scrcpyController.refresh_status_text)
         self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self.i18nController, self)
         self.settingsController = SettingsController(self.service, self.i18nController, self)
         self.preferencesController = PreferencesController(self.service, self.i18nController, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
-        self.helpController = HelpController(self.service, self)
+        self.helpController = HelpController(
+            self.service,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.helpController.on_language_changed)
         self.globalHotkeyController = GlobalHotkeyController(
             self.service,
             self.runController,
@@ -101,7 +114,7 @@ class AppController(QObject):
         self.runController.tasksChanged.emit()
 
     def _on_scheduler_error(self, exc: Exception) -> None:
-        self.reportError(str(exc))
+        self.reportError(translate_error(self.i18nController.language, exc))
 
     def _tr(self, key: str, **kwargs: object) -> str:
         text = translate(self.i18nController.language, key)
@@ -111,14 +124,11 @@ class AppController(QObject):
         return self.service.version
 
     def _get_window_title(self) -> str:
-        if platform.system() == 'Windows':
-            return f'一歌小助手'
-        elif platform.system() == 'Darwin':
-            return f'一歌小助手 (on macOS)'
-        elif platform.system() == 'Linux':
-            return f'一歌小助手 (on Linux)'
-        else:
-            return f'一歌小助手'
+        if platform.system() == 'Darwin':
+            return self._tr('app.window_title_macos')
+        if platform.system() == 'Linux':
+            return self._tr('app.window_title_linux')
+        return self._tr('app.name')
 
     def _get_assets_root_path(self) -> str:
         return self.service.assets.assets_root_path.replace('\\', '/')
@@ -141,7 +151,7 @@ class AppController(QObject):
         return 'solid'
 
     version = Property(str, _get_version, constant=True)
-    windowTitle = Property(str, _get_window_title, constant=True)
+    windowTitle = Property(str, _get_window_title, notify=windowTitleChanged)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)

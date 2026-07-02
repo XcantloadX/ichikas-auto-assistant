@@ -23,6 +23,7 @@ from iaa.application.framework.dsl import (
 from .context import FormContext
 from iaa.i18n import translate, tstr
 from ..models import (
+    AP_KEEP_UNCHANGED,
     SONG_KEEP_UNCHANGED,
     normalize_song_name_input,
     SONG_NAME_OPTIONS,
@@ -360,7 +361,6 @@ def ResolutionSelect(
     )
 
 
-_AP_KEEP = '__ap_keep__'
 _AP_MAX = '__ap_max__'
 
 
@@ -423,7 +423,7 @@ def build_settings_form(
         ],
     ]
     ap_options = [
-        {'value': _AP_KEEP, 'label': tstr('settings.option.live.ap.keep')},
+        {'value': AP_KEEP_UNCHANGED, 'label': tstr('settings.option.live.ap.keep')},
         {'value': _AP_MAX, 'label': tstr('settings.option.live.ap.maximum')},
         *[{'value': str(i), 'label': str(i)} for i in range(0, 11)],
     ]
@@ -589,10 +589,10 @@ def build_settings_form(
                 key='live.apMultiplier',
                 label=tstr('settings.field.live.ap_multiplier'),
                 ref=ref(ctx.conf.live.ap_multiplier).map(
-                    to_ui=lambda v: _AP_KEEP if v is None else (_AP_MAX if v == 'maximum' else str(v)),
+                    to_ui=lambda v: AP_KEEP_UNCHANGED if v is None else (_AP_MAX if v == 'maximum' else str(v)),
                     from_ui=lambda v: (
                         None
-                        if str(v) == _AP_KEEP
+                        if str(v) == AP_KEEP_UNCHANGED
                         else ('maximum' if str(v) == _AP_MAX else int(str(v)))
                     ),
                 ),

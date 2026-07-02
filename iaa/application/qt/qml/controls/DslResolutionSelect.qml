@@ -6,6 +6,7 @@ import QtQuick.Layouts
 
 import "../../../framework/dsl/qml/components"
 import "../../../framework/dsl/qml/controls"
+import ".." as App
 
 ColumnLayout {
     id: root
@@ -14,7 +15,7 @@ ColumnLayout {
     property var field: null
     property var formController: null
     readonly property var fieldProps: field && field.props ? field.props : ({})
-    readonly property string resetText: fieldProps.resetText || "恢复分辨率"
+    readonly property string resetText: fieldProps.resetText || App.Globals.t("settings.action.reset_resolution")
 
     spacing: 4
 

@@ -12,6 +12,16 @@ from iaa.i18n import translate
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
 
+from iaa.tasks.live.auto_live_constants import (
+    AP_KEEP_UNCHANGED,
+    LAST_PRESET_NAME,
+    PRESET_CLEAR_10,
+    PRESET_FC_10,
+    PRESET_LEADER_COUNT,
+    SONG_KEEP_UNCHANGED,
+    preset_name_matches,
+)
+
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
 
 
@@ -39,6 +49,28 @@ class RunController(QObject):
     def _tr(self, key: str, **kwargs: object) -> str:
         text = translate(self._iaa.config.shared.interface.language, key)
         return text.format(**kwargs) if kwargs else text
+
+    def _get_ap_keep_value(self) -> str:
+        return AP_KEEP_UNCHANGED
+
+    def _get_song_keep_value(self) -> str:
+        return SONG_KEEP_UNCHANGED
+
+    apKeepValue = Property(str, _get_ap_keep_value, constant=True)
+    songKeepValue = Property(str, _get_song_keep_value, constant=True)
+
+    # TODO: 遗留的展示名称作为配置值带来的问题
+    @Slot(str, result=str)
+    def autoLivePresetLabel(self, name: str) -> str:
+        if preset_name_matches(name, PRESET_CLEAR_10):
+            return self._tr('auto_live.preset.clear_10')
+        if preset_name_matches(name, PRESET_FC_10):
+            return self._tr('auto_live.preset.fc_10')
+        if preset_name_matches(name, PRESET_LEADER_COUNT):
+            return self._tr('auto_live.preset.leader_count')
+        if preset_name_matches(name, LAST_PRESET_NAME):
+            return self._tr('auto_live.preset.last')
+        return name
 
     def _auto_live_error_text(self, message: str) -> str:
         if message == '指定次数必须为正整数。':
@@ -176,7 +208,7 @@ class RunController(QObject):
             plan = auto_live_payload_to_plan(payload)
         except ValueError as exc:
             raise ValueError(self._auto_live_error_text(str(exc))) from exc
-        LivePresetManager().save_last_auto(AutoLivePreset(name='上次设定', plan=plan))
+        LivePresetManager().save_last_auto(AutoLivePreset(name=LAST_PRESET_NAME, plan=plan))
         if plan.play_mode == 'script_auto':
             self.scriptAutoWarningRequested.emit(self._tr('notice.script_auto_warning'))
         self._iaa.scheduler.run_single('auto_live', run_in_thread=True, kwargs={'plan': plan})

@@ -10,7 +10,7 @@ import "../../../framework/dsl/qml"
 
 PageContainer {
     id: root
-    title: App.Globals.t("preferences.title")
+    title: App.Globals.t("nav.preferences")
 
     titleRightContent: Rectangle {
         visible: root.dirty

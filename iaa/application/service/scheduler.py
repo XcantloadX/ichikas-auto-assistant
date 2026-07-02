@@ -18,6 +18,7 @@ from iaa.tasks.registry import REGULAR_TASKS, name_from_id
 from iaa.tasks.registry import MANUAL_TASKS
 from iaa.context import init as init_config_context
 from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
+from iaa.i18n import tstr
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
@@ -161,7 +162,7 @@ class SchedulerService:
                 logger.info("Preparing context...")
                 self.__prepare_context()
                 if self.device is None:
-                    raise RuntimeError("Device not initialized after context preparation.")
+                    raise RuntimeError(tstr('error.device.not_initialized'))
                 self.device.start()
                 self._device_started = True
                 logger.info("Scheduler started.")
@@ -192,7 +193,7 @@ class SchedulerService:
                             timestamp=time.time(),
                             type='task_started',
                             payload={
-                                'message': '开始执行',
+                                'message': tstr('progress.executing'),
                                 'run_total_tasks': total_tasks,
                                 'run_completed_tasks': index,
                                 'run_current_task_index': index + 1,
@@ -219,7 +220,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_finished',
                                 payload={
-                                    'message': '执行完成',
+                                    'message': tstr('progress.executed'),
                                     'percent': 100,
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index + 1,
@@ -237,7 +238,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'任务中断：{task_name}',
+                                    'message': tstr('progress.interrupted_with_task').format(task=task_id),
                                     'error': 'KeyboardInterrupt',
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -257,7 +258,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'执行失败：{task_name}',
+                                    'message': tstr('progress.failed_with_task').format(task=task_id),
                                     'error': str(e),
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -382,7 +383,7 @@ class SchedulerService:
         tasks = MANUAL_TASKS.copy()
         tasks.update(REGULAR_TASKS)
         if task_id not in tasks:
-            raise ValueError(f"Unknown manual task: {task_id}")
+            raise ValueError(tstr('error.task.unknown_manual').format(task_id=task_id))
         task_func = tasks[task_id]
         call_args = args or ()
         call_kwargs = kwargs or {}
@@ -421,21 +422,18 @@ class SchedulerService:
         def _resolve_mumu_instance(host_cls: type[HostProtocol], host_name: str, instance_id: str | None) -> Instance:
             def _check(id: str):
                 if host_cls is Mumu12V5Host and host_cls.check_app_keptlive(id):
-                    raise RuntimeError(
-                        '检测到当前模拟器 MuMu 12 已开启"应用保活"功能。\n'
-                        '请前往 MuMu 模拟器设置 → 其他 → 后台挂机时保活运行 中关闭，然后重新尝试。'
-                    )
+                    raise RuntimeError(tstr('error.device.mumu_app_keptalive'))
 
             if instance_id is not None:
                 instance = host_cls.query(id=instance_id)
                 if instance is None:
-                    raise RuntimeError(f'{host_name} instance not found: {instance_id}')
+                    raise RuntimeError(tstr('error.device.mumu_instance_not_found').format(host=host_name, id=instance_id))
                 _check(instance.id)
                 return instance
 
             hosts = host_cls.list()
             if not hosts:
-                raise RuntimeError(f'No {host_name} host found.')
+                raise RuntimeError(tstr('error.device.mumu_host_not_found').format(host=host_name))
             _check(hosts[0].id)
             return hosts[0]
 
@@ -444,7 +442,7 @@ class SchedulerService:
 
             jar_path = asset_path('scrcpy.jar')
             if not os.path.isfile(jar_path):
-                raise FileNotFoundError(f'Scrcpy jar not found: {jar_path}')
+                raise FileNotFoundError(tstr('error.scrcpy.jar_not_found').format(path=jar_path))
 
             virtual_display_config = None
             if use_virtual_display:
@@ -475,7 +473,7 @@ class SchedulerService:
             elif impl == 'uiautomator':
                 return host.create_device('uiautomator2', AdbHostConfig())
             else:
-                raise ValueError(f"Unknown control implementation: {impl}")
+                raise ValueError(tstr('error.device.unknown_control_impl').format(impl=impl))
 
         # ── Step 1：按 lifecycle 类型解析 host ────────────────────────────────
 
@@ -489,17 +487,17 @@ class SchedulerService:
             elif impl in ('adb', 'scrcpy', 'uiautomator'):
                 pass
             else:
-                raise ValueError(f"Unknown control implementation: {impl}")
+                raise ValueError(tstr('error.device.unknown_control_impl').format(impl=impl))
             return _apply_impl(host)
 
         elif isinstance(lifecycle, CustomDevice):
             start_command = (lifecycle.start_command or '').strip()
             if not start_command:
-                raise ValueError('自定义设备的启动命令不能为空。')
+                raise ValueError(tstr('error.device.start_command_required'))
 
             if isinstance(connection, TcpConnection):
                 if connection.run_adb_connect and connection.port is None:
-                    raise ValueError('TCP 连接已启用 adb connect，但未填写端口。')
+                    raise ValueError(tstr('error.device.tcp_port_required_for_connect'))
                 adb_ip = connection.ip
                 adb_port = connection.port if connection.run_adb_connect else None
                 device_serial = (connection.device_serial or '').strip() or None
@@ -510,9 +508,9 @@ class SchedulerService:
                 device_serial = (connection.device_serial or '').strip() or None
                 run_adb_connect = False
                 if not device_serial:
-                    raise ValueError('USB 连接模式下，自定义设备需要填写设备序列号。')
+                    raise ValueError(tstr('error.device.usb_serial_required'))
             else:
-                raise ValueError('自定义设备不支持自动连接（auto）模式，请选择 USB 或 TCP。')
+                raise ValueError(tstr('error.device.custom_no_auto_connection'))
 
             custom_instance = CustomEmulatorInstance(
                 adb_ip=adb_ip,
@@ -527,7 +525,7 @@ class SchedulerService:
             self._custom_emulator_instance = custom_instance
             _maybe_start(custom_instance)
             if impl == 'nemu_ipc':
-                raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持自定义设备。")
+                raise ValueError(tstr('error.device.nemu_ipc_mumu_only'))
             return _apply_impl(custom_instance)
 
         elif isinstance(lifecycle, NoDevice):
@@ -538,23 +536,23 @@ class SchedulerService:
                 if not adb_serial:
                     devices = PhysicalAndroidHost.list()
                     if not devices:
-                        raise ValueError('未找到任何 USB 设备，请连接设备后重试。')
+                        raise ValueError(tstr('error.device.no_usb_device'))
                     host = devices[0]
                     logger.info('自动选择 USB 设备: %s', host.id)
                 else:
                     host = PhysicalAndroidHost.query(id=adb_serial)
                     if host is None:
-                        raise ValueError(f'找不到 ADB USB 设备: {adb_serial}')
+                        raise ValueError(tstr('error.device.usb_device_not_found').format(serial=adb_serial))
                 if not host.running():
-                    raise ValueError(f'ADB USB 设备不可用: {host.id}')
+                    raise ValueError(tstr('error.device.usb_device_unavailable').format(device=host.id))
                 if impl == 'nemu_ipc':
-                    raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持物理设备。")
+                    raise ValueError(tstr('error.device.nemu_ipc_physical_unsupported'))
                 return _apply_impl(host)
 
             elif isinstance(connection, TcpConnection):
                 from iaa.application.service.custom_emulator import CustomEmulatorInstance
                 if connection.port is None:
-                    raise ValueError('TCP 连接需要填写端口。')
+                    raise ValueError(tstr('error.device.tcp_port_required'))
                 tcp_instance = CustomEmulatorInstance(
                     adb_ip=connection.ip,
                     adb_port=connection.port,
@@ -566,11 +564,11 @@ class SchedulerService:
                     running_command='',
                 )
                 if impl == 'nemu_ipc':
-                    raise ValueError("'nemu_ipc' 仅支持 MuMu，不支持物理设备。")
+                    raise ValueError(tstr('error.device.nemu_ipc_physical_unsupported'))
                 return _apply_impl(tcp_instance)
 
             else:
-                raise ValueError('设备类型为"无"时，连接方式不能为自动，请选择 USB 或 TCP。')
+                raise ValueError(tstr('error.device.no_device_no_auto'))
 
         elif isinstance(lifecycle, PlayCoverDevice):
             from kotonebot.client.playcover import Playcover
@@ -579,7 +577,7 @@ class SchedulerService:
             bundle_id = bundle_id_by_server(self.iaa.config.conf.game.server)
             app = Playcover.find(bundle_id)
             if app is None:
-                raise ValueError(f'未找到 PlayCover 应用：{bundle_id}')
+                raise ValueError(tstr('error.device.playcover_not_found').format(bundle=bundle_id))
 
             if lifecycle.check_and_start and not app.running():
                 logger.info('PlayCover app not running, launching: %s', bundle_id)
@@ -587,12 +585,12 @@ class SchedulerService:
                 app.wait_available(timeout=60)
 
             if not app.running():
-                raise RuntimeError('游戏未在运行。请启动游戏，或在配置里启用「检查并启动」。')
+                raise RuntimeError(tstr('error.device.game_not_running'))
 
             return app.create_device()
 
         else:
-            raise ValueError(f"Unknown lifecycle type: {type(lifecycle)}")
+            raise ValueError(tstr('error.device.unknown_lifecycle').format(type=type(lifecycle).__name__))
 
     def connect_device(self, on_success: Callable[[], None] | None = None, on_error: Callable[[Exception], None] | None = None) -> None:
         """
@@ -703,5 +701,3 @@ class SchedulerService:
             if conf.scheduler.is_enabled(name):
                 tasks.append((name, func))
         return tasks
-
-
