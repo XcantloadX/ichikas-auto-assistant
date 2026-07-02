@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "../../../../qt/qml" as App
 
 ColumnLayout {
     id: root
@@ -78,7 +79,7 @@ ColumnLayout {
 
             Button {
                 visible: !!root.field.refreshable
-                text: root.field.loading ? "获取中..." : "刷新"
+                text: root.field.loading ? App.Globals.t("settings.action.loading") : App.Globals.t("settings.action.refresh")
                 enabled: !!root.field.enabled
                 onClicked: root.formController.triggerAction(root.field.id, "refresh", "{}")
             }

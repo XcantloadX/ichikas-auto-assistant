@@ -7,10 +7,12 @@ from PySide6.QtCore import QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
+from iaa.i18n import translate
 from ..forms.context import PreferencesContext
 from ..forms.preferences_form import build_preferences_form
 
 if TYPE_CHECKING:
+    from iaa.application.qt.controllers.i18n_controller import I18nController
     from iaa.application.service.iaa_service import IaaService
 
 
@@ -29,16 +31,18 @@ def _normalize_qt_value(value: Any) -> Any:
 class PreferencesController(QObject):
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
+    languageChanged = Signal(str)
+    interfaceChanged = Signal()
     runtimeChanged = Signal()
     dirtyChanged = Signal(bool)
     fieldUpdated = Signal(str, str)  # (field_id, field_json)
     groupUpdated = Signal(int, bool)  # (group_index, visible)
 
-    def __init__(self, iaa_service: 'IaaService', parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service: 'IaaService', i18n_controller: 'I18nController', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
-        self._spec, self._form_hooks = build_preferences_form()
-        self._engine = RuntimeEngine(self._spec)
+        self._i18n = i18n_controller
+        self._rebuild_form()
         self._state = SnapshotState(
             self._make_context(),
             snapshot_fn=self._snapshot_context,
@@ -47,6 +51,10 @@ class PreferencesController(QObject):
         )
         self._runtime: dict[str, Any] = {}
         self._recompute_runtime()
+
+    def _rebuild_form(self) -> None:
+        self._spec, self._form_hooks = build_preferences_form()
+        self._engine = RuntimeEngine(self._spec)
 
     @staticmethod
     def _snapshot_context(context: PreferencesContext) -> dict[str, Any]:
@@ -63,17 +71,23 @@ class PreferencesController(QObject):
     def _make_context(self) -> PreferencesContext:
         return PreferencesContext(shared=self._iaa.config.shared)
 
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._iaa.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
+
     def _sync_context_back(self) -> None:
         self._iaa.config.shared = self._state.context.shared
 
     def _reload(self) -> None:
         self._state.reset(self._make_context())
+        self._rebuild_form()
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
 
     def _recompute_runtime(self) -> None:
-        runtime = self._engine.build_runtime(self._state.context)
+        language = self._iaa.config.shared.interface.language
+        runtime = self._engine.build_runtime(self._state.context, language)
         runtime['dirty'] = self._state.dirty
         self._runtime = runtime
 
@@ -110,6 +124,7 @@ class PreferencesController(QObject):
                 raise KeyError(f'Unknown field id: {field_id}')
 
             value = _normalize_qt_value(value)
+            old_language = self._state.context.shared.interface.language
             field.ref.set(self._state.context, value)
             if field.on_change:
                 field.on_change(self._state.context, value)
@@ -118,10 +133,22 @@ class PreferencesController(QObject):
 
             self._sync_context_back()
             old_runtime = self._runtime
+            new_language = self._state.context.shared.interface.language
+            language_changed = new_language != old_language
+            interface_changed = field_id.startswith('interface.')
+            if language_changed:
+                self._i18n.setLanguage(new_language)
             self._recompute_runtime()
-            self._emit_updates(old_runtime)
+            if language_changed:
+                self.runtimeChanged.emit()
+                self.languageChanged.emit(new_language)
+                self.dirtyChanged.emit(self._state.dirty)
+            else:
+                self._emit_updates(old_runtime)
+                if interface_changed:
+                    self.interfaceChanged.emit()
         except Exception as exc:
-            self.operationFailed.emit(f'设置字段失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.field_set_failed', error=exc))
 
     @Slot(result=bool)
     def save(self) -> bool:
@@ -132,19 +159,23 @@ class PreferencesController(QObject):
             self._recompute_runtime()
             self.runtimeChanged.emit()
             self.dirtyChanged.emit(self._state.dirty)
-            self.operationSucceeded.emit('保存成功')
+            self.operationSucceeded.emit(self._tr('notice.save_success'))
             return True
         except Exception as exc:
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
             return False
 
     @Slot(result=bool)
     def discard(self) -> bool:
+        old_language = self._iaa.config.shared.interface.language
         self._state.discard()
         self._sync_context_back()
+        new_language = self._iaa.config.shared.interface.language
         self._recompute_runtime()
         self.runtimeChanged.emit()
         self.dirtyChanged.emit(self._state.dirty)
+        if new_language != old_language:
+            self.languageChanged.emit(new_language)
         return True
 
     @Slot(result=str)

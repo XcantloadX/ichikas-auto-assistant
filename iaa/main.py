@@ -8,6 +8,7 @@ from kotonebot.backend import debug
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
+from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED, SONG_KEEP_UNCHANGED
 from iaa.config import manager
 from iaa.telemetry import setup as setup_telemetry
 from iaa.tasks.registry import MANUAL_TASKS, REGULAR_TASKS, list_task_infos
@@ -109,8 +110,8 @@ def build_auto_live_kwargs(args: argparse.Namespace) -> dict[str, object]:
         'playMode': args.auto_mode,
         'debugEnabled': bool(args.debug_enabled),
         'autoSetUnit': False,
-        'apMultiplier': '保持现状' if args.ap_multiplier is None else str(args.ap_multiplier),
-        'songName': '保持不变',
+        'apMultiplier': AP_KEEP_UNCHANGED if args.ap_multiplier is None else str(args.ap_multiplier),
+        'songName': SONG_KEEP_UNCHANGED,
     }
     return {
         'plan': auto_live_payload_to_plan(payload),

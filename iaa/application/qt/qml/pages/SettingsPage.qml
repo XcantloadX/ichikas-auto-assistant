@@ -4,13 +4,14 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import ".." as App
 import "../components"
 import "../controls"
 import "../../../framework/dsl/qml"
 
 PageContainer {
     id: root
-    title: "配置"
+    title: App.Globals.t("nav.config")
 
     titleRightContent: RowLayout {
         spacing: 8
@@ -24,7 +25,7 @@ PageContainer {
 
             Label {
                 id: runningLabel
-                text: "脚本运行时无法修改配置"
+                text: App.Globals.t("page.settings.script_running")
                 color: "#B45309"
                 font.bold: true
                 anchors.centerIn: parent
@@ -40,7 +41,7 @@ PageContainer {
 
             Label {
                 id: labelId
-                text: "有未保存改动"
+                text: App.Globals.t("common.unsaved_changes")
                 color: "#DC3545"
                 font.bold: true
                 anchors.centerIn: parent
@@ -51,7 +52,7 @@ PageContainer {
     readonly property bool scriptRunning: runController.running || runController.isStarting || runController.isStopping
 
     headerActions: Button {
-        text: "保存"
+        text: App.Globals.t("common.save")
         highlighted: true
         enabled: root.runtimeReady && !root.scriptRunning
         onClicked: root.formController.save()

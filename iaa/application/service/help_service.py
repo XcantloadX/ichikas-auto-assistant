@@ -3,6 +3,8 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from iaa.i18n import _detect_system_language
+
 if TYPE_CHECKING:
     from .iaa_service import IaaService
 
@@ -10,30 +12,55 @@ if TYPE_CHECKING:
 class HelpService:
     def __init__(self, iaa_service: 'IaaService'):
         self._iaa = iaa_service
-        self._topics: list[dict] | None = None
+        self._topics_cache: dict[str, list[dict]] = {}
 
     @property
     def help_dir(self) -> str:
         return os.path.join(self._iaa.assets.assets_root_path, 'help')
 
-    def scan_topics(self) -> list[dict]:
-        if self._topics is not None:
-            return self._topics
+    def _resolve_language(self, language: str) -> str:
+        if language == 'auto':
+            language = _detect_system_language()
+        return language
 
-        self._topics = []
-        help_path = Path(self.help_dir)
+    def _language_dir(self, language: str) -> Path:
+        root = Path(self.help_dir)
+        lang = self._resolve_language(language)
+        lang_dir = root / lang
+        if lang_dir.is_dir():
+            return lang_dir
+        fallback = root / 'zh_CN'
+        if fallback.is_dir():
+            return fallback
+        return root
+
+    def clear_cache(self) -> None:
+        self._topics_cache.clear()
+
+    def scan_topics(self, language: str = 'auto') -> list[dict]:
+        lang = self._resolve_language(language)
+        cached = self._topics_cache.get(lang)
+        if cached is not None:
+            return cached
+
+        topics: list[dict] = []
+        help_path = self._language_dir(language)
         if not help_path.exists():
-            return self._topics
+            self._topics_cache[lang] = topics
+            return topics
 
         html_files = sorted(help_path.glob('*.html'))
         for html_file in html_files:
+            if html_file.name == 'index.html':
+                continue
             topic_id = html_file.stem
             title = self._extract_title(html_file) or topic_id
-            self._topics.append({
+            topics.append({
                 'id': topic_id,
                 'title': title,
             })
-        return self._topics
+        self._topics_cache[lang] = topics
+        return topics
 
     def _extract_title(self, file_path: Path) -> str | None:
         try:
@@ -45,8 +72,8 @@ class HelpService:
             pass
         return None
 
-    def get_content(self, topic_id: str) -> str:
-        file_path = Path(self.help_dir) / f'{topic_id}.html'
+    def get_content(self, topic_id: str, language: str = 'auto') -> str:
+        file_path = self._language_dir(language) / f'{topic_id}.html'
         if not file_path.exists():
             return ''
         try:

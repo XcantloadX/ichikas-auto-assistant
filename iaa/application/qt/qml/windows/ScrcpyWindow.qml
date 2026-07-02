@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Controls
+import ".." as App
 
 Window {
     id: root
     width: 960
     height: 600
     visible: scrcpyController.visible
-    title: "Scrcpy 画面"
+    title: App.Globals.t("scrcpy.title")
     color: "transparent"
 
     Image {

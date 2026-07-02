@@ -80,7 +80,7 @@ Rectangle {
 
                     Label {
                         Layout.fillWidth: true
-                        text: "一歌小助手"
+                        text: App.Globals.t("app.name_sidebar")
                         font.pixelSize: 18
                         font.weight: Font.DemiBold
                         color: palette.text
@@ -89,7 +89,7 @@ Rectangle {
 
                     Label {
                         Layout.fillWidth: true
-                        text: "版本 v" + appController.version
+                        text: App.Globals.t("about.version").replace("{version}", appController.version)
                         font.pixelSize: 12
                         color: palette.placeholderText
                         verticalAlignment: Text.AlignVCenter

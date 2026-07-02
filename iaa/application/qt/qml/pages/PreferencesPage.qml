@@ -4,12 +4,13 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import ".." as App
 import "../components"
 import "../../../framework/dsl/qml"
 
 PageContainer {
     id: root
-    title: "设置"
+    title: App.Globals.t("nav.preferences")
 
     titleRightContent: Rectangle {
         visible: root.dirty
@@ -21,7 +22,7 @@ PageContainer {
 
         Label {
             id: labelId
-            text: "有未保存改动"
+            text: App.Globals.t("common.unsaved_changes")
             color: "#DC3545"
             font.bold: true
             anchors.centerIn: parent
@@ -29,7 +30,7 @@ PageContainer {
     }
 
     headerActions: Button {
-        text: "保存"
+        text: App.Globals.t("common.save")
         highlighted: true
         enabled: root.runtimeReady
         onClicked: root.prefsController.save()

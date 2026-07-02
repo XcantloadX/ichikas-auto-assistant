@@ -1,11 +1,12 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 import "../components"
 
 PageContainer {
     id: root
-    title: "控制"
+    title: App.Globals.t("nav.control")
     property var tasks: []
     property var autoLiveDialog
 
@@ -22,7 +23,7 @@ PageContainer {
 
     Dialog {
         id: mainStoryDialog
-        title: "确认开始"
+        title: App.Globals.t("control.main_story_confirm.title")
         modal: true
         standardButtons: Dialog.NoButton
         width: 420
@@ -32,13 +33,13 @@ PageContainer {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "即将开始刷往期剧情，脚本会无限执行，需要手动停止。是否继续？"
+                text: App.Globals.t("control.main_story_confirm.content")
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
-                Button { text: "取消"; onClicked: mainStoryDialog.close() }
+                Button { text: App.Globals.t("common.cancel"); onClicked: mainStoryDialog.close() }
                 Button {
-                    text: "开始"
+                    text: App.Globals.t("common.start")
                     highlighted: true
                     onClicked: {
                         mainStoryDialog.close()
@@ -55,7 +56,7 @@ PageContainer {
 
         GroupBox {
             Layout.fillWidth: true
-            title: "启停"
+            title: App.Globals.t("control.group.run")
 
             ColumnLayout {
                 anchors.fill: parent
@@ -64,7 +65,11 @@ PageContainer {
                 RowLayout {
                     Layout.fillWidth: true
                     Button {
-                        text: runController.isStarting ? "启动中" : (runController.isStopping ? "停止中" : (runController.running ? "停止" : "启动"))
+                        text: runController.isStarting
+                            ? App.Globals.t("control.starting")
+                            : (runController.isStopping
+                                ? App.Globals.t("control.stopping")
+                                : (runController.running ? App.Globals.t("control.stop") : App.Globals.t("control.start")))
                         enabled: !runController.isStarting && !runController.isStopping
                         highlighted: !runController.running
                         onClicked: {
@@ -76,12 +81,19 @@ PageContainer {
                         }
                     }
                     Button {
-                        text: runController.exportBusy ? "导出中..." : "导出报告"
+                        text: runController.exportBusy ? App.Globals.t("control.exporting_report") : App.Globals.t("control.export_report")
                         enabled: !runController.exportBusy
                         onClicked: runController.exportReport()
                     }
                     Item { Layout.fillWidth: true }
-                    Label { text: runController.currentTaskName ? ("当前任务：" + runController.currentTaskName) : "" }
+                    Label {
+                        text: runController.currentTaskId
+                            ? App.Globals.t("control.current_task").replace(
+                                "{task}",
+                                App.Globals.taskName(runController.currentTaskId, runController.currentTaskName)
+                            )
+                            : ""
+                    }
                 }
 
                 Label {
@@ -108,14 +120,21 @@ PageContainer {
         GroupBox {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            title: "任务"
+            Layout.minimumWidth: 0
+            implicitWidth: 0
+            title: App.Globals.t("control.group.tasks")
 
             ScrollView {
+                id: taskScroll
                 anchors.fill: parent
+                implicitWidth: 0
                 clip: true
+                contentWidth: width
+                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
                 GridLayout {
-                    width: parent.width
+                    id: taskGrid
+                    width: taskScroll.width
                     columns: 3
                     rowSpacing: 8
                     columnSpacing: 8
@@ -124,23 +143,36 @@ PageContainer {
                         model: root.tasks
                         delegate: Frame {
                             Layout.fillWidth: true
+                            Layout.minimumWidth: 0
+                            Layout.preferredWidth: (
+                                taskGrid.width - taskGrid.columnSpacing * (taskGrid.columns - 1)
+                            ) / taskGrid.columns
+                            Layout.preferredHeight: 76
                             padding: 10
+
                             RowLayout {
                                 anchors.fill: parent
+                                spacing: 10
+
                                 Switch {
                                     visible: !!modelData.checkable
                                     checked: !!modelData.enabled
                                     enabled: !runController.running && !runController.isStarting && !runController.isStopping
-                                    text: modelData.name
+                                    text: ""
                                     onToggled: runController.setRegularTaskEnabled(modelData.id, checked)
                                 }
                                 Label {
-                                    visible: !modelData.checkable
-                                    text: modelData.name
+                                    Layout.fillWidth: true
+                                    text: App.Globals.taskName(modelData.id, modelData.name)
+                                    wrapMode: Text.WordWrap
+                                    maximumLineCount: 2
+                                    elide: Text.ElideRight
+                                    verticalAlignment: Text.AlignVCenter
                                 }
-                                Item { Layout.fillWidth: true }
                                 Button {
-                                    text: "运行"
+                                    Layout.preferredWidth: 78
+                                    Layout.minimumWidth: 68
+                                    text: App.Globals.t("control.run_task")
                                     enabled: !runController.running && !runController.isStarting && !runController.isStopping
                                     onClicked: {
                                         if (modelData.id === "auto_live") {

@@ -8,6 +8,7 @@ from .scrcpy_controller import ScrcpyController
 from .settings_controller import SettingsController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 __all__ = [
     'AppController',
@@ -20,4 +21,5 @@ __all__ = [
     'SettingsController',
     'HelpController',
     'GlobalHotkeyController',
+    'I18nController',
 ]

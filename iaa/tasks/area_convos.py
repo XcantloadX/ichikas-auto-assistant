@@ -6,6 +6,7 @@ from . import R
 from ._fragments import scan_area
 from .common import at_home, go_home
 from iaa.context import task_reporter
+from iaa.i18n import TStr
 from .story._common import skip_stories
 
 logger = logging.getLogger(__name__)
@@ -22,10 +23,10 @@ def _clear():
     """
     rep = task_reporter()
     for _ in scan_area(step_scale=0.2):
-        rep.message('扫描中')
+        rep.message(TStr(zh_CN='扫描中', en_US='Scanning'))
         convos = R.Map.IconNewAreaConvo.find_all()
         for c in convos:
-            rep.message('阅读剧情')
+            rep.message(TStr(zh_CN='阅读剧情', en_US='Reading story'))
             c.click()
             sleep(0.1)
             skip_stories(mode='skip', end_condition=at_home)

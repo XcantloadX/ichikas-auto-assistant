@@ -17,6 +17,7 @@ class InterfaceConfig(BaseModel):
     window_style: str = ''
     theme_color: str | None = None
     color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
+    language: Literal['auto', 'zh_CN', 'en_US'] = 'auto'
 
 
 class CustomPushData(BaseModel):

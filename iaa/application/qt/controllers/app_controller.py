@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QMessageBox
 
 from iaa.application.service.iaa_service import IaaService
 from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
+from iaa.i18n import translate, translate_error
 from iaa.config.manager import ConfigValidationError
 from iaa.telemetry import setup as setup_telemetry
 
@@ -19,6 +20,7 @@ from .settings_controller import SettingsController
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 
 class AppController(QObject):
@@ -26,6 +28,7 @@ class AppController(QObject):
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
     windowStyleChanged = Signal()
+    windowTitleChanged = Signal()
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
@@ -35,12 +38,16 @@ class AppController(QObject):
         except ConfigValidationError as e:
             from iaa.config import manager
 
+            language = manager.read_shared().interface.language
             field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
-            msg = f"以下配置项校验失败：\n{field_list}\n\n错误详情：\n{e.error_details}\n\n是否重置这些为默认值？"
+            msg = translate(language, 'startup.config_validation_prompt').format(
+                fields=field_list,
+                error=e.error_details,
+            )
 
             reply = QMessageBox.question(
                 None,
-                "一歌小助手",
+                translate(language, 'app.name'),
                 msg,
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
@@ -52,19 +59,33 @@ class AppController(QObject):
             else:
                 QMessageBox.warning(
                     None,
-                    "一歌小助手",
-                    "配置校验失败，未重置。程序即将退出。",
+                    translate(language, 'app.name'),
+                    translate(language, 'startup.config_validation_aborted'),
                     QMessageBox.StandardButton.Ok
                 )
                 QCoreApplication.exit(1)
         
-        self.progressBridge = ProgressBridge(self)
-        self.scrcpyController = ScrcpyController(self.service.scheduler, self.service.config, self)
-        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self)
-        self.settingsController = SettingsController(self.service, self)
-        self.preferencesController = PreferencesController(self.service, self)
+        self.i18nController = I18nController(self.service.config.shared.interface.language, self)
+        self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
+        self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
+        self.i18nController.languageChanged.connect(self.windowTitleChanged.emit)
+        self.scrcpyController = ScrcpyController(
+            self.service.scheduler,
+            self.service.config,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.scrcpyController.refresh_status_text)
+        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self.i18nController, self)
+        self.settingsController = SettingsController(self.service, self.i18nController, self)
+        self.preferencesController = PreferencesController(self.service, self.i18nController, self)
         self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
-        self.helpController = HelpController(self.service, self)
+        self.helpController = HelpController(
+            self.service,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.helpController.on_language_changed)
         self.globalHotkeyController = GlobalHotkeyController(
             self.service,
             self.runController,
@@ -82,26 +103,32 @@ class AppController(QObject):
         self.settingsController.configSwitched.connect(self._on_config_switched)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
+        self.preferencesController.languageChanged.connect(self._on_language_changed)
         self.service.scheduler.on_error = self._on_scheduler_error
+
+    def _on_language_changed(self, language: str) -> None:
+        self.i18nController.setLanguage(language)
+        self.settingsController.setLanguage(language)
 
     def _on_config_switched(self) -> None:
         self.runController.tasksChanged.emit()
 
     def _on_scheduler_error(self, exc: Exception) -> None:
-        self.reportError(str(exc))
+        self.reportError(translate_error(self.i18nController.language, exc))
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self.i18nController.language, key)
+        return text.format(**kwargs) if kwargs else text
 
     def _get_version(self) -> str:
         return self.service.version
 
     def _get_window_title(self) -> str:
-        if platform.system() == 'Windows':
-            return f'一歌小助手'
-        elif platform.system() == 'Darwin':
-            return f'一歌小助手 (on macOS)'
-        elif platform.system() == 'Linux':
-            return f'一歌小助手 (on Linux)'
-        else:
-            return f'一歌小助手'
+        if platform.system() == 'Darwin':
+            return self._tr('app.window_title_macos')
+        if platform.system() == 'Linux':
+            return self._tr('app.window_title_linux')
+        return self._tr('app.name')
 
     def _get_assets_root_path(self) -> str:
         return self.service.assets.assets_root_path.replace('\\', '/')
@@ -124,7 +151,7 @@ class AppController(QObject):
         return 'solid'
 
     version = Property(str, _get_version, constant=True)
-    windowTitle = Property(str, _get_window_title, constant=True)
+    windowTitle = Property(str, _get_window_title, notify=windowTitleChanged)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
@@ -153,7 +180,7 @@ class AppController(QObject):
         self.preferencesController.save()
         self._telemetry_consent_required = False
         self.telemetryConsentRequiredChanged.emit()
-        self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+        self.notificationRaised.emit('success', self._tr('notice.telemetry_effective'))
 
     @Slot()
     def refreshWindowStyle(self) -> None:
@@ -177,7 +204,7 @@ class AppController(QObject):
         if not messages:
             return ""
 
-        html = [f"<b>配置文件已升级到 v{self.service.version}。</b>"]
+        html = [self._tr('modal.migration.content_title', version=self.service.version)]
         if messages:
             html.append("<ol>")
             for msg in messages:

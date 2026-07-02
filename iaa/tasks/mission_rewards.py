@@ -4,6 +4,7 @@ from . import R
 from .common import go_home, at_home
 from ..context import task_reporter
 from iaa.game_ui.side_tabbar import SideTabbar
+from iaa.i18n import TStr
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ def collect_mission_rewards():
         go_home()
 
     logger.info('Navigated to mission page.')
-    rep.message('前往任务奖励页面')
+    rep.message(TStr(zh_CN='前往任务奖励页面', en_US='Opening mission rewards'))
 
     for _ in Loop(interval=1):
         if R.Daily.ButtonMission.try_click():
@@ -36,7 +37,7 @@ def collect_mission_rewards():
     
     while state.badge_indices:
         for i in state.badge_indices:
-            rep.message(f'任务奖励 {i+1}/{len(state.tabs)}')
+            rep.message(TStr(zh_CN=f'任务奖励 {i+1}/{len(state.tabs)}', en_US=f'Mission rewards {i+1}/{len(state.tabs)}'))
             tabbar.switch_to(i)
             logger.info(f'Switched to tab index={i} to claim rewards.')
             sleep(2)

@@ -5,6 +5,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../components"
+import "../../../../qt/qml" as App
 
 ColumnLayout {
     id: root
@@ -172,22 +173,22 @@ ColumnLayout {
 
             ColumnLayout {
                 Button {
-                    text: "← 添加"
+                    text: App.Globals.t("settings.action.add")
                     enabled: !!root.field.enabled
                     onClicked: root.moveToSelected()
                 }
                 Button {
-                    text: "移除 →"
+                    text: App.Globals.t("settings.action.remove")
                     enabled: !!root.field.enabled
                     onClicked: root.moveToAvailable()
                 }
                 Button {
-                    text: "上移"
+                    text: App.Globals.t("settings.action.move_up")
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveUp()
                 }
                 Button {
-                    text: "下移"
+                    text: App.Globals.t("settings.action.move_down")
                     enabled: !!root.field.enabled && !!(root.field.props && root.field.props.reorderable)
                     onClicked: root.moveDown()
                 }

@@ -8,8 +8,19 @@ from pathlib import Path
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
+from iaa.i18n import translate
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import REGULAR_TASKS, TASK_INFOS
+
+from iaa.tasks.live.auto_live_constants import (
+    AP_KEEP_UNCHANGED,
+    LAST_PRESET_NAME,
+    PRESET_CLEAR_10,
+    PRESET_FC_10,
+    PRESET_LEADER_COUNT,
+    SONG_KEEP_UNCHANGED,
+    preset_name_matches,
+)
 
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
 
@@ -22,17 +33,55 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, parent: QObject | None = None) -> None:
+    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, i18n_controller, parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
         self._scrcpy = scrcpy_controller
+        self._i18n = i18n_controller
         self._export_busy = False
         self._timer = QTimer(self)
         self._timer.setInterval(300)
         self._timer.timeout.connect(self._refresh_state)
         self._timer.start()
         self.exportReady.connect(self._show_save_dialog)
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._iaa.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
+
+    def _get_ap_keep_value(self) -> str:
+        return AP_KEEP_UNCHANGED
+
+    def _get_song_keep_value(self) -> str:
+        return SONG_KEEP_UNCHANGED
+
+    apKeepValue = Property(str, _get_ap_keep_value, constant=True)
+    songKeepValue = Property(str, _get_song_keep_value, constant=True)
+
+    # TODO: 遗留的展示名称作为配置值带来的问题
+    @Slot(str, result=str)
+    def autoLivePresetLabel(self, name: str) -> str:
+        if preset_name_matches(name, PRESET_CLEAR_10):
+            return self._tr('auto_live.preset.clear_10')
+        if preset_name_matches(name, PRESET_FC_10):
+            return self._tr('auto_live.preset.fc_10')
+        if preset_name_matches(name, PRESET_LEADER_COUNT):
+            return self._tr('auto_live.preset.leader_count')
+        if preset_name_matches(name, LAST_PRESET_NAME):
+            return self._tr('auto_live.preset.last')
+        return name
+
+    def _auto_live_error_text(self, message: str) -> str:
+        if message == '指定次数必须为正整数。':
+            return self._tr('auto_live.error.count_positive')
+        if message.startswith('未知的次数模式：'):
+            return self._tr('auto_live.error.unknown_count_mode', mode=message.removeprefix('未知的次数模式：'))
+        if message == 'AP 倍率必须在 0 到 10 之间，或为 maximum。':
+            return self._tr('auto_live.error.ap_multiplier')
+        if message.startswith('未知的循环模式：'):
+            return self._tr('auto_live.error.unknown_loop_mode', mode=message.removeprefix('未知的循环模式：'))
+        return message
 
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
@@ -155,17 +204,13 @@ class RunController(QObject):
     @Slot(str)
     def runAutoLive(self, payload_json: str) -> None:
         payload = json.loads(payload_json)
-        plan = auto_live_payload_to_plan(payload)
-        LivePresetManager().save_last_auto(AutoLivePreset(name='上次设定', plan=plan))
+        try:
+            plan = auto_live_payload_to_plan(payload)
+        except ValueError as exc:
+            raise ValueError(self._auto_live_error_text(str(exc))) from exc
+        LivePresetManager().save_last_auto(AutoLivePreset(name=LAST_PRESET_NAME, plan=plan))
         if plan.play_mode == 'script_auto':
-            self.scriptAutoWarningRequested.emit(
-                '使用“脚本自动”时必须满足：\n'
-                '1. 当前选中演出歌曲为 EASY 难度\n'
-                '2. 流速为 1，特效为轻量\n'
-                '3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n'
-                '4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n'
-                '5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担'
-            )
+            self.scriptAutoWarningRequested.emit(self._tr('notice.script_auto_warning'))
         self._iaa.scheduler.run_single('auto_live', run_in_thread=True, kwargs={'plan': plan})
         self.stateChanged.emit()
 
@@ -193,7 +238,7 @@ class RunController(QObject):
             except Exception as exc:  # noqa: BLE001
                 self._export_busy = False
                 self.stateChanged.emit()
-                self.operationFailed.emit(f'导出失败：{exc}')
+                self.operationFailed.emit(self._tr('notice.export_failed', error=exc))
                 return
             self.exportReady.emit(tmp_zip)
 
@@ -202,16 +247,16 @@ class RunController(QObject):
     def _show_save_dialog(self, tmp_zip: str) -> None:
         save_path, _ = QFileDialog.getSaveFileName(
             None,
-            '保存报告',
+            self._tr('dialog.save_report.title'),
             str(Path(tmp_zip).name),
-            'Zip 文件 (*.zip)',
+            self._tr('dialog.save_report.filter'),
         )
         try:
             if save_path:
                 shutil.copyfile(tmp_zip, save_path)
-                self.operationSucceeded.emit('报告已保存。')
+                self.operationSucceeded.emit(self._tr('notice.report_saved'))
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.report_save_failed', error=exc))
         finally:
             self._export_busy = False
             self.stateChanged.emit()

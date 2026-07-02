@@ -5,6 +5,7 @@ from types import SimpleNamespace
 
 from iaa.application.service.config_service import ConfigService
 from iaa.config import manager
+from iaa.i18n import TStr
 
 
 class ConfigServiceTests(unittest.TestCase):
@@ -102,8 +103,10 @@ class ConfigServiceTests(unittest.TestCase):
             manager.create('alpha')
             service = ConfigService(self.make_host(root))
 
-            with self.assertRaisesRegex(RuntimeError, '至少需要保留一个配置'):
+            with self.assertRaises(RuntimeError) as ctx:
                 service.delete('alpha')
+            self.assertIsInstance(ctx.exception.args[0], TStr)
+            self.assertEqual(ctx.exception.args[0].zh_CN, '至少需要保留一个配置')
 
 
 if __name__ == '__main__':

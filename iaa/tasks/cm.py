@@ -1,4 +1,5 @@
 import time
+from typing import Callable
 
 from kotonebot import logging
 from kotonebot.core import AnyOf
@@ -8,22 +9,23 @@ from . import R
 from .common import go_home
 from iaa.definitions.consts import package_name
 from iaa.context import conf as get_conf, task_reporter, server
+from iaa.i18n import TStr
 
 logger = logging.getLogger(__name__)
 
-def _sleep(sec: float, msg: str = '', interval: float = 1):
+def _sleep(sec: float, msg: 'Callable[[int], TStr] | None' = None, interval: float = 1):
     """带有任务消息更新的 sleep。
 
     :param sec: 睡眠总时长，单位秒
-    :param msg: 要显示的消息，其中可以包含一个 `%d` 来显示剩余秒数， defaults to ''
+    :param msg: 接受剩余秒数并返回 TStr 的函数，defaults to None
     :param interval: 检查间隔，单位秒， defaults to 1
     """
     rp = task_reporter()
     logger.debug(f'Sleeping for {sec} seconds.')
     start_time = time.time()
     while time.time() - start_time < sec:
-        if msg:
-            rp.message(msg % max(0, int(sec - (time.time() - start_time))))
+        if msg is not None:
+            rp.message(msg(max(0, int(sec - (time.time() - start_time)))))
         sleep(interval)
 
 @action('是否位于交叉路口')
@@ -131,7 +133,7 @@ def clear_common_cm():
                 sleep(1)
                 state = 2
             elif R.Cm.ButtonPlayCm.try_click():
-                rep.message('播放广告')
+                rep.message(TStr(zh_CN='播放广告', en_US='Playing ad'))
                 logger.debug('Clicked CM start button.')
                 sleep(1)
             # 没有剩余广告了
@@ -141,15 +143,15 @@ def clear_common_cm():
                     break
         elif state == 2:
             if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
-                rep.message('等待广告载入')
+                rep.message(TStr(zh_CN='等待广告载入', en_US='Waiting for ad to load'))
                 logger.debug('Loading ad...')
                 sleep(0.2)
             else:
-                rep.message('等待广告结束')
+                rep.message(TStr(zh_CN='等待广告结束', en_US='Waiting for ad to finish'))
                 logger.info(f'Ad loaded. Wait {wait_sec} sec.')
                 state = 3
         elif state == 3:
-            _sleep(wait_sec, msg='等待广告结束，剩余 %d 秒')
+            _sleep(wait_sec, msg=lambda s: TStr(zh_CN=f'等待广告结束，剩余 {s} 秒', en_US=f'Waiting for ad to end, {s}s remaining'))
             logger.debug('Wait ad finished.')
             # 返回桌面再重新打开游戏就可以关闭广告
             d.commands.adb_shell('input keyevent KEYCODE_HOME')
@@ -172,7 +174,7 @@ def clear_common_cm():
             ].find():
                 logger.info('Ad award claimed.')
                 device.click_center() # 关闭奖励领取提示
-                rep.message('奖励已领取')
+                rep.message(TStr(zh_CN='奖励已领取', en_US='Reward claimed'))
                 state = 1
             # Applovin 广告特判
             elif R.Cm.Ad1.ButtonClose.try_click():
@@ -192,7 +194,7 @@ def clear_common_cm():
                 sleep(1)
             # 还在加载
             else:
-                rep.message('等待结果')
+                rep.message(TStr(zh_CN='等待结果', en_US='Waiting for result'))
                 logger.debug('Waiting for result...')
 
 @task('看广告', screenshot_mode='manual')
@@ -205,9 +207,9 @@ def cm():
         return
     go_home()
     rep = task_reporter()
-    rep.message('正在前往交叉路口')
+    rep.message(TStr(zh_CN='正在前往交叉路口', en_US='Going to Scramble Crossing'))
     go_intersection()
-    rep.message('正在打开 CM 界面')
+    rep.message(TStr(zh_CN='正在打开 CM 界面', en_US='Opening CM screen'))
     if open_cm():
         clear_common_cm()
     else:

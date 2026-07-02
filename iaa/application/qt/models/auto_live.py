@@ -2,10 +2,18 @@ from __future__ import annotations
 
 from typing import Any
 
+from iaa.tasks.live.auto_live_constants import (
+    AP_KEEP_UNCHANGED,
+    LEGACY_AP_KEEP,
+    LEGACY_SONG_KEEP,
+    PRESET_CLEAR_10,
+    PRESET_FC_10,
+    PRESET_LEADER_COUNT,
+    SONG_KEEP_UNCHANGED,
+)
 from iaa.config.live_presets import AutoLivePreset
 from iaa.tasks.live.live import ApMultiplier, ListLoopPlan, SingleLoopPlan
 
-SONG_KEEP_UNCHANGED = '保持不变'
 SONG_NAME_OPTIONS = [
     SONG_KEEP_UNCHANGED,
     'メルト',
@@ -15,16 +23,27 @@ SONG_NAME_OPTIONS = [
 
 def normalize_song_name_input(value: str) -> str | None:
     normalized = (value or '').strip()
-    if not normalized or normalized == SONG_KEEP_UNCHANGED:
+    if not normalized or normalized in LEGACY_SONG_KEEP:
         return None
     return normalized
+
+
+def _normalize_ap_multiplier_raw(raw: object) -> ApMultiplier:
+    if raw in (None, '', *LEGACY_AP_KEEP):
+        return None
+    if raw == 'maximum':
+        return 'maximum'
+    ap_multiplier = int(raw)
+    if not (0 <= ap_multiplier <= 10):
+        raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
+    return ap_multiplier
 
 
 def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListLoopPlan:
     count_mode = str(payload.get('countMode') or 'specify')
     loop_mode = str(payload.get('loopMode') or 'list')
     auto_mode = str(payload.get('playMode') or 'game_auto')
-    ap_multiplier_raw = payload.get('apMultiplier', '保持现状')
+    ap_multiplier_raw = payload.get('apMultiplier', AP_KEEP_UNCHANGED)
     debug_enabled = bool(payload.get('debugEnabled'))
     auto_set_unit = bool(payload.get('autoSetUnit'))
     song_name = normalize_song_name_input(str(payload.get('songName') or ''))
@@ -38,14 +57,7 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
     elif count_mode != 'all':
         raise ValueError(f'未知的次数模式：{count_mode}')
 
-    if ap_multiplier_raw in (None, '', '保持现状'):
-        ap_multiplier: ApMultiplier = None
-    elif ap_multiplier_raw == 'maximum':
-        ap_multiplier = 'maximum'
-    else:
-        ap_multiplier = int(ap_multiplier_raw)
-        if not (0 <= ap_multiplier <= 10):
-            raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
+    ap_multiplier = _normalize_ap_multiplier_raw(ap_multiplier_raw)
 
     if loop_mode == 'single':
         return SingleLoopPlan(
@@ -78,7 +90,7 @@ def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
         'playMode': plan.play_mode,
         'debugEnabled': plan.debug_enabled,
         'autoSetUnit': plan.auto_set_unit,
-        'apMultiplier': '保持现状' if plan.ap_multiplier is None else str(plan.ap_multiplier),
+        'apMultiplier': AP_KEEP_UNCHANGED if plan.ap_multiplier is None else str(plan.ap_multiplier),
         'songName': '',
         'loopMode': 'list',
     }
@@ -93,15 +105,15 @@ def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
 def builtin_auto_presets() -> list[dict[str, object]]:
     presets = [
         AutoLivePreset(
-            name='CLEAR 10 首歌',
+            name=PRESET_CLEAR_10,
             plan=ListLoopPlan(loop_count=10, play_mode='game_auto', ap_multiplier=1),
         ),
         AutoLivePreset(
-            name='FC 10 次',
+            name=PRESET_FC_10,
             plan=SingleLoopPlan(loop_count=10, play_mode='script_auto', ap_multiplier=0),
         ),
         AutoLivePreset(
-            name='队长次数',
+            name=PRESET_LEADER_COUNT,
             plan=SingleLoopPlan(loop_count=30, play_mode='script_auto', ap_multiplier=0),
         ),
     ]
