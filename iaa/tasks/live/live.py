@@ -91,8 +91,8 @@ CHALLENGE_AWARD_PREFABS: dict[ChallengeLiveAward, PrefabClass] = {
 def _skip():
     if server() == 'jp':
         device.click(1, 1)
-    elif server() == 'tw' or server() == 'cn':
-        # 台服要点侧边，点左上角没用
+    elif server() == 'tw' or server() == 'cn' or server() == 'en':
+        # TW/CN/EN need side taps; top-left taps do not reliably advance these screens.
         device.click(6, 346)
     else:
         raise NotImplementedError(f'Unsupported server: {server()}')
@@ -326,8 +326,7 @@ def _wait_live_end(live_mode: LiveMode) -> None:
 def _settle_to_home() -> bool:
     if at_home():
         return True
-    # 台服要点 OK 才行
-    if server() == 'tw' and R.Live.ButtonLiveCompletedOk.try_click():
+    if (server() == 'tw' or server() == 'en') and R.Live.ButtonLiveCompletedOk.try_click():
         logger.debug('Clicked live completed ok button.')
     _skip()
     sleep(0.6)
