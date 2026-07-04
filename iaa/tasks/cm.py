@@ -168,12 +168,35 @@ def clear_common_cm():
         else:
             device.click_center() # 关闭奖励领取提示
 
+    def _try_en_provider_exit() -> str | None:
+        device.screenshot()
+        if R.Cm.AdMeta.ButtonClose.q(threshold=0.80).try_click():
+            return 'Meta plain close X'
+        if R.Cm.Ad1.ButtonClose.q(threshold=0.69).try_click():
+            return 'inherited close X'
+        if R.Cm.Ad1.ButtonSkip.q(threshold=0.70).try_click():
+            return 'skip control'
+        return None
+
+    def _return_from_ad_with_home() -> None:
+        d.commands.adb_shell('input keyevent KEYCODE_HOME')
+        sleep(0.5)
+        d.launch_app(package_name())
+        sleep(0.5)
+        logger.debug('Ad skipped.')
+
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
     wait_sec = get_conf().cm.watch_ad_wait_sec
+    max_provider_exit_attempts = 3
+    max_provider_exit_misses = 8
+    provider_exit_attempts = 0
+    provider_exit_misses = 0
     for _ in Loop(interval=0.6):
         if state == 1:
             if current_server == 'en':
                 if _en_ad_started():
+                    provider_exit_attempts = 0
+                    provider_exit_misses = 0
                     state = 3
                     continue
                 device.screenshot()
@@ -187,6 +210,8 @@ def clear_common_cm():
                 sleep(1)
                 state = 2
             elif R.Cm.ButtonPlayCm.try_click():
+                provider_exit_attempts = 0
+                provider_exit_misses = 0
                 rep.message(TStr(zh_CN='播放广告', en_US='Playing ad'))
                 logger.debug('Clicked CM start button.')
                 sleep(1)
@@ -225,18 +250,25 @@ def clear_common_cm():
             _sleep(wait_sec, msg=lambda s: TStr(zh_CN=f'等待广告结束，剩余 {s} 秒', en_US=f'Waiting for ad to end, {s}s remaining'))
             logger.debug('Wait ad finished.')
             if current_server == 'en' and _en_ad_started():
-                device.screenshot()
-                if R.Cm.Ad1.ButtonClose.q(threshold=0.69).try_click():
-                    logger.info('Closed EN ad through the provider exit button.')
-                    sleep(1)
-                    state = 4
+                for _ in range(max_provider_exit_attempts):
+                    if provider_control := _try_en_provider_exit():
+                        provider_exit_attempts = 1
+                        provider_exit_misses = 0
+                        logger.info(
+                            'Clicked EN provider %s (exit attempt %s/%s).',
+                            provider_control,
+                            provider_exit_attempts,
+                            max_provider_exit_attempts
+                        )
+                        sleep(1)
+                        state = 4
+                        break
+                    sleep(0.5)
+                if state == 4:
                     continue
             # 返回桌面再重新打开游戏就可以关闭广告
-            d.commands.adb_shell('input keyevent KEYCODE_HOME')
-            sleep(0.5)
-            d.launch_app(package_name())
-            sleep(0.5)
-            logger.debug('Ad skipped.')
+            logger.info('No provider exit control matched. Using Home/relaunch fallback.')
+            _return_from_ad_with_home()
             state = 4
         elif state == 4:
             if current_server == 'en':
@@ -246,19 +278,64 @@ def clear_common_cm():
                 logger.info('Ad play failed due to early skip.')
                 device.click(1, 1) # 关闭弹窗
                 sleep(0.5)
+                provider_exit_attempts = 0
+                provider_exit_misses = 0
                 state = 1
             # 看完了
             elif award_text := _find_reward_text():
                 logger.info('Ad award claimed.')
                 _dismiss_reward_text(award_text)
                 rep.message(TStr(zh_CN='奖励已领取', en_US='Reward claimed'))
+                provider_exit_attempts = 0
+                provider_exit_misses = 0
                 state = 1
+            elif current_server == 'en' and _en_ad_started():
+                if device.commands.current_package() != package_name():
+                    logger.info(
+                        'EN provider opened an external app. Returning to its end card.'
+                    )
+                    _return_from_ad_with_home()
+                    provider_exit_misses = 0
+                    continue
+                if provider_control := _try_en_provider_exit():
+                    provider_exit_attempts += 1
+                    provider_exit_misses = 0
+                    logger.info(
+                        'Clicked EN provider %s (exit attempt %s/%s).',
+                        provider_control,
+                        provider_exit_attempts,
+                        max_provider_exit_attempts
+                    )
+                    sleep(1)
+                    if (
+                        provider_exit_attempts >= max_provider_exit_attempts
+                        and _en_ad_started()
+                    ):
+                        logger.info(
+                            'Provider exit remained active after %s attempts. '
+                            'Using Home/relaunch fallback.',
+                            provider_exit_attempts
+                        )
+                        _return_from_ad_with_home()
+                else:
+                    provider_exit_misses += 1
+                    if provider_exit_misses >= max_provider_exit_misses:
+                        logger.info(
+                            'No provider exit control matched after %s checks. '
+                            'Using Home/relaunch fallback.',
+                            provider_exit_misses
+                        )
+                        _return_from_ad_with_home()
+                        provider_exit_misses = 0
+                    else:
+                        rep.message(TStr(zh_CN='等待结果', en_US='Waiting for result'))
+                        logger.debug('Waiting for EN provider result...')
             # Applovin 广告特判
-            elif (current_server != 'en' or _en_ad_started()) and R.Cm.Ad1.ButtonClose.try_click():
+            elif current_server != 'en' and R.Cm.Ad1.ButtonClose.try_click():
                 logger.info('Close button clicked. (Applovin/GP ad?)')
                 sleep(1)
                 state = 1
-            elif (current_server != 'en' or _en_ad_started()) and R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
+            elif current_server != 'en' and R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
                 logger.info('Skip button clicked. (Applovin/GP ad?)')
                 sleep(1)
             # GooglePlay App 广告特判：
