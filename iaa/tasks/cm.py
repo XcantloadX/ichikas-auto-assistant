@@ -123,12 +123,66 @@ def clear_common_cm():
     logger.info('Clearing CM.') 
     rep = task_reporter()
     d = device.of_android()
+    current_server = server()
+    def _en_ad_started() -> bool:
+        if current_server != 'en':
+            return False
+        try:
+            if device.commands.current_package() != package_name():
+                return True
+            activity = d.commands.adb_shell('dumpsys activity activities | grep ResumedActivity')
+        except Exception:
+            logger.exception('Failed to check foreground ad activity.')
+            return False
+        return package_name() in activity and 'MessagingUnityPlayerActivity' not in activity
+
+    def _find_reward_text():
+        if current_server == 'en':
+            return AnyOf[
+                R.Cm.TextAwardClaimed,
+                R.Cm.TextApRecovered,
+                R.Cm.TextAutoPlayLimitIncreased
+            ].find()
+        return AnyOf[
+            R.Cm.TextAwardClaimed,
+            R.Cm.TextApRecovered
+        ].find()
+
+    def _dismiss_reward_text(reward_text) -> None:
+        if current_server == 'en':
+            if getattr(reward_text, 'prefab', None) is R.Cm.TextAwardClaimed:
+                # EN claimed-reward popups can put item art at screen center. Tap the text line instead.
+                x, y = reward_text.rect.center
+                tap_x, tap_y = int(x + 80), int(y)
+            else:
+                tap_x, tap_y = 1000, 600
+            logger.info('Dismissing EN CM reward toast at (%s, %s).', tap_x, tap_y)
+            device.click(tap_x, tap_y)
+            sleep(0.5)
+            for _ in range(10):
+                device.screenshot()
+                if _find_reward_text() is None:
+                    return
+                sleep(0.2)
+            logger.debug('Reward toast still visible after dismiss click.')
+        else:
+            device.click_center() # 关闭奖励领取提示
+
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
     wait_sec = get_conf().cm.watch_ad_wait_sec
     for _ in Loop(interval=0.6):
         if state == 1:
+            if current_server == 'en':
+                if _en_ad_started():
+                    state = 3
+                    continue
+                device.screenshot()
+                if reward_text := _find_reward_text():
+                    logger.info('Reward toast is still visible. Dismissing before starting next ad.')
+                    _dismiss_reward_text(reward_text)
+                    continue
             # 开始看
-            if R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
+            if current_server != 'en' and R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
                 logger.debug('Clicked 視聴開始 button.')
                 sleep(1)
                 state = 2
@@ -136,12 +190,29 @@ def clear_common_cm():
                 rep.message(TStr(zh_CN='播放广告', en_US='Playing ad'))
                 logger.debug('Clicked CM start button.')
                 sleep(1)
+                if current_server == 'en':
+                    state = 1
+                    for _ in range(10):
+                        if _en_ad_started():
+                            logger.info('Ad activity detected after CM start click.')
+                            state = 3
+                            break
+                        device.screenshot()
+                        if R.Cm.ButtonPlayCm.q(threshold=0.7).find() is None:
+                            state = 2
+                            break
+                        sleep(0.5)
             # 没有剩余广告了
             else:
                 if not R.Hud.ButtonGoBack.exists():
                     logger.info('All ads cleared.')
                     break
         elif state == 2:
+            if current_server == 'en':
+                if _en_ad_started():
+                    logger.info('Ad activity detected while waiting for ad load.')
+                    state = 3
+                    continue
             if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
                 rep.message(TStr(zh_CN='等待广告载入', en_US='Waiting for ad to load'))
                 logger.debug('Loading ad...')
@@ -153,6 +224,13 @@ def clear_common_cm():
         elif state == 3:
             _sleep(wait_sec, msg=lambda s: TStr(zh_CN=f'等待广告结束，剩余 {s} 秒', en_US=f'Waiting for ad to end, {s}s remaining'))
             logger.debug('Wait ad finished.')
+            if current_server == 'en' and _en_ad_started():
+                device.screenshot()
+                if R.Cm.Ad1.ButtonClose.q(threshold=0.69).try_click():
+                    logger.info('Closed EN ad through the provider exit button.')
+                    sleep(1)
+                    state = 4
+                    continue
             # 返回桌面再重新打开游戏就可以关闭广告
             d.commands.adb_shell('input keyevent KEYCODE_HOME')
             sleep(0.5)
@@ -161,6 +239,8 @@ def clear_common_cm():
             logger.debug('Ad skipped.')
             state = 4
         elif state == 4:
+            if current_server == 'en':
+                device.screenshot()
             # 由于广告没放完就点了跳过导致领取奖励失败
             if R.Cm.TextCmFailed.find():
                 logger.info('Ad play failed due to early skip.')
@@ -168,20 +248,17 @@ def clear_common_cm():
                 sleep(0.5)
                 state = 1
             # 看完了
-            elif AnyOf[
-                R.Cm.TextAwardClaimed,
-                R.Cm.TextApRecovered
-            ].find():
+            elif award_text := _find_reward_text():
                 logger.info('Ad award claimed.')
-                device.click_center() # 关闭奖励领取提示
+                _dismiss_reward_text(award_text)
                 rep.message(TStr(zh_CN='奖励已领取', en_US='Reward claimed'))
                 state = 1
             # Applovin 广告特判
-            elif R.Cm.Ad1.ButtonClose.try_click():
+            elif (current_server != 'en' or _en_ad_started()) and R.Cm.Ad1.ButtonClose.try_click():
                 logger.info('Close button clicked. (Applovin/GP ad?)')
                 sleep(1)
                 state = 1
-            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
+            elif (current_server != 'en' or _en_ad_started()) and R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
                 logger.info('Skip button clicked. (Applovin/GP ad?)')
                 sleep(1)
             # GooglePlay App 广告特判：
@@ -190,7 +267,7 @@ def clear_common_cm():
                 logger.info('Returning to game from ad. (GP ad?)')
                 # device.commands.launch_app(package_name())
                 # 有些广告，调用 launch_app 会触发重新播放，导致无限循环
-                device.commands.adb_shell('adb shell am force-stop com.android.vending')
+                device.commands.adb_shell('am force-stop com.android.vending')
                 sleep(1)
             # 还在加载
             else:
