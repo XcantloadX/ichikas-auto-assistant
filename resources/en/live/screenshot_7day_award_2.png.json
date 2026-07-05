@@ -3,44 +3,33 @@
   "definitions": {
     "57799e00-8036-483a-beb5-3212d3858680": {
       "type": "prefab",
-      "prefab_id": "TemplateMatchPrefab",
       "name": "Live.ChallengeLive.TextAwardClaimConfirm",
+      "variant": "en",
       "props": {
         "template": {
           "kind": "image",
-          "x1": 420,
+          "x1": 519.9783783783785,
           "y1": 411,
-          "x2": 857,
+          "x2": 757.0216216216216,
           "y2": 447
         }
       },
-      "displayName": "この報酬を受け取ります。よろしいですか？",
-      "variant_policy": {
-        "tw": "require",
-        "cn": "require",
-        "en": "require"
-      }
+      "displayName": "Receive this reward?"
     },
     "efb7440d-3b59-4973-9da2-1c1dfffae2c1": {
       "type": "prefab",
-      "prefab_id": "TemplateMatchPrefab",
       "name": "Live.ChallengeLive.ButtonConfirm",
+      "variant": "en",
       "props": {
         "template": {
           "kind": "image",
-          "x1": 733,
+          "x1": 718.0032432432432,
           "y1": 525,
-          "x2": 787,
+          "x2": 802.9965405405405,
           "y2": 557
         }
       },
-      "displayName": "決定",
-      "description": "挑战演出领取奖励弹窗",
-      "variant_policy": {
-        "tw": "require",
-        "cn": "require",
-        "en": "inherit"
-      }
+      "displayName": "Select"
     }
   }
 }
