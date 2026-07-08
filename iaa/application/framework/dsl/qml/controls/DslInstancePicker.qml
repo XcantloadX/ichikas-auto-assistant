@@ -14,13 +14,13 @@ ColumnLayout {
 
     spacing: 4
 
-    function indexOfId(items, value) {
+    function indexOfValue(items, value) {
         if (!items) {
             return -1
         }
         for (let i = 0; i < items.length; ++i) {
             let item = items[i]
-            if (item && item.id === value) {
+            if (item && item.value === value) {
                 return i
             }
         }
@@ -36,11 +36,11 @@ ColumnLayout {
         RowLayout {
             Select {
                 Layout.fillWidth: true
-                enabled: !!root.field.enabled
-                model: root.field.options || []
+                enabled: !!root.field.enabled && !(root.field.props && root.field.props.loading)
+                model: (root.field.props && root.field.props.loading) ? [{label: "载入中...", value: ""}] : (root.field.options || [])
                 textRole: "label"
                 valueRole: "value"
-                currentIndex: root.indexOfId(root.field.options || [], root.field.value)
+                currentIndex: (root.field.props && root.field.props.loading) ? 0 : root.indexOfValue(root.field.options || [], root.field.value)
                 onActivated: root.formController.setValue(root.field.id, currentValue)
             }
             BusyIndicator {
