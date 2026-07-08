@@ -14,6 +14,28 @@ ColumnLayout {
 
     spacing: 4
 
+    function autoRefreshIfEmpty() {
+        if (root.field.props && root.field.props.loading) {
+            return
+        }
+        let opts = root.field.options
+        if (!opts || opts.length === 0) {
+            root.formController.triggerAction(root.field.id, "refresh", "{}")
+        }
+    }
+
+    Component.onCompleted: {
+        if (visible) {
+            Qt.callLater(autoRefreshIfEmpty)
+        }
+    }
+
+    onVisibleChanged: {
+        if (visible) {
+            Qt.callLater(autoRefreshIfEmpty)
+        }
+    }
+
     function indexOfValue(items, value) {
         if (!items) {
             return -1

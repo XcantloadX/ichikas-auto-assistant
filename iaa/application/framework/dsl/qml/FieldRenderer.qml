@@ -20,10 +20,13 @@ Item {
     // 工作副本：初始化时从 initialField 同步，后续由 fieldUpdated 信号更新。
     // 不使用绑定，避免因 runtimeChanged 全量刷新时被重置而打断用户输入。
     property var field: root.initialField
-    readonly property bool fieldVisible: root.field.visible !== false
+    property bool fieldVisible: false
     readonly property bool isCustomKind: root.field.kind in root.extraKinds
 
-    onInitialFieldChanged: root.field = root.initialField
+    onInitialFieldChanged: {
+        root.field = root.initialField
+        root.fieldVisible = root.field.visible !== false
+    }
 
     Connections {
         target: root.formController
@@ -78,6 +81,7 @@ Item {
     }
 
     onFieldChanged: {
+        root.fieldVisible = root.field.visible !== false
         if (root.isCustomKind && customLoader.item) {
             customLoader.item.field = root.field
         }
