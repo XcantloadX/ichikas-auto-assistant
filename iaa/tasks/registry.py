@@ -33,6 +33,12 @@ class TaskInfo(Generic[C]):
     supports_kwargs: bool = False
     get_enabled: Callable[[C], bool] | None = None
 
+    def __post_init__(self) -> None:
+        if self.kind == 'regular' and self.get_enabled is None and not self.task_id.startswith('_'):
+            raise ValueError(
+                f"regular task {self.task_id!r} must provide get_enabled"
+            )
+
 
 IaaTaskInfo = TaskInfo[IaaConfig]
 
@@ -77,9 +83,12 @@ TASK_INFOS: dict[str, IaaTaskInfo] = {
         '_dump_sekai_home', 'dump 烤森', 'regular', _dump_sekai_home,
         get_enabled=lambda c: c.developer.dump_sekai_home_enabled,
     ),
+    'mission_rewards': IaaTaskInfo(
+        'mission_rewards', '任务奖励', 'regular', collect_mission_rewards,
+        get_enabled=lambda c: c.tasks.is_enabled('mission_rewards'),
+    ),
     'main_story': IaaTaskInfo('main_story', '刷主线剧情', 'manual', farm_story),
     'auto_live': IaaTaskInfo('auto_live', '自动演出', 'manual', auto_live, supports_kwargs=True),
-    'mission_rewards': IaaTaskInfo('mission_rewards', '任务奖励', 'manual', collect_mission_rewards),
 }
 
 
