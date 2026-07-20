@@ -1,9 +1,6 @@
 from .auto_live import (
-    SONG_KEEP_UNCHANGED,
     SONG_NAME_OPTIONS,
-    auto_live_payload_to_plan,
     builtin_auto_presets,
-    normalize_song_name_input,
     preset_to_payload,
 )
 from .mappings import (
@@ -41,15 +38,12 @@ __all__ = [
     'RESOLUTION_METHOD_VALUE_MAP',
     'SERVER_DISPLAY_MAP',
     'SERVER_VALUE_MAP',
-    'SONG_KEEP_UNCHANGED',
     'SONG_NAME_OPTIONS',
-    'auto_live_payload_to_plan',
     'builtin_auto_presets',
     'challenge_awards_for_ui',
     'challenge_character_groups_for_ui',
     'challenge_characters_for_ui',
     'map_canvas_to_image',
-    'normalize_song_name_input',
     'preset_to_payload',
     'progress_event_to_state',
 ]

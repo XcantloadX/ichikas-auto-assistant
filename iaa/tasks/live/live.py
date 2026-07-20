@@ -1,4 +1,4 @@
-from typing import Callable, Literal, TypeVar
+from typing import Any, Callable, Literal, TypeVar
 from typing_extensions import assert_never
 from pydantic import BaseModel, ConfigDict
 
@@ -629,3 +629,60 @@ def challenge_live(
     start_auto_live('once', finish_pre_check=claim_reward, auto_set_unit=False, ap_multiplier=None)
     rep.message('挑战演出完成，返回首页')
     go_home()
+
+
+SONG_KEEP_UNCHANGED = '保持不变'
+
+
+def normalize_song_name_input(value: str) -> str | None:
+    normalized = (value or '').strip()
+    if not normalized or normalized == SONG_KEEP_UNCHANGED:
+        return None
+    return normalized
+
+
+def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListLoopPlan:
+    count_mode = str(payload.get('countMode') or 'specify')
+    loop_mode = str(payload.get('loopMode') or 'list')
+    auto_mode = str(payload.get('playMode') or 'game_auto')
+    ap_multiplier_raw = payload.get('apMultiplier', '保持现状')
+    debug_enabled = bool(payload.get('debugEnabled'))
+    auto_set_unit = bool(payload.get('autoSetUnit'))
+    song_name = normalize_song_name_input(str(payload.get('songName') or ''))
+
+    count: int | None = None
+    if count_mode == 'specify':
+        raw_count = str(payload.get('count') or '').strip()
+        if not raw_count.isdigit() or int(raw_count) <= 0:
+            raise ValueError('指定次数必须为正整数。')
+        count = int(raw_count)
+    elif count_mode != 'all':
+        raise ValueError(f'未知的次数模式：{count_mode}')
+
+    if ap_multiplier_raw in (None, '', '保持现状'):
+        ap_multiplier: int | None = None
+    else:
+        ap_multiplier = int(ap_multiplier_raw)
+        if not (0 <= ap_multiplier <= 10):
+            raise ValueError('AP 倍率必须在 0 到 10 之间。')
+
+    if loop_mode == 'single':
+        return SingleLoopPlan(
+            loop_count=count,
+            song_select_mode='specified' if song_name else 'current',
+            song_name=song_name,
+            play_mode='script_auto' if auto_mode == 'script_auto' else 'game_auto',
+            debug_enabled=debug_enabled,
+            ap_multiplier=ap_multiplier,
+            auto_set_unit=auto_set_unit,
+        )
+    if loop_mode in ('list', 'random'):
+        return ListLoopPlan(
+            loop_count=count,
+            loop_song_mode='random' if loop_mode == 'random' else 'list_next',
+            play_mode='script_auto' if auto_mode == 'script_auto' else 'game_auto',
+            debug_enabled=debug_enabled,
+            ap_multiplier=ap_multiplier,
+            auto_set_unit=auto_set_unit,
+        )
+    raise ValueError(f'未知的循环模式：{loop_mode}')

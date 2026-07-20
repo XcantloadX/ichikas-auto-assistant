@@ -12,7 +12,8 @@ from iaa.application.service.iaa_service import IaaService
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import TASK_INFOS
 
-from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
+from iaa.tasks.live.live import auto_live_payload_to_plan
+from ..models import builtin_auto_presets, preset_to_payload
 from .progress_bridge import ProgressBridge
 
 

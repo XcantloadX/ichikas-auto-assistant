@@ -22,10 +22,9 @@ from iaa.application.framework.dsl import (
     bind,
     custom_ref,
 )
+from iaa.tasks.live.live import SONG_KEEP_UNCHANGED, normalize_song_name_input
 from .context import FormContext
 from ..models import (
-    SONG_KEEP_UNCHANGED,
-    normalize_song_name_input,
     LIFECYCLE_TYPE_DISPLAY_MAP,
     CONNECTION_TYPE_DISPLAY_MAP,
     SERVER_DISPLAY_MAP,

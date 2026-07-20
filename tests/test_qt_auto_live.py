@@ -1,6 +1,6 @@
 import unittest
 
-from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
+from iaa.tasks.live.live import auto_live_payload_to_plan
 from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan
 
 
