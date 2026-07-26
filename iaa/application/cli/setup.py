@@ -1,7 +1,12 @@
 from iaa.application.cli.index import CliTaskConfig, configure
-from iaa.tasks.live.live import auto_live_payload_to_plan
 
 import click
+
+
+def _auto_live_transform(raw):
+    from iaa.tasks.live.live import auto_live_payload_to_plan
+    return {'plan': auto_live_payload_to_plan(raw)}
+
 
 configure({
     'main_story': CliTaskConfig(
@@ -10,6 +15,6 @@ configure({
         ),
     ),
     'auto_live': CliTaskConfig(
-        kwargs_transform=lambda raw: {'plan': auto_live_payload_to_plan(raw)},
+        kwargs_transform=_auto_live_transform,
     ),
 })
