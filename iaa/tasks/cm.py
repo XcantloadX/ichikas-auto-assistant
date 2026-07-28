@@ -124,16 +124,23 @@ def clear_common_cm():
     rep = task_reporter()
     d = device.of_android()
     current_server = server()
+    def _en_provider_activity() -> str:
+        try:
+            return d.commands.adb_shell('dumpsys activity activities | grep ResumedActivity')
+        except Exception:
+            logger.exception('Failed to check foreground ad activity.')
+            return ''
+
     def _en_ad_started() -> bool:
         if current_server != 'en':
             return False
         try:
             if device.commands.current_package() != package_name():
                 return True
-            activity = d.commands.adb_shell('dumpsys activity activities | grep ResumedActivity')
         except Exception:
             logger.exception('Failed to check foreground ad activity.')
             return False
+        activity = _en_provider_activity()
         return package_name() in activity and 'MessagingUnityPlayerActivity' not in activity
 
     def _find_reward_text():
@@ -175,7 +182,7 @@ def clear_common_cm():
         if R.Cm.Ad1.ButtonClose.q(threshold=0.69).try_click():
             return 'inherited close X'
         if R.Cm.Ad1.ButtonSkip.q(threshold=0.70).try_click():
-            return 'skip control'
+            return 'Google Play button'
         return None
 
     def _return_from_ad_with_home() -> None:
@@ -245,21 +252,31 @@ def clear_common_cm():
             _sleep(wait_sec, msg=lambda s: TStr(zh_CN=f'等待广告结束，剩余 {s} 秒', en_US=f'Waiting for ad to end, {s}s remaining'))
             logger.debug('Wait ad finished.')
             if current_server == 'en' and _en_ad_started():
+                provider_control = None
                 for _ in range(max_provider_exit_attempts):
                     if provider_control := _try_en_provider_exit():
-                        provider_exit_attempts = 1
-                        provider_exit_misses = 0
-                        logger.info(
-                            'Clicked EN provider %s (exit attempt %s/%s).',
-                            provider_control,
-                            provider_exit_attempts,
-                            max_provider_exit_attempts
-                        )
-                        sleep(1)
-                        state = 4
                         break
                     sleep(0.5)
-                if state == 4:
+                # ponytail: provider activity is the stable two-class boundary; keep wake taps AppLovin-only.
+                if provider_control is None and 'AppLovinFullscreenActivity' in _en_provider_activity():
+                    logger.info('AppLovin exit controls are hidden. Tapping the ad body to reveal them.')
+                    device.click(640, 680)
+                    sleep(0.5)
+                    for _ in range(max_provider_exit_attempts):
+                        if provider_control := _try_en_provider_exit():
+                            break
+                        sleep(0.5)
+                if provider_control is not None:
+                    provider_exit_attempts = 1
+                    provider_exit_misses = 0
+                    logger.info(
+                        'Clicked EN provider %s (exit attempt %s/%s).',
+                        provider_control,
+                        provider_exit_attempts,
+                        max_provider_exit_attempts
+                    )
+                    sleep(1)
+                    state = 4
                     continue
             # 返回桌面再重新打开游戏就可以关闭广告
             logger.info('No provider exit control matched. Using Home/relaunch fallback.')
@@ -285,7 +302,16 @@ def clear_common_cm():
                 provider_exit_misses = 0
                 state = 1
             elif current_server == 'en' and _en_ad_started():
-                if device.commands.current_package() != package_name():
+                current_package = device.commands.current_package()
+                if current_package == 'com.android.vending':
+                    logger.info(
+                        'EN provider opened Google Play. Pressing Android Back to return to its end card.'
+                    )
+                    d.commands.adb_shell('input keyevent KEYCODE_BACK')
+                    sleep(1)
+                    provider_exit_misses = 0
+                    continue
+                if current_package != package_name():
                     logger.info(
                         'EN provider opened an external app. Returning to its end card.'
                     )
