@@ -205,8 +205,8 @@ def clear_common_cm():
                     _dismiss_reward_text(reward_text)
                     continue
             # 开始看
-            if current_server != 'en' and R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
-                logger.debug('Clicked 視聴開始 button.')
+            if R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
+                logger.debug('Clicked CM confirmation button.')
                 sleep(1)
                 state = 2
             elif R.Cm.ButtonPlayCm.try_click():
@@ -216,17 +216,7 @@ def clear_common_cm():
                 logger.debug('Clicked CM start button.')
                 sleep(1)
                 if current_server == 'en':
-                    state = 1
-                    for _ in range(10):
-                        if _en_ad_started():
-                            logger.info('Ad activity detected after CM start click.')
-                            state = 3
-                            break
-                        device.screenshot()
-                        if R.Cm.ButtonPlayCm.q(threshold=0.7).find() is None:
-                            state = 2
-                            break
-                        sleep(0.5)
+                    state = 2
             # 没有剩余广告了
             else:
                 if not R.Hud.ButtonGoBack.exists():
@@ -237,6 +227,11 @@ def clear_common_cm():
                 if _en_ad_started():
                     logger.info('Ad activity detected while waiting for ad load.')
                     state = 3
+                    continue
+                device.screenshot()
+                if R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
+                    logger.debug('Clicked CM confirmation button.')
+                    sleep(1)
                     continue
             if R.Cm.ButtonPlayCm.q(threshold=0.7).find():
                 rep.message(TStr(zh_CN='等待广告载入', en_US='Waiting for ad to load'))
