@@ -247,6 +247,8 @@ jobs:
           app['android.permissions'] = 'INTERNET'
           app['title'] = 'iaa'
           app['version'] = '26.07b1'
+          # 仓库版本号 '26.07b1' 非数值点分格式，Android 需要显式 versionCode
+          app['android.numeric_version'] = '2607'
           # 工具生成的 include_exts 缺 ttf/txt（QML FontLoader 需要 ttf 进包）
           cur_exts = app.get('source.include_exts', 'py,png,jpg,qml,js')
           app['source.include_exts'] = cur_exts + ',ttf,txt'
