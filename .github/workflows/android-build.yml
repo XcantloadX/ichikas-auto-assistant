@@ -78,7 +78,13 @@ jobs:
           # 桌面版 PySide6 自带 pyside6-android-deploy 控制台脚本
           python3 -m pip install "PySide6==$PYSIDE_VERSION"
           python3 -m pip install buildozer==1.5.0 cython==0.29.33 meson
+          # pyside6-android-deploy 运行时依赖（jinja2/pkginfo/tqdm/packaging==24.1），
+          # 官方要求从对应 requirements-android.txt 安装精确版本
           python3 -m pyside6_android_deploy --help >/dev/null 2>&1 || true
+          req="/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/PySide6/scripts/requirements-android.txt"
+          # 用 python 定位（路径可能因 setup-python 版本而变）
+          REQ_PATH=$(python3 -c "import PySide6.scripts, pathlib; p=pathlib.Path(PySide6.scripts.__file__).parent/'requirements-android.txt'; print(p)")
+          python3 -m pip install -r "$REQ_PATH"
           which pyside6-android-deploy
 
       # ---- 下载 PySide6 官方 android x86_64 wheel（cp311）----
