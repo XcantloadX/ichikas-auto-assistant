@@ -214,7 +214,7 @@ jobs:
         working-directory: ${{ env.app_dir }}
         run: |
           python3 - <<'PY'
-          import configparser, pathlib, sys
+          import configparser, pathlib, re, sys
 
           spec = pathlib.Path('buildozer.spec')
           if not spec.exists():
@@ -252,6 +252,24 @@ jobs:
           # 工具生成的 include_exts 缺 ttf/txt（QML FontLoader 需要 ttf 进包）
           cur_exts = app.get('source.include_exts', 'py,png,jpg,qml,js')
           app['source.include_exts'] = cur_exts + ',ttf,txt'
+
+          # 【启动崩溃修复】--qt-libs 顺序必须保证 Qt6Core 在最前。
+          # 背景：JVM 只对 System.load 显式加载的库调用 JNI_OnLoad；被 dlopen 拉入的
+          # 依赖库不会触发。QJniEnvironment::getJniEnv() 依赖 libQt6Core 的 JNI_OnLoad
+          # 注册全局 JavaVM(g_javaVM，见 qtbase qjnihelpers.cpp)。若 Qt6Quick 先加载，
+          # 其 JNI_OnLoad 里 getJniEnv() 会因 g_javaVM 为空而 SIGSEGV。
+          # pyside6-android-deploy 用 list(set(...)) 生成 --qt-libs，顺序随机，
+          # 因此这里强制把 Core 排到首位。详见 notes/05-root-cause-jni.md。
+          extra_args = app.get('p4a.extra_args', '')
+          m = re.match(r'(.*--qt-libs=)([^ ]+)(.*)', extra_args)
+          if m:
+              modules = m.group(2).split(',')
+              reordered = ['Core'] + [x for x in modules if x != 'Core']
+              app['p4a.extra_args'] = (
+                  m.group(1) + ','.join(reordered) + m.group(3))
+              print('reordered --qt-libs =', ','.join(reordered))
+          else:
+              print('::warning::--qt-libs not found in p4a.extra_args')
           with spec.open('w', encoding='utf-8') as f:
               cp.write(f, space_around_delimiters=True)
           print('patched requirements =', requirements)
