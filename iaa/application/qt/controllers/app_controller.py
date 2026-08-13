@@ -1,10 +1,13 @@
 import os
+import shutil
 import sys
 import platform
+from importlib import resources
 
 from PySide6.QtCore import QObject, Property, Signal, Slot, QUrl
 from PySide6.QtGui import QDesktopServices
 
+from iaa.platform import env
 from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
 from iaa.telemetry import setup as setup_telemetry
@@ -16,6 +19,60 @@ from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+
+
+# FontLoader/Image.source 需要文件系统真实路径（file://）。Android 端这组资源
+# 的候选落点,按优先级排序。
+_ANDROID_FONT_CONFIG = ('fonts', 'FluentSystemIcons-Regular.ttf')
+
+
+def _android_assets_candidates() -> list[str]:
+    """返回 Android 上可能的 assets 资源落点,按优先级排序。
+
+    :return: 候选 assets 根目录绝对路径列表。
+    """
+    candidates: list[str] = [os.path.join(env.app_root(), 'assets')]
+    for package in ('iaa', 'iaa.res'):
+        try:
+            candidates.append(str(resources.files(package) / 'assets'))
+        except Exception:
+            # 包不存在或无法解析时跳过
+            continue
+    return candidates
+
+
+def _ensure_android_assets_dir() -> str:
+    """确保 Android 上存在可写的 assets 目录并返回它。
+
+    Android 没有独立的 assets 目录（``env.asset_dir()`` 抛 NotImplementedError）,
+    QML 的 FontLoader 又需要真实文件路径,因此把打包携带的字体等资源复制到
+    ``env.data_dir()/assets``。若所有候选源都未命中,仍返回（可能为空的）
+    目录,避免 QML 侧拼接 ``file://`` 路径时崩溃。
+
+    :return: 可写 assets 根目录绝对路径。
+    """
+    fonts_dir = os.path.join(*_ANDROID_FONT_CONFIG)
+    target = os.path.join(env.data_dir(), 'assets')
+    if os.path.isfile(os.path.join(target, fonts_dir)):
+        return target
+    os.makedirs(target, exist_ok=True)
+    for candidate in _android_assets_candidates():
+        src = os.path.join(candidate, fonts_dir)
+        if os.path.isfile(src):
+            os.makedirs(os.path.dirname(os.path.join(target, fonts_dir)), exist_ok=True)
+            shutil.copyfile(src, os.path.join(target, fonts_dir))
+            break
+    return target
+
+
+def _resolve_assets_root() -> str:
+    """解析暴露给 QML 的 assets 根目录（QML 侧自行拼接 ``file://`` 前缀）。
+
+    :return: assets 根目录绝对路径。
+    """
+    if env.IS_ANDROID:
+        return _ensure_android_assets_dir()
+    return os.path.join(IaaService.app_root(), 'assets')
 
 
 class AppController(QObject):
@@ -55,6 +112,9 @@ class AppController(QObject):
         return IaaService.app_version()
 
     def _get_window_title(self) -> str:
+        # Android(p4a) 下 platform.system() 仍返回 'Linux',须先用平台感知判定
+        if env.IS_ANDROID:
+            return '一歌小助手 (Android)'
         if platform.system() == 'Windows':
             return '一歌小助手'
         elif platform.system() == 'Darwin':
@@ -65,7 +125,7 @@ class AppController(QObject):
             return '一歌小助手'
 
     def _get_assets_root_path(self) -> str:
-        return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
+        return _resolve_assets_root().replace('\\', '/')
 
     def _get_global_error(self) -> str:
         return self._global_error

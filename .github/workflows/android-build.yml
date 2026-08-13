@@ -1,0 +1,276 @@
+name: Android Build (p4a + PySide6)
+
+# 手动触发。首次运行预期失败并暴露问题（SDK/NDK 下载、p4a recipe、缺失 wheels），
+# 属于迭代的一部分：失败日志与生成的 buildozer.spec 会随 artifact 上传，方便下一轮修正。
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: android-build-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # p4a / buildozer 需要 JDK 17（Qt 官方工具链对齐版本）
+  JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
+  # Qt 官方 android wheel 版本与架构（目标模拟器 x86_64 / API 35）
+  PYSIDE_VERSION: 6.11.1
+  P4A_ARCH: x86_64
+  ANDROID_API: 35
+  ANDROID_NDK: r27c
+
+jobs:
+  build-apk:
+    name: build android x86_64 apk
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # ---- 系统依赖：p4a / buildozer / Qt 工具链的常规依赖 ----
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            openjdk-17-jdk-headless \
+            build-essential \
+            ccache \
+            autoconf automake libtool \
+            zlib1g-dev libffi-dev libssl-dev \
+            pkg-config \
+            ninja-build \
+            wget unzip zip curl \
+            python3-venv python3-pip \
+            git
+          java -version
+
+      # ---- Rust 工具链：pydantic-core 的 p4a recipe（RustCompiledComponentsRecipe）需要 ----
+      - name: Install Rust toolchain
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal --default-toolchain stable
+          echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+
+      # ---- 宿主 Python：pyside6-android-deploy 要求宿主 Python <= 3.11 ----
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache p4a venv wheels / buildozer
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+          key: p4a-pip-${{ env.PYSIDE_VERSION }}
+          restore-keys: |
+            p4a-pip-
+
+      - name: Install PySide6 desktop + pyside6-android-deploy + buildozer
+        run: |
+          python3 -m pip install --upgrade pip
+          # 桌面版 PySide6 自带 pyside6-android-deploy 控制台脚本
+          python3 -m pip install "PySide6==$PYSIDE_VERSION"
+          python3 -m pip install buildozer==1.5.0 cython==0.29.33 meson
+          python3 -m pyside6_android_deploy --help >/dev/null 2>&1 || true
+          which pyside6-android-deploy
+
+      # ---- 下载 PySide6 官方 android x86_64 wheel（cp311）----
+      - name: Download PySide6 android wheels
+        run: |
+          mkdir -p "$RUNNER_TEMP/wheels"
+          base=https://download.qt.io/official_releases/QtForPython
+          curl -fL -o "$RUNNER_TEMP/wheels/pyside6.whl" \
+            "$base/pyside6/pyside6-$PYSIDE_VERSION-$PYSIDE_VERSION-cp311-cp311-android_$P4A_ARCH.whl"
+          curl -fL -o "$RUNNER_TEMP/wheels/shiboken6.whl" \
+            "$base/shiboken6/shiboken6-$PYSIDE_VERSION-$PYSIDE_VERSION-cp311-cp311-android_$P4A_ARCH.whl"
+          ls -lh "$RUNNER_TEMP/wheels"
+
+      # ---- Android SDK + NDK：预装并缓存（NDK 路径与 Qt 工具缓存一致）----
+      - name: Cache Android NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.home }}/.pyside6_android_deploy/android-ndk/android-ndk-${{ env.ANDROID_NDK }}
+          key: ndk-${{ env.ANDROID_NDK }}-${{ env.ANDROID_API }}
+          restore-keys: |
+            ndk-${{ env.ANDROID_NDK }}-
+
+      - name: Cache Android SDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.home }}/android-sdk
+          key: sdk-${{ env.ANDROID_API }}
+          restore-keys: |
+            sdk-
+
+      - name: Install Android NDK
+        run: |
+          ndk_root="$HOME/.pyside6_android_deploy/android-ndk"
+          ndk_dir="$ndk_root/android-ndk-$ANDROID_NDK"
+          if [ ! -d "$ndk_dir" ]; then
+            mkdir -p "$ndk_root"
+            echo "Downloading Android NDK $ANDROID_NDK"
+            curl -fL -o "$RUNNER_TEMP/ndk.zip" \
+              "https://dl.google.com/android/repository/android-ndk-$ANDROID_NDK-linux.zip"
+            unzip -q "$RUNNER_TEMP/ndk.zip" -d "$ndk_root"
+          fi
+          test -f "$ndk_dir/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android21-clang"
+
+      - name: Install Android SDK (cmdline-tools + platform/build-tools)
+        run: |
+          export ANDROID_SDK_ROOT="$HOME/android-sdk"
+          if [ ! -x "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ]; then
+            mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
+            curl -fL -o "$RUNNER_TEMP/clt.zip" \
+              "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip"
+            unzip -q "$RUNNER_TEMP/clt.zip" -d "$ANDROID_SDK_ROOT/cmdline-tools"
+            mv "$ANDROID_SDK_ROOT/cmdline-tools/cmdline-tools" \
+               "$ANDROID_SDK_ROOT/cmdline-tools/latest"
+          fi
+          export PATH="$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
+          yes | sdkmanager --sdk_root="$ANDROID_SDK_ROOT" --licenses >/dev/null
+          sdkmanager --sdk_root="$ANDROID_SDK_ROOT" \
+            "platform-tools" \
+            "platforms;android-$ANDROID_API" \
+            "build-tools;35.0.0"
+          test -f "$ANDROID_SDK_ROOT/platforms/android-$ANDROID_API/android.jar"
+
+      # ---- 准备干净的应用目录（不含 .git/.venv/构建缓存）----
+      - name: Prepare app build directory
+        run: |
+          app_dir="$RUNNER_TEMP/iaa-app"
+          rsync -a --delete \
+            --exclude '.git' \
+            --exclude '.venv' \
+            --exclude '__pycache__' \
+            --exclude '.ruff_cache' \
+            --exclude '.pytest_cache' \
+            --exclude '.buildozer' \
+            --exclude 'deployment' \
+            --exclude 'build' \
+            --exclude 'dist' \
+            --exclude 'dumps*' \
+            --exclude 'logs' \
+            --exclude 'conf' \
+            "$GITHUB_WORKSPACE/" "$app_dir/"
+          cd "$app_dir"
+          # 官方工具若发现 buildozer.spec 已存在会跳过自动配置：把仓库骨架挪开，
+          # 让工具先生成一份完整的 Qt 配置（含 recipes 引用、--qt-libs、jars）。
+          mv buildozer.spec buildozer.spec.sample
+          echo "app_dir=$app_dir" >> "$GITHUB_ENV"
+
+      # ---- 第一次 deploy：生成 buildozer.spec + 动态 recipes（构建可能失败，属预期）----
+      - name: Generate buildozer.spec via pyside6-android-deploy (pass 1)
+        working-directory: ${{ env.app_dir }}
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          # 失败也继续：生成的 buildozer.spec / deployment/ 会被下一步补丁复用
+          pyside6-android-deploy \
+            --wheel-pyside="$RUNNER_TEMP/wheels/pyside6.whl" \
+            --wheel-shiboken="$RUNNER_TEMP/wheels/shiboken6.whl" \
+            --ndk-path="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
+            --sdk-path="$HOME/android-sdk" \
+            --keep-deployment-files \
+            --force \
+            --name iaa \
+            --verbose \
+            -c pysidedeploy.spec || true
+          ls -la buildozer.spec && grep -n '^requirements' buildozer.spec || echo "buildozer.spec missing"
+
+      # ---- 补丁：把仓库的 Android 依赖与构建参数并入工具生成的 spec ----
+      - name: Merge iaa requirements into generated buildozer.spec
+        working-directory: ${{ env.app_dir }}
+        run: |
+          python3 - <<'PY'
+          import configparser, pathlib, sys
+
+          spec = pathlib.Path('buildozer.spec')
+          if not spec.exists():
+              # 工具在生成 spec 之前就失败了 —— 上报日志，交给下一次迭代排查
+              print('::warning::buildozer.spec was not generated; nothing to patch')
+              sys.exit(0)
+
+          # 读取 p4a.txt 里“额外”依赖（纯 Python 显式全量 + pydantic-core recipe）
+          extra = []
+          for line in pathlib.Path('requirements/p4a.txt').read_text(encoding='utf-8').splitlines():
+              line = line.strip()
+              if not line or line.startswith('#'):
+                  continue
+              extra.append(line)
+
+          base = 'python3==3.11.9,hostpython3==3.11.9,shiboken6,PySide6'
+          requirements = base + ',' + ','.join(extra)
+
+          cp = configparser.ConfigParser(
+              comment_prefixes='#', inline_comment_prefixes=None, interpolation=None)
+          cp.read(spec, encoding='utf-8')
+          app = cp['app']
+          app['requirements'] = requirements
+          # 硬编码段（与仓库 buildozer.spec 骨架一致）
+          app['android.accept_sdk_license'] = 'True'
+          app['android.wakelock'] = 'True'
+          app['android.api'] = '35'
+          app['android.minapi'] = '24'
+          app['android.ndk_api'] = '24'
+          app['android.permissions'] = 'INTERNET'
+          app['title'] = 'iaa'
+          app['version'] = '26.07b1'
+          with spec.open('w', encoding='utf-8') as f:
+              cp.write(f, space_around_delimiters=True)
+          print('patched requirements =', requirements)
+          PY
+
+      - name: Show merged buildozer.spec
+        working-directory: ${{ env.app_dir }}
+        run: |
+          grep -E '^(requirements|p4a\.|android\.|title|version|source)' buildozer.spec | head -40
+
+      # ---- 第二次 deploy：工具复用补丁后的 spec 进行完整构建 ----
+      - name: Build APK via pyside6-android-deploy (pass 2)
+        working-directory: ${{ env.app_dir }}
+        run: |
+          export PATH="$HOME/.cargo/bin:$PATH"
+          # 工具上次可能把 .buildozer 移进 deployment/，恢复以便增量复用
+          if [ -d deployment/.buildozer ]; then
+            mv deployment/.buildozer .buildozer
+          fi
+          pyside6-android-deploy \
+            --wheel-pyside="$RUNNER_TEMP/wheels/pyside6.whl" \
+            --wheel-shiboken="$RUNNER_TEMP/wheels/shiboken6.whl" \
+            --ndk-path="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
+            --sdk-path="$HOME/android-sdk" \
+            --keep-deployment-files \
+            --force \
+            --name iaa \
+            --verbose \
+            -c pysidedeploy.spec
+          # 收集产物
+          mkdir -p "$RUNNER_TEMP/artifacts"
+          cp -f *.apk *.aab "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
+          if [ -d deployment/.buildozer ]; then
+            cp -f deployment/.buildozer/android/platforms/*/*/*.apk "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
+          fi
+          find .buildozer -name '*.apk' -exec cp -f {} "$RUNNER_TEMP/artifacts/" \; 2>/dev/null || true
+          echo "=== artifacts ==="
+          ls -lh "$RUNNER_TEMP/artifacts"
+
+      # ---- 无论成败都上传产物与日志，方便下一轮迭代 ----
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: iaa-android-${{ env.P4A_ARCH }}
+          path: ${{ runner.temp }}/artifacts/*.apk
+          if-no-files-found: warn
+
+      - name: Upload build logs and spec
+        uses: actions/upload-artifact@v4
+        with:
+          name: iaa-android-logs
+          path: |
+            ${{ env.app_dir }}/buildozer.spec
+            ${{ env.app_dir }}/.buildozer/buildozer.log
+            ${{ env.app_dir }}/deployment/**
+          if-no-files-found: warn

@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import threading
 from pathlib import Path
 
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
-from PySide6.QtWidgets import QFileDialog
 
+from iaa.platform import env
 from iaa.application.service.iaa_service import IaaService
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import TASK_INFOS
@@ -171,16 +172,37 @@ class RunController(QObject):
         threading.Thread(target=_run, name='IAA-ExportReport', daemon=True).start()
 
     def _show_save_dialog(self, tmp_zip: str) -> None:
+        if env.IS_ANDROID:
+            # Android 没有 QFileDialog：报告直接落到应用私有数据目录下的 exports/
+            save_path = os.path.join(env.data_dir(), 'exports', Path(tmp_zip).name)
+            self._persist_export(tmp_zip, save_path)
+            return
+        from PySide6.QtWidgets import QFileDialog
         save_path, _ = QFileDialog.getSaveFileName(
             None,
             '保存报告',
             str(Path(tmp_zip).name),
             'Zip 文件 (*.zip)',
         )
+        if not save_path:
+            # 用户取消选择：复位导出忙碌状态
+            self._export_busy = False
+            self.stateChanged.emit()
+            return
+        self._persist_export(tmp_zip, save_path)
+
+    def _persist_export(self, tmp_zip: str, save_path: str) -> None:
+        """把临时 zip 复制到目标路径,并完成后处理。
+
+        :param tmp_zip: 临时 zip 的绝对路径。
+        :param save_path: 目标保存路径。
+        """
         try:
-            if save_path:
-                shutil.copyfile(tmp_zip, save_path)
-                self.operationSucceeded.emit('报告已保存。')
+            dirname = os.path.dirname(save_path)
+            if dirname:
+                os.makedirs(dirname, exist_ok=True)
+            shutil.copyfile(tmp_zip, save_path)
+            self.operationSucceeded.emit('报告已保存。')
         except Exception as exc:  # noqa: BLE001
             self.operationFailed.emit(f'保存失败：{exc}')
         finally:

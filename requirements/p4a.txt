@@ -1,0 +1,43 @@
+# Android(p4a) 专用依赖清单 —— 与 buildozer.spec 的 requirements 段保持一致。
+#
+# 注意：
+#   - p4a 对无 recipe 的纯 Python 包用 pip install --target ... --no-deps 安装，
+#     因此这里必须把运行期真正 import 到的顶层包全部显式列出（不含传递依赖）。
+#   - PyPI 上没有 android wheel、也没有 p4a recipe 的编译型包（onnxruntime、
+#     rapidocr_onnxruntime、thefuzz(+rapidfuzz) 等）不要放进本清单，详见
+#     notes/03-build-infra.md 的可行性结论。
+#   - python3/hostpython3 与 shiboken6/PySide6 由 buildozer.spec 兜底维护，
+#     此处只列“额外”依赖。
+
+# ---- 编译型依赖（p4a recipe，见 notes/03-build-infra.md）----
+# pydantic-core 无 android wheel；p4a v2026.05.09 内置 Rust recipe，pin 到 2.41.4
+# 使其与下方 pydantic==2.12.3 的依赖完全匹配。
+pydantic-core==2.41.4
+# opencv 4.12.0 recipe（depends=[numpy]，numpy 自动带入 recipe）
+opencv
+
+# ---- 纯 Python 依赖（p4a pip --no-deps 安装，需显式列出全量）----
+# pydantic 2.12.3 的 pydantic-core==2.41.4 与内置 recipe 完全匹配；与桌面 2.11.7 解耦。
+pydantic==2.12.3
+# pydantic 运行时依赖
+typing-extensions
+annotated-types
+typing-inspection
+
+# kotonebot 及其纯 Python 运行时依赖（rapidocr/onnxruntime 等编译依赖已被剥离，
+# 启动链只 import cv2/numpy，见 notes）
+kotonebot==0.19.1
+python-dotenv
+ksaa-res
+
+# 网络
+requests
+charset-normalizer
+idna
+urllib3
+certifi
+
+# 其它 iaa 直接依赖（纯 Python）
+sentry-sdk
+plyer
+click

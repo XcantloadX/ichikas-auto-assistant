@@ -7,6 +7,7 @@ from kotonebot.errors import UserFriendlyError
 
 from iaa import __VERSION__
 from iaa.config import manager
+from iaa.platform import env
 
 logger = logging.getLogger(__name__)
 
@@ -14,9 +15,7 @@ SENTRY_DSN = 'http://efb1a54675734ab18ae8e6732d31dac0@bugsink.1ichika.de/2'
 
 
 def _root_dir() -> str:
-    if not os.path.basename(sys.executable).startswith('python'):
-        return os.path.dirname(sys.executable)
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    return env.app_root()
 
 
 def _load_shared():
@@ -25,6 +24,11 @@ def _load_shared():
 
 
 def is_dev() -> bool:
+    # 桌面保真:源码/调试解释器（以 python 开头的可执行名）视为开发环境。
+    # Android 打包版恒为 False（视为生产）,避免 p4a 下 sys.executable 指向
+    # 解释器目录而误判为开发环境、意外跳过遥测。
+    if env.IS_ANDROID:
+        return False
     return os.path.basename(sys.executable).startswith('python')
 
 

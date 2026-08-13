@@ -1,40 +1,71 @@
 from __future__ import annotations
 
+import importlib.util
 import sys
 from typing import TYPE_CHECKING, cast
-from pynput import keyboard
+
 from PySide6.QtCore import QObject, QMetaObject, Qt
 
 from iaa.config import manager as config_manager
+from iaa.platform import env
 
 if TYPE_CHECKING:
     from .tab_manager import TabManager
     from .preferences_controller import PreferencesController
 
-if sys.platform == 'darwin':
-    # macOS 14+ workaround for pynput EXC_BREAKPOINT in background thread
-    # 缓存 context，避免跨线程调用 native api 导致 crash
-    from pynput._util.darwin import keycode_context as original_keycode_context
-    import pynput.keyboard._darwin
-    import pynput._util.darwin
-    import contextlib
 
-    _cached_context = None
+def _pynput_available() -> bool:
+    """探测 pynput 是否可导入。
+
+    Android 上 pynput 没有 p4a recipe、无法安装;测试环境也可能用
+    ``sys.modules`` 置 None 或 ``sys.meta_path`` 钩子屏蔽它,两种都等价于不可用。
+
+    :return: 可导入返回 True,否则返回 False。
+    """
     try:
-        with original_keycode_context() as ctx:
-            _cached_context = ctx
-    except Exception:
-        pass
+        return importlib.util.find_spec('pynput') is not None
+    except (ImportError, AttributeError):
+        return False
 
-    @contextlib.contextmanager
-    def _patched_keycode_context():
-        yield _cached_context
 
-    pynput.keyboard._darwin.keycode_context = _patched_keycode_context
-    pynput._util.darwin.keycode_context = _patched_keycode_context
+# 平台实现选择:Android（无法做全局按键）或未安装 pynput 时退化为空壳,
+# 不启动任何监听线程;桌面（含 Windows/macOS）使用 pynput。在 import 期冻结,
+# 避免运行期反复探测。
+_HOTKEY_IMPL: str = 'noop' if env.IS_ANDROID or not _pynput_available() else 'pynput'
+
+if _HOTKEY_IMPL == 'pynput':
+    from pynput import keyboard
+
+    if sys.platform == 'darwin':
+        # macOS 14+ workaround for pynput EXC_BREAKPOINT in background thread
+        # 缓存 context，避免跨线程调用 native api 导致 crash
+        from pynput._util.darwin import keycode_context as original_keycode_context
+        import pynput.keyboard._darwin
+        import pynput._util.darwin
+        import contextlib
+
+        _cached_context = None
+        try:
+            with original_keycode_context() as ctx:
+                _cached_context = ctx
+        except Exception:
+            pass
+
+        @contextlib.contextmanager
+        def _patched_keycode_context():
+            yield _cached_context
+
+        pynput.keyboard._darwin.keycode_context = _patched_keycode_context
+        pynput._util.darwin.keycode_context = _patched_keycode_context
 
 
 class GlobalHotkeyController(QObject):
+    """全局快捷键控制器。
+
+    当 ``_HOTKEY_IMPL`` 为 ``noop`` 时（Android / 未安装 pynput）不启动任何
+    全局监听,``reload_hotkeys`` 直接返回,以保持与桌面一致的构造入口与信号协议。
+    """
+
     def __init__(self, tab_manager: 'TabManager', preferences_controller: 'PreferencesController', parent: QObject | None = None) -> None:
         super().__init__(parent)
         self._tab_manager = tab_manager
@@ -49,6 +80,9 @@ class GlobalHotkeyController(QObject):
         return self._tab_manager.activeRunController
 
     def reload_hotkeys(self) -> None:
+        if _HOTKEY_IMPL == 'noop':
+            # Android/未安装 pynput:无法做全局监听,直接忽略,保持接口与信号协议一致
+            return
         hotkeys = config_manager.read_shared().hotkeys
         self._register_hotkeys(hotkeys.start or '', hotkeys.stop or '')
 

@@ -1,10 +1,10 @@
-import os
 from typing import Callable
 
 from kotonebot import logging
 from pydantic_core import ValidationError
 from iaa.config import manager
 from iaa.config.manager import ConfigValidationError
+from iaa.platform import env
 
 logger = logging.getLogger(__name__)
 
@@ -16,8 +16,7 @@ class ConfigService:
         # is_running: 可选的调度器运行状态查询函数，由 IaaService 在构造完 SchedulerService 后注入。
         # 可在此处通过替换 is_running 来自定义"切换配置前的前置检查"。
         self._is_running = is_running or (lambda: False)
-        from .iaa_service import IaaService
-        manager.config_path = os.path.join(IaaService.app_root(), 'conf')
+        manager.config_path = env.config_dir()
 
         self.shared = manager.read_shared()
 

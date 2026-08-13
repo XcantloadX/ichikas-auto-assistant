@@ -23,6 +23,8 @@ from iaa.config.schemas import (
     UsbConnection,
 )
 from iaa.definitions.consts import package_by_server
+from iaa.platform import env
+from iaa.platform.device_android.device import SelfAndroidDevice
 from iaa.utils import asset_path
 
 _SCRCPY_BUNDLED_VERSION = '3.3.1'
@@ -32,7 +34,7 @@ if TYPE_CHECKING:
     from kotonebot.client.host import AdbHostConfig
     from kotonebot.client.host.protocol import HostProtocol
 
-ResolvedHostTarget = Instance[Any] | PlaycoverApp
+ResolvedHostTarget = Instance[Any] | PlaycoverApp | SelfAndroidDevice
 
 logger = logging.getLogger(__name__)
 
@@ -137,13 +139,18 @@ class DeviceFactory:
         假定 host 已 running（由 :meth:`resolve_host` 保证）。
 
         :param resolved: :meth:`resolve_host` 的返回结果。
-        :param impl: 控制实现，如 ``'nemu_ipc'`` / ``'adb'`` / ``'scrcpy'`` / ``'uiautomator'`` / ``'qemu_grpc'`` / ``'playcover'``。
+        :param impl: 控制实现，如 ``'nemu_ipc'`` / ``'adb'`` / ``'scrcpy'`` / ``'uiautomator'`` / ``'qemu_grpc'`` / ``'playcover'`` / ``'self_android'``。
         :param use_virtual_display: 是否启用 scrcpy 虚拟屏。
         :param game_server: 游戏服务器标识，用于虚拟屏启动包名解析。
         :return: 已构造、尚未 ``start()`` 的设备实例。
         :raises ValueError: ``impl`` 未知时。
         :raises FileNotFoundError: scrcpy jar 资源缺失时。
         """
+        if impl == 'self_android':
+            if not isinstance(resolved.host, SelfAndroidDevice):
+                raise RuntimeError('self_android requires a SelfAndroidDevice host.')
+            return resolved.host
+
         if impl == 'playcover':
             if not isinstance(resolved.host, PlaycoverApp):
                 raise RuntimeError('PlayCover lifecycle resolved to a non-PlaycoverApp host.')
@@ -209,6 +216,11 @@ class DeviceFactory:
         .. NOTE::
             需要和任务执行在同一个线程中调用。
 
+        .. NOTE::
+            当运行在 Android（:data:`iaa.platform.env.IS_ANDROID` 为真）时，
+            本设备即游戏所在设备，不存在模拟器 / adb 发现，直接短路返回
+            ``self_android`` 占位设备，不再走 :meth:`resolve_host`。
+
         :param policy: 生命周期策略。
         :param impl: 控制实现；默认取 ``config.device.control_impl``。
         :return: ``(resolved, device)`` 元组，其中 ``resolved.stop_callback`` 供调用方写入 ``_stop_lifecycle``。
@@ -216,6 +228,9 @@ class DeviceFactory:
         :raises ValueError: lifecycle 类型未知或 impl 不支持当前 lifecycle 时。
         :raises RuntimeError: host 查询失败或 MuMu 应用保活冲突时。
         """
+        if env.IS_ANDROID:
+            return self._create_self_android()
+
         conf = self._config.conf
         impl = impl or conf.device.control_impl
         resolved = self.resolve_host(
@@ -226,6 +241,28 @@ class DeviceFactory:
             impl=impl,
             use_virtual_display=conf.device.scrcpy_virtual_display,
             game_server=conf.game.server,
+        )
+        return resolved, device
+
+    def _create_self_android(self) -> tuple[ResolvedHost, Device]:
+        """在 Android 自身设备上创建占位 host + device。
+
+        Android 上没有模拟器发现这一环节：把占位 host 与占位设备直接拼好，
+        返回与桌面一致的 ``(resolved, device)`` 元组，让 scheduler 的
+        ``__prepare_context`` 能照常 ``init_context`` 拿到 self device。
+
+        .. NOTE::
+            host 即占位设备对象本身（``impl='self_android'``），
+            ``create_device`` 分发时直接返回该 host，不再新建实例。
+
+        :return: ``(resolved, device)``，其中 ``impl`` 为 ``'self_android'``。
+        """
+        device = SelfAndroidDevice()
+        resolved = ResolvedHost(
+            host=device,
+            started_by_us=False,
+            stop_callback=None,
+            impl='self_android',
         )
         return resolved, device
 

@@ -47,10 +47,17 @@ MANIFEST
 *.manifest
 *.spec
 !iaa.spec
+!buildozer.spec
+!pysidedeploy.spec
 
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Buildozer / python-for-android (Android)
+.buildozer/
+deployment/
+bin/
 
 # Unit test / coverage reports
 htmlcov/

@@ -1,10 +1,11 @@
 import json
-import os
 import sys
 from dataclasses import dataclass
 from typing import Callable
 
 import click
+
+from iaa.platform import env
 
 
 @dataclass
@@ -21,15 +22,14 @@ def configure(task_configs: dict[str, CliTaskConfig]) -> None:
 
 
 def cli_root_dir() -> str:
-    if not os.path.basename(sys.executable).startswith('python'):
-        return os.path.dirname(sys.executable)
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+    """CLI 视角的软件根目录,等价于 :func:`iaa.platform.env.app_root`。"""
+    return env.app_root()
 
 
 def make_iaa(config: str | None):
     from iaa.config import manager
     if config is None:
-        manager.config_path = os.path.join(cli_root_dir(), 'conf')
+        manager.config_path = env.config_dir()
         configs = manager.list()
         if len(configs) > 1:
             names = ', '.join(configs)
@@ -108,7 +108,7 @@ def list_tasks() -> None:
 def list_configs() -> None:
     """List available configs"""
     from iaa.config import manager
-    manager.config_path = os.path.join(cli_root_dir(), 'conf')
+    manager.config_path = env.config_dir()
     for name in manager.list():
         click.echo(name)
 

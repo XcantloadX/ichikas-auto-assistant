@@ -12,6 +12,7 @@ from .config_service import ConfigService
 from .assets_service import AssetsService
 from .scheduler import SchedulerService
 from .help_service import HelpService
+from iaa.platform import env
 
 class IaaService:
     _logging_configured: bool = False
@@ -60,7 +61,7 @@ class IaaService:
         console_handler.addFilter(TabNameFilter())
 
         # 文件输出
-        logs_dir = os.path.join(IaaService.app_root(), 'logs')
+        logs_dir = env.logs_dir()
         os.makedirs(logs_dir, exist_ok=True)
         timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         log_file_path = os.path.join(logs_dir, f'{timestamp}.log')
@@ -83,11 +84,12 @@ class IaaService:
 
     @staticmethod
     def app_root() -> str:
-        """软件根目录。与实例无关，可直接通过 IaaService.app_root() 调用。"""
-        if not os.path.basename(sys.executable).startswith('python'):
-            return os.path.dirname(sys.executable)
-        # 源码运行
-        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+        """软件根目录。与实例无关，可直接通过 IaaService.app_root() 调用。
+
+        统一委托给 :func:`iaa.platform.env.app_root`,保持桌面行为不变
+        （PyInstaller 返回 exe 目录;源码返回仓库根）,Android 返回 p4a 私有目录。
+        """
+        return env.app_root()
 
     @staticmethod
     def app_version() -> str:
@@ -106,9 +108,8 @@ class IaaService:
         生成报告 zip，包含 {root}/logs 与 {root}/conf。
         返回生成的临时 zip 文件的绝对路径。
         """
-        root_dir = IaaService.app_root()
-        logs_dir = os.path.join(root_dir, 'logs')
-        conf_dir = os.path.join(root_dir, 'conf')
+        logs_dir = env.logs_dir()
+        conf_dir = env.config_dir()
 
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         filename = f"iaa_report_{timestamp}.zip"

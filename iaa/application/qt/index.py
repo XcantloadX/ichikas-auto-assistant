@@ -9,12 +9,12 @@ from pathlib import Path
 from typing import cast
 
 from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QColor, QIcon, QPalette
+from PySide6.QtGui import QColor, QGuiApplication, QIcon, QPalette
 from PySide6.QtQml import QQmlApplicationEngine, qmlRegisterSingletonType
 from PySide6.QtQuick import QQuickWindow
-from PySide6.QtWidgets import QApplication
 from PySide6.QtQuickControls2 import QQuickStyle
 
+from iaa.platform import env
 from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
 from .controllers import (
@@ -35,7 +35,36 @@ if sys.platform == 'win32':
     )
 
 
-def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
+def _create_app() -> QGuiApplication:
+    """按平台创建 Qt 应用实例。
+
+    桌面的无边框窗口/原生事件过滤依赖 ``QtWidgets.QApplication``,保持
+    ``QApplication``;Android 的 PySide6 环境不提供 ``QtWidgets``（QML 下
+    仅 ``QGuiApplication`` 可用）,只能使用 ``QGuiApplication``。
+
+    :return: 已创建的 Qt 应用实例。
+    """
+    if env.IS_ANDROID:
+        return QGuiApplication(sys.argv)
+    from PySide6.QtWidgets import QApplication
+    return QApplication(sys.argv)
+
+
+def _resolve_qml_path() -> Path:
+    """解析 MainWindow.qml 的绝对路径（供 ``QUrl.fromLocalFile`` 使用）。
+
+    桌面保持基于 ``__file__`` 的既有推导;Android 上源码随包打进 p4a 私有
+    根目录（``env.app_root()``）,按包相对布局 ``iaa/application/qt/qml`` 定位
+    （qml 目录原样进包,qmldir 相对 import 语义不变）。
+
+    :return: MainWindow.qml 的绝对路径。
+    """
+    if env.IS_ANDROID:
+        return Path(env.app_root()) / 'iaa' / 'application' / 'qt' / 'qml' / 'MainWindow.qml'
+    return Path(__file__).resolve().parent / 'qml' / 'MainWindow.qml'
+
+
+def apply_color_scheme(app: QGuiApplication, color_scheme: str) -> None:
     if color_scheme not in ('auto', 'light', 'dark'):
         return
 
@@ -58,7 +87,7 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
             set_color_scheme(Qt.ColorScheme.Dark)
 
 
-def apply_theme_color(app: QApplication, color_value: str | None) -> None:
+def apply_theme_color(app: QGuiApplication, color_value: str | None) -> None:
     palette = QPalette()
     if color_value:
         color = QColor(color_value)
@@ -71,10 +100,12 @@ def apply_theme_color(app: QApplication, color_value: str | None) -> None:
 
 
 def main() -> None:
-    os.environ.setdefault("QSG_RHI_BACKEND", "opengl")
+    if not env.IS_ANDROID:
+        # QSG_RHI_BACKEND 是桌面 QML 渲染调优点;Android 由 Qt/p4a 按设备自动选择
+        os.environ.setdefault("QSG_RHI_BACKEND", "opengl")
     QQuickWindow.setDefaultAlphaBuffer(True)
 
-    app = QApplication(sys.argv)
+    app = _create_app()
     QQuickStyle.setStyle("FluentWinUI3")
 
     controller = AppController(log_bridge=log_bridge)
@@ -106,7 +137,7 @@ def main() -> None:
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
-    qml_path = Path(__file__).resolve().parent / 'qml' / 'MainWindow.qml'
+    qml_path = _resolve_qml_path()
     engine.load(QUrl.fromLocalFile(str(qml_path)))
     if not engine.rootObjects():
         raise RuntimeError('Failed to load Qt desktop UI.')
@@ -145,3 +176,15 @@ def main() -> None:
     exit_code = app.exec()
     controller.shutdown()
     raise SystemExit(exit_code)
+
+
+def android_main() -> None:
+    """Android 专用入口。
+
+    平台分支已在 :func:`main` 内按 ``env.IS_ANDROID`` 处理,这里只是语义更
+    明确的别名,供 p4a 的 ``main.py`` 直接调用::
+
+        from iaa.application.qt.index import android_main
+        android_main()
+    """
+    main()

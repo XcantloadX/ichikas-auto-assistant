@@ -17,8 +17,7 @@ from PySide6.QtCore import (
     Qt,
     Q_ARG,
 )
-from PySide6.QtGui import QImage
-from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QImage, QGuiApplication
 
 from iaa.application.qt.models import DisplayMapping, map_canvas_to_image
 from iaa.application.service.device_factory import DeviceFactory
@@ -153,7 +152,8 @@ class VirtualDeviceSession(QObject):
             self._refresh_timer.stop()
 
     def _has_application(self) -> bool:
-        return QApplication.instance() is not None
+        # Android 无 QtWidgets：用 QGuiApplication 判定（桌面下同样返回 QApplication 实例）
+        return QGuiApplication.instance() is not None
 
     def _worker_loop(self) -> None:
         while not self._shutdown:
@@ -215,7 +215,7 @@ class VirtualDeviceSession(QObject):
         self, task: _WorkerTask, *, timeout: float = 30.0
     ) -> None:
         deadline = time.monotonic() + timeout
-        app = QApplication.instance()
+        app = QGuiApplication.instance()
         on_main_thread = (
             app is not None and threading.current_thread() is threading.main_thread()
         )
