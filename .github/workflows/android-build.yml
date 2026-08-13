@@ -159,6 +159,10 @@ jobs:
             "platforms;android-$ANDROID_API" \
             "build-tools;35.0.0"
           test -f "$ANDROID_SDK_ROOT/platforms/android-$ANDROID_API/android.jar"
+          # 说明：不给 buildozer 提供 legacy tools/bin/sdkmanager 软链是有意为之——
+          # pass1（pyside6-android-deploy）内部的 buildozer 会因找不到 sdkmanager
+          # 快速失败，从而保留其生成的已补丁 buildozer.spec / recipes / jars；
+          # buildozer 软链在 pass2 直接构建前才补上（见下方 Build APK 步骤）。
 
       # ---- 准备干净的应用目录（不含 .git/.venv/构建缓存）----
       - name: Prepare app build directory
@@ -240,6 +244,9 @@ jobs:
           app['android.permissions'] = 'INTERNET'
           app['title'] = 'iaa'
           app['version'] = '26.07b1'
+          # 工具生成的 include_exts 缺 ttf/txt（QML FontLoader 需要 ttf 进包）
+          cur_exts = app.get('source.include_exts', 'py,png,jpg,qml,js')
+          app['source.include_exts'] = cur_exts + ',ttf,txt'
           with spec.open('w', encoding='utf-8') as f:
               cp.write(f, space_around_delimiters=True)
           print('patched requirements =', requirements)
@@ -250,32 +257,30 @@ jobs:
         run: |
           grep -E '^(requirements|p4a\.|android\.|title|version|source)' buildozer.spec | head -40
 
-      # ---- 第二次 deploy：工具复用补丁后的 spec 进行完整构建 ----
-      - name: Build APK via pyside6-android-deploy (pass 2)
+      # ---- 第二次：直接用 buildozer 用补丁后的 spec 完整构建 ----
+      # pyside6-android-deploy 打印 "File buildozer.spec created, ready to customize!"
+      # 意味着它只负责生成 spec/recipes；再跑一次 --force 会 cleanup() 掉补丁后的 spec
+      # （见 pyside-tools/android_deploy.py 的 cleanup()）。因此此处直接调
+      # buildozer android debug，按补丁后的 requirements 构建。
+      - name: Build APK via buildozer (pass 2)
         working-directory: ${{ env.app_dir }}
         run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          # 工具上次可能把 .buildozer 移进 deployment/，恢复以便增量复用
-          if [ -d deployment/.buildozer ]; then
-            mv deployment/.buildozer .buildozer
-          fi
-          pyside6-android-deploy \
-            --wheel-pyside="$RUNNER_TEMP/wheels/pyside6.whl" \
-            --wheel-shiboken="$RUNNER_TEMP/wheels/shiboken6.whl" \
-            --ndk-path="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
-            --sdk-path="$HOME/android-sdk" \
-            --keep-deployment-files \
-            --force \
-            --name iaa \
-            --verbose \
-            -c pysidedeploy.spec
+          export PATH="$HOME/.cargo/bin:$HOME/.buildozer/android/platform/apache-ant-1.9.4/bin:$PATH"
+          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+          # buildozer 的 _sdkmanager 只认传统路径 $SDK/tools/bin/sdkmanager
+          # （buildozer/targets/android.py 的 sdkmanager_path property）；
+          # cmdline-tools 装出来的是 cmdline-tools/latest/bin，pass1 刻意不给以免
+          # 其内部 buildozer 白白跑完整构建，这里补上供这次直接构建使用。
+          mkdir -p "$HOME/android-sdk/tools/bin"
+          ln -sf "$HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager" \
+                 "$HOME/android-sdk/tools/bin/sdkmanager"
+          buildozer -v android debug
           # 收集产物
           mkdir -p "$RUNNER_TEMP/artifacts"
-          cp -f *.apk *.aab "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
-          if [ -d deployment/.buildozer ]; then
-            cp -f deployment/.buildozer/android/platforms/*/*/*.apk "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
-          fi
-          find .buildozer -name '*.apk' -exec cp -f {} "$RUNNER_TEMP/artifacts/" \; 2>/dev/null || true
+          find "$HOME/.buildozer" "$PWD/.buildozer" -name '*.apk' 2>/dev/null | while read -r f; do
+            cp -f "$f" "$RUNNER_TEMP/artifacts/" && echo "copied: $f"
+          done
+          cp -f *.apk "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
           echo "=== artifacts ==="
           ls -lh "$RUNNER_TEMP/artifacts"
 
