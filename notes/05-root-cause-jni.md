@@ -80,3 +80,18 @@ p4a.extra_args = --qt-libs=Quick,Core,QuickControls2,Network,Qml,Widgets,Gui,Ope
   （已核对 Qt6Core/Quick/Gui/Qml 等全部 24 个 xml）→ 工具收集不到 init class 是**正常**的。
 - 本应用 Qt Java 侧启动不依赖 `--init-classes`（它是 p4a 用于"额外 Java 类静态初始化"的钩子），
   Application/Activity 类已在 manifest 里显式配置为 Qt 绑定类，JavaVM 注册走 libQt6Core 的 JNI_OnLoad。
+
+## 六、验证结果（2026-08-13）
+
+- run 31665867173 编译成功（27m37s，缓存命中后与上次相当）。
+- `aapt dump --values resources` 核对 `array/qt_libs`：`c++_shared, Qt6Core, Qt6Qml, ...`
+  —— **Core 已排到 Qt 库首位**。
+- 安装到 127.0.0.1:5557 后启动：**不再 SIGSEGV**，QtCore 正常 `Start`，Python 初始化成功，
+  `main.py` 运行到业务 import 链。阻塞点推进到 Python 层，见 notes/06-cv2-typing-stub.md。
+
+## 七、修复的普适性
+
+- 本修复对任何 pyside6-android-deploy + p4a qt bootstrap 的应用都适用：只要 wheel 的
+  `--qt-libs` 顺序里 Core 不是首位，都会命中同一崩溃。Qt 官方文档（android-how-it-works）
+  明确："the JavaVM is cached while QtCore is first loaded"。
+- 若后续 pyside6-android-deploy 修掉 set 随机序（改用确定性排序），本补丁变为幂等 no-op。

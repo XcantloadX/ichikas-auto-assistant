@@ -4,6 +4,11 @@ Android(p4a) 没有 pynput recipe,``global_hotkey_controller`` 曾模块级
 ``from pynput import keyboard`` 导致整个 controllers 包 import 即失败。
 本测试把 pynput 模拟为未安装后,验证相关模块仍可正常导入,且热键实现
 退化为 noop 空壳、不会启动任何监听线程。
+
+另含 ``cv2.typing`` 桩测试：p4a 的 opencv recipe 只装单个 ``cv2.so``
+（无纯 Python 的 ``cv2.typing`` 子包）,而 kotonebot/iaa 多处有
+``from cv2.typing import MatLike``,需验证 :mod:`iaa.platform.android_stubs`
+提供的 ``sys.modules`` 桩能覆盖该场景。
 """
 
 import sys
@@ -59,6 +64,36 @@ class AndroidImportSmokeTests(unittest.TestCase):
         # noop 分支不创建任何监听线程
         self.assertIsNone(ctrl._listener)
         ctrl.shutdown()
+
+
+class Cv2TypingStubTests(unittest.TestCase):
+    """``cv2.typing`` 桩在 Android（cv2 为单文件模块）场景下的可导入性。
+
+    模拟 p4a 布局：``cv2`` 仅为一个非包模块（``cv2.so``），不存在
+    ``cv2.typing`` 子包。注册桩后 ``from cv2.typing import MatLike`` 必须成功。
+    """
+
+    def tearDown(self) -> None:
+        # 清理桩，避免污染同进程其它测试（桌面真实 cv2.typing 仍在）
+        sys.modules.pop('cv2', None)
+        sys.modules.pop('cv2.typing', None)
+
+    def test_stub_enables_cv2_typing_import(self) -> None:
+        import types
+
+        # 模拟 p4a：cv2 是单文件扩展模块（非包），无 typing 子包
+        bare_cv2 = types.ModuleType('cv2')
+        sys.modules['cv2'] = bare_cv2
+        sys.modules.pop('cv2.typing', None)
+
+        from iaa.platform import android_stubs
+        android_stubs.install_cv2_typing_stub(is_android=True)
+
+        from cv2.typing import MatLike, Rect as CvRect  # noqa: F401
+        self.assertIsNotNone(MatLike)
+        self.assertIsNotNone(CvRect)
+        # 桩幂等：重复安装不抛错
+        android_stubs.install_cv2_typing_stub(is_android=True)
 
 
 if __name__ == '__main__':
