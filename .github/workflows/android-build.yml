@@ -4,6 +4,9 @@ name: Android Build (p4a + PySide6)
 # 属于迭代的一部分：失败日志与生成的 buildozer.spec 会随 artifact 上传，方便下一轮修正。
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - feat/p4a-android
 
 concurrency:
   group: android-build-${{ github.ref }}
