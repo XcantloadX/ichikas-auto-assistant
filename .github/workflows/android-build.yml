@@ -88,13 +88,26 @@ jobs:
           which pyside6-android-deploy
 
       # ---- 下载 PySide6 官方 android x86_64 wheel（cp311）----
+      - name: Cache PySide6 android wheels
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/wheels
+          key: wheels-pyside-${{ env.PYSIDE_VERSION }}-${{ env.P4A_ARCH }}
+
       - name: Download PySide6 android wheels
+        if: ${{ hashFiles(format('{0}/wheels/*.whl', runner.temp)) == '' || runner.os != 'Linux' }}
         run: |
           mkdir -p "$RUNNER_TEMP/wheels"
           base=https://download.qt.io/official_releases/QtForPython
-          curl -fL -o "$RUNNER_TEMP/wheels/pyside6.whl" \
+          # download.qt.io 会 302 到镜像，SSL 偶发断连：加大重试/超时
+          dl() {
+            curl -fL --retry 8 --retry-all-errors --retry-delay 5 \
+              --connect-timeout 30 --max-time 900 \
+              --speed-limit 1024 --speed-time 60 -o "$1" "$2"
+          }
+          dl "$RUNNER_TEMP/wheels/pyside6.whl" \
             "$base/pyside6/pyside6-$PYSIDE_VERSION-$PYSIDE_VERSION-cp311-cp311-android_$P4A_ARCH.whl"
-          curl -fL -o "$RUNNER_TEMP/wheels/shiboken6.whl" \
+          dl "$RUNNER_TEMP/wheels/shiboken6.whl" \
             "$base/shiboken6/shiboken6-$PYSIDE_VERSION-$PYSIDE_VERSION-cp311-cp311-android_$P4A_ARCH.whl"
           ls -lh "$RUNNER_TEMP/wheels"
 
