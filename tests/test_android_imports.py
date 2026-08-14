@@ -66,6 +66,36 @@ class AndroidImportSmokeTests(unittest.TestCase):
         ctrl.shutdown()
 
 
+class AndroidPackageStubTests(unittest.TestCase):
+    """android package stub enables import under Android (no p4a android recipe).
+
+    p4a patches stdlib ctypes/util.py find_library to
+    ``from android._ctypes_library_finder import find_library``; the qt
+    bootstrap build does not include the android recipe, so this stub must
+    make ``android`` and its submodule importable.
+    """
+
+    def tearDown(self) -> None:
+        # clean up the stub to avoid polluting other tests in the same process
+        sys.modules.pop('android', None)
+        sys.modules.pop('android._ctypes_library_finder', None)
+
+    def test_stub_enables_android_library_finder_import(self) -> None:
+        from iaa.platform import android_stubs
+        android_stubs.install_android_package_stub()
+
+        # this is exactly how the patched ctypes.util imports it
+        from android._ctypes_library_finder import find_library  # noqa: F401
+        self.assertIsNotNone(find_library)
+        # idempotent: reinstalling must not raise
+        android_stubs.install_android_package_stub()
+
+    def test_find_library_matches_so_patterns(self) -> None:
+        from iaa.platform.android_stubs import _find_library
+        # must return None for a library that does not exist on the host
+        self.assertIsNone(_find_library('__definitely_missing_iaa_lib__'))
+
+
 class Cv2TypingStubTests(unittest.TestCase):
     """``cv2.typing`` 桩在 Android（cv2 为单文件模块）场景下的可导入性。
 

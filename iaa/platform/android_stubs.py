@@ -16,6 +16,8 @@ p4a 的 opencv recipe（``-DOPENCV_SKIP_PYTHON_LOADER=ON``）只把 ``cv2.so``
 
 from __future__ import annotations
 
+import os
+import re
 import sys
 import types
 from typing import Any, Sequence
@@ -51,11 +53,70 @@ def install_cv2_typing_stub(is_android: bool | None = None) -> None:
     sys.modules['cv2.typing'] = stub
 
 
+def _find_library(name: str) -> str | None:
+    """在 Android 原生库目录中按名字查找 ``.so`` 库。
+
+    模仿 p4a ``android`` recipe 的 ``_ctypes_library_finder.find_library``
+    的**纯文件系统**部分（其真实实现还用 pyjnius 查 Activity 的 nativeLibraryDir，
+    但本桩不依赖 pyjnius）：扫描 ``/system/lib64``、``/system/lib`` 与
+    ``LD_LIBRARY_PATH`` 各目录，按 ``lib<name>.so`` / ``<name>.so`` 等形态匹配。
+    Android 上绝大多数场合只需要 ``ctypes.util`` 能解析出系统库路径，而 iaa
+    不在 Android 上做模拟点击/输入（该链路用桌面 placeholder），找不到返回
+    ``None`` 也安全。
+
+    :param name: 要查找的库名，如 ``'c'``、``'sqlite3'``。
+    :return: 找到的库绝对路径；未找到返回 ``None``。
+    """
+    search_dirs = ['/system/lib64', '/system/lib']
+    ld_path = os.environ.get('LD_LIBRARY_PATH', '')
+    search_dirs += [d for d in ld_path.split(':') if d]
+    pattern = re.compile(r'^(?:lib)?' + re.escape(name) + r'\.so(?:\.[0-9]+)*$')
+    for lib_dir in search_dirs:
+        if not os.path.isdir(lib_dir):
+            continue
+        for entry in os.listdir(lib_dir):
+            if pattern.match(entry):
+                return os.path.join(lib_dir, entry)
+    return None
+
+
+def install_android_package_stub() -> None:
+    """注册 ``android`` 包桩到 ``sys.modules``。
+
+    p4a 会打补丁把 stdlib ``ctypes/util.py`` 的 ``find_library`` 替换为
+    ``from android._ctypes_library_finder import find_library``。而 ``android``
+    包本身是 p4a 的一个 recipe（依赖 pyjnius / sdl bootstrap），**qt bootstrap
+    构建默认不包含它**。因此只要任何代码 ``import ctypes.util``（例如纯 Python
+    ``mouse`` 包的 ``_nixmouse``），在 Android 上就会因缺 ``android`` 包而失败，
+    继而拖垮 ``kotonebot.interop.win._mouse`` 的导入链。
+
+    本桩只注册 ``android`` 与 ``android._ctypes_library_finder`` 两个模块，
+    提供文件系统层面的 ``find_library``（见 :func:`_find_library`），足以让
+    ``ctypes.util`` 正常导入。iaa 自身的平台层（``env.py`` 等）只用
+    ``os.environ`` / ``importlib.resources``，不依赖真实的 ``android`` 包，
+    故桩是安全的。
+
+    .. NOTE:: 必须在任何可能 ``import ctypes.util`` 的代码之前调用
+        （入口 ``main.py`` 顶部，与 :func:`install_cv2_typing_stub` 一起）。
+        幂等：已注册时直接返回。
+    """
+    if 'android' in sys.modules:
+        return
+
+    android_pkg = types.ModuleType('android')
+    finder = types.ModuleType('android._ctypes_library_finder')
+    finder.find_library = _find_library
+    sys.modules['android'] = android_pkg
+    sys.modules['android._ctypes_library_finder'] = finder
+
+
 def install_android_stubs() -> None:
     """安装 Android 平台所需的全部启动桩。
 
-    目前只包含 :func:`install_cv2_typing_stub`。入口 ``main.py`` 在 import
-    iaa 前调用一次；后续发现新的平台缺失包（如其它纯 Python 子包）继续在此
-    追加，保持入口唯一。
+    目前包含 :func:`install_cv2_typing_stub` 与
+    :func:`install_android_package_stub`。入口 ``main.py`` 在 import iaa 前
+    调用一次；后续发现新的平台缺失包（如其它纯 Python 子包）继续在此追加，
+    保持入口唯一。
     """
     install_cv2_typing_stub()
+    install_android_package_stub()
