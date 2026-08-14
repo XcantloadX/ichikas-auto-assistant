@@ -201,7 +201,9 @@ jobs:
         working-directory: ${{ env.app_dir }}
         run: |
           python3 -m pip install --no-deps "kotonebot==0.19.1"
-          python3 -m pip install pydantic rich opencv-python numpy python-dotenv mouse typing-extensions
+          # 生成工具实际需要的 host 依赖：pydantic/rich/opencv(<5, kotonebot 约束)/numpy/
+          # python-dotenv/mouse/typing-extensions + make_resources 的 ide 探测用 psutil。
+          python3 -m pip install pydantic rich "opencv-python<5.0" numpy python-dotenv mouse typing-extensions psutil
           python3 tools/make_resources.py --production
           ls -la iaa/tasks/R.py && test -d iaa/res
 
