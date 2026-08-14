@@ -191,6 +191,20 @@ jobs:
           mv buildozer.spec buildozer.spec.sample
           echo "app_dir=$app_dir" >> "$GITHUB_ENV"
 
+      # ---- 生成资源代码 iaa/tasks/R.py 与 iaa/res（gitignored，CI 需现场生成）----
+      # make_resources.py 走 kotonebot.devtools.resgen，需 host 侧安装 kotonebot。
+      # 其实际模块级 import 只需要 cv2/dotenv/mouse/numpy/pydantic/rich/typing-extensions
+      # （rapidocr/onnxruntime 是惰性导入，host 生成资源时用不到）→ 用 --no-deps 安装
+      # kotonebot 本体 + 上述显式依赖，避免拉下重依赖。生成的 iaa/res 会随 buildozer
+      # 打进 APK（sprite_path 在 Android 上用 importlib.resources('iaa.res') 取用）。
+      - name: Generate iaa resources (make_resources.py)
+        working-directory: ${{ env.app_dir }}
+        run: |
+          python3 -m pip install --no-deps "kotonebot==0.19.1"
+          python3 -m pip install pydantic rich opencv-python numpy python-dotenv mouse typing-extensions
+          python3 tools/make_resources.py --production
+          ls -la iaa/tasks/R.py && test -d iaa/res
+
       # ---- 第一次 deploy：生成 buildozer.spec + 动态 recipes（构建可能失败，属预期）----
       - name: Generate buildozer.spec via pyside6-android-deploy (pass 1)
         working-directory: ${{ env.app_dir }}
