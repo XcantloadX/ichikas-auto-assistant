@@ -96,6 +96,35 @@ class AndroidPackageStubTests(unittest.TestCase):
         self.assertIsNone(_find_library('__definitely_missing_iaa_lib__'))
 
 
+class DotenvFindStubTests(unittest.TestCase):
+    """Android 上 ``dotenv.find_dotenv`` 的安全替换。
+
+    p4a 的 .pyc 帧 co_filename 指向构建机路径、在设备上不存在，原实现的
+    栈回溯会在栈顶崩溃；Android 上用空实现替换，保证 ``load_dotenv()``
+    不会抛错。
+    """
+
+    def tearDown(self) -> None:
+        # 恢复桌面原始 find_dotenv，避免污染其它测试
+        from dotenv import main as dotenv_main
+        if getattr(dotenv_main, 'find_dotenv', None) is not None:
+            delattr(dotenv_main, 'find_dotenv')
+        import dotenv
+        if hasattr(dotenv, 'find_dotenv'):
+            del dotenv.find_dotenv
+
+    def test_android_find_dotenv_returns_empty(self) -> None:
+        from iaa.platform import android_stubs
+        android_stubs.install_dotenv_find_stub(is_android=True)
+
+        from dotenv import main as dotenv_main
+        self.assertEqual(dotenv_main.find_dotenv(), '')
+
+        # load_dotenv 无参调用在 Android 上不应抛异常
+        from dotenv import load_dotenv
+        self.assertIsNotNone(load_dotenv())
+
+
 class Cv2TypingStubTests(unittest.TestCase):
     """``cv2.typing`` 桩在 Android（cv2 为单文件模块）场景下的可导入性。
 

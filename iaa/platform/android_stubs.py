@@ -110,13 +110,59 @@ def install_android_package_stub() -> None:
     sys.modules['android._ctypes_library_finder'] = finder
 
 
+def install_dotenv_find_stub(is_android: bool | None = None) -> None:
+    """把 ``dotenv.main.find_dotenv`` 替换为 Android 安全实现。
+
+    ``kotonebot.ui.pushkit.image_host`` 在模块级调用 ``load_dotenv()``
+    （无参），会走 ``python-dotenv`` 的 ``find_dotenv``：它用 ``sys._getframe()``
+    沿调用栈向上找 ``co_filename`` 真实存在于磁盘的调用者帧。而 p4a 打包的
+    代码是**预编译 ``.pyc``**，每个帧的 ``co_filename`` 都是构建机路径
+    （``/home/runner/work/...``），在设备上不存在 → 它一路走到栈顶（``__main__``
+    帧，``f_back is None``）后访问 ``frame.f_code`` → 抛
+    ``AttributeError: 'NoneType' object has no attribute 'f_code'``。
+
+    Android 上没有任何 ``.env`` 需要加载（pushkit 只用于桌面推送），把
+    ``find_dotenv`` 换成返回空串的实现即可：``load_dotenv()`` 拿到空路径后
+    在 ``DotEnv._get_stream`` 里直接跳过文件读取，行为与"找不到 .env"一致。
+
+    .. NOTE:: 必须在任何 ``import kotonebot`` 之前调用（入口 ``main.py`` 顶部，
+        与其它桩一起），否则 ``image_host`` 的模块级 ``load_dotenv()`` 会先崩溃。
+        桌面平台不替换（桌面有真实文件系统与 ``.env``）。
+
+    :param is_android: 平台判定覆盖值，同 :func:`install_cv2_typing_stub`。
+    """
+    if is_android is None:
+        is_android = env.IS_ANDROID
+    if not is_android:
+        return
+    try:
+        from dotenv import main as dotenv_main
+    except ImportError:
+        # dotenv 不在环境里时无需打补丁（本来 import 也会失败，不影响这里）
+        return
+
+    def _android_find_dotenv(filename='.env', raise_error_if_not_found=False, usecwd=False) -> str:
+        """Android 上的安全 ``find_dotenv``：不遍历调用栈，直接视为无 .env。
+
+        :param filename: 与桌面签名一致，但 Android 上不实际查找。
+        :param raise_error_if_not_found: 与桌面签名一致；Android 上固定返回空串，
+            不抛错（避免 ``load_dotenv()`` 因找不到而中断）。
+        :param usecwd: 与桌面签名一致；忽略。
+        :return: 恒为 ``''``，表示不存在 ``.env``。
+        """
+        return ''
+
+    dotenv_main.find_dotenv = _android_find_dotenv
+
+
 def install_android_stubs() -> None:
     """安装 Android 平台所需的全部启动桩。
 
-    目前包含 :func:`install_cv2_typing_stub` 与
-    :func:`install_android_package_stub`。入口 ``main.py`` 在 import iaa 前
-    调用一次；后续发现新的平台缺失包（如其它纯 Python 子包）继续在此追加，
-    保持入口唯一。
+    目前包含 :func:`install_cv2_typing_stub`、
+    :func:`install_android_package_stub` 与 :func:`install_dotenv_find_stub`。
+    入口 ``main.py`` 在 import iaa 前调用一次；后续发现新的平台缺失包（如
+    其它纯 Python 子包）继续在此追加，保持入口唯一。
     """
     install_cv2_typing_stub()
     install_android_package_stub()
+    install_dotenv_find_stub()
