@@ -10,8 +10,26 @@ from kotonebot.client.host.protocol import Instance
 from kotonebot.client.playcover import PlaycoverApp
 from kotonebot.errors import UserFriendlyError
 
-from iaa.application.service.avd import AvdInstance
-from iaa.application.service.custom_emulator import CustomEmulatorInstance
+from iaa.platform import env
+
+# 桌面控制层（AVD / 自定义模拟器 host）只在桌面可用：它们模块级 import
+# ``kotonebot.client.host.adb_common`` → ``adbutils``，而 p4a 没有 adbutils
+# recipe。Android 上 iaa 是"被自动化的一方"，:meth:`create_device_for_current_config`
+# 会短路到 self_android，整个 resolve_host / create_device 桌面路径都是死代码，
+# 因此这里直接不导入，避免把控制层依赖拉进启动链。函数体内对这两个类的
+# 引用改为惰性 import。
+if not env.IS_ANDROID:
+    from iaa.application.service.avd import AvdInstance
+    from iaa.application.service.custom_emulator import CustomEmulatorInstance
+else:
+    # Android 无模拟器控制层：若桌面控制路径被误触达（正常不会，scheduler
+    # 在 Android 短路到 self_android），给出明确错误而非 NameError。
+    class _UnavailableOnAndroid:
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
+            raise RuntimeError('Android 上不存在模拟器控制层（AVD/Custom emulator）。')
+
+    AvdInstance = _UnavailableOnAndroid
+    CustomEmulatorInstance = _UnavailableOnAndroid
 from iaa.config.schemas import (
     AvdDevice,
     CustomDevice,

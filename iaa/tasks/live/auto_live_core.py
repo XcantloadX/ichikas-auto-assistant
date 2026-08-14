@@ -4,7 +4,6 @@ import logging
 import cv2
 import numpy as np
 
-from kotonebot.client.host.mumu12_host import MuMu12HostConfig, Mumu12V5Host
 from kotonebot.backend.image import find
 from kotonebot.primitives import Rect
 from kotonebot.client import Device
@@ -251,6 +250,10 @@ if __name__ == "__main__":
 
     d = None
     if not USE_DEBUG_IMAGE:
+        # 惰性导入：mumu12_host 依赖 kotonebot.adb 实现 → adbutils，
+        # 仅桌面联调脚本使用（Android 上无模拟器控制层）。
+        from kotonebot.client.host.mumu12_host import MuMu12HostConfig, Mumu12V5Host
+
         mumu = Mumu12V5Host.list()[0]
         d = mumu.create_device('nemu_ipc', MuMu12HostConfig())
 

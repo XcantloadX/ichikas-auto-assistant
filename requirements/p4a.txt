@@ -27,6 +27,11 @@ typing-inspection
 # kotonebot 及其纯 Python 运行时依赖（rapidocr/onnxruntime 等编译依赖已被剥离，
 # 启动链只 import cv2/numpy，见 notes）
 kotonebot==0.19.1
+# kotonebot.client.host.protocol 无条件 import kotonebot.interop.win._mouse →
+# 顶层 `import mouse`。mouse 是纯 Python 包（pip --no-deps 可装）；其模块级
+# 只实例化 listener（不启动线程/不访问 /dev/input），Android 上 import 安全，
+# 且运行期不会被 iaa 调用（Windows 桌面控制专用）。
+mouse
 python-dotenv
 ksaa-res
 
