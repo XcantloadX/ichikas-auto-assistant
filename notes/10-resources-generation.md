@@ -41,9 +41,13 @@ import），`cm.py` 里 `from . import R` 失败——`iaa/tasks/R.py` 不存在
 
 - 在 `android-build.yml` 的 "Prepare app build directory" 之后新增
   "Generate iaa resources (make_resources.py)"：
-  - `pip install --no-deps "kotonebot==0.19.1"` + `pydantic rich opencv-python numpy
-    python-dotenv mouse typing-extensions`（实测 `make_resources.py` 的模块级 import
-    只需这 7 个；rapidocr/onnxruntime 是惰性导入，host 生成资源用不到 → 不拉重依赖）。
+  - `pip install --no-deps "kotonebot==0.19.1"` + `pydantic rich "opencv-python<5.0"
+    numpy python-dotenv mouse typing-extensions psutil`（实测 `make_resources.py` 的
+    模块级 import 只需这 8 个；rapidocr/onnxruntime 是惰性导入，host 生成资源用不到
+    → 不拉重依赖）。
+  - 两个坑（run 31798489041 踩到）：
+    - `ide_type_detection()` 里 `import psutil` 必须装，否则 ModuleNotFoundError；
+    - `opencv-python` 最新 5.0 违反 kotonebot 的 `<5.0` 约束，必须显式 `<5.0`。
   - `python3 tools/make_resources.py --production` → 生成 `iaa/tasks/R.py` 与 `iaa/res`。
   - `ls -la iaa/tasks/R.py && test -d iaa/res` 兜底断言。
 - 生成的 `iaa/res` 随 buildozer 打进 APK：`sprite_path` 在 Android 上走
