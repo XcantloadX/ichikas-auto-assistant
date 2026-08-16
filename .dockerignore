@@ -1,0 +1,57 @@
+# .dockerignore —— 保持 `docker build` 的 build context 最小化。
+#
+# 说明：本镜像设计上不 COPY 仓库（运行期才把仓库挂到 /workspace），
+# Dockerfile 只 COPY docker/entrypoint-build.sh。因此这里排除的目录
+# 都是本地构建产物 / 缓存 / 编辑器配置，不会进入镜像，仅影响 context 上传体积。
+
+# VCS
+.git
+.gitignore
+
+# Python 虚拟环境 / 解释器缓存
+.venv
+venv
+env
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+*.egg-info
+.eggs
+.pytest_cache
+.ruff_cache
+.mypy_cache
+.pyre
+
+# 构建产物 / 打包产物
+build
+dist
+dist_app
+bin
+tmp
+iaa_v*.zip
+iaa_v*.7z
+
+# Android（p4a / buildozer）
+.buildozer
+deployment
+dumps*
+logs
+conf
+
+# 运行期缓存
+.kotonebot
+
+# 与 Android 构建无关的本地方便目录（体积大，从 context 排除）
+iaa-backend
+resources
+
+# IDE / 编辑器 / agent 配置
+.idea
+.vscode
+.claude
+.commandcode
+.agents
+
+# 其他
+*.log

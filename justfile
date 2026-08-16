@@ -13,3 +13,7 @@ res:
 
 build:
     uv run build.py build
+
+# Docker 化本地构建 Android APK（调用 scripts/build-android.ps1，见其 -Help）
+android-docker:
+    pwsh ./scripts/build-android.ps1

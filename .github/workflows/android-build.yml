@@ -167,161 +167,50 @@ jobs:
           # 快速失败，从而保留其生成的已补丁 buildozer.spec / recipes / jars；
           # buildozer 软链在 pass2 直接构建前才补上（见下方 Build APK 步骤）。
 
-      # ---- 准备干净的应用目录（不含 .git/.venv/构建缓存）----
-      - name: Prepare app build directory
-        run: |
-          app_dir="$RUNNER_TEMP/iaa-app"
-          rsync -a --delete \
-            --exclude '.git' \
-            --exclude '.venv' \
-            --exclude '__pycache__' \
-            --exclude '.ruff_cache' \
-            --exclude '.pytest_cache' \
-            --exclude '.buildozer' \
-            --exclude 'deployment' \
-            --exclude 'build' \
-            --exclude 'dist' \
-            --exclude 'dumps*' \
-            --exclude 'logs' \
-            --exclude 'conf' \
-            "$GITHUB_WORKSPACE/" "$app_dir/"
-          cd "$app_dir"
-          # 官方工具若发现 buildozer.spec 已存在会跳过自动配置：把仓库骨架挪开，
-          # 让工具先生成一份完整的 Qt 配置（含 recipes 引用、--qt-libs、jars）。
-          mv buildozer.spec buildozer.spec.sample
-          echo "app_dir=$app_dir" >> "$GITHUB_ENV"
-
-      # ---- 生成资源代码 iaa/tasks/R.py 与 iaa/res（gitignored，CI 需现场生成）----
+      # ---- 安装资源生成 host 依赖：build_android.py 内部会调 make_resources.py ----
       # make_resources.py 走 kotonebot.devtools.resgen，需 host 侧安装 kotonebot。
       # 其实际模块级 import 只需要 cv2/dotenv/mouse/numpy/pydantic/rich/typing-extensions
       # （rapidocr/onnxruntime 是惰性导入，host 生成资源时用不到）→ 用 --no-deps 安装
-      # kotonebot 本体 + 上述显式依赖，避免拉下重依赖。生成的 iaa/res 会随 buildozer
-      # 打进 APK（sprite_path 在 Android 上用 importlib.resources('iaa.res') 取用）。
-      - name: Generate iaa resources (make_resources.py)
-        working-directory: ${{ env.app_dir }}
+      # kotonebot 本体 + 上述显式依赖，避免拉下重依赖；psutil 供 make_resources 的
+      # ide 探测使用（生成逻辑在本步与共享脚本之间解耦，脚本不再负责 pip install）。
+      - name: Install resource generation host dependencies
         run: |
           python3 -m pip install --no-deps "kotonebot==0.19.1"
           # 生成工具实际需要的 host 依赖：pydantic/rich/opencv(<5, kotonebot 约束)/numpy/
           # python-dotenv/mouse/typing-extensions + make_resources 的 ide 探测用 psutil。
           python3 -m pip install pydantic rich "opencv-python<5.0" numpy python-dotenv mouse typing-extensions psutil
-          python3 tools/make_resources.py --production
-          ls -la iaa/tasks/R.py && test -d iaa/res
 
-      # ---- 第一次 deploy：生成 buildozer.spec + 动态 recipes（构建可能失败，属预期）----
-      - name: Generate buildozer.spec via pyside6-android-deploy (pass 1)
-        working-directory: ${{ env.app_dir }}
+      # ---- 调用共享构建脚本：与本地 Docker 构建共用同一份逻辑（避免两套逻辑漂移）----
+      # build_android.py 内部完成：prep(拷贝+排除+mv buildozer.spec→.sample) →
+      # resgen(make_resources.py) → pass1(pyside6-android-deploy，容忍失败) →
+      # patch(patch_buildozer_spec.py) → pass2(buildozer -v android debug，含
+      # sdkmanager legacy 软链) → collect(拷 *.apk 到 --output)。
+      # 脚本自解析 venv bin / JAVA_HOME 默认值 / 建 sdkmanager 软链，因此原步骤里
+      # 的 export PATH=... 与 mkdir/ln -sf sdkmanager 不再需要（cargo 已由上方
+      # rustup 步骤写入 GITHUB_PATH）。首次 --app-dir 为空，脚本会拷贝仓库；
+      # .buildozer 留在 app-dir 支持同一次 run 内的增量（跨 run 由 runner.temp
+      # 生命周期决定，可接受）。--repo 指向 git 工作区。
+      - name: Run shared android build
         run: |
-          export PATH="$HOME/.cargo/bin:$PATH"
-          # 失败也继续：生成的 buildozer.spec / deployment/ 会被下一步补丁复用
-          pyside6-android-deploy \
-            --wheel-pyside="$RUNNER_TEMP/wheels/pyside6.whl" \
-            --wheel-shiboken="$RUNNER_TEMP/wheels/shiboken6.whl" \
-            --ndk-path="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
-            --sdk-path="$HOME/android-sdk" \
-            --keep-deployment-files \
-            --force \
-            --name iaa \
-            --verbose \
-            -c pysidedeploy.spec || true
-          ls -la buildozer.spec && grep -n '^requirements' buildozer.spec || echo "buildozer.spec missing"
+          # 与 artifact 上传步骤共用同一目录约定（app_dir 历史 env 由本步维护）
+          echo "app_dir=$RUNNER_TEMP/iaa-app" >> "$GITHUB_ENV"
+          python3 tools/android/build_android.py \
+            --repo="$GITHUB_WORKSPACE" \
+            --app-dir="$RUNNER_TEMP/iaa-app" \
+            --wheels-dir="$RUNNER_TEMP/wheels" \
+            --sdk-dir="$HOME/android-sdk" \
+            --ndk-dir="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
+            --output="$RUNNER_TEMP/artifacts" \
+            --arch=x86_64 \
+            --api=$ANDROID_API \
+            --ndk-api=24 \
+            --ndk-version=$ANDROID_NDK
 
-      # ---- 补丁：把仓库的 Android 依赖与构建参数并入工具生成的 spec ----
-      - name: Merge iaa requirements into generated buildozer.spec
-        working-directory: ${{ env.app_dir }}
-        run: |
-          python3 - <<'PY'
-          import configparser, pathlib, re, sys
-
-          spec = pathlib.Path('buildozer.spec')
-          if not spec.exists():
-              # 工具在生成 spec 之前就失败了 —— 上报日志，交给下一次迭代排查
-              print('::warning::buildozer.spec was not generated; nothing to patch')
-              sys.exit(0)
-
-          # 读取 p4a.txt 里“额外”依赖（纯 Python 显式全量 + pydantic-core recipe）
-          extra = []
-          for line in pathlib.Path('requirements/p4a.txt').read_text(encoding='utf-8').splitlines():
-              line = line.strip()
-              if not line or line.startswith('#'):
-                  continue
-              extra.append(line)
-
-          base = 'python3==3.11.9,hostpython3==3.11.9,shiboken6,PySide6'
-          requirements = base + ',' + ','.join(extra)
-
-          cp = configparser.ConfigParser(
-              comment_prefixes='#', inline_comment_prefixes=None, interpolation=None)
-          cp.read(spec, encoding='utf-8')
-          app = cp['app']
-          app['requirements'] = requirements
-          # 硬编码段（与仓库 buildozer.spec 骨架一致）
-          app['android.accept_sdk_license'] = 'True'
-          app['android.wakelock'] = 'True'
-          app['android.api'] = '35'
-          app['android.minapi'] = '24'
-          app['android.ndk_api'] = '24'
-          app['android.permissions'] = 'INTERNET'
-          app['title'] = 'iaa'
-          app['version'] = '26.07b1'
-          # 仓库版本号 '26.07b1' 非数值点分格式，Android 需要显式 versionCode
-          app['android.numeric_version'] = '2607'
-          # 工具生成的 include_exts 缺 ttf/txt（QML FontLoader 需要 ttf 进包）
-          cur_exts = app.get('source.include_exts', 'py,png,jpg,qml,js')
-          app['source.include_exts'] = cur_exts + ',ttf,txt'
-
-          # 【启动崩溃修复】--qt-libs 顺序必须保证 Qt6Core 在最前。
-          # 背景：JVM 只对 System.load 显式加载的库调用 JNI_OnLoad；被 dlopen 拉入的
-          # 依赖库不会触发。QJniEnvironment::getJniEnv() 依赖 libQt6Core 的 JNI_OnLoad
-          # 注册全局 JavaVM(g_javaVM，见 qtbase qjnihelpers.cpp)。若 Qt6Quick 先加载，
-          # 其 JNI_OnLoad 里 getJniEnv() 会因 g_javaVM 为空而 SIGSEGV。
-          # pyside6-android-deploy 用 list(set(...)) 生成 --qt-libs，顺序随机，
-          # 因此这里强制把 Core 排到首位。详见 notes/05-root-cause-jni.md。
-          extra_args = app.get('p4a.extra_args', '')
-          m = re.match(r'(.*--qt-libs=)([^ ]+)(.*)', extra_args)
-          if m:
-              modules = m.group(2).split(',')
-              reordered = ['Core'] + [x for x in modules if x != 'Core']
-              app['p4a.extra_args'] = (
-                  m.group(1) + ','.join(reordered) + m.group(3))
-              print('reordered --qt-libs =', ','.join(reordered))
-          else:
-              print('::warning::--qt-libs not found in p4a.extra_args')
-          with spec.open('w', encoding='utf-8') as f:
-              cp.write(f, space_around_delimiters=True)
-          print('patched requirements =', requirements)
-          PY
-
+      # ---- 展示补丁后的 buildozer.spec（脚本会打印 patch 摘要，此步便于人工排查）----
       - name: Show merged buildozer.spec
         working-directory: ${{ env.app_dir }}
         run: |
           grep -E '^(requirements|p4a\.|android\.|title|version|source)' buildozer.spec | head -40
-
-      # ---- 第二次：直接用 buildozer 用补丁后的 spec 完整构建 ----
-      # pyside6-android-deploy 打印 "File buildozer.spec created, ready to customize!"
-      # 意味着它只负责生成 spec/recipes；再跑一次 --force 会 cleanup() 掉补丁后的 spec
-      # （见 pyside-tools/android_deploy.py 的 cleanup()）。因此此处直接调
-      # buildozer android debug，按补丁后的 requirements 构建。
-      - name: Build APK via buildozer (pass 2)
-        working-directory: ${{ env.app_dir }}
-        run: |
-          export PATH="$HOME/.cargo/bin:$HOME/.buildozer/android/platform/apache-ant-1.9.4/bin:$PATH"
-          export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-          # buildozer 的 _sdkmanager 只认传统路径 $SDK/tools/bin/sdkmanager
-          # （buildozer/targets/android.py 的 sdkmanager_path property）；
-          # cmdline-tools 装出来的是 cmdline-tools/latest/bin，pass1 刻意不给以免
-          # 其内部 buildozer 白白跑完整构建，这里补上供这次直接构建使用。
-          mkdir -p "$HOME/android-sdk/tools/bin"
-          ln -sf "$HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager" \
-                 "$HOME/android-sdk/tools/bin/sdkmanager"
-          buildozer -v android debug
-          # 收集产物
-          mkdir -p "$RUNNER_TEMP/artifacts"
-          find "$HOME/.buildozer" "$PWD/.buildozer" -name '*.apk' 2>/dev/null | while read -r f; do
-            cp -f "$f" "$RUNNER_TEMP/artifacts/" && echo "copied: $f"
-          done
-          cp -f *.apk "$RUNNER_TEMP/artifacts/" 2>/dev/null || true
-          echo "=== artifacts ==="
-          ls -lh "$RUNNER_TEMP/artifacts"
 
       # ---- 无论成败都上传产物与日志，方便下一轮迭代 ----
       - name: Upload APK artifact
