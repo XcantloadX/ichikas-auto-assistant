@@ -55,7 +55,7 @@ echo ""
 if [ "${SKIP_BUILD}" = "1" ]; then
     echo "[1/3] 已指定 SKIP_BUILD=1，使用已有镜像 ${TAG}"
 else
-    echo "[1/3] 构建 Docker 镜像 ${TAG}（首次约 10-25 分钟）..."
+    echo "[1/3] 构建 Docker 镜像 ${TAG}（最小底座，通常 1-2 分钟；环境由 entrypoint 运行时准备）..."
     build_args=(build --platform "${PLATFORM}" --progress=plain \
         -f "${REPO_ROOT}/docker/android-build.Dockerfile" -t "${TAG}" "${REPO_ROOT}")
     if [ "${DRY_RUN}" = "1" ]; then

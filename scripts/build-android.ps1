@@ -3,12 +3,11 @@
    一键构建 iaa 的 Android APK（本地 Docker 化，Windows / Docker Desktop 主机）。
 
 .DESCRIPTION
-   把 .github/workflows/android-build.yml 的构建环境镜像进容器（ubuntu:22.04 +
-   JDK17 + rustup + Python3.11 + PySide6 工具链），让本地直接产出 APK：
+   用最小 bootstrap 镜像（ubuntu:22.04，只装能跑共享 setup 脚本的底座）本地产出 APK：
      1) docker build -f docker/android-build.Dockerfile -t iaa-android-build .
      2) docker run 挂载仓库（只读）+ 两个 Docker 命名卷，执行
-        /docker/entrypoint-build.sh（幂等补齐 NDK/SDK/wheels 后调用
-        tools/android/build_android.py）
+        /docker/entrypoint-build.sh（先调 tools/android/setup_env.sh docker 幂等准备
+        全部环境 + NDK/SDK/wheels，再调 tools/android/build_android.py）
      3) docker cp 从容器 /artifacts 取回 APK 到 -OutDir（默认 <仓库根>\bin），
         随后删除构建容器（try/finally 兜底，无论成败都会清理）
 
@@ -33,9 +32,9 @@
 .PARAMETER Api
    目标 Android API，默认 35。传给容器 ANDROID_API。
 .PARAMETER PysideVersion
-   PySide6 版本，默认 6.11.1（镜像内置，通常无需改）。
+   PySide6 版本，默认 6.11.1（运行时由 setup_env.sh 安装，通常无需改）。
 .PARAMETER NdkVersion
-   Android NDK 版本，默认 r27c（镜像内置，通常无需改）。
+   Android NDK 版本，默认 r27c（运行时由 setup_env.sh 下载，通常无需改）。
 .PARAMETER OutDir
    APK 输出目录，默认 <仓库根>\bin。构建完成后由 docker cp 从容器内 /artifacts
    落地到此目录。
@@ -102,7 +101,7 @@ Write-Host ''
 # ---- [1/3] docker build ----
 $dockerFile = Join-Path $RepoRoot 'docker\android-build.Dockerfile'
 if (-not $SkipBuild) {
-    Write-Host '[1/3] 构建 Docker 镜像 iaa-android-build（首次约 10-25 分钟）...'
+    Write-Host '[1/3] 构建 Docker 镜像 iaa-android-build（最小底座，通常 1-2 分钟；环境由 entrypoint 运行时准备）...'
     $buildArgs = @('build', '--platform', $Platform, '--progress=plain',
         '-f', $dockerFile, '-t', $Tag, $RepoRoot)
     if ($DryRun) {
