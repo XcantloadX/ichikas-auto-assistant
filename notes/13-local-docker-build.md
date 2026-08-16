@@ -246,4 +246,51 @@ NDK/SDK/wheels 幂等复用。
   python3/numpy…）：新 venv 装的全新 buildozer/p4a 生成的 spec 的
   `p4a.ndk_api=24` 与旧构建目录 `x86_64__ndk_target_21` 不一致，state.db 失效。
   属一次性迁移成本，后续 spec 稳定为 24 后 .buildozer 增量生效。
-- `tools/android/build_android.py` 本轮未改动，CLI 契约保持。
+- 架构支持见下节「十一、aarch64 支持」：`build_android.py` 本轮新增
+  `_apply_deploy_arch`（`--arch` 写入 pysidedeploy.spec），CLI 契约保持。
+
+## 十一、aarch64 支持（CI 矩阵 + `--arch` 写入 pysidedeploy.spec）
+
+日期：2026-08-16。为 Android 构建增加 aarch64 架构（当前只构建 x86_64）。
+
+### 为什么这样设计
+
+- **Qt 官方 android wheel 只有 aarch64 + x86_64**（见 notes/00、notes/03），不存在
+  其它官方架构；x86（32 位）需自编译，不在支持范围。
+- **p4a 的 `qt` bootstrap 单架构**：一次构建只产出一个 `android.archs`，无法在同
+  一个 buildozer.spec 里同时打两套架构 → 多架构必须**并行 job**。
+- **NDK r27c 内含两套工具链**（`toolchains/llvm/prebuilt/linux-x86_64/bin/` 同时有
+  `aarch64-linux-android21-clang` 与 `x86_64-linux-android21-clang`），SDK 通用，
+  二者均无需按架构调整。
+
+### 根因：`--arch` 此前只用于打印
+
+`tools/android/build_android.py` 的 `--arch` 参数原本**只打印不生效**：真正的架构
+来自仓库根 `pysidedeploy.spec` 的 `[buildozer] arch = x86_64`，prep 把它复制进
+app-dir，pass1（pyside6-android-deploy）据此生成 buildozer.spec 的
+`android.archs`。因此不改 spec 的话，传 `--arch aarch64` 也永远产出 x86_64。
+
+修法：`build_android.py` 新增 `_apply_deploy_arch(app_dir, arch)`，在 prep 之后、
+pass1 之前用 configparser 把 `app_dir/pysidedeploy.spec` 的 `[buildozer] arch`
+写成 `--arch` 值（保留其它键，缺 section/key 则创建，`space_around_delimiters=True`
+风格与 `patch_buildozer_spec.py` 一致）。仅在值与目标不同时写回并打印变更，目标
+arch 始终打印（幂等）。CLI 契约与阶段顺序不变。
+
+### CI：矩阵两个并行 job
+
+`.github/workflows/android-build.yml` 改为 job 级矩阵：
+
+- `strategy.matrix.arch = [x86_64, aarch64]`，job `name` 与 job 级
+  `env.P4A_ARCH: ${{ matrix.arch }}` 都带架构 → cache key、`setup_env.sh` 的 wheel
+  下载（URL 含 `android_$P4A_ARCH`）、APK/logs artifact 命名自动区分。
+- build 步骤 `--arch=${{ matrix.arch }}`（替换原硬编码 `--arch=x86_64`）。
+- APK artifact `iaa-android-${{ env.P4A_ARCH }}` 不变；logs artifact 改为
+  `iaa-android-logs-${{ matrix.arch }}`（并行 job 上传同名 artifact 会冲突）。
+- workflow 级 `env` 移除 `P4A_ARCH`（保留 PYSIDE_VERSION / ANDROID_API /
+  ANDROID_NDK / JAVA_HOME）。
+
+### 本地：`scripts\build-android.ps1 -Arch aarch64`
+
+`scripts/build-android.ps1` 已有 `-Arch` 参数并传 `-e P4A_ARCH=$Arch`，entrypoint
+透传 `--arch ${P4A_ARCH}` → `_apply_deploy_arch` 生效后，本地
+`.\scripts\build-android.ps1 -Arch aarch64` 即可产出 aarch64 APK，无需改任何脚本。

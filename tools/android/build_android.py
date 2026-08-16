@@ -10,6 +10,8 @@ venv 的 bin 解析，找不到再回退 PATH。
 
     a) prep    复制仓库 → app-dir（排除 .git/.venv/缓存等，保留已有 .buildozer）
                并把 buildozer.spec 挪为 buildozer.spec.sample
+    a1) arch   把 --arch 写进 app-dir 的 pysidedeploy.spec（[buildozer] arch），
+               pass1 据此生成对应 android.archs（幂等，仅变化时写回）
     b) resgen  在 app-dir 执行 make_resources.py --production，断言产物
     c) pass1   pyside6-android-deploy 生成 buildozer.spec（容忍失败）
     d) patch   调用同仓库 patch_buildozer_spec.py 补丁 spec
@@ -22,6 +24,7 @@ sdkmanager legacy 软链只在 pass2 前补，否则 pass1 内部的 buildozer �
 """
 
 import argparse
+import configparser
 import fnmatch
 import os
 import pathlib
@@ -234,6 +237,38 @@ def stage_prep(repo_dir, app_dir):
         print('buildozer.spec -> buildozer.spec.sample')
 
 
+def _apply_deploy_arch(app_dir, arch):
+    """把目标架构写入 app-dir 的 pysidedeploy.spec（prep 后、pass1 前）。
+
+    pyside6-android-deploy 生成 buildozer.spec 时，``android.archs`` 来自
+    pysidedeploy.spec 的 ``[buildozer] arch``：仓库根的 pysidedeploy.spec 写死
+    x86_64，prep 会把它原样复制进 app-dir。若不在这里把 ``--arch`` 真正写进 spec，
+    该参数只影响打印，无论怎么传永远只会产出 x86_64。这里用 configparser 原地改，
+    保留其它键；缺 ``[buildozer]`` 段或 ``arch`` 键时创建。仅在值变化时写回并打印
+    变更，目标 arch 始终打印（幂等：已是目标值则不动）。
+
+    :param app_dir: 应用构建目录（含 prep 复制进来的 pysidedeploy.spec）。
+    :param arch: 目标架构（如 x86_64 / aarch64）。
+    :raises OSError: 读取或写入失败。
+    """
+    spec = app_dir / 'pysidedeploy.spec'
+    cp = configparser.ConfigParser(
+        comment_prefixes='#', inline_comment_prefixes=None, interpolation=None)
+    cp.read(spec, encoding='utf-8')
+    if not cp.has_section('buildozer'):
+        cp.add_section('buildozer')
+    current = cp.get('buildozer', 'arch', fallback=None)
+    print(f'pysidedeploy.spec [buildozer] arch = '
+          f'{current if current is not None else "(缺失)"} -> 目标 {arch}')
+    if current == arch:
+        print('arch 已是目标值，无需修改（幂等）')
+        return
+    cp.set('buildozer', 'arch', arch)
+    with spec.open('w', encoding='utf-8') as f:
+        cp.write(f, space_around_delimiters=True)
+    print(f'已写入 {spec}：[buildozer] arch = {arch}')
+
+
 def stage_resgen(app_dir):
     """阶段 b：生成资源代码 iaa/tasks/R.py 与 iaa/res，并断言产物存在。
 
@@ -388,6 +423,7 @@ def main(argv=None):
 
     try:
         stage_prep(repo_dir, app_dir)
+        _apply_deploy_arch(app_dir, args.arch)
         stage_resgen(app_dir)
         stage_pass1(app_dir, wheels_dir, sdk_dir, ndk_dir)
         stage_patch(app_dir, repo_dir)

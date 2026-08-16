@@ -19,15 +19,22 @@ env:
   # 构建环境由 tools/android/setup_env.sh 单一来源提供（CI 运行时执行，与本地 Docker
   # entrypoint 一致）；下方为对齐默认值，setup 脚本会按此下载/安装。
   JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-  # Qt 官方 android wheel 版本与架构（目标模拟器 x86_64 / API 35）
+  # Qt 官方 android wheel 版本（架构走 job 级矩阵，见 build-apk.strategy.matrix）
   PYSIDE_VERSION: 6.11.1
-  P4A_ARCH: x86_64
   ANDROID_API: 35
   ANDROID_NDK: r27c
 
 jobs:
   build-apk:
-    name: build android x86_64 apk
+    name: build android ${{ matrix.arch }} apk
+    # Qt 官方 android wheel 只有 aarch64 + x86_64，且 p4a 的 qt bootstrap 单架构
+    # （一次构建只产一个架构）→ 用矩阵并行两个 job，各 job 自备对应的 P4A_ARCH
+    # 环境变量（cache key / setup_env.sh wheel 下载 / artifact 命名都随架构区分）。
+    strategy:
+      matrix:
+        arch: [x86_64, aarch64]
+    env:
+      P4A_ARCH: ${{ matrix.arch }}
     # 用 22.04：p4a/buildozer 与 libffi 的 autogen.sh 在 24.04 的
     # libtool 2.4.7 下会报 LT_SYS_SYMBOL_USCORE 未定义（24.04 移除该宏），
     # 22.04（autoconf 2.71 + libtool 2.4.6）是 buildozer 官方 CI 验证环境。
@@ -89,6 +96,7 @@ jobs:
 
       # ---- 调用共享构建脚本：与本地 Docker 构建共用同一份逻辑（避免两套逻辑漂移）----
       # build_android.py 内部完成：prep(拷贝+排除+mv buildozer.spec→.sample) →
+      # arch(--arch 写入 pysidedeploy.spec，pass1 据此生成对应 android.archs) →
       # resgen(make_resources.py) → pass1(pyside6-android-deploy，容忍失败) →
       # patch(patch_buildozer_spec.py) → pass2(buildozer -v android debug，含
       # sdkmanager legacy 软链) → collect(拷 *.apk 到 --output)。
@@ -97,6 +105,7 @@ jobs:
       # 装到 $HOME/.cargo/bin，build_android.py 的 _base_env 会自行前置进 PATH）。
       # 首次 --app-dir 为空，脚本会拷贝仓库；.buildozer 留在 app-dir 支持同一次
       # run 内的增量（跨 run 由 runner.temp 生命周期决定，可接受）。--repo 指向 git 工作区。
+      # --arch 来自矩阵，与 setup_env.sh 下载的 wheel 架构（P4A_ARCH）一致。
       - name: Run shared android build
         run: |
           # 与 artifact 上传步骤共用同一目录约定（app_dir 历史 env 由本步维护）
@@ -108,7 +117,7 @@ jobs:
             --sdk-dir="$HOME/android-sdk" \
             --ndk-dir="$HOME/.pyside6_android_deploy/android-ndk/android-ndk-$ANDROID_NDK" \
             --output="$RUNNER_TEMP/artifacts" \
-            --arch=x86_64 \
+            --arch=${{ matrix.arch }} \
             --api=$ANDROID_API \
             --ndk-api=24 \
             --ndk-version=$ANDROID_NDK
@@ -130,7 +139,8 @@ jobs:
       - name: Upload build logs and spec
         uses: actions/upload-artifact@v4
         with:
-          name: iaa-android-logs
+          # 含架构后缀：矩阵两个 job 并行，同名 artifact 会上传冲突
+          name: iaa-android-logs-${{ matrix.arch }}
           path: |
             ${{ env.app_dir }}/buildozer.spec
             ${{ env.app_dir }}/.buildozer/buildozer.log
