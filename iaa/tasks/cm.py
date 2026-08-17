@@ -198,6 +198,7 @@ def clear_common_cm():
     max_provider_exit_misses = 8
     provider_exit_attempts = 0
     provider_exit_misses = 0
+    ad_load_retries = 0
     for _ in Loop(interval=0.6):
         if state == 1:
             if current_server == 'en':
@@ -219,6 +220,7 @@ def clear_common_cm():
             elif R.Cm.ButtonPlayCm.try_click():
                 provider_exit_attempts = 0
                 provider_exit_misses = 0
+                ad_load_retries = 0
                 rep.message(TStr(zh_CN='播放广告', en_US='Playing ad'))
                 logger.debug('Clicked CM start button.')
                 sleep(1)
@@ -236,6 +238,13 @@ def clear_common_cm():
                     state = 3
                     continue
                 device.screenshot()
+                # 广告源加载失败会弹出 Error loading ad. 对话框，点 Retry 直到广告加载成功
+                if R.Cm.ButtonAdLoadErrorRetry.q(threshold=0.7).try_click():
+                    ad_load_retries += 1
+                    rep.message(TStr(zh_CN='广告载入失败，正在重试', en_US='Ad failed to load, retrying'))
+                    logger.info('Ad load error dialog. Clicked Retry (retry %s).', ad_load_retries)
+                    sleep(1)
+                    continue
                 if R.Cm.ButtonCmStart.q(threshold=0.7).try_click():
                     logger.debug('Clicked CM confirmation button.')
                     sleep(1)
