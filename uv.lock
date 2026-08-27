@@ -601,7 +601,7 @@ wheels = [
 
 [[package]]
 name = "ichikas-auto-assistant"
-version = "26.7b1"
+version = "26.8b1"
 source = { virtual = "." }
 dependencies = [
     { name = "av", version = "14.3.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
