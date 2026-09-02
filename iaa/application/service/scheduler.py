@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Callable, Any
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
 from kotonebot.errors import DeviceConnectionError
-from iaa.config.schemas import NoDevice, PlayCoverDevice, AvdDevice
+from iaa.config.schemas import PlayCoverDevice
 from iaa.application.service.device_factory import DeviceFactory, LifecyclePolicy
 from iaa.definitions.consts import package_by_server
 
@@ -40,7 +40,6 @@ def _parse_wm_size_output(output: str) -> str | None:
 
 def _setup_resolution(
     device: 'Device',
-    is_physical_device: bool,
     resolution_method: str,
     package_name: str
 ) -> str | None:
@@ -48,8 +47,7 @@ def _setup_resolution(
     设置设备分辨率。
 
     :param device: 设备实例
-    :param is_physical_device: 是否为物理设备（NoDevice lifecycle）
-    :param resolution_method: 分辨率设置方式 ('auto', 'keep', 'wm_size')
+    :param resolution_method: 分辨率设置方式 ('keep', 'wm_size')
     :param package_name: 游戏包名，用于 kill 游戏
     :return: 原始物理分辨率，用于恢复；如果不需修改则返回 None
     """
@@ -57,11 +55,6 @@ def _setup_resolution(
         logger.debug('Resolution method is "keep", skip resolution setup.')
         return None
 
-    if resolution_method == 'auto':
-        if not is_physical_device:
-            logger.debug('Resolution method is "auto" but not physical device, skip resolution setup.')
-            return None
-    
     result = device.commands.adb_shell('wm size')
     original = _parse_wm_size_output(result)
     
@@ -515,10 +508,8 @@ class SchedulerService:
         # 设置分辨率（PlayCover 不走 ADB，直接跳过）
         device_conf = self.iaa.config.conf.device
         if not isinstance(device_conf.lifecycle, PlayCoverDevice):
-            # AvdDevice 和 NoDevice 均需走 wm size 路径（_setup_resolution 内部判重跳过）
-            is_physical = isinstance(device_conf.lifecycle, (NoDevice, AvdDevice))
             package_name = package_by_server(self.iaa.config.conf.game.server)
-            self._original_resolution = _setup_resolution(device, is_physical, device_conf.resolution_method, package_name)
+            self._original_resolution = _setup_resolution(device, device_conf.resolution_method, package_name)
         else:
             self._original_resolution = None
         

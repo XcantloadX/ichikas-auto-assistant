@@ -284,9 +284,9 @@ PageContainer {
     }
 
     // ── 表单绑定器 ──
-    FormBinder { id: formB; data: root.config; prefix: ""; errors: root.errors; onCommitted: root._commit("", key, value) }
-    FormBinder { id: lcB; data: root.config.device ? root.config.device.lifecycle : null; prefix: "device.lifecycle"; errors: root.errors; onCommitted: root._commit("device.lifecycle", key, value) }
-    FormBinder { id: connB; data: root.config.device ? root.config.device.connection : null; prefix: "device.connection"; errors: root.errors; onCommitted: root._commit("device.connection", key, value) }
+    FormBinder { id: formB; data: root.config; prefix: ""; errors: root.errors; onCommitted: function(key, value) { root._commit("", key, value) } }
+    FormBinder { id: lcB; data: root.config.device ? root.config.device.lifecycle : null; prefix: "device.lifecycle"; errors: root.errors; onCommitted: function(key, value) { root._commit("device.lifecycle", key, value) } }
+    FormBinder { id: connB; data: root.config.device ? root.config.device.connection : null; prefix: "device.connection"; errors: root.errors; onCommitted: function(key, value) { root._commit("device.connection", key, value) } }
 
     Component.onCompleted: {
         root.lifecycleOptions = JSON.parse(root.formController.lifecycleOptionsJson())
@@ -519,7 +519,12 @@ PageContainer {
                     enabled: root.controlImpl !== "qemu_grpc"
                     resetEnabled: root.controlImpl !== "qemu_grpc"
                     onResetRequested: root.formController.resetResolution()
-                    help: "<b>自动</b>：物理设备执行 <code>wm size</code>；其他模拟器不修改。<br><b>强制修改分辨率</b>：对所有设备执行 <code>wm size</code>。<br><b>保持原始分辨率</b>：不做任何修改。"
+                    help: "<b>保持原始分辨率</b>：不做任何修改。<br><b>强制修改分辨率</b>：对所有设备执行 <code>wm size</code>。"
+                }
+                FormNotice {
+                    style: "warning"
+                    content: "警告！<b>强制修改分辨率可能导致设备无法正常使用且无法恢复！</b>务必阅读<a href=\"https://p.kdocs.cn/s/AGBH56RBAAAFS?linkname=WKAL5qgRTi\">此处</a>说明后才使用该功能。"
+                    visible: root.controlImpl !== "qemu_grpc" && root.formController.config?.device?.resolution_method === "wm_size"
                 }
                 FormNotice {
                     style: "tip"

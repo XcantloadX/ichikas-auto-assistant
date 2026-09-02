@@ -332,3 +332,49 @@ class ProfileV3ToV4(MigrationStep):
                     level='warning'
                 ))
                 logger.exception(f"Error migrating config {file.name}")
+
+
+class ProfileV4ToV5(MigrationStep):
+    """
+    移除 resolution_method 的 'auto' 选项，统一转换为 'keep'。
+    """
+
+    def check_needed(self, ctx: MigrationContext) -> bool:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) < 5:
+                    return True
+            except Exception:
+                continue
+        return False
+
+    def apply(self, ctx: MigrationContext) -> None:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) >= 5:
+                    continue
+
+                device = data.get('device', {})
+                if device.get('resolution_method') == 'auto':
+                    device['resolution_method'] = 'keep'
+                    data['device'] = device
+
+                data['version'] = 5
+                file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+                ctx.messages.append(MigrationMessage(
+                    text="移除分辨率 auto 选项",
+                    old_version="26.06 (v4)",
+                    new_version="26.07 (v5)"
+                ))
+            except Exception as e:
+                ctx.messages.append(MigrationMessage(
+                    text=f"迁移配置 {file.name} 时出错: {e}",
+                    level='warning'
+                ))
+                logger.exception(f"Error migrating config {file.name}")

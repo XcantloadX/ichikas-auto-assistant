@@ -74,7 +74,7 @@ class DeviceConfig(BaseModel):
     connection: DeviceConnection = Field(default_factory=lambda: AutoConnection(type='auto'))
     control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'] = 'nemu_ipc'
     scrcpy_virtual_display: bool = False
-    resolution_method: Literal['auto', 'keep', 'wm_size'] = 'auto'
+    resolution_method: Literal['keep', 'wm_size'] = 'keep'
     stop_on_finish: bool = False
 
 

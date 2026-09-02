@@ -502,7 +502,7 @@ class DeviceFactory:
         # qemu_grpc 直接读取硬件帧缓冲，wm size 无法改变实际分辨率。
         if impl_hint == 'qemu_grpc' and device_conf.resolution_method != 'keep':
             raise UserFriendlyError(
-                'QEMU gRPC 模式不支持自动修改分辨率，请在「分辨率设置」中选择「保持原始分辨率」，'
+                'QEMU gRPC 模式不支持修改分辨率，请在「分辨率设置」中选择「保持原始分辨率」，'
                 '并在 AVD Manager 中预先将 LCD 分辨率配置为 1280x720。'
             )
 

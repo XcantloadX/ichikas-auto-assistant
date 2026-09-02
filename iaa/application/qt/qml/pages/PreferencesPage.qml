@@ -53,7 +53,7 @@ PageContainer {
         {value: "#4a5459", label: "石墨灰（#4A5459）"}
     ]
 
-    FormBinder { id: formB; data: root.config; prefix: ""; errors: root.errors; onCommitted: root._commit("", key, value) }
+    FormBinder { id: formB; data: root.config; prefix: ""; errors: root.errors; onCommitted: function(key, value) { root._commit("", key, value) } }
 
     function _commit(prefix, key, value) {
         var path = prefix ? prefix + "." + key : key

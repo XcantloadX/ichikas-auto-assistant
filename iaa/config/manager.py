@@ -7,7 +7,7 @@ from pydantic_core import ValidationError
 from .base import IaaConfig, GameConfig
 from .shared import SharedConfig
 from .migration import MigrationChain, add_deferred_messages
-from .migrations import ProfileV1ToV2, ProfileV2ToV3, ProfileV3ToV4, SharedV1ToV2
+from .migrations import ProfileV1ToV2, ProfileV2ToV3, ProfileV3ToV4, ProfileV4ToV5, SharedV1ToV2
 
 
 class ConfigValidationError(Exception):
@@ -47,6 +47,7 @@ profile_migration_chain = MigrationChain(steps=[
     ProfileV1ToV2(),
     ProfileV2ToV3(),
     ProfileV3ToV4(),
+    ProfileV4ToV5(),
 ])
 
 

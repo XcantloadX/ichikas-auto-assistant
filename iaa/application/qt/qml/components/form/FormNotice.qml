@@ -33,6 +33,8 @@ Rectangle {
     radius: 4
     implicitHeight: layout.implicitHeight + 24
 
+    property point _mousePos: Qt.point(0, 0)
+
     ColumnLayout {
         id: layout
         anchors { left: parent.left; right: parent.right; top: parent.top; margins: 12 }
@@ -44,10 +46,24 @@ Rectangle {
             Layout.fillWidth: true
         }
         Label {
+            id: contentLabel
             text: root.content
             wrapMode: Text.Wrap
             textFormat: Text.RichText
             Layout.fillWidth: true
+            onLinkActivated: function(link) {
+                Qt.openUrlExternally(link)
+            }
         }
+    }
+
+    MouseArea {
+        anchors.fill: layout
+        acceptedButtons: Qt.NoButton
+        hoverEnabled: true
+        onPositionChanged: function(mouse) {
+            root._mousePos = Qt.point(mouse.x, mouse.y)
+        }
+        cursorShape: contentLabel.linkAt(root._mousePos.x, root._mousePos.y) ? Qt.PointingHandCursor : Qt.ArrowCursor
     }
 }

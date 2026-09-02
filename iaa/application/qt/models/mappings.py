@@ -47,12 +47,11 @@ CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scr
     value: key for key, value in CONTROL_IMPL_DISPLAY_MAP.items()
 }
 
-RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], str] = {
-    'auto': '自动',
+RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['keep', 'wm_size'], str] = {
     'keep': '保持原始分辨率',
     'wm_size': '强制修改分辨率',
 }
-RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['auto', 'keep', 'wm_size']] = {
+RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['keep', 'wm_size']] = {
     value: key for key, value in RESOLUTION_METHOD_DISPLAY_MAP.items()
 }
 
