@@ -34,16 +34,16 @@ def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
 def builtin_auto_presets() -> list[dict[str, object]]:
     presets = [
         AutoLivePreset(
-            name='CLEAR 10 首歌',
+            name='CLEARx10',
             plan=ListLoopPlan(loop_count=10, play_mode='game_auto', ap_multiplier=1),
         ),
         AutoLivePreset(
-            name='FC 10 次',
+            name='APx10',
             plan=SingleLoopPlan(loop_count=10, play_mode='script_auto', ap_multiplier=0),
         ),
         AutoLivePreset(
-            name='队长次数',
-            plan=SingleLoopPlan(loop_count=30, play_mode='script_auto', ap_multiplier=0),
+            name='脚本x999',
+            plan=SingleLoopPlan(loop_count=999, play_mode='script_auto', ap_multiplier=0),
         ),
     ]
     return [preset_to_payload(preset) for preset in presets]
