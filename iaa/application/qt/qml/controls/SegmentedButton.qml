@@ -11,6 +11,29 @@ Control {
     property int currentIndex: -1
     property string textRole: "text"
     property string valueRole: "value"
+
+    // 外部通过 value 绑定选中项，SegmentedButton 负责将其映射到 currentIndex。
+    // 避免直接绑定 currentIndex：onClicked 内部会对其做命令式赋值，会打断外部 binding。
+    property var value: undefined
+    onValueChanged: _syncIndex()
+    onModelChanged: _syncIndex()
+
+    function _syncIndex() {
+        const idx = _findIndex(root.model, root.value)
+        if (root.currentIndex !== idx)
+            root.currentIndex = idx
+    }
+
+    function _findIndex(items, val) {
+        if (!items || val === undefined) return -1
+        for (let i = 0; i < items.length; i++) {
+            const item = items[i]
+            const v = (item && typeof item === 'object') ? item[root.valueRole] : item
+            if (v === val) return i
+        }
+        return -1
+    }
+
     readonly property var currentValue: {
         if (currentIndex >= 0 && currentIndex < root.model.length) {
             const item = root.model[currentIndex]
@@ -69,13 +92,18 @@ Control {
             }
 
             function updatePosition() {
-                if (root.currentIndex >= 0 && root.currentIndex < repeater.count) {
-                    const item = repeater.itemAt(root.currentIndex)
-                    if (item) {
-                        slider.targetX = item.x
-                        slider.targetWidth = item.width
-                    }
+                if (root.currentIndex < 0 || root.currentIndex >= repeater.count) return
+                const item = repeater.itemAt(root.currentIndex)
+                if (!item) return
+                // 不读 item.x：Row 布局 pass 可能晚于 Qt.callLater，此时 x 仍为 0。
+                // 改从各项 width 累加；width 由 label.implicitWidth 同步计算，不依赖布局 pass。
+                let x = 0
+                for (let i = 0; i < root.currentIndex; i++) {
+                    const prev = repeater.itemAt(i)
+                    if (prev) x += prev.width + row.spacing
                 }
+                slider.targetX = x
+                slider.targetWidth = item.width
             }
 
             Connections {
@@ -114,18 +142,20 @@ Control {
 
                     property var itemValue: typeof modelData === 'object' ? modelData[root.valueRole] : modelData
                     property string itemText: typeof modelData === 'object' ? modelData[root.textRole] : modelData
+                    property bool itemEnabled: typeof modelData === 'object' ? (modelData.enabled !== false) : true
 
                     implicitWidth: Math.max(60, label.implicitWidth + 20)
                     implicitHeight: 30
 
-                    hoverEnabled: true
+                    enabled: itemEnabled
+                    hoverEnabled: itemEnabled
                     checked: root.currentIndex === index
 
                     background: Rectangle {
                         radius: 4
                         color: {
                             if (!segmentItem.enabled)
-                                return "transparent"
+                                return root.lightScheme ? Qt.rgba(0, 0, 0, 0.03) : Qt.rgba(1, 1, 1, 0.03)
                             if (segmentItem.down)
                                 return root.lightScheme ? Qt.rgba(0, 0, 0, 0.04) : Qt.rgba(1, 1, 1, 0.04)
                             if (segmentItem.hovered && !segmentItem.checked)
@@ -139,11 +169,20 @@ Control {
                         text: segmentItem.itemText
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
-                        color: segmentItem.checked ? root.palette.accent : root.palette.text
+                        // disabled 用明显更淡的文字 + 整体降透明，避免和未选中态混淆
+                        opacity: segmentItem.enabled ? 1.0 : 0.4
+                        color: {
+                            if (!segmentItem.enabled)
+                                return root.palette.placeholderText
+                            if (segmentItem.checked)
+                                return root.palette.accent
+                            return root.palette.text
+                        }
                         font.weight: segmentItem.checked ? Font.DemiBold : Font.Normal
                     }
 
                     onClicked: {
+                        if (!segmentItem.enabled) return
                         root.currentIndex = index
                         root.activated(index, segmentItem.itemValue)
                     }

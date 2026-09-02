@@ -1,33 +1,25 @@
-pragma ComponentBehavior: Bound
-
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../components"
+import "../"
 
 ColumnLayout {
     id: root
 
-    required property var field
-    required property var formController
+    required property string label
+    property string value: ""
+    property string helpText: ""
+    signal userCommitted(var newValue)
 
     spacing: 4
-
     property bool recording: false
 
-    // Convert portable Qt sequence string (e.g. "Ctrl+Meta+F9") to
-    // platform-native display text.
-    //   macOS:        ⌃⌘⌥⇧ + key symbol
-    //   Windows/Linux: Ctrl+Win+Alt+Shift+key
     function toDisplayText(sequence) {
         if (!sequence) return ""
         var isMac = Qt.platform.os === "osx"
         var s = sequence
         var mods = []
-
-        // Strip modifiers in canonical Qt order (Ctrl, Alt, Meta, Shift).
-        // The order here must match buildSequence below.
         var checks = [
             ["Ctrl+",  isMac ? "⌃" : "Ctrl+"],
             ["Alt+",   isMac ? "⌥" : "Alt+"],
@@ -40,8 +32,6 @@ ColumnLayout {
                 s = s.substring(checks[i][0].length)
             }
         }
-
-        // Map key names to symbols on macOS
         if (isMac) {
             var sym = {
                 "Return": "↩", "Backspace": "⌫", "Del": "⌦",
@@ -52,24 +42,15 @@ ColumnLayout {
             }
             s = sym[s] !== undefined ? sym[s] : s
         }
-
-        // macOS: concatenate without separator (⌃⌘F9); others: join with +
-        if (isMac) {
-            return mods.join("") + s
-        } else {
-            return mods.join("") + s   // mods already carry trailing "+"
-        }
+        return mods.join("") + s
     }
 
-    // Build a portable Qt sequence string from a key event's modifiers + key.
-    // Returns null for unrecognised or modifier-only keys.
     function buildSequence(modifiers, key) {
         var parts = []
         if (modifiers & Qt.ControlModifier) parts.push("Ctrl")
         if (modifiers & Qt.AltModifier)     parts.push("Alt")
         if (modifiers & Qt.MetaModifier)    parts.push("Meta")
         if (modifiers & Qt.ShiftModifier)   parts.push("Shift")
-
         var name = keyName(key)
         if (!name) return null
         parts.push(name)
@@ -77,17 +58,12 @@ ColumnLayout {
     }
 
     function keyName(key) {
-        // Function keys F1–F35
         if (key >= Qt.Key_F1 && key <= Qt.Key_F35)
             return "F" + (key - Qt.Key_F1 + 1)
-        // Letters A–Z
         if (key >= Qt.Key_A && key <= Qt.Key_Z)
             return String.fromCharCode(key)
-        // Digits 0–9
         if (key >= Qt.Key_0 && key <= Qt.Key_9)
             return String.fromCharCode(key)
-
-        // Named keys
         var map = {}
         map[Qt.Key_Space]     = "Space"
         map[Qt.Key_Return]    = "Return"
@@ -107,13 +83,10 @@ ColumnLayout {
         return map[key] || null
     }
 
-
-
     FormField {
         Layout.fillWidth: true
-        labelText: root.field.label
-        helpText: root.field.helpText || ""
-        errorText: root.field.error || ""
+        labelText: root.label
+        helpText: root.helpText
 
         RowLayout {
             Layout.fillWidth: true
@@ -123,11 +96,10 @@ ColumnLayout {
                 id: displayField
                 Layout.fillWidth: true
                 readOnly: true
-                enabled: !!root.field.enabled
 
                 text: root.recording
                     ? ""
-                    : (root.field.value ? root.toDisplayText(root.field.value) : "")
+                    : (root.value ? root.toDisplayText(root.value) : "")
                 placeholderText: root.recording ? qsTr("按下快捷键…（按 ESC 取消）") : qsTr("点击设置")
 
                 onActiveFocusChanged: {
@@ -139,7 +111,6 @@ ColumnLayout {
                 Keys.enabled: root.recording
                 Keys.onPressed: function(event) {
                     if (!root.recording) return;
-                    
                     var modOnly = [
                         Qt.Key_Control, Qt.Key_Alt, Qt.Key_Meta, Qt.Key_Shift,
                         Qt.Key_Super_L, Qt.Key_Super_R, Qt.Key_AltGr,
@@ -155,16 +126,15 @@ ColumnLayout {
                     }
                     var seq = root.buildSequence(event.modifiers, event.key)
                     if (seq) {
-                        root.formController.setValue(root.field.id, seq)
+                        root.userCommitted(seq)
                     }
                     root.recording = false
                     event.accepted = true
                 }
 
                 MouseArea {
-                    id: displayArea
                     anchors.fill: parent
-                    enabled: !!root.field.enabled && !root.recording
+                    enabled: !root.recording
                     hoverEnabled: true
                     cursorShape: Qt.IBeamCursor
                     onClicked: {
@@ -176,10 +146,8 @@ ColumnLayout {
 
             Button {
                 text: qsTr("清除")
-                enabled: !!root.field.enabled && !!root.field.value && !root.recording
-                onClicked: {
-                    root.formController.setValue(root.field.id, null)
-                }
+                enabled: !!root.value && !root.recording
+                onClicked: root.userCommitted(null)
             }
         }
     }

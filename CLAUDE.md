@@ -102,7 +102,7 @@ Configs live in `conf/` as JSON files validated by Pydantic models in `iaa/confi
 ## Code Style
 
 - **Do not over-split functions.** If a helper is called only once, keep the logic inline unless the extracted function is genuinely complex or materially improves readability.
-- **QML dropdowns:** use `Select` (`iaa/application/framework/dsl/qml/controls/Select.qml`) for all non-editable dropdowns, not `ComboBox`. Use `ComboBox` only when `editable: true` is needed. Import path from `iaa/application/qt/qml/**/`: `import "../../../framework/dsl/qml/controls"`.
+- **QML dropdowns:** use `Select` (`iaa/application/qt/qml/controls/Select.qml`) for all non-editable dropdowns, not `ComboBox`. Use `ComboBox` only when `editable: true` is needed. Import path from `iaa/application/qt/qml/**/`: `import "../controls"`.
 - **QML icon glyphs:** always write Segoe Fluent Icons / Segoe MDL2 Assets glyphs as `\uXXXX` escape sequences (e.g. `text: "\uE713"`), never as literal Unicode characters. Literal PUA characters are silently dropped by file-writing tools, leaving empty strings at runtime.
 - Always use the repo `.venv` (via `uv run`) for Python scripts, probes, and generators.
 

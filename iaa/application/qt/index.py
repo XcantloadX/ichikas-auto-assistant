@@ -139,7 +139,7 @@ def main() -> None:
                 or interface_conf.theme_color != _startup_theme_color):
             controller.notificationRaised.emit('info', '配色方案将在重启后生效。')
 
-    controller.preferencesController.runtimeChanged.connect(apply_runtime_preferences)
+    controller.preferencesController.configChanged.connect(apply_runtime_preferences)
     apply_interface_preferences()
 
     exit_code = app.exec()

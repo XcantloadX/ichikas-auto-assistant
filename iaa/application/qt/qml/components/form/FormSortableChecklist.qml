@@ -4,16 +4,20 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQml.Models
+import "../"
+import "formUtils.js" as F
 
-import "../components"
-
+// 可排序勾选清单：勾选/取消勾选 + 拖拽排序 + 上移/下移。
 ColumnLayout {
     id: root
-
-    required property var field
-    required property var formController
-
-    spacing: 4
+    Layout.fillWidth: true
+    property string label: ""
+    property string help: ""
+    property var options: []
+    property var binder: null
+    property string field: ""
+    // 清单可视区最大高度（外部用 Layout.preferredHeight 控制整体高度时，此值决定内部滚动上限）
+    property int listMaxHeight: 300
 
     // Drag-reorder state
     property int _dragCurrentIndex: -1   // visual index of the item being dragged (-1 = not dragging)
@@ -21,8 +25,29 @@ ColumnLayout {
     readonly property bool _dragging: _dragCurrentIndex >= 0
     property real _autoScrollVelocity: 0 // px/tick; + = scroll down, - = scroll up
 
+    readonly property var _eb: F.effectiveBinder(binder, parent)
+
+    readonly property var _val: {
+        var _ = _eb ? _eb.data : null   // 强制建立对 _eb.data 的绑定依赖
+        return (_eb && field) ? _eb.get(field, []) : []
+    }
+
+    FieldRegistrar {
+        id: _registrar
+        startParent: root.parent
+        binder: root._eb
+        field: root.field
+        label: root.label
+        prefixRevision: root._eb ? (root._eb.prefix.length) : 0
+    }
+    Connections {
+        target: root._eb
+        enabled: !!root._eb && !!root.field && !!root.label
+        function onPrefixChanged() { _registrar.prefixRevision++ }
+    }
+
     property var normalizedOptions: {
-        let options = root.field.options || []
+        let options = root.options || []
         let out = []
         for (let i = 0; i < options.length; ++i) {
             let item = options[i]
@@ -54,7 +79,7 @@ ColumnLayout {
     }
 
     function selectedValues() {
-        return root._toArray(root.field.value)
+        return root._toArray(root._val)
     }
 
     function selectedItems() {
@@ -82,7 +107,7 @@ ColumnLayout {
     }
 
     function _commit(values) {
-        root.formController.setValue(root.field.id, values)
+        if (root._eb && root.field) root._eb.set(root.field, values)
     }
 
     function check(value) {
@@ -119,8 +144,6 @@ ColumnLayout {
     }
 
     // Move item in both the DelegateModel visual order and the tracking array.
-    // Called from onPositionChanged; delegates call this via root.* to stay
-    // within ComponentBehavior: Bound scope rules.
     function _moveDelegateItem(from, to) {
         if (from === to) return
         selectedDelegateModel.items.move(from, to)
@@ -131,7 +154,6 @@ ColumnLayout {
     }
 
     // Compute auto-scroll velocity from the mouse Y position (in root coordinates).
-    // Called each onPositionChanged; reads/writes _autoScrollVelocity which drives autoScrollTimer.
     function _updateAutoScroll(rootY) {
         let svY = root.mapToItem(scrollView, 0, rootY).y
         let threshold = 30          // px from edge where scrolling starts
@@ -160,8 +182,7 @@ ColumnLayout {
     }
 
     // DelegateModel wrapping the selected items list.
-    // items.move() reorders delegates live without touching the underlying model,
-    // avoiding a full delegate reset during drag.
+    // items.move() reorders delegates live without touching the underlying model.
     DelegateModel {
         id: selectedDelegateModel
         model: root.selectedItems()
@@ -183,7 +204,7 @@ ColumnLayout {
             ItemDelegate {
                 id: rowContent
                 width: parent.width
-                enabled: !!root.field.enabled
+                enabled: root.enabled
                 onClicked: {
                     if (!root._dragging) root.uncheck(delegateRoot.modelData.value)
                 }
@@ -202,7 +223,7 @@ ColumnLayout {
                         implicitWidth: 20
                         implicitHeight: 28
                         Layout.alignment: Qt.AlignVCenter
-                        visible: !!root.field.enabled
+                        visible: root.enabled
                         opacity: delegateRoot.isDragSource ? 0.4 : 1.0
 
                         // Three short bars as a visual grip indicator
@@ -306,7 +327,7 @@ ColumnLayout {
                         font.family: "Segoe MDL2 Assets"
                         implicitWidth: 28
                         implicitHeight: 28
-                        enabled: delegateRoot.visualIndex > 0 && !!root.field.enabled
+                        enabled: delegateRoot.visualIndex > 0 && root.enabled
                         onClicked: root.moveUp(delegateRoot.visualIndex)
                     }
 
@@ -316,7 +337,7 @@ ColumnLayout {
                         font.family: "Segoe MDL2 Assets"
                         implicitWidth: 28
                         implicitHeight: 28
-                        enabled: delegateRoot.visualIndex < selectedDelegateModel.count - 1 && !!root.field.enabled
+                        enabled: delegateRoot.visualIndex < selectedDelegateModel.count - 1 && root.enabled
                         onClicked: root.moveDown(delegateRoot.visualIndex)
                     }
                 }
@@ -326,17 +347,13 @@ ColumnLayout {
 
     FormField {
         Layout.fillWidth: true
-        labelText: root.field.label
-        helpText: root.field.helpText || ""
-        errorText: root.field.error || ""
+        labelText: root.label
+        helpText: root.help
 
         ScrollView {
             id: scrollView
             Layout.fillWidth: true
-            implicitHeight: Math.min(
-                contentHeight,
-                root.field.props && root.field.props.height ? root.field.props.height : 300
-            )
+            implicitHeight: Math.min(contentHeight, root.listMaxHeight)
             clip: true
             ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
@@ -384,7 +401,7 @@ ColumnLayout {
                         required property var modelData
 
                         Layout.fillWidth: true
-                        enabled: !!root.field.enabled
+                        enabled: root.enabled
                         onClicked: root.check(unselItem.modelData.value)
                         topPadding: 0
                         bottomPadding: 0
@@ -432,5 +449,10 @@ ColumnLayout {
                 }
             }
         }
+    }
+
+    FormError {
+        Layout.leftMargin: 4
+        info: root._eb ? root._eb.error(root.field) : null
     }
 }

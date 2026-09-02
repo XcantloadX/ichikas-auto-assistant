@@ -1,6 +1,5 @@
 import QtQuick
 import QtQuick.Controls
-import QtQuick.Effects
 
 Control {
     id: root
@@ -20,10 +19,6 @@ Control {
         var p = root.mapToItem(tipPopup.parent, 0, root.height + 6);
         tipPopup.x = p.x;
         tipPopup.y = p.y;
-    }
-
-    function withAlpha(c, a) {
-        return Qt.rgba(c.r, c.g, c.b, a)
     }
 
     onHoveringChanged: {

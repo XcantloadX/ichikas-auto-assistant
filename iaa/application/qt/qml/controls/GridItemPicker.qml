@@ -4,8 +4,9 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import "../../../../qt/qml" as App
+import ".." as App
 
+// 图标网格选择器：带分组标题的图标选择下拉框（复刻自原 DSL GridItemPicker）。
 ComboBox {
     id: control
 

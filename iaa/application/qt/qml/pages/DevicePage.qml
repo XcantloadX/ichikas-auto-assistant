@@ -26,7 +26,7 @@ PageContainer {
 
     Connections {
         target: root.formController
-        function onRuntimeChanged() {
+        function onConfigChanged() {
             root.syncControlImpl()
         }
     }

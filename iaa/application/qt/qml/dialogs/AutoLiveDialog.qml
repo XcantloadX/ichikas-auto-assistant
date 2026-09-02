@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import ".." as App
-import "../../../framework/dsl/qml/controls"
+import "../controls"
 
 Dialog {
     id: root

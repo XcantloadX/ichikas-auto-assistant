@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+// 表单字段行：label + help 提示 + 控件（子级）+ 错误提示。
 RowLayout {
     id: root
     property alias labelText: label.text

@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING, cast
 from pynput import keyboard
 from PySide6.QtCore import QObject, QMetaObject, Qt
 
-from iaa.config import manager as config_manager
-
 if TYPE_CHECKING:
     from .tab_manager import TabManager
     from .preferences_controller import PreferencesController
@@ -41,7 +39,7 @@ class GlobalHotkeyController(QObject):
         self._prefs = preferences_controller
         self._listener: keyboard.GlobalHotKeys | None = None
 
-        self._prefs.runtimeChanged.connect(self.reload_hotkeys)
+        self._prefs.configChanged.connect(self.reload_hotkeys)
         self.reload_hotkeys()
 
     def _resolve_run(self):
@@ -49,8 +47,9 @@ class GlobalHotkeyController(QObject):
         return self._tab_manager.activeRunController
 
     def reload_hotkeys(self) -> None:
-        hotkeys = config_manager.read_shared().hotkeys
-        self._register_hotkeys(hotkeys.start or '', hotkeys.stop or '')
+        start = self._prefs.hotkeyStart()
+        stop = self._prefs.hotkeyStop()
+        self._register_hotkeys(start, stop)
 
     def shutdown(self) -> None:
         self._stop_listener()
