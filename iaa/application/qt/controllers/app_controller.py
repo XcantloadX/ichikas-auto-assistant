@@ -27,6 +27,7 @@ class AppController(QObject):
     screenshotEnabledChanged = Signal()
     staticsEnabledChanged = Signal()
     windowStyleChanged = Signal()
+    pathWarningRequired = Signal(str)  # 路径问题警告
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
@@ -158,6 +159,21 @@ class AppController(QObject):
     @Slot()
     def refreshWindowStyle(self) -> None:
         self.windowStyleChanged.emit()
+
+    @Slot(result=bool)
+    def checkPathIssues(self) -> bool:
+        """检查程序路径或工作目录是否存在问题。
+
+        :return: 如果程序路径或工作目录包含 ``Program Files`` 或 ``OneDrive``，返回 True。
+        """
+        app_root = IaaService.app_root().lower()
+        cwd = os.getcwd().lower()
+
+        for path in (app_root, cwd):
+            if 'program files' in path or 'onedrive' in path:
+                return True
+
+        return False
 
     @Slot(result=bool)
     def confirmClose(self) -> bool:

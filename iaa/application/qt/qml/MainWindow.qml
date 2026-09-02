@@ -396,6 +396,20 @@ ApplicationWindow {
                 window.showMigrationMessage(migrationMsg)
             }
         }
+        // 路径问题自检
+        if (window.appCtrl) {
+            var hasPathIssue = window.appCtrl.checkPathIssues()
+            if (hasPathIssue) {
+                App.Modal.message({
+                    title: "提示",
+                    content: "请勿将 iaa 放在 Program Files 程序文件夹下，以及 OneDrive 等云盘同步文件夹内，否则部分功能可能出现异常！",
+                    buttons: [
+                        { text: "确定", value: "ok", highlighted: true }
+                    ],
+                    width: 520
+                })
+            }
+        }
     }
 
     onClosing: function(close) {
