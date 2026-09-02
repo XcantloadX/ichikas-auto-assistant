@@ -109,6 +109,16 @@ PageContainer {
                     binder: formB
                     field: "telemetry.sentry"
                 }
+                FormCheckBox {
+                    label: "错误上报时附带截图"
+                    binder: formB
+                    field: "telemetry.upload_screenshot"
+                }
+                FormCheckBox {
+                    label: "匿名收集统计数据"
+                    binder: formB
+                    field: "telemetry.statics"
+                }
             }
 
             // ── 界面 ────────────────────────────────────────────────────

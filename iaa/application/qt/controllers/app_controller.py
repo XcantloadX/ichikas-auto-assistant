@@ -23,6 +23,9 @@ class AppController(QObject):
     errorDialogRequested = Signal(str, str)    # title, message
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
+    sentryEnabledChanged = Signal()
+    screenshotEnabledChanged = Signal()
+    staticsEnabledChanged = Signal()
     windowStyleChanged = Signal()
 
     def __init__(self, log_bridge: LogBridge) -> None:
@@ -41,7 +44,15 @@ class AppController(QObject):
         )
 
         self._global_error = ''
-        self._telemetry_consent_required = config_manager.read_shared().telemetry.sentry is None
+        telemetry_cfg = config_manager.read_shared().telemetry
+        self._sentry_enabled = telemetry_cfg.sentry is True
+        self._screenshot_enabled = telemetry_cfg.upload_screenshot is True
+        self._statics_enabled = telemetry_cfg.statics is True
+        self._telemetry_consent_required = (
+            telemetry_cfg.sentry is None
+            or telemetry_cfg.upload_screenshot is None
+            or telemetry_cfg.statics is None
+        )
         setup_telemetry()
 
         # 转发活跃 tab 的操作信号到 AppController
@@ -73,6 +84,15 @@ class AppController(QObject):
     def _get_telemetry_consent_required(self) -> bool:
         return self._telemetry_consent_required
 
+    def _get_sentry_enabled(self) -> bool:
+        return self._sentry_enabled
+
+    def _get_screenshot_enabled(self) -> bool:
+        return self._screenshot_enabled
+
+    def _get_statics_enabled(self) -> bool:
+        return self._statics_enabled
+
     def _get_window_style(self) -> str:
         style = config_manager.read_shared().interface.window_style
         if platform.system() != 'Windows':
@@ -92,6 +112,9 @@ class AppController(QObject):
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
+    sentryEnabled = Property(bool, _get_sentry_enabled, notify=sentryEnabledChanged)
+    screenshotEnabled = Property(bool, _get_screenshot_enabled, notify=screenshotEnabledChanged)
+    staticsEnabled = Property(bool, _get_statics_enabled, notify=staticsEnabledChanged)
     windowStyle = Property(str, _get_window_style, notify=windowStyleChanged)
     startupPage = Property(str, _get_startup_page, constant=True)
 
@@ -112,11 +135,23 @@ class AppController(QObject):
         self._global_error = ''
         self.globalErrorChanged.emit()
 
-    @Slot(bool)
-    def setTelemetryConsent(self, allowed: bool) -> None:
-        self.preferencesController.setValue('telemetry.sentry', allowed)
-        self.preferencesController.save()
+    @Slot(bool, bool, bool)
+    def setTelemetryConsent(self, sentry: bool, screenshot: bool, statics: bool) -> None:
+        """写入用户对三个开关的选择，并清除"待同意"状态。
+
+        :param sentry: True 允许匿名错误上报。
+        :param screenshot: True 允许错误上报时附带截图。
+        :param statics: True 允许匿名收集统计数据。
+        """
+        from iaa.telemetry import set_consent  # noqa: PLC0415
+        set_consent(bool(sentry), bool(screenshot), bool(statics))
+        self._sentry_enabled = bool(sentry)
+        self._screenshot_enabled = bool(screenshot)
+        self._statics_enabled = bool(statics)
         self._telemetry_consent_required = False
+        self.sentryEnabledChanged.emit()
+        self.screenshotEnabledChanged.emit()
+        self.staticsEnabledChanged.emit()
         self.telemetryConsentRequiredChanged.emit()
         self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
 

@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from kotonebot.errors import DeviceConnectionError
+from kotonebot.errors import DeviceConnectionError, UserFriendlyError
 from iaa.config.schemas import PlayCoverDevice
 from iaa.application.service.device_factory import DeviceFactory, LifecyclePolicy
 from iaa.definitions.consts import package_by_server
@@ -141,6 +141,62 @@ class SchedulerService:
         if self._device_factory is None:
             raise RuntimeError('DeviceFactory is not available.')
         return self._device_factory
+
+    def _sentry_capture_exception(self, exc: Exception, *, task_name: str | None = None) -> None:
+        """将异常上报到 Sentry，附加上下文标签、配置和截图。
+
+        用户可预见的错误（UserFriendlyError）不上报 Sentry，仅记日志。
+        所有失败静默降级，绝不阻断主流程。
+
+        :param exc: 捕获到的异常。
+        :param task_name: 当前任务名称（可选），附加为 Sentry tag。
+        """
+        from iaa.telemetry import use_sentry  # noqa: PLC0415
+        sentry_sdk = use_sentry()
+
+        # UserFriendlyError 是业务侧主动抛出的友好错误，不应上报 Sentry。
+        if isinstance(exc, UserFriendlyError):
+            return
+
+        with sentry_sdk.isolation_scope() as scope:
+            if task_name:
+                scope.set_tag('task_name', task_name)
+
+            # 动态上下文（设备平台、模拟器分辨率、进程内存等）
+            try:
+                from iaa.telemetry import collect_report_context  # noqa: PLC0415
+                for key, value in collect_report_context().items():
+                    scope.set_tag(key, value)
+            except Exception:
+                logger.warning('Failed to attach report context.', exc_info=True)
+
+            # 附加当前配置
+            try:
+                from iaa.context import conf as get_conf  # noqa: PLC0415
+                scope.set_extra('config', get_conf().model_dump_json())
+            except Exception:
+                logger.warning('Failed to attach config to Sentry report.', exc_info=True)
+
+            # 附加共享配置
+            try:
+                from iaa.config import manager as config_manager  # noqa: PLC0415
+                shared = config_manager.read_shared()
+                scope.set_extra('shared_config', shared.model_dump_json())
+            except Exception:
+                logger.warning('Failed to attach shared config to Sentry report.', exc_info=True)
+
+            # 上传截图（仅在用户同意截图上传时）
+            try:
+                from iaa.config import manager as config_manager  # noqa: PLC0415
+                if config_manager.read_shared().telemetry.upload_screenshot is True:
+                    from iaa.telemetry_screenshot import upload_report_screenshot
+                    screenshot_id = upload_report_screenshot()
+                    if screenshot_id:
+                        scope.set_tag('screenshot_id', screenshot_id)
+            except Exception:
+                logger.warning('Failed to upload screenshot to Sentry report.', exc_info=True)
+
+            sentry_sdk.capture_exception(exc)
 
     @property
     def running(self) -> bool:
@@ -279,6 +335,7 @@ class SchedulerService:
                             )
                         )
                         logger.exception(f"Task '{task_id}' raised an exception: {e}")
+                        self._sentry_capture_exception(e, task_name=task_name)
                         if self.on_error:
                             try:
                                 self.on_error(e)
@@ -296,6 +353,7 @@ class SchedulerService:
                     logger.exception("Device connection failed: %s", e)
                 else:
                     logger.exception("Scheduler runner crashed: %s", e)
+                self._sentry_capture_exception(e)
                 if self.on_error:
                     try:
                         self.on_error(e)

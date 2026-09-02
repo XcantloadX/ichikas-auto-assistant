@@ -7,6 +7,8 @@ VERSION = 2
 
 class TelemetryConfig(BaseModel):
     sentry: bool | None = None
+    upload_screenshot: bool | None = None
+    statics: bool | None = None
 
 
 class ProfilesConfig(BaseModel):

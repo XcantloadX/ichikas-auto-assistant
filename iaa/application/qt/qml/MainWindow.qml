@@ -74,26 +74,7 @@ ApplicationWindow {
     }
 
     function requestTelemetryConsent() {
-        App.Modal.message({
-            title: "数据收集",
-            content: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa。",
-            buttons: [
-                { text: "拒绝", value: "deny" },
-                { text: "允许", value: "allow", highlighted: true }
-            ],
-            width: 420,
-            closePolicy: Popup.NoAutoClose
-        }, function(result) {
-            if (!window.appCtrl) {
-                return
-            }
-            if (result === "allow") {
-                window.appCtrl.setTelemetryConsent(true)
-            }
-            if (result === "deny") {
-                window.appCtrl.setTelemetryConsent(false)
-            }
-        })
+        telemetryConsentDialog.open()
     }
 
     function showMigrationMessage(text) {
@@ -309,6 +290,88 @@ ApplicationWindow {
                 TabManager.resetAndOpenTab(configName, invalidFieldsJson)
             }
         })
+    }
+
+    // ── 匿名上报首次同意弹窗（启动时询问） ──────────────────────
+    Dialog {
+        id: telemetryConsentDialog
+        title: "数据收集"
+        modal: true
+        closePolicy: Popup.NoAutoClose
+        anchors.centerIn: parent
+        width: Math.min(420, window.width - 80)
+        standardButtons: Dialog.NoButton
+
+        Column {
+            width: parent.width
+            spacing: 10
+            Text {
+                text: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa，你也可以随时在“设置”中更改。"
+                font.pixelSize: 13
+                color: palette.windowText
+                wrapMode: Text.Wrap
+                width: parent.width
+                lineHeight: 1.4
+            }
+
+            Switch {
+                id: staticsSwitch
+                text: "匿名收集统计数据"
+                checked: true
+            }
+
+            Switch {
+                id: sentrySwitch
+                text: "发送匿名错误报告"
+                checked: true
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 2
+
+                Switch {
+                    id: screenshotSwitch
+                    text: "错误上报时附带游戏截图"
+                    checked: true
+                }
+
+                HelpTip {
+                    richText: "只包含游戏画面截图，不含电脑桌面或其他应用内容。<br>如果不希望发送截图，请关闭此选项。"
+                    Layout.alignment: Qt.AlignVCenter
+                }
+            }
+        }
+
+        footer: Rectangle {
+            implicitHeight: 65
+            color: palette.window
+            Rectangle {
+                width: parent.width; height: 1
+                color: palette.windowText
+                opacity: 0.12
+            }
+            Row {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 24
+                spacing: 8
+                Button {
+                    text: "确定"
+                    highlighted: true
+                    onClicked: {
+                        if (window.appCtrl) {
+                            window.appCtrl.setTelemetryConsent(
+                                sentrySwitch.checked,
+                                screenshotSwitch.checked,
+                                staticsSwitch.checked
+                            )
+                        }
+                        telemetryConsentDialog.close()
+                    }
+                }
+            }
+        }
     }
 
     Component.onCompleted: {
