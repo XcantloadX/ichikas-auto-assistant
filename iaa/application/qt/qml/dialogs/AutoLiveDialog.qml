@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import ".." as App
 import "../controls"
+import "../components/form"
 
 Dialog {
     id: root
@@ -135,6 +136,12 @@ Dialog {
                 currentIndex: model.indexOf(formData.apMultiplier)
                 onActivated: formData = Object.assign({}, formData, { apMultiplier: model[currentIndex] })
             }
+        }
+
+        FormNotice {
+            visible: formData.playMode === "script_auto"
+            style: "info"
+            content: "为避免滥用，脚本自动时 AP 锁定 0。"
         }
 
         RowLayout {
