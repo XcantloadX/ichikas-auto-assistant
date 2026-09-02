@@ -7,6 +7,12 @@ from PySide6.QtGui import QDesktopServices
 
 from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
+<<<<<<< HEAD
+=======
+from iaa.application.service.config_service import DEFAULT_CONFIG_NAME
+from iaa.i18n import translate, translate_error
+from iaa.config.manager import ConfigValidationError
+>>>>>>> feat/en-server
 from iaa.telemetry import setup as setup_telemetry
 
 
@@ -16,6 +22,7 @@ from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 
 class AppController(QObject):
@@ -27,17 +34,72 @@ class AppController(QObject):
     screenshotEnabledChanged = Signal()
     staticsEnabledChanged = Signal()
     windowStyleChanged = Signal()
+<<<<<<< HEAD
     pathWarningRequired = Signal(str)  # 路径问题警告
+=======
+    windowTitleChanged = Signal()
+>>>>>>> feat/en-server
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
         self.logBridge = log_bridge
         self.scrcpyImageProvider = ScrcpyImageProvider()
 
+<<<<<<< HEAD
         self.tabManager = TabManager(self, image_provider=self.scrcpyImageProvider)
 
         self.preferencesController = PreferencesController(self)
         self.helpController = HelpController(self)
+=======
+            language = manager.read_shared().interface.language
+            field_list = '\n'.join(f'  - {f}' for f in e.invalid_fields)
+            msg = translate(language, 'startup.config_validation_prompt').format(
+                fields=field_list,
+                error=e.error_details,
+            )
+
+            reply = QMessageBox.question(
+                None,
+                translate(language, 'app.name'),
+                msg,
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+
+            if reply == QMessageBox.StandardButton.Yes:
+                manager.fallback_invalid_fields(DEFAULT_CONFIG_NAME, e.invalid_fields)
+                self.service = IaaService()
+            else:
+                QMessageBox.warning(
+                    None,
+                    translate(language, 'app.name'),
+                    translate(language, 'startup.config_validation_aborted'),
+                    QMessageBox.StandardButton.Ok
+                )
+                QCoreApplication.exit(1)
+        
+        self.i18nController = I18nController(self.service.config.shared.interface.language, self)
+        self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
+        self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
+        self.i18nController.languageChanged.connect(self.windowTitleChanged.emit)
+        self.scrcpyController = ScrcpyController(
+            self.service.scheduler,
+            self.service.config,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.scrcpyController.refresh_status_text)
+        self.runController = RunController(self.service, self.progressBridge, self.scrcpyController, self.i18nController, self)
+        self.settingsController = SettingsController(self.service, self.i18nController, self)
+        self.preferencesController = PreferencesController(self.service, self.i18nController, self)
+        self.profileStoreBackend = ProfileStoreBackend(self.settingsController, self)
+        self.helpController = HelpController(
+            self.service,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.helpController.on_language_changed)
+>>>>>>> feat/en-server
         self.globalHotkeyController = GlobalHotkeyController(
             self.tabManager,
             self.preferencesController,
@@ -62,11 +124,31 @@ class AppController(QObject):
         self.tabManager.errorDialogRequested.connect(self.errorDialogRequested)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
+<<<<<<< HEAD
+=======
+        self.preferencesController.languageChanged.connect(self._on_language_changed)
+        self.service.scheduler.on_error = self._on_scheduler_error
+
+    def _on_language_changed(self, language: str) -> None:
+        self.i18nController.setLanguage(language)
+        self.settingsController.setLanguage(language)
+
+    def _on_config_switched(self) -> None:
+        self.runController.tasksChanged.emit()
+
+    def _on_scheduler_error(self, exc: Exception) -> None:
+        self.reportError(translate_error(self.i18nController.language, exc))
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self.i18nController.language, key)
+        return text.format(**kwargs) if kwargs else text
+>>>>>>> feat/en-server
 
     def _get_version(self) -> str:
         return IaaService.app_version()
 
     def _get_window_title(self) -> str:
+<<<<<<< HEAD
         if platform.system() == 'Windows':
             return '一歌小助手'
         elif platform.system() == 'Darwin':
@@ -75,6 +157,13 @@ class AppController(QObject):
             return '一歌小助手 (on Linux)'
         else:
             return '一歌小助手'
+=======
+        if platform.system() == 'Darwin':
+            return self._tr('app.window_title_macos')
+        if platform.system() == 'Linux':
+            return self._tr('app.window_title_linux')
+        return self._tr('app.name')
+>>>>>>> feat/en-server
 
     def _get_assets_root_path(self) -> str:
         return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
@@ -109,7 +198,7 @@ class AppController(QObject):
         return config_manager.read_shared().interface.startup_page
 
     version = Property(str, _get_version, constant=True)
-    windowTitle = Property(str, _get_window_title, constant=True)
+    windowTitle = Property(str, _get_window_title, notify=windowTitleChanged)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
@@ -154,7 +243,7 @@ class AppController(QObject):
         self.screenshotEnabledChanged.emit()
         self.staticsEnabledChanged.emit()
         self.telemetryConsentRequiredChanged.emit()
-        self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+        self.notificationRaised.emit('success', self._tr('notice.telemetry_effective'))
 
     @Slot()
     def refreshWindowStyle(self) -> None:
@@ -192,6 +281,7 @@ class AppController(QObject):
         if not messages:
             return ''
 
+<<<<<<< HEAD
         version = self._get_version()
         html = [f'<b>配置文件已升级到 v{version}。</b>']
         html.append('<ol>')
@@ -203,6 +293,19 @@ class AppController(QObject):
         html.append('</ol>')
 
         return ''.join(html)
+=======
+        html = [self._tr('modal.migration.content_title', version=self.service.version)]
+        if messages:
+            html.append("<ol>")
+            for msg in messages:
+                if msg.old_version and msg.new_version:
+                    html.append(f"<li>v{msg.old_version} → v{msg.new_version}：{msg.text}</li>")
+                else:
+                    html.append(f"<li>{msg.text}</li>")
+            html.append("</ol>")
+        
+        return "".join(html)
+>>>>>>> feat/en-server
 
     @Slot()
     def shutdown(self) -> None:

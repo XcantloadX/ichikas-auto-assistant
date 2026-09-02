@@ -5,6 +5,12 @@ from kotonebot import logging
 from pydantic_core import ValidationError
 from iaa.config import manager
 from iaa.config.manager import ConfigValidationError
+<<<<<<< HEAD
+=======
+from iaa.i18n import tstr
+if TYPE_CHECKING:
+    from .iaa_service import IaaService
+>>>>>>> feat/en-server
 
 logger = logging.getLogger(__name__)
 
@@ -68,8 +74,13 @@ class ConfigService:
         manager.write_shared(self.shared)
 
     def switch_config(self, name: str) -> None:
+<<<<<<< HEAD
         if self._is_running():
             raise RuntimeError("运行时不能切换配置，请先停止任务")
+=======
+        if self.iaa.scheduler.running:
+            raise RuntimeError(tstr('error.config.switch_while_running'))
+>>>>>>> feat/en-server
 
         self._config_name = name
         self.conf = manager.read(name)
@@ -111,7 +122,7 @@ class ConfigService:
         """
         configs = manager.list()
         if len(configs) <= 1:
-            raise RuntimeError('至少需要保留一个配置')
+            raise RuntimeError(tstr('error.config.keep_one_profile'))
 
         is_current = name == self._config_name
         manager.remove(name, not_exist='raise')

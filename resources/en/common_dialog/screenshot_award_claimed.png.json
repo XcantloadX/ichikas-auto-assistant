@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "definitions": {
+    "adfea069-b853-4d61-93e1-a1ee2fcbb21f": {
+      "type": "prefab",
+      "name": "CommonDialog.TextAwardClaimedOk",
+      "variant": "en",
+      "props": {},
+      "displayName": "Claimed the following items."
+    }
+  }
+}

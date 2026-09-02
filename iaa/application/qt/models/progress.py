@@ -1,15 +1,18 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-from iaa.progress import TaskProgressEvent
+from iaa.progress import TaskProgressEvent, Translatable
+from iaa.i18n import TStr, tstr, translate_error
+
+StatusT = list[Translatable | str] | Translatable | str
 
 
 @dataclass(slots=True)
 class ProgressState:
-    status_text: str = '就绪'
+    status_text: StatusT = field(default_factory=lambda: tstr('status.ready'))
     progress_percent: int = 0
-    last_error_text: str = ''
+    last_error_text: StatusT = ''
     stop_requested: bool = False
     stopped: bool = False
 
@@ -23,7 +26,7 @@ def _to_int(value: object) -> int | None:
 
 def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None = None) -> ProgressState:
     state = ProgressState(
-        status_text=(prev.status_text if prev else '就绪'),
+        status_text=(prev.status_text if prev else tstr('status.ready')),
         progress_percent=(prev.progress_percent if prev else 0),
         last_error_text=(prev.last_error_text if prev else ''),
         stop_requested=(prev.stop_requested if prev else False),
@@ -54,19 +57,27 @@ def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None
         state.progress_percent = max(0, min(100, percent))
 
     message = payload.get('message')
-    if not isinstance(message, str):
-        message = ''
     phase_path = payload.get('phase_path')
-    phase_parts: list[str] = []
+    phase_parts: list[Translatable | str] = []
     if isinstance(phase_path, list):
         for item in phase_path:
             if not isinstance(item, dict):
                 continue
-            name = str(item.get('name') or '')
+            raw_name = item.get('name') or ''
+            if isinstance(raw_name, TStr):
+                name = raw_name
+            else:
+                name = str(raw_name)
             p_current = item.get('current')
             p_total = item.get('total')
             if isinstance(p_current, int) and isinstance(p_total, int):
-                phase_parts.append(f'{name} ({p_current}/{p_total})')
+                if isinstance(name, TStr):
+                    phase_parts.append(TStr(
+                        zh_CN=f'{name.zh_CN} ({p_current}/{p_total})',
+                        en_US=f'{name.en_US} ({p_current}/{p_total})',
+                    ))
+                else:
+                    phase_parts.append(f'{name} ({p_current}/{p_total})')
             elif name:
                 phase_parts.append(name)
 
@@ -76,9 +87,20 @@ def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None
         if err_msg.lower() == 'keyboardinterrupt':
             state.stopped = True
             state.last_error_text = ''
-            state.status_text = '已停止'
+            state.status_text = tstr('status.stopped')
             return state
-        error_text = f'执行「{event.task_name}」时出错：{err_msg or "未知错误"}'
+        task_tstr = tstr(f'task.{event.task_id}')
+        unknown_error = tstr('progress.unknown_error')
+        error_text = TStr(
+            zh_CN=tstr('progress.task_error').zh_CN.format(
+                task=task_tstr.zh_CN,
+                error=translate_error('zh_CN', err_msg) if err_msg else unknown_error.zh_CN,
+            ),
+            en_US=tstr('progress.task_error').en_US.format(
+                task=task_tstr.en_US,
+                error=translate_error('en_US', err_msg) if err_msg else unknown_error.en_US,
+            ),
+        )
         state.last_error_text = error_text
         state.stopped = False
         state.status_text = error_text
@@ -88,10 +110,11 @@ def progress_event_to_state(event: TaskProgressEvent, prev: ProgressState | None
         state.last_error_text = ''
         state.stopped = False
 
-    parts = [event.task_name, *phase_parts]
-    if message:
+    parts: list[Translatable | str] = [tstr(f'task.{event.task_id}'), *phase_parts]
+    if isinstance(message, Translatable):
         parts.append(message)
-    display_text = ' > '.join([part for part in parts if part])
-    if display_text:
-        state.status_text = display_text
+    elif isinstance(message, str) and message:
+        parts.append(message)
+    if parts:
+        state.status_text = parts
     return state

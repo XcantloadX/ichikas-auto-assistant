@@ -2,7 +2,12 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+<<<<<<< HEAD:iaa/application/qt/qml/components/form/HotkeyField.qml
 import "../"
+=======
+import "../components"
+import "../../../../qt/qml" as App
+>>>>>>> feat/en-server:iaa/application/framework/dsl/qml/controls/DslHotkeyField.qml
 
 ColumnLayout {
     id: root
@@ -99,8 +104,13 @@ ColumnLayout {
 
                 text: root.recording
                     ? ""
+<<<<<<< HEAD:iaa/application/qt/qml/components/form/HotkeyField.qml
                     : (root.value ? root.toDisplayText(root.value) : "")
                 placeholderText: root.recording ? qsTr("按下快捷键…（按 ESC 取消）") : qsTr("点击设置")
+=======
+                    : (root.field.value ? root.toDisplayText(root.field.value) : "")
+                placeholderText: root.recording ? App.Globals.t("preferences.hotkey.placeholder.recording") : App.Globals.t("preferences.hotkey.placeholder.idle")
+>>>>>>> feat/en-server:iaa/application/framework/dsl/qml/controls/DslHotkeyField.qml
 
                 onActiveFocusChanged: {
                     if (!activeFocus) {
@@ -145,9 +155,17 @@ ColumnLayout {
             }
 
             Button {
+<<<<<<< HEAD:iaa/application/qt/qml/components/form/HotkeyField.qml
                 text: qsTr("清除")
                 enabled: !!root.value && !root.recording
                 onClicked: root.userCommitted(null)
+=======
+                text: App.Globals.t("preferences.hotkey.clear")
+                enabled: !!root.field.enabled && !!root.field.value && !root.recording
+                onClicked: {
+                    root.formController.setValue(root.field.id, null)
+                }
+>>>>>>> feat/en-server:iaa/application/framework/dsl/qml/controls/DslHotkeyField.qml
             }
         }
     }

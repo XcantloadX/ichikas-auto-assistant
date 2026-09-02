@@ -20,7 +20,11 @@ class InterfaceConfig(BaseModel):
     window_style: str = ''
     theme_color: str | None = None
     color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
+<<<<<<< HEAD
     startup_page: Literal['overview', 'last_opened'] = 'last_opened'
+=======
+    language: Literal['auto', 'zh_CN', 'en_US'] = 'auto'
+>>>>>>> feat/en-server
 
 
 class CustomPushData(BaseModel):

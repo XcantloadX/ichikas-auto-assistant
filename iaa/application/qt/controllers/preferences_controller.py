@@ -6,11 +6,22 @@ from typing import Any
 
 from PySide6.QtCore import Property, QObject, Signal, Slot
 
+<<<<<<< HEAD
 from iaa.config import manager as config_manager
 from iaa.config.shared import SharedConfig
 
 from .config_draft import ConfigDraft
 from .settings_controller import _normalize_qt_value
+=======
+from iaa.application.framework.dsl import RuntimeEngine, SnapshotState
+from iaa.i18n import translate
+from ..forms.context import PreferencesContext
+from ..forms.preferences_form import build_preferences_form
+
+if TYPE_CHECKING:
+    from iaa.application.qt.controllers.i18n_controller import I18nController
+    from iaa.application.service.iaa_service import IaaService
+>>>>>>> feat/en-server
 
 logger = logging.getLogger(__name__)
 
@@ -26,6 +37,7 @@ class PreferencesController(QObject):
     dirtyChanged = Signal(bool)
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
+<<<<<<< HEAD
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
@@ -42,6 +54,67 @@ class PreferencesController(QObject):
         self.dirtyChanged.emit(False)
 
     # ── 表单读写 ─────────────────────────────────────────────────────────────
+=======
+    languageChanged = Signal(str)
+    interfaceChanged = Signal()
+    runtimeChanged = Signal()
+    dirtyChanged = Signal(bool)
+    fieldUpdated = Signal(str, str)  # (field_id, field_json)
+    groupUpdated = Signal(int, bool)  # (group_index, visible)
+
+    def __init__(self, iaa_service: 'IaaService', i18n_controller: 'I18nController', parent: QObject | None = None) -> None:
+        super().__init__(parent)
+        self._iaa = iaa_service
+        self._i18n = i18n_controller
+        self._rebuild_form()
+        self._state = SnapshotState(
+            self._make_context(),
+            snapshot_fn=self._snapshot_context,
+            restore_fn=self._restore_context,
+            stable_dump_fn=self._stable_dump_snapshot,
+        )
+        self._runtime: dict[str, Any] = {}
+        self._recompute_runtime()
+
+    def _rebuild_form(self) -> None:
+        self._spec, self._form_hooks = build_preferences_form()
+        self._engine = RuntimeEngine(self._spec)
+
+    @staticmethod
+    def _snapshot_context(context: PreferencesContext) -> dict[str, Any]:
+        return {'shared': context.shared.model_copy(deep=True)}
+
+    @staticmethod
+    def _restore_context(context: PreferencesContext, snapshot: dict[str, Any]) -> None:
+        context.shared = snapshot['shared']
+
+    @staticmethod
+    def _stable_dump_snapshot(snapshot: dict[str, Any]) -> dict[str, Any]:
+        return {'shared': snapshot['shared'].model_dump(mode='json')}
+
+    def _make_context(self) -> PreferencesContext:
+        return PreferencesContext(shared=self._iaa.config.shared)
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._iaa.config.shared.interface.language, key)
+        return text.format(**kwargs) if kwargs else text
+
+    def _sync_context_back(self) -> None:
+        self._iaa.config.shared = self._state.context.shared
+
+    def _reload(self) -> None:
+        self._state.reset(self._make_context())
+        self._rebuild_form()
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+
+    def _recompute_runtime(self) -> None:
+        language = self._iaa.config.shared.interface.language
+        runtime = self._engine.build_runtime(self._state.context, language)
+        runtime['dirty'] = self._state.dirty
+        self._runtime = runtime
+>>>>>>> feat/en-server
 
     @Property('QVariantMap', notify=configChanged)
     def config(self) -> dict[str, Any]:
@@ -62,6 +135,7 @@ class PreferencesController(QObject):
 
     @Slot(result=bool)
     def isDirty(self) -> bool:
+<<<<<<< HEAD
         return self._draft.is_dirty()
 
     @Slot(result=bool)
@@ -97,6 +171,70 @@ class PreferencesController(QObject):
         self.configChanged.emit()
         self.dirtyChanged.emit(False)
         self.operationSucceeded.emit('保存成功')
+=======
+        return self._state.dirty
+
+    @Slot(str, 'QVariant')
+    def setValue(self, field_id: str, value: Any) -> None:
+        try:
+            field = self._engine.find_field(field_id)
+            if field is None:
+                raise KeyError(f'Unknown field id: {field_id}')
+
+            value = _normalize_qt_value(value)
+            old_language = self._state.context.shared.interface.language
+            field.ref.set(self._state.context, value)
+            if field.on_change:
+                field.on_change(self._state.context, value)
+            for hook in self._form_hooks:
+                hook(self._state.context)
+
+            self._sync_context_back()
+            old_runtime = self._runtime
+            new_language = self._state.context.shared.interface.language
+            language_changed = new_language != old_language
+            interface_changed = field_id.startswith('interface.')
+            if language_changed:
+                self._i18n.setLanguage(new_language)
+            self._recompute_runtime()
+            if language_changed:
+                self.runtimeChanged.emit()
+                self.languageChanged.emit(new_language)
+                self.dirtyChanged.emit(self._state.dirty)
+            else:
+                self._emit_updates(old_runtime)
+                if interface_changed:
+                    self.interfaceChanged.emit()
+        except Exception as exc:
+            self.operationFailed.emit(self._tr('notice.field_set_failed', error=exc))
+
+    @Slot(result=bool)
+    def save(self) -> bool:
+        try:
+            self._sync_context_back()
+            self._iaa.config.save_shared()
+            self._state.mark_saved()
+            self._recompute_runtime()
+            self.runtimeChanged.emit()
+            self.dirtyChanged.emit(self._state.dirty)
+            self.operationSucceeded.emit(self._tr('notice.save_success'))
+            return True
+        except Exception as exc:
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
+            return False
+
+    @Slot(result=bool)
+    def discard(self) -> bool:
+        old_language = self._iaa.config.shared.interface.language
+        self._state.discard()
+        self._sync_context_back()
+        new_language = self._iaa.config.shared.interface.language
+        self._recompute_runtime()
+        self.runtimeChanged.emit()
+        self.dirtyChanged.emit(self._state.dirty)
+        if new_language != old_language:
+            self.languageChanged.emit(new_language)
+>>>>>>> feat/en-server
         return True
 
     @Slot(result=str)

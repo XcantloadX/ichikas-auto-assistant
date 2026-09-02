@@ -45,6 +45,9 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     if not callable(set_color_scheme) and not callable(unset_color_scheme):
         return
 
+    # 切换色彩方案前先清除旧的自定义调色板；主题色会在之后重新应用。
+    app.setPalette(QPalette())
+
     if color_scheme == 'auto':
         if callable(unset_color_scheme):
             unset_color_scheme()
@@ -56,6 +59,8 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     else:
         if callable(set_color_scheme):
             set_color_scheme(Qt.ColorScheme.Dark)
+
+    app.setPalette(QPalette())
 
 
 def apply_theme_color(app: QApplication, color_value: str | None) -> None:
@@ -82,7 +87,22 @@ def main() -> None:
     interface = config_manager.read_shared().interface
     apply_color_scheme(app, interface.color_scheme)
 
+<<<<<<< HEAD
     profileStoreBackend = ProfileStoreBackend(controller.tabManager, controller)
+=======
+    engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty('appController', controller)
+    engine.rootContext().setContextProperty('runController', controller.runController)
+    engine.rootContext().setContextProperty('settingsController', controller.settingsController)
+    engine.rootContext().setContextProperty('preferencesController', controller.preferencesController)
+    engine.rootContext().setContextProperty('i18nController', controller.i18nController)
+    engine.rootContext().setContextProperty('profileStoreBackend', controller.profileStoreBackend)
+    engine.rootContext().setContextProperty('progressBridge', controller.progressBridge)
+    engine.rootContext().setContextProperty('logBridge', controller.logBridge)
+    engine.rootContext().setContextProperty('scrcpyController', controller.scrcpyController)
+    engine.rootContext().setContextProperty('helpController', controller.helpController)
+    engine.addImageProvider('scrcpy', controller.scrcpyController.image_provider)
+>>>>>>> feat/en-server
 
     max_hover_bridge = _MaxHoverBridge() if sys.platform == 'win32' else None
     tab_bar_bridge = TabBarHitTestBridge() if sys.platform == 'win32' else None
@@ -130,6 +150,7 @@ def main() -> None:
             apply_window_style(hwnd, interface_conf.window_style)
         controller.refreshWindowStyle()
 
+<<<<<<< HEAD
     def apply_runtime_preferences() -> None:
         interface_conf = config_manager.read_shared().interface
         if sys.platform == 'win32':
@@ -140,6 +161,10 @@ def main() -> None:
             controller.notificationRaised.emit('info', '配色方案将在重启后生效。')
 
     controller.preferencesController.configChanged.connect(apply_runtime_preferences)
+=======
+    controller.preferencesController.runtimeChanged.connect(apply_interface_preferences)
+    controller.preferencesController.interfaceChanged.connect(apply_interface_preferences)
+>>>>>>> feat/en-server
     apply_interface_preferences()
 
     exit_code = app.exec()

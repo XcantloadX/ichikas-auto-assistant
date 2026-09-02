@@ -1,6 +1,11 @@
 import unittest
 
+<<<<<<< HEAD
 from iaa.tasks.live.live import auto_live_payload_to_plan
+=======
+from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED, SONG_KEEP_UNCHANGED
+from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
+>>>>>>> feat/en-server
 from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan
 
 
@@ -36,7 +41,7 @@ class AutoLivePayloadTests(unittest.TestCase):
                 'debugEnabled': True,
                 'autoSetUnit': False,
                 'apMultiplier': '0',
-                'songName': '保持不变',
+                'songName': SONG_KEEP_UNCHANGED,
             }
         )
         self.assertIsInstance(plan, ListLoopPlan)
@@ -47,6 +52,19 @@ class AutoLivePayloadTests(unittest.TestCase):
         self.assertTrue(plan.debug_enabled)
         self.assertEqual(plan.ap_multiplier, 0)
 
+    def test_maximum_ap_multiplier_payload(self) -> None:
+        plan = auto_live_payload_to_plan(
+            {
+                'countMode': 'all',
+                'count': '',
+                'loopMode': 'list',
+                'playMode': 'game_auto',
+                'apMultiplier': 'maximum',
+            }
+        )
+        self.assertIsInstance(plan, ListLoopPlan)
+        self.assertEqual(plan.ap_multiplier, 'maximum')
+
     def test_invalid_count_raises(self) -> None:
         with self.assertRaises(ValueError):
             auto_live_payload_to_plan(
@@ -55,7 +73,7 @@ class AutoLivePayloadTests(unittest.TestCase):
                     'count': '0',
                     'loopMode': 'list',
                     'playMode': 'game_auto',
-                    'apMultiplier': '保持现状',
+                    'apMultiplier': AP_KEEP_UNCHANGED,
                 }
             )
 

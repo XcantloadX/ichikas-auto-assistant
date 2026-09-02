@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
+from iaa.i18n import TStr, tstr
 from iaa.definitions.enums import (
     ChallengeLiveAward,
     GameCharacter,
     LinkAccountOptions,
 )
+from iaa.definitions.consts import ServerName
 
+<<<<<<< HEAD
 LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'mumu_v5': 'MuMu 12 (v5)',
     'mumu': 'MuMu 12 (v4)',
@@ -15,13 +18,22 @@ LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
     'custom': '自定义模拟器',
     'none': '物理机 / 手动管理',
     'playcover': 'PlayCover',
+=======
+LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, TStr] = {
+    'mumu_v5': TStr(zh_CN='MuMu 12 (v5)', en_US='MuMu 12 (v5)'),
+    'mumu': TStr(zh_CN='MuMu 12 (v4)', en_US='MuMu 12 (v4)'),
+    'custom': tstr('settings.option.lifecycle.custom'),
+    'none': tstr('settings.option.lifecycle.none'),
+    'playcover': TStr(zh_CN='PlayCover', en_US='PlayCover'),
+>>>>>>> feat/en-server
 }
 
-CONNECTION_TYPE_DISPLAY_MAP: dict[str, str] = {
-    'usb': 'USB',
-    'tcp': 'TCP / 无线',
+CONNECTION_TYPE_DISPLAY_MAP: dict[str, TStr] = {
+    'usb': TStr(zh_CN='USB', en_US='USB'),
+    'tcp': tstr('settings.option.connection.tcp'),
 }
 
+<<<<<<< HEAD
 SERVER_DISPLAY_MAP: dict[Literal['jp', 'tw', 'cn'], str] = {
     'jp': '日服',
     'tw': '台服',
@@ -53,6 +65,32 @@ RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['keep', 'wm_size'], str] = {
 }
 RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['keep', 'wm_size']] = {
     value: key for key, value in RESOLUTION_METHOD_DISPLAY_MAP.items()
+=======
+SERVER_DISPLAY_MAP: dict[ServerName, TStr] = {
+    'jp': tstr('settings.option.server.jp'),
+    'tw': tstr('settings.option.server.tw'),
+    'cn': tstr('settings.option.server.cn'),
+    'en': tstr('settings.option.server.en'),
+}
+
+LINK_DISPLAY_MAP: dict[LinkAccountOptions, TStr] = {
+    'no': tstr('settings.option.link.no'),
+    'google': tstr('settings.option.link.google'),
+    'google_play': TStr(zh_CN='Google Play', en_US='Google Play'),
+}
+
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], TStr] = {
+    'nemu_ipc': TStr(zh_CN='Nemu IPC', en_US='Nemu IPC'),
+    'adb': TStr(zh_CN='ADB', en_US='ADB'),
+    'uiautomator': TStr(zh_CN='UIAutomator2', en_US='UIAutomator2'),
+    'scrcpy': TStr(zh_CN='Scrcpy', en_US='Scrcpy'),
+}
+
+RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], TStr] = {
+    'auto': tstr('settings.option.resolution.auto'),
+    'keep': tstr('settings.option.resolution.keep'),
+    'wm_size': tstr('settings.option.resolution.wm_size'),
+>>>>>>> feat/en-server
 }
 
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'
@@ -92,6 +130,13 @@ CHALLENGE_CHARACTER_GROUPS: list[tuple[str, list[GameCharacter]]] = [
 ]
 
 
+def _character_label(character: GameCharacter) -> TStr:
+    return TStr(
+        zh_CN=f'{character.last_name_cn}{character.first_name_cn}',
+        en_US=f'{character.first_name_en} {character.last_name_en}'.strip(),
+    )
+
+
 def challenge_character_groups_for_ui() -> list[dict[str, object]]:
     return [
         {
@@ -99,7 +144,7 @@ def challenge_character_groups_for_ui() -> list[dict[str, object]]:
             'options': [
                 {
                     'value': character.value,
-                    'label': f'{character.last_name_cn}{character.first_name_cn}',
+                    'label': _character_label(character),
                     'image': f'chibi/{character.value}.png',
                 }
                 for character in characters
@@ -109,13 +154,13 @@ def challenge_character_groups_for_ui() -> list[dict[str, object]]:
     ]
 
 
-def challenge_characters_for_ui() -> list[dict[str, str]]:
+def challenge_characters_for_ui() -> list[dict[str, Any]]:
     all_characters = []
     for _, characters in CHALLENGE_CHARACTER_GROUPS:
         for character in characters:
             all_characters.append({
                 'value': character.value,
-                'label': f'{character.last_name_cn}{character.first_name_cn}'
+                'label': _character_label(character),
             })
     return all_characters
 
@@ -130,8 +175,34 @@ _CHALLENGE_AWARD_IMAGES: dict[ChallengeLiveAward, str] = {
 }
 
 
-def challenge_awards_for_ui() -> list[dict[str, str]]:
+_CHALLENGE_AWARD_LABELS_CN: dict[ChallengeLiveAward, str] = {
+    ChallengeLiveAward.Crystal: '水晶',
+    ChallengeLiveAward.MusicCard: '音乐卡',
+    ChallengeLiveAward.MiracleGem: '奇迹晶石',
+    ChallengeLiveAward.MagicCloth: '魔法之布',
+    ChallengeLiveAward.Coin: '硬币',
+    ChallengeLiveAward.IntermediatePracticeScore: '中级练习乐谱',
+}
+
+_CHALLENGE_AWARD_LABELS_EN: dict[ChallengeLiveAward, str] = {
+    ChallengeLiveAward.Crystal: 'Crystals',
+    ChallengeLiveAward.MusicCard: 'Music Card',
+    ChallengeLiveAward.MiracleGem: 'Miracle Gem',
+    ChallengeLiveAward.MagicCloth: 'Magic Cloth',
+    ChallengeLiveAward.Coin: 'Coins',
+    ChallengeLiveAward.IntermediatePracticeScore: 'Practice Score (Intermediate)',
+}
+
+
+def challenge_awards_for_ui() -> list[dict[str, Any]]:
     return [
-        {'value': award.value, 'label': label, 'image': _CHALLENGE_AWARD_IMAGES.get(award, '')}
-        for award, label in ChallengeLiveAward.display_map_cn().items()
+        {
+            'value': award.value,
+            'label': TStr(
+                zh_CN=_CHALLENGE_AWARD_LABELS_CN.get(award, award.value),
+                en_US=_CHALLENGE_AWARD_LABELS_EN.get(award, award.value),
+            ),
+            'image': _CHALLENGE_AWARD_IMAGES.get(award, ''),
+        }
+        for award in ChallengeLiveAward
     ]

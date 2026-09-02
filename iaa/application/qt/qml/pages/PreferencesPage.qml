@@ -4,13 +4,18 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import ".." as App
 import "../components"
 import "../components/form"
 
 // 偏好页：QML 直写表单（kaa 风格）。编辑 shared 配置草稿。
 PageContainer {
     id: root
+<<<<<<< HEAD
     title: "偏好"
+=======
+    title: App.Globals.t("nav.preferences")
+>>>>>>> feat/en-server
 
     titleRightContent: Rectangle {
         visible: root.dirty
@@ -22,7 +27,7 @@ PageContainer {
 
         Label {
             id: labelId
-            text: "有未保存改动"
+            text: App.Globals.t("common.unsaved_changes")
             color: "#DC3545"
             font.bold: true
             anchors.centerIn: parent
@@ -30,7 +35,7 @@ PageContainer {
     }
 
     headerActions: Button {
-        text: "保存"
+        text: App.Globals.t("common.save")
         highlighted: true
         enabled: root.dirty
         onClicked: root.prefsController.save()

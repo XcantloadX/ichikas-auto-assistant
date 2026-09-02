@@ -6,7 +6,7 @@ import ".." as App
 Dialog {
     id: root
     modal: true
-    title: "配置管理"
+    title: App.Globals.t("config_manager.title")
     width: 400
     padding: 16
     closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
@@ -40,18 +40,24 @@ Dialog {
             TextField {
                 id: newConfigName
                 Layout.fillWidth: true
-                placeholderText: "新配置名称"
+                placeholderText: App.Globals.t("config_manager.new_placeholder")
             }
 
             Button {
-                text: "新建"
+                text: App.Globals.t("common.create")
                 highlighted: true
                 enabled: newConfigName.text.trim().length > 0
                 onClicked: {
                     var name = newConfigName.text.trim()
                     if (name.length > 0) {
+<<<<<<< HEAD
                         let doCreate = function () { root.tabManager.createProfile(name); }
                         root.navigation.requestGuardedAction("切换到新配置", doCreate)
+=======
+                        root.navigation.requestGuardedAction(App.Globals.t("guard.switch_new_config"), function() {
+                            root.settingsCtrl.createProfile(name)
+                        })
+>>>>>>> feat/en-server
                         newConfigName.text = ""
                     }
                 }
@@ -114,7 +120,7 @@ Dialog {
             Layout.alignment: Qt.AlignRight
 
             Button {
-                text: "关闭"
+                text: App.Globals.t("common.close")
                 onClicked: root.close()
             }
         }
@@ -123,7 +129,7 @@ Dialog {
     Dialog {
         id: renameDialog
         modal: true
-        title: "重命名配置"
+        title: App.Globals.t("config_manager.rename_title")
         width: 360
         closePolicy: Popup.NoAutoClose
         anchors.centerIn: Overlay.overlay
@@ -135,7 +141,7 @@ Dialog {
             spacing: 12
             Label {
                 Layout.fillWidth: true
-                text: "请输入新名称:"
+                text: App.Globals.t("config_manager.rename_prompt")
             }
             TextField {
                 id: renameInput
@@ -146,11 +152,11 @@ Dialog {
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 Button {
-                    text: "取消"
+                    text: App.Globals.t("common.cancel")
                     onClicked: renameDialog.close()
                 }
                 Button {
-                    text: "确定"
+                    text: App.Globals.t("common.ok")
                     highlighted: true
                     enabled: renameDialog.newName.trim().length > 0 && root.settingsCtrl !== null
                     onClicked: {
@@ -161,7 +167,7 @@ Dialog {
                             root.settingsCtrl.renameProfile(oldName, newName)
                         }
                         if (isCurrent) {
-                            root.navigation.requestGuardedAction("重命名当前配置", runner)
+                            root.navigation.requestGuardedAction(App.Globals.t("guard.rename_current_config"), runner)
                         } else {
                             runner()
                         }
@@ -175,7 +181,7 @@ Dialog {
     Dialog {
         id: deleteConfirmDialog
         modal: true
-        title: "确认删除"
+        title: App.Globals.t("config_manager.delete_title")
         width: 360
         closePolicy: Popup.NoAutoClose
         anchors.centerIn: Overlay.overlay
@@ -187,16 +193,16 @@ Dialog {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "确定要删除配置 '" + deleteConfirmDialog.targetConfigName + "' 吗？此操作不可撤销。"
+                text: App.Globals.t("config_manager.delete_prompt").replace("{name}", deleteConfirmDialog.targetConfigName)
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 Button {
-                    text: "取消"
+                    text: App.Globals.t("common.cancel")
                     onClicked: deleteConfirmDialog.close()
                 }
                 Button {
-                    text: "删除"
+                    text: App.Globals.t("common.delete")
                     highlighted: true
                     onClicked: {
                         var name = deleteConfirmDialog.targetConfigName
@@ -204,10 +210,17 @@ Dialog {
                             deleteConfirmDialog.close()
                             return
                         }
+<<<<<<< HEAD
                         // 如果该配置的 tab 正在运行，拒绝删除
                         if (!root.tabManager.closeTabForConfig(name)) {
                             deleteConfirmDialog.close()
                             return
+=======
+                        if (isCurrent) {
+                            root.navigation.requestGuardedAction(App.Globals.t("guard.delete_current_config"), runner)
+                        } else {
+                            runner()
+>>>>>>> feat/en-server
                         }
                         root.settingsCtrl.deleteProfile(name)
                         deleteConfirmDialog.close()

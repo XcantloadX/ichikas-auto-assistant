@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
+import ".." as App
 import "../components"
 import "../components/form"
 import ".." as App
@@ -13,7 +14,7 @@ import ".." as App
 // setField 写入草稿，save 归一化 + 校验 + 写盘。
 PageContainer {
     id: root
-    title: "配置"
+    title: App.Globals.t("nav.config")
 
     titleRightContent: RowLayout {
         spacing: 8
@@ -27,7 +28,7 @@ PageContainer {
 
             Label {
                 id: runningLabel
-                text: "脚本运行时无法修改配置"
+                text: App.Globals.t("page.settings.script_running")
                 color: "#B45309"
                 font.bold: true
                 anchors.centerIn: parent
@@ -43,7 +44,7 @@ PageContainer {
 
             Label {
                 id: labelId
-                text: "有未保存改动"
+                text: App.Globals.t("common.unsaved_changes")
                 color: "#DC3545"
                 font.bold: true
                 anchors.centerIn: parent
@@ -52,7 +53,7 @@ PageContainer {
     }
 
     headerActions: Button {
-        text: "保存"
+        text: App.Globals.t("common.save")
         highlighted: true
         enabled: root.dirty && !root.scriptRunning
         onClicked: root.formController.save()

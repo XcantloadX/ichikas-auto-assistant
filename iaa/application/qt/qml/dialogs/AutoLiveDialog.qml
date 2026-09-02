@@ -8,11 +8,14 @@ import "../components/form"
 Dialog {
     id: root
     modal: true
-    title: "自动演出"
+    title: App.Globals.t("task.auto_live")
     width: 620
     anchors.centerIn: Overlay.overlay
     property var runCtrl: null
     property var presets: []
+
+    readonly property string apKeepValue: runController.apKeepValue
+    readonly property string songKeepValue: runController.songKeepValue
 
     function defaultPayload() {
         return {
@@ -22,8 +25,8 @@ Dialog {
             playMode: "game_auto",
             debugEnabled: false,
             autoSetUnit: false,
-            apMultiplier: "保持现状",
-            songName: "保持不变"
+            apMultiplier: root.apKeepValue,
+            songName: root.songKeepValue
         }
     }
 
@@ -42,8 +45,56 @@ Dialog {
             debugEnabled: preset.debugEnabled,
             autoSetUnit: preset.autoSetUnit,
             apMultiplier: preset.apMultiplier,
-            songName: preset.songName || "保持不变"
+            songName: preset.songName || root.songKeepValue
         }
+    }
+
+    function apMultiplierLabel(value) {
+        if (value === root.apKeepValue) {
+            return App.Globals.t("auto_live.ap.keep")
+        }
+        if (value === "maximum") {
+            return App.Globals.t("auto_live.ap.maximum")
+        }
+        return value
+    }
+
+    function apMultiplierValue(label) {
+        if (label === App.Globals.t("auto_live.ap.keep")) {
+            return root.apKeepValue
+        }
+        if (label === App.Globals.t("auto_live.ap.maximum")) {
+            return "maximum"
+        }
+        return label
+    }
+
+    function apMultiplierOptions() {
+        return [
+            App.Globals.t("auto_live.ap.keep"),
+            App.Globals.t("auto_live.ap.maximum"),
+            "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
+        ]
+    }
+
+    function songNameLabel(value) {
+        return value === root.songKeepValue ? App.Globals.t("auto_live.song.keep") : value
+    }
+
+    function songNameValue(label) {
+        return label === App.Globals.t("auto_live.song.keep") ? root.songKeepValue : label
+    }
+
+    function songNameOptions() {
+        return [
+            App.Globals.t("auto_live.song.keep"),
+            "メルト",
+            "独りんぼエンヴィー"
+        ]
+    }
+
+    function presetNameLabel(name) {
+        return runController.autoLivePresetLabel(name)
     }
 
     onOpened: {
@@ -58,20 +109,20 @@ Dialog {
 
         RowLayout {
             Layout.fillWidth: true
-            Label { text: "预设" }
+            Label { text: App.Globals.t("auto_live.preset") }
             Repeater {
                 model: root.presets
                 delegate: Button {
-                    text: modelData.name
+                    text: root.presetNameLabel(modelData.name)
                     onClicked: root.applyPreset(modelData)
                 }
             }
             Button {
-                text: "上次设定"
+                text: App.Globals.t("auto_live.preset.last")
                 onClicked: {
                     var raw = root.runCtrl.lastAutoPresetJson()
                     if (!raw) {
-                        App.Notice.show("error", "没有找到上次设定")
+                        App.Notice.show("error", App.Globals.t("auto_live.notice.no_last_preset"))
                         return
                     }
                     root.applyPreset(JSON.parse(raw))
@@ -79,6 +130,7 @@ Dialog {
             }
         }
 
+<<<<<<< HEAD
         FormSegmentedButton {
             label: "次数模式"
             options: [
@@ -167,13 +219,100 @@ Dialog {
             label: "自动编队"
             value: root.formData.autoSetUnit
             onUserToggled: function(v) { root.updateField("autoSetUnit", v) }
+=======
+        RowLayout {
+            Label { text: App.Globals.t("auto_live.count") }
+            RadioButton {
+                text: App.Globals.t("auto_live.count.specify")
+                checked: formData.countMode === "specify"
+                onClicked: formData = Object.assign({}, formData, { countMode: "specify" })
+            }
+            TextField {
+                enabled: formData.countMode === "specify"
+                text: formData.count
+                placeholderText: App.Globals.t("auto_live.count.placeholder")
+                onTextEdited: formData = Object.assign({}, formData, { count: text })
+            }
+            RadioButton {
+                text: App.Globals.t("auto_live.count.all")
+                checked: formData.countMode === "all"
+                onClicked: formData = Object.assign({}, formData, { countMode: "all" })
+            }
+        }
+
+        RowLayout {
+            Label { text: App.Globals.t("auto_live.loop_mode") }
+            RadioButton {
+                text: App.Globals.t("auto_live.loop.single")
+                checked: formData.loopMode === "single"
+                onClicked: formData = Object.assign({}, formData, { loopMode: "single" })
+            }
+            RadioButton {
+                text: App.Globals.t("auto_live.loop.list")
+                checked: formData.loopMode === "list"
+                onClicked: formData = Object.assign({}, formData, { loopMode: "list" })
+            }
+            RadioButton {
+                text: App.Globals.t("auto_live.loop.random")
+                checked: formData.loopMode === "random"
+                onClicked: formData = Object.assign({}, formData, { loopMode: "random" })
+            }
+        }
+
+        RowLayout {
+            Label { text: App.Globals.t("auto_live.play_mode") }
+            RadioButton {
+                text: App.Globals.t("auto_live.play.game_auto")
+                checked: formData.playMode === "game_auto"
+                onClicked: formData = Object.assign({}, formData, { playMode: "game_auto" })
+            }
+            RadioButton {
+                text: App.Globals.t("auto_live.play.script_auto")
+                checked: formData.playMode === "script_auto"
+                onClicked: formData = Object.assign({}, formData, { playMode: "script_auto", apMultiplier: "0" })
+            }
+        }
+
+        RowLayout {
+            Label { text: App.Globals.t("auto_live.ap_multiplier") }
+            Select {
+                model: root.apMultiplierOptions()
+                enabled: formData.playMode !== "script_auto"
+                currentIndex: Math.max(0, model.indexOf(root.apMultiplierLabel(formData.apMultiplier)))
+                onActivated: formData = Object.assign({}, formData, { apMultiplier: root.apMultiplierValue(model[currentIndex]) })
+            }
+        }
+
+        RowLayout {
+            Label { text: App.Globals.t("auto_live.song_name") }
+            ComboBox {
+                Layout.fillWidth: true
+                model: root.songNameOptions()
+                editable: true
+                enabled: formData.loopMode === "single"
+                currentIndex: Math.max(0, model.indexOf(root.songNameLabel(formData.songName)))
+                onActivated: formData = Object.assign({}, formData, { songName: root.songNameValue(model[currentIndex]) })
+                onEditTextChanged: formData = Object.assign({}, formData, { songName: root.songNameValue(editText) })
+            }
+        }
+
+        CheckBox {
+            text: App.Globals.t("auto_live.debug_display")
+            checked: formData.debugEnabled
+            onToggled: formData = Object.assign({}, formData, { debugEnabled: checked })
+        }
+        CheckBox {
+            text: App.Globals.t("auto_live.auto_set_unit")
+            checked: formData.autoSetUnit
+            onToggled: formData = Object.assign({}, formData, { autoSetUnit: checked })
+>>>>>>> feat/en-server
         }
 
         RowLayout {
             Layout.alignment: Qt.AlignRight
-            Button { text: "取消"; onClicked: root.close() }
+            Button { text: App.Globals.t("common.cancel"); onClicked: root.close() }
             Button {
-                text: "开始"
+                text: App.Globals.t("common.start")
                 highlighted: true
                 onClicked: {
                     try {
