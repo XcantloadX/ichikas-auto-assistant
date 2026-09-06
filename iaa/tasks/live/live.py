@@ -12,6 +12,7 @@ from iaa.context import conf, server, task_reporter, keyboard
 from iaa.i18n import TStr, tstr
 from ._select_song import next_song
 from ._scene import at_song_select
+from .auto_live_constants import AP_KEEP_UNCHANGED, LEGACY_AP_KEEP, LEGACY_SONG_KEEP
 from .auto_live_core import RhythmGameAnalyzer
 from iaa.definitions.enums import ChallengeLiveAward, GameCharacter
 
@@ -655,21 +656,47 @@ def challenge_live(
     go_home()
 
 
-SONG_KEEP_UNCHANGED = '保持不变'
-
-
 def normalize_song_name_input(value: str) -> str | None:
+    """归一化 payload 中的歌曲名称输入。
+
+    :param value: 原始输入，可能为空串、旧版「保持不变」值或哨兵 ``SONG_KEEP_UNCHANGED``。
+    :return: 有效歌曲名称；空输入、「保持不变」或哨兵时返回 None。
+    """
     normalized = (value or '').strip()
-    if not normalized or normalized == SONG_KEEP_UNCHANGED:
+    if not normalized or normalized in LEGACY_SONG_KEEP:
         return None
     return normalized
 
 
+def _normalize_ap_multiplier_raw(raw: object) -> ApMultiplier:
+    """归一化 payload 中的 AP 倍率原始值。
+
+    兼容 None/空串、旧版中文「保持现状」与哨兵 ``AP_KEEP_UNCHANGED``（返回 None）、
+    ``'maximum'`` 以及 0-10 的整数（或整数字符串）。
+    """
+    if raw in (None, '', *LEGACY_AP_KEEP):
+        return None
+    if raw == 'maximum':
+        return 'maximum'
+    ap_multiplier = int(raw)
+    if not (0 <= ap_multiplier <= 10):
+        raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
+    return ap_multiplier
+
+
 def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListLoopPlan:
+    """把 GUI 导出/CLI 传入的 auto_live payload 解析为演出计划。
+
+    这是 payload 解析的唯一权威实现（Qt models 侧复用，勿另建副本）。
+
+    :param payload: 原始 payload，含 countMode/loopMode/playMode/apMultiplier/songName 等键。
+    :return: 解析出的 :class:`SingleLoopPlan` 或 :class:`ListLoopPlan`。
+    :raises ValueError: 指定次数非正整数、次数模式/AP 倍率/循环模式非法时。
+    """
     count_mode = str(payload.get('countMode') or 'specify')
     loop_mode = str(payload.get('loopMode') or 'list')
     auto_mode = str(payload.get('playMode') or 'game_auto')
-    ap_multiplier_raw = payload.get('apMultiplier', '保持现状')
+    ap_multiplier_raw = payload.get('apMultiplier', AP_KEEP_UNCHANGED)
     debug_enabled = bool(payload.get('debugEnabled'))
     auto_set_unit = bool(payload.get('autoSetUnit'))
     song_name = normalize_song_name_input(str(payload.get('songName') or ''))
@@ -683,12 +710,7 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
     elif count_mode != 'all':
         raise ValueError(f'未知的次数模式：{count_mode}')
 
-    if ap_multiplier_raw in (None, '', '保持现状'):
-        ap_multiplier: int | None = None
-    else:
-        ap_multiplier = int(ap_multiplier_raw)
-        if not (0 <= ap_multiplier <= 10):
-            raise ValueError('AP 倍率必须在 0 到 10 之间。')
+    ap_multiplier = _normalize_ap_multiplier_raw(ap_multiplier_raw)
 
     if loop_mode == 'single':
         return SingleLoopPlan(

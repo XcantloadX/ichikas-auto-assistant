@@ -4,35 +4,29 @@ import json
 import shutil
 import threading
 from pathlib import Path
+from typing import Callable
 
 from PySide6.QtCore import QObject, Property, QTimer, Signal, Slot
 from PySide6.QtWidgets import QFileDialog
 
-<<<<<<< HEAD
 from iaa.application.service.iaa_service import IaaService
-=======
 from iaa.i18n import translate
->>>>>>> feat/en-server
 from iaa.config.live_presets import AutoLivePreset, LivePresetManager
 from iaa.tasks.registry import TASK_INFOS
 
-<<<<<<< HEAD
-from iaa.tasks.live.live import auto_live_payload_to_plan
-from ..models import builtin_auto_presets, preset_to_payload
-from .progress_bridge import ProgressBridge
-=======
 from iaa.tasks.live.auto_live_constants import (
     AP_KEEP_UNCHANGED,
     LAST_PRESET_NAME,
     PRESET_CLEAR_10,
     PRESET_FC_10,
     PRESET_LEADER_COUNT,
+    PRESET_SCRIPT_999,
     SONG_KEEP_UNCHANGED,
     preset_name_matches,
 )
 
 from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
->>>>>>> feat/en-server
+from .progress_bridge import ProgressBridge
 
 
 class RunController(QObject):
@@ -43,19 +37,20 @@ class RunController(QObject):
     scriptAutoWarningRequested = Signal(str)
     exportReady = Signal(str)
 
-<<<<<<< HEAD
-    def __init__(self, iaa_service: IaaService, progress_bridge: ProgressBridge, parent: QObject | None = None) -> None:
+    def __init__(
+        self,
+        iaa_service: IaaService,
+        progress_bridge: ProgressBridge,
+        parent: QObject | None = None,
+        *,
+        get_language: 'Callable[[], str] | None' = None,
+    ) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
         self._progress = progress_bridge
-=======
-    def __init__(self, iaa_service, progress_bridge, scrcpy_controller, i18n_controller, parent: QObject | None = None) -> None:
-        super().__init__(parent)
-        self._iaa = iaa_service
-        self._progress = progress_bridge
-        self._scrcpy = scrcpy_controller
-        self._i18n = i18n_controller
->>>>>>> feat/en-server
+        # GUI 语言来源（注入 i18nController.language 的 getter）。
+        # config.shared 在偏好保存后不会热更新，不能作为实时语言来源。
+        self._get_language = get_language
         self._export_busy = False
         self._queued = False
         self._timer = QTimer(self)
@@ -64,8 +59,13 @@ class RunController(QObject):
         self._timer.start()
         self.exportReady.connect(self._show_save_dialog)
 
+    def _language(self) -> str:
+        if self._get_language is not None:
+            return self._get_language()
+        return self._iaa.config.shared.interface.language
+
     def _tr(self, key: str, **kwargs: object) -> str:
-        text = translate(self._iaa.config.shared.interface.language, key)
+        text = translate(self._language(), key)
         return text.format(**kwargs) if kwargs else text
 
     def _get_ap_keep_value(self) -> str:
@@ -84,7 +84,8 @@ class RunController(QObject):
             return self._tr('auto_live.preset.clear_10')
         if preset_name_matches(name, PRESET_FC_10):
             return self._tr('auto_live.preset.fc_10')
-        if preset_name_matches(name, PRESET_LEADER_COUNT):
+        # 「脚本x999」取代了旧版「队长次数」预设，两者展示名共用同一 i18n 键。
+        if preset_name_matches(name, PRESET_SCRIPT_999) or preset_name_matches(name, PRESET_LEADER_COUNT):
             return self._tr('auto_live.preset.leader_count')
         if preset_name_matches(name, LAST_PRESET_NAME):
             return self._tr('auto_live.preset.last')

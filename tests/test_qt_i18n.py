@@ -1,22 +1,17 @@
 import json
+import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import Mock
 
-from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED
 from iaa.application.qt.controllers.i18n_controller import I18nController
 from iaa.application.qt.controllers.preferences_controller import PreferencesController
 from iaa.application.qt.controllers.settings_controller import SettingsController
+from iaa.config import manager
 from iaa.config.base import IaaConfig
 from iaa.config.schemas import GameConfig, LiveConfig
 from iaa.config.shared import SharedConfig
-
-
-def make_config_service(shared: SharedConfig | None = None) -> SimpleNamespace:
-    return SimpleNamespace(
-        shared=shared or SharedConfig(),
-        save_shared=Mock(),
-    )
 
 
 def make_iaa_service(shared: SharedConfig | None = None) -> SimpleNamespace:
@@ -54,7 +49,7 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('nav.preferences'), 'Preferences')
         self.assertEqual(controller.t('app.name'), 'Ichika Auto Assistant')
         self.assertEqual(controller.t('app.name_full'), 'Ichika Auto Assistant (iaa)')
-        self.assertEqual(controller.t('app.name_sidebar'), 'iaa')
+        self.assertEqual(controller.t('app.name_sidebar'), 'IAA')
         self.assertEqual(controller.t('app.window_title_macos'), 'Ichika Auto Assistant (macOS)')
         self.assertEqual(controller.t('modal.exit.title'), 'Confirm Exit')
         self.assertEqual(controller.t('config_manager.delete_title'), 'Confirm Delete')
@@ -67,130 +62,107 @@ class QtI18nTests(unittest.TestCase):
         self.assertEqual(controller.t('notice.save_success'), 'Saved')
         self.assertEqual(controller.t('dialog.save_report.title'), 'Save Report')
         self.assertEqual(controller.t('settings.group.game'), 'Game Settings')
-        self.assertEqual(controller.t('auto_live.preset.clear_10'), 'Clear 10 songs')
+        self.assertEqual(controller.t('auto_live.preset.clear_10'), 'CLEARx10')
         self.assertEqual(controller.t('auto_live.ap.maximum'), 'Maximum')
-        self.assertEqual(controller.t('auto_live.song.keep'), 'Keep unchanged')
+        self.assertEqual(controller.t('auto_live.song.keep'), 'Keep current')
 
-    def test_preferences_language_field_rebuilds_runtime_labels(self) -> None:
-        config_service = make_config_service()
-        i18n = I18nController('zh_CN')
-        controller = PreferencesController(SimpleNamespace(config=config_service), i18n)
-        changed_languages: list[str] = []
-        changed_interfaces: list[bool] = []
-        succeeded: list[str] = []
-        controller.languageChanged.connect(changed_languages.append)
-        controller.interfaceChanged.connect(lambda: changed_interfaces.append(True))
-        controller.operationSucceeded.connect(succeeded.append)
+    def test_preferences_language_field_applies_on_save(self) -> None:
+        """语言字段保存后应触发 languageChanged 并写盘（草稿模式）。"""
+        with tempfile.TemporaryDirectory() as root:
+            manager.config_path = str(Path(root) / 'conf')
+            manager.write_shared(SharedConfig())
+            changed_languages: list[str] = []
+            succeeded: list[str] = []
+            controller = PreferencesController()
+            controller.languageChanged.connect(changed_languages.append)
+            controller.operationSucceeded.connect(succeeded.append)
 
-        initial_runtime = json.loads(controller.getRuntime())
-        self.assertEqual(initial_runtime['title'], '偏好')
-        self.assertEqual(initial_runtime['fieldMap']['interface.language']['label'], '界面语言')
+            controller.setField('interface.language', 'en_US')
+            self.assertTrue(controller.isDirty())
+            # 保存前 shared 不应变化
+            self.assertEqual(manager.read_shared().interface.language, 'auto')
 
-        controller.setValue('interface.language', 'en_US')
+            self.assertTrue(controller.save())
 
-        updated_runtime = json.loads(controller.getRuntime())
-        self.assertEqual(config_service.shared.interface.language, 'en_US')
-        self.assertEqual(changed_languages, ['en_US'])
-        self.assertEqual(updated_runtime['title'], 'Preferences')
-        self.assertEqual(updated_runtime['groups'][0]['title'], 'Data Collection')
-        self.assertEqual(updated_runtime['groups'][1]['title'], 'Interface')
-        self.assertEqual(updated_runtime['groups'][2]['title'], 'Notifications')
-        self.assertEqual(updated_runtime['groups'][3]['title'], 'Hotkeys')
-        self.assertEqual(
-            updated_runtime['fieldMap']['telemetry.sentry']['label'],
-            'Send anonymous error reports automatically',
-        )
-        self.assertEqual(updated_runtime['fieldMap']['interface.language']['label'], 'Interface language')
-        self.assertEqual(updated_runtime['fieldMap']['interface.window_style']['label'], 'Window background style')
-        self.assertEqual(
-            updated_runtime['fieldMap']['interface.window_style']['options'][0]['label'],
-            'Auto',
-        )
-        self.assertEqual(updated_runtime['fieldMap']['notify.push.type']['label'], 'Push type')
-        self.assertEqual(
-            updated_runtime['fieldMap']['notify.push.type']['options'][0]['label'],
-            'Custom command',
-        )
-        self.assertEqual(updated_runtime['fieldMap']['hotkeys.start']['label'], 'Start script')
-        self.assertEqual(
-            updated_runtime['fieldMap']['hotkeys.start']['props']['idlePlaceholder'],
-            'Click to set',
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['hotkeys.start']['props']['recordingPlaceholder'],
-            'Press shortcut... (Esc to cancel)',
-        )
-        self.assertEqual(updated_runtime['fieldMap']['hotkeys.start']['props']['clearText'], 'Clear')
-        self.assertEqual(changed_interfaces, [])
+            self.assertEqual(changed_languages, ['en_US'])
+            self.assertEqual(succeeded, ['Saved'])
+            self.assertEqual(manager.read_shared().interface.language, 'en_US')
+            self.assertFalse(controller.isDirty())
 
-        self.assertTrue(controller.save())
-        self.assertEqual(succeeded, ['Saved'])
-        config_service.save_shared.assert_called_once()
+    def test_preferences_color_scheme_field_saves_to_shared(self) -> None:
+        with tempfile.TemporaryDirectory() as root:
+            manager.config_path = str(Path(root) / 'conf')
+            manager.write_shared(SharedConfig())
+            controller = PreferencesController()
 
-    def test_preferences_interface_field_notifies_app_shell(self) -> None:
-        config_service = make_config_service()
-        i18n = I18nController('zh_CN')
-        controller = PreferencesController(SimpleNamespace(config=config_service), i18n)
-        changed_interfaces: list[bool] = []
-        controller.interfaceChanged.connect(lambda: changed_interfaces.append(True))
+            controller.setField('interface.color_scheme', 'dark')
 
-        controller.setValue('interface.color_scheme', 'dark')
+            self.assertTrue(controller.save())
 
-        self.assertEqual(config_service.shared.interface.color_scheme, 'dark')
-        self.assertEqual(changed_interfaces, [True])
+            self.assertEqual(manager.read_shared().interface.color_scheme, 'dark')
 
-    def test_settings_controller_rebuilds_config_labels_for_language(self) -> None:
+    def test_settings_controller_labels_resolve_for_language(self) -> None:
+        """选项标签应按当前 GUI 语言解析为字符串（而非 TStr 对象）。"""
         service = make_iaa_service()
-        i18n = I18nController('zh_CN')
-        controller = SettingsController(service, i18n)
+        controller = SettingsController(service)
 
-        initial_runtime = json.loads(controller.getRuntime())
-        self.assertEqual(initial_runtime['title'], '配置')
-        self.assertEqual(initial_runtime['groups'][0]['title'], '游戏设置')
-        self.assertEqual(initial_runtime['fieldMap']['game.server']['label'], '服务器')
+        servers = json.loads(controller.serverOptionsJson())
+        self.assertEqual(servers[0], {'value': 'jp', 'label': '日服'})
 
         service.config.shared.interface.language = 'en_US'
-        i18n.setLanguage('en_US')
-        controller.setLanguage('en_US')
+        servers = json.loads(controller.serverOptionsJson())
+        self.assertEqual(servers[0], {'value': 'jp', 'label': 'JP'})
+        # feat/en-server 新增的 en 服务器选项应保留
+        self.assertEqual(
+            [o['value'] for o in servers],
+            ['jp', 'tw', 'cn', 'en'],
+        )
 
-        updated_runtime = json.loads(controller.getRuntime())
-        self.assertFalse(updated_runtime['dirty'])
-        self.assertEqual(updated_runtime['title'], 'Configuration')
-        self.assertEqual(updated_runtime['groups'][0]['title'], 'Game Settings')
-        self.assertEqual(updated_runtime['groups'][1]['title'], 'Device Settings')
-        self.assertEqual(updated_runtime['fieldMap']['game.server']['label'], 'Server')
-        self.assertEqual(
-            updated_runtime['fieldMap']['game.server']['options'][3],
-            {'value': 'en', 'label': 'Global / EN'},
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['device.lifecycleType']['options'][2],
-            {'value': 'custom', 'label': 'Custom emulator'},
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['device.mumuInstanceId']['options'][0],
-            {'value': '', 'label': 'Default'},
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['device.mumuInstanceId']['props']['refreshText'],
-            'Refresh',
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['device.resolutionMethod']['props']['resetText'],
-            'Reset Resolution',
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['live.apMultiplier']['options'][0],
-            {'value': AP_KEEP_UNCHANGED, 'label': 'Keep current'},
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['challengeLive.characters']['options'][1]['options'][0]['label'],
-            'Ichika Hoshino',
-        )
-        self.assertEqual(
-            updated_runtime['fieldMap']['eventShop.selectedItems']['props']['addText'],
-            '← Add',
-        )
+        lifecycles = json.loads(controller.lifecycleOptionsJson())
+        by_value = {o['value']: o['label'] for o in lifecycles}
+        self.assertEqual(by_value['custom'], 'Custom emulator')
+        self.assertEqual(by_value['none'], 'Physical device / manual management')
+
+        issues = controller._collect_issues({'device': {'connection': {'type': 'tcp'}, 'lifecycle': {}}}, 'en_US')
+        self.assertTrue(any(i['message'] == 'Port is required' for i in issues))
+
+    def test_settings_controller_language_getter_takes_precedence(self) -> None:
+        """注入的 get_language 应优先于 config.shared（偏好保存后 shared 不热更新）。"""
+        service = make_iaa_service()
+        language = {'value': 'zh_CN'}
+        controller = SettingsController(service, get_language=lambda: language['value'])
+
+        self.assertEqual(json.loads(controller.serverOptionsJson())[0]['label'], '日服')
+
+        language['value'] = 'en_US'
+        self.assertEqual(json.loads(controller.serverOptionsJson())[0]['label'], 'JP')
+
+    def test_event_shop_items_follow_ui_language(self) -> None:
+        """商店道具 label 应跟随界面语言（zh 简中 / en 英文），与所选服务器无关。"""
+        service = make_iaa_service()
+        controller = SettingsController(service)
+
+        by_value = {i['value']: i['label'] for i in json.loads(controller.eventShopItemsJson())}
+        self.assertEqual(by_value['magic_cloth'], '魔法之布')
+
+        # 切换服务器不影响显示名
+        controller.setField('game.server', 'tw')
+        by_value = {i['value']: i['label'] for i in json.loads(controller.eventShopItemsJson())}
+        self.assertEqual(by_value['magic_cloth'], '魔法之布')
+
+        en_controller = SettingsController(service, get_language=lambda: 'en_US')
+        by_value = {i['value']: i['label'] for i in json.loads(en_controller.eventShopItemsJson())}
+        self.assertEqual(by_value['magic_cloth'], 'Magic Cloth')
+        self.assertEqual(by_value['coin_100000'], 'Coins ×100000')
+
+    def test_settings_controller_profile_messages_use_language(self) -> None:
+        service = make_iaa_service()
+        controller = SettingsController(service)
+        service.config.list = Mock(return_value=['alpha'])
+        service.config.current_config_name = 'alpha'
+
+        profiles = json.loads(controller.profilesJson())
+        self.assertEqual(profiles['profiles'], [{'value': 'alpha', 'label': 'alpha'}])
 
 
 if __name__ == '__main__':

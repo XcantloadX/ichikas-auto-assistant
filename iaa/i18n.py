@@ -73,6 +73,14 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='帮助',
         en_US='Help',
     ),
+    'nav.overview': TStr(
+        zh_CN='总览',
+        en_US='Overview',
+    ),
+    'nav.device': TStr(
+        zh_CN='画面',
+        en_US='Device',
+    ),
     'common.save': TStr(
         zh_CN='保存',
         en_US='Save',
@@ -84,6 +92,10 @@ _TRANSLATIONS: dict[str, TStr] = {
     'common.ok': TStr(
         zh_CN='确定',
         en_US='OK',
+    ),
+    'common.copy': TStr(
+        zh_CN='复制',
+        en_US='Copy',
     ),
     'common.close': TStr(
         zh_CN='关闭',
@@ -100,6 +112,10 @@ _TRANSLATIONS: dict[str, TStr] = {
     'common.start': TStr(
         zh_CN='开始',
         en_US='Start',
+    ),
+    'common.loading': TStr(
+        zh_CN='载入中...',
+        en_US='Loading...',
     ),
     'common.unsaved_changes': TStr(
         zh_CN='有未保存改动',
@@ -120,6 +136,22 @@ _TRANSLATIONS: dict[str, TStr] = {
     'page.settings.script_running': TStr(
         zh_CN='脚本运行时无法修改配置',
         en_US='Config cannot be edited while the script is running',
+    ),
+    'page.device.scrcpy_only_hint': TStr(
+        zh_CN='仅当使用 scrcpy 控制方式时可用',
+        en_US='Available only when the scrcpy control method is selected',
+    ),
+    'page.device.stop_game_title': TStr(
+        zh_CN='停止游戏',
+        en_US='Stop Game',
+    ),
+    'page.device.stop_game_script_running': TStr(
+        zh_CN='当前正在运行脚本，终止游戏运行可能导致异常。是否继续？',
+        en_US='A script is currently running. Stopping the game may cause issues. Continue?',
+    ),
+    'page.device.stop_game_confirm': TStr(
+        zh_CN='将结束游戏并关闭虚拟屏，是否继续？',
+        en_US='The game will be stopped and the virtual display closed. Continue?',
     ),
     'log.wrap': TStr(
         zh_CN='自动换行',
@@ -153,6 +185,54 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='QQ 群',
         en_US='QQ Group',
     ),
+    'overview.greeting.morning': TStr(
+        zh_CN='早上好！',
+        en_US='Good morning!',
+    ),
+    'overview.greeting.noon': TStr(
+        zh_CN='中午好！',
+        en_US='Good day!',
+    ),
+    'overview.greeting.afternoon': TStr(
+        zh_CN='下午好！',
+        en_US='Good afternoon!',
+    ),
+    'overview.greeting.evening': TStr(
+        zh_CN='晚上好！',
+        en_US='Good evening!',
+    ),
+    'overview.start_sequential': TStr(
+        zh_CN='连续启动',
+        en_US='Start All Sequentially',
+    ),
+    'overview.start_parallel': TStr(
+        zh_CN='并行启动',
+        en_US='Start All in Parallel',
+    ),
+    'overview.stop_all': TStr(
+        zh_CN='停止所有',
+        en_US='Stop All',
+    ),
+    'overview.no_configs': TStr(
+        zh_CN='你还没有创建任何配置',
+        en_US="You haven't created any configs yet",
+    ),
+    'overview.empty.click': TStr(
+        zh_CN='点击',
+        en_US='Click',
+    ),
+    'overview.empty.create_button': TStr(
+        zh_CN='创建配置',
+        en_US='Create Config',
+    ),
+    'overview.empty.or_toolbar': TStr(
+        zh_CN='或顶部标签栏的',
+        en_US='or the',
+    ),
+    'overview.empty.create_suffix': TStr(
+        zh_CN='号创建新配置',
+        en_US='button in the top tab bar to create a new config',
+    ),
     'scrcpy.title': TStr(
         zh_CN='Scrcpy 画面',
         en_US='Scrcpy View',
@@ -164,6 +244,18 @@ _TRANSLATIONS: dict[str, TStr] = {
     'scrcpy.waiting_frame_error': TStr(
         zh_CN='等待画面... {error}',
         en_US='Waiting for frame... {error}',
+    ),
+    'scrcpy.device_not_started': TStr(
+        zh_CN='设备未启动',
+        en_US='Device not started',
+    ),
+    'scrcpy.device_started': TStr(
+        zh_CN='设备已启动',
+        en_US='Device started',
+    ),
+    'scrcpy.start_failed': TStr(
+        zh_CN='启动失败: {message}',
+        en_US='Start failed: {message}',
     ),
     'modal.telemetry.title': TStr(
         zh_CN='数据收集',
@@ -180,6 +272,18 @@ _TRANSLATIONS: dict[str, TStr] = {
     'modal.telemetry.allow': TStr(
         zh_CN='允许',
         en_US='Allow',
+    ),
+    'modal.telemetry.screenshot_help': TStr(
+        zh_CN='只包含游戏画面截图，不含电脑桌面或其他应用内容。<br>如果不希望发送截图，请关闭此选项。',
+        en_US='Only game screenshots are included; your desktop or other apps are never captured.<br>Turn this option off if you do not want to send screenshots.',
+    ),
+    'modal.path_warning.title': TStr(
+        zh_CN='提示',
+        en_US='Notice',
+    ),
+    'modal.path_warning.content': TStr(
+        zh_CN='请勿将 iaa 放在 Program Files 程序文件夹下，以及 OneDrive 等云盘同步文件夹内，否则部分功能可能出现异常！',
+        en_US='Do not place iaa inside Program Files or cloud-synced folders such as OneDrive, otherwise some features may not work correctly!',
     ),
     'modal.migration.title': TStr(
         zh_CN='配置升级',
@@ -204,6 +308,38 @@ _TRANSLATIONS: dict[str, TStr] = {
     'modal.unsaved.content': TStr(
         zh_CN='当前配置有未保存的更改。{action}前，请先选择处理方式。',
         en_US='You have unsaved changes. Before {action}, choose how to handle them.',
+    ),
+    'modal.close_tab_unsaved.content': TStr(
+        zh_CN='该配置有未保存的更改，关闭 Tab 前请选择处理方式。',
+        en_US='This config has unsaved changes. Choose how to handle them before closing the tab.',
+    ),
+    'modal.close_tab_unsaved.discard': TStr(
+        zh_CN='不保存并关闭',
+        en_US='Close without saving',
+    ),
+    'modal.close_tab_unsaved.save': TStr(
+        zh_CN='保存并关闭',
+        en_US='Save and close',
+    ),
+    'notice.copied_to_clipboard': TStr(
+        zh_CN='已复制到剪贴板',
+        en_US='Copied to clipboard',
+    ),
+    'modal.config_reset.title': TStr(
+        zh_CN='配置校验失败',
+        en_US='Config Validation Failed',
+    ),
+    'modal.config_reset.content': TStr(
+        zh_CN='配置 <b>{name}</b> 中以下字段校验失败：<br>{fields}<br><br>错误详情：<br>{details}<br><br>是否将这些字段重置为默认值？',
+        en_US='The following fields in config <b>{name}</b> failed validation:<br>{fields}<br><br>Error details:<br>{details}<br><br>Reset these fields to their default values?',
+    ),
+    'modal.config_reset.no_reset': TStr(
+        zh_CN='不重置',
+        en_US="Don't Reset",
+    ),
+    'modal.config_reset.reset': TStr(
+        zh_CN='重置',
+        en_US='Reset',
     ),
     'guard.close_window': TStr(
         zh_CN='关闭窗口',
@@ -253,6 +389,10 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN="确定要删除配置 '{name}' 吗？此操作不可撤销。",
         en_US="Delete '{name}'? This cannot be undone.",
     ),
+    'config_manager.all_open': TStr(
+        zh_CN='所有配置均已打开',
+        en_US='All configs are already open',
+    ),
     'control.main_story_confirm.title': TStr(
         zh_CN='确认开始',
         en_US='Confirm Start',
@@ -268,6 +408,10 @@ _TRANSLATIONS: dict[str, TStr] = {
     'control.group.tasks': TStr(
         zh_CN='任务',
         en_US='Tasks',
+    ),
+    'control.queued': TStr(
+        zh_CN='排队中',
+        en_US='Queued',
     ),
     'control.start': TStr(
         zh_CN='启动',
@@ -304,6 +448,10 @@ _TRANSLATIONS: dict[str, TStr] = {
     'status.ready': TStr(
         zh_CN='就绪',
         en_US='Ready',
+    ),
+    'status.running': TStr(
+        zh_CN='运行中',
+        en_US='Running',
     ),
     'status.stopped': TStr(
         zh_CN='已停止',
@@ -497,6 +645,10 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='设置字段失败：{error}',
         en_US='Failed to set field: {error}',
     ),
+    'notice.nothing_to_save': TStr(
+        zh_CN='没有需要保存的更改',
+        en_US='Nothing to save',
+    ),
     'notice.export_failed': TStr(
         zh_CN='导出失败：{error}',
         en_US='Export failed: {error}',
@@ -512,6 +664,10 @@ _TRANSLATIONS: dict[str, TStr] = {
     'notice.telemetry_effective': TStr(
         zh_CN='数据收集设置将于下次启动时生效。',
         en_US='Data collection settings take effect on next launch.',
+    ),
+    'notice.color_scheme_restart': TStr(
+        zh_CN='配色方案将在重启后生效。',
+        en_US='The color scheme takes effect after a restart.',
     ),
     'notice.script_auto_warning': TStr(
         zh_CN='使用"脚本自动"时必须满足：\n1. 当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担',
@@ -594,20 +750,24 @@ _TRANSLATIONS: dict[str, TStr] = {
         en_US='Preset',
     ),
     'auto_live.preset.clear_10': TStr(
-        zh_CN='CLEAR 10 首歌',
-        en_US='Clear 10 songs',
+        zh_CN='CLEARx10',
+        en_US='CLEARx10',
     ),
     'auto_live.preset.fc_10': TStr(
-        zh_CN='FC 10 次',
-        en_US='FC 10 times',
+        zh_CN='APx10',
+        en_US='APx10',
     ),
     'auto_live.preset.leader_count': TStr(
-        zh_CN='队长次数',
-        en_US='Leader count',
+        zh_CN='脚本x999',
+        en_US='Script x999',
     ),
     'auto_live.preset.last': TStr(
         zh_CN='上次设定',
         en_US='Last settings',
+    ),
+    'auto_live.notice.ap_locked_zero': TStr(
+        zh_CN='为避免滥用，脚本自动时 AP 锁定 0。',
+        en_US='To prevent abuse, AP multiplier is locked to 0 in script auto mode.',
     ),
     'auto_live.notice.no_last_preset': TStr(
         zh_CN='没有找到上次设定',
@@ -708,6 +868,26 @@ _TRANSLATIONS: dict[str, TStr] = {
     'preferences.field.telemetry_sentry': TStr(
         zh_CN='自动发送匿名错误报告',
         en_US='Send anonymous error reports automatically',
+    ),
+    'preferences.field.telemetry_upload_screenshot': TStr(
+        zh_CN='错误上报时附带截图',
+        en_US='Attach screenshots to error reports',
+    ),
+    'preferences.field.telemetry_statics': TStr(
+        zh_CN='匿名收集统计数据',
+        en_US='Anonymously collect usage statistics',
+    ),
+    'preferences.field.startup_page': TStr(
+        zh_CN='启动时打开',
+        en_US='Open at startup',
+    ),
+    'preferences.option.startup_page.overview': TStr(
+        zh_CN='总览页面',
+        en_US='Overview page',
+    ),
+    'preferences.option.startup_page.last_opened': TStr(
+        zh_CN='上次打开的配置',
+        en_US='Last opened config',
     ),
     'preferences.field.language': TStr(
         zh_CN='界面语言',
@@ -885,6 +1065,10 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='活动商店设置',
         en_US='Event Shop Settings',
     ),
+    'settings.group.scheduler': TStr(
+        zh_CN='调度设置',
+        en_US='Scheduler Settings',
+    ),
     'settings.group.developer': TStr(
         zh_CN='开发者设置（仅供开发使用！）',
         en_US='Developer Settings',
@@ -953,6 +1137,22 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='使用虚拟显示器',
         en_US='Use virtual display',
     ),
+    'settings.field.device.sdk_path': TStr(
+        zh_CN='SDK 路径',
+        en_US='SDK path',
+    ),
+    'settings.field.device.extra_args': TStr(
+        zh_CN='额外启动参数',
+        en_US='Extra launch arguments',
+    ),
+    'settings.field.device.avd_instance': TStr(
+        zh_CN='AVD 实例',
+        en_US='AVD instance',
+    ),
+    'settings.field.device.stop_on_finish': TStr(
+        zh_CN='完成后关闭模拟器',
+        en_US='Stop emulator when finished',
+    ),
     'settings.field.device.resolution_method': TStr(
         zh_CN='分辨率设置',
         en_US='Resolution',
@@ -989,6 +1189,14 @@ _TRANSLATIONS: dict[str, TStr] = {
         zh_CN='广告等待秒数',
         en_US='Ad wait time (seconds)',
     ),
+    'settings.field.event_shop.purchase_items': TStr(
+        zh_CN='购买项',
+        en_US='Purchase items',
+    ),
+    'settings.field.scheduler.continue_on_error': TStr(
+        zh_CN='错误时继续执行后续任务',
+        en_US='Continue remaining tasks on error',
+    ),
     'settings.field.developer.dump_sekai_home': TStr(
         zh_CN='dump 烤森',
         en_US='Dump Sekai Home',
@@ -1018,16 +1226,40 @@ _TRANSLATIONS: dict[str, TStr] = {
         en_US='Enable this when connecting to a device through IP:port.',
     ),
     'settings.help.control_impl': TStr(
-        zh_CN='对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式，对于其他模拟器与物理机，推荐使用 <b>scrcpy</b> 方式',
-        en_US='For MuMu, <b>Nemu IPC</b> is recommended. For other emulators and physical devices, <b>scrcpy</b> is recommended.',
+        zh_CN='对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式；对于 AVD，推荐使用 <b>QEMU gRPC</b>（直接读取模拟器帧缓冲，速度最快）或 <b>ADB</b>；对于其他模拟器与物理机，推荐使用 <b>Scrcpy</b> 方式',
+        en_US='For MuMu, <b>Nemu IPC</b> is recommended. For AVD, <b>QEMU gRPC</b> (reads the emulator framebuffer directly, fastest) or <b>ADB</b> is recommended. For other emulators and physical devices, <b>Scrcpy</b> is recommended.',
     ),
     'settings.help.screen_recording': TStr(
         zh_CN='脚本启动时自动录屏，结束时自动结束。输出到 dumps/screen_records/ 目录。',
         en_US='Automatically starts recording when the script starts and stops when it ends. Output goes to dumps/screen_records/.',
     ),
+    'settings.help.sdk_path': TStr(
+        zh_CN='Android SDK 路径。自动查找顺序：<ol><li>环境变量 <code>ANDROID_HOME</code> / <code>ANDROID_SDK_ROOT</code></li><li>Windows：<code>%LOCALAPPDATA%\\Android\\Sdk</code></li><li>macOS：<code>~/Library/Android/sdk</code></li><li>Linux：<code>~/Android/Sdk</code></li><li><code>PATH</code> 中的 <code>emulator</code></li></ol>填写后将只在该目录下查找，忽略以上自动查找逻辑。',
+        en_US='Android SDK path. Automatic lookup order:<ol><li>Environment variables <code>ANDROID_HOME</code> / <code>ANDROID_SDK_ROOT</code></li><li>Windows: <code>%LOCALAPPDATA%\\Android\\Sdk</code></li><li>macOS: <code>~/Library/Android/sdk</code></li><li>Linux: <code>~/Android/Sdk</code></li><li><code>emulator</code> from <code>PATH</code></li></ol>If set, only this directory is searched and the automatic lookup above is skipped.',
+    ),
+    'settings.help.extra_args': TStr(
+        zh_CN='追加到 emulator 命令行末尾的参数，以空格分隔。',
+        en_US='Arguments appended to the end of the emulator command line, separated by spaces.',
+    ),
+    'settings.help.stop_on_finish': TStr(
+        zh_CN='所有任务执行完毕后，自动停止由 iaa 本次启动的模拟器。若模拟器在启动前已在运行，则不会关闭。',
+        en_US='After all tasks finish, automatically stop the emulator that iaa started for this run. Emulators that were already running before startup are left open.',
+    ),
+    'settings.help.resolution_method': TStr(
+        zh_CN='<b>保持原始分辨率</b>：不做任何修改。<br><b>强制修改分辨率</b>：对所有设备执行 <code>wm size</code>。',
+        en_US='<b>Keep original</b>: no changes are made.<br><b>Force change</b>: runs <code>wm size</code> on all devices.',
+    ),
     'settings.notice.nemu_ipc_tip': TStr(
         zh_CN='MuMu 模拟器选择 NemuIPC 效果最佳',
         en_US='Nemu IPC works best for MuMu emulators',
+    ),
+    'settings.notice.resolution_wm_size_warning': TStr(
+        zh_CN='警告！<b>强制修改分辨率可能导致设备无法正常使用且无法恢复！</b>务必阅读<a href="https://p.kdocs.cn/s/AGBH56RBAAAFS?linkname=WKAL5qgRTi">此处</a>说明后才使用该功能。',
+        en_US='Warning! <b>Forcing a resolution change may leave the device unusable, and the change cannot be undone!</b> Be sure to read the notes <a href="https://p.kdocs.cn/s/AGBH56RBAAAFS?linkname=WKAL5qgRTi">here</a> before using this feature.',
+    ),
+    'settings.notice.qemu_grpc_resolution_tip': TStr(
+        zh_CN='使用 QEMU gRPC 控制方式时，请在 Android Studio AVD Manager 中预先将分辨率配置为 1280x720。',
+        en_US='When using the QEMU gRPC control method, set the resolution to 1280x720 in Android Studio AVD Manager in advance.',
     ),
     'settings.placeholder.custom_stop_command': TStr(
         zh_CN='可选。如果为空，将会自动终止启动命令中的进程',
@@ -1036,6 +1268,14 @@ _TRANSLATIONS: dict[str, TStr] = {
     'settings.placeholder.custom_running_command': TStr(
         zh_CN='可选。如果为空，将会使用默认的运行检测方式',
         en_US='Optional. When empty, the default running check is used.',
+    ),
+    'settings.placeholder.sdk_path': TStr(
+        zh_CN='留空自动查找',
+        en_US='Leave empty to locate automatically',
+    ),
+    'settings.placeholder.extra_args': TStr(
+        zh_CN='可选，例如 -gpu swiftshader_indirect -no-audio',
+        en_US='Optional, e.g. -gpu swiftshader_indirect -no-audio',
     ),
     'settings.placeholder.usb_serial': TStr(
         zh_CN='留空自动选择第一个 USB 设备',
@@ -1236,6 +1476,18 @@ _TRANSLATIONS: dict[str, TStr] = {
     'settings.error.unsupported_action': TStr(
         zh_CN='不支持的动作: {field}.{action}',
         en_US='Unsupported action: {field}.{action}',
+    ),
+    'settings.error.invalid_config': TStr(
+        zh_CN='配置结构无效：{error}',
+        en_US='Invalid config structure: {error}',
+    ),
+    'settings.error.validate_failed': TStr(
+        zh_CN='校验失败：{error}',
+        en_US='Validation failed: {error}',
+    ),
+    'settings.option.avd_instance.default': TStr(
+        zh_CN='（默认第一个）',
+        en_US='(First by default)',
     ),
     'auto_live.error.count_positive': TStr(
         zh_CN='指定次数必须为正整数。',

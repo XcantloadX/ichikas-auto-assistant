@@ -1,23 +1,19 @@
 from __future__ import annotations
 
-<<<<<<< HEAD
-from iaa.config.live_presets import AutoLivePreset
-from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan, SONG_KEEP_UNCHANGED
-=======
-from typing import Any
-
 from iaa.tasks.live.auto_live_constants import (
     AP_KEEP_UNCHANGED,
-    LEGACY_AP_KEEP,
-    LEGACY_SONG_KEEP,
     PRESET_CLEAR_10,
     PRESET_FC_10,
-    PRESET_LEADER_COUNT,
+    PRESET_SCRIPT_999,
     SONG_KEEP_UNCHANGED,
 )
 from iaa.config.live_presets import AutoLivePreset
-from iaa.tasks.live.live import ApMultiplier, ListLoopPlan, SingleLoopPlan
->>>>>>> feat/en-server
+from iaa.tasks.live.live import (
+    ListLoopPlan,
+    SingleLoopPlan,
+    auto_live_payload_to_plan as auto_live_payload_to_plan,
+    normalize_song_name_input as normalize_song_name_input,
+)
 
 SONG_NAME_OPTIONS = [
     SONG_KEEP_UNCHANGED,
@@ -26,70 +22,12 @@ SONG_NAME_OPTIONS = [
 ]
 
 
-<<<<<<< HEAD
-=======
-def normalize_song_name_input(value: str) -> str | None:
-    normalized = (value or '').strip()
-    if not normalized or normalized in LEGACY_SONG_KEEP:
-        return None
-    return normalized
-
-
-def _normalize_ap_multiplier_raw(raw: object) -> ApMultiplier:
-    if raw in (None, '', *LEGACY_AP_KEEP):
-        return None
-    if raw == 'maximum':
-        return 'maximum'
-    ap_multiplier = int(raw)
-    if not (0 <= ap_multiplier <= 10):
-        raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
-    return ap_multiplier
-
-
-def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListLoopPlan:
-    count_mode = str(payload.get('countMode') or 'specify')
-    loop_mode = str(payload.get('loopMode') or 'list')
-    auto_mode = str(payload.get('playMode') or 'game_auto')
-    ap_multiplier_raw = payload.get('apMultiplier', AP_KEEP_UNCHANGED)
-    debug_enabled = bool(payload.get('debugEnabled'))
-    auto_set_unit = bool(payload.get('autoSetUnit'))
-    song_name = normalize_song_name_input(str(payload.get('songName') or ''))
-
-    count: int | None = None
-    if count_mode == 'specify':
-        raw_count = str(payload.get('count') or '').strip()
-        if not raw_count.isdigit() or int(raw_count) <= 0:
-            raise ValueError('指定次数必须为正整数。')
-        count = int(raw_count)
-    elif count_mode != 'all':
-        raise ValueError(f'未知的次数模式：{count_mode}')
-
-    ap_multiplier = _normalize_ap_multiplier_raw(ap_multiplier_raw)
-
-    if loop_mode == 'single':
-        return SingleLoopPlan(
-            loop_count=count,
-            song_select_mode='specified' if song_name else 'current',
-            song_name=song_name,
-            play_mode='script_auto' if auto_mode == 'script_auto' else 'game_auto',
-            debug_enabled=debug_enabled,
-            ap_multiplier=ap_multiplier,
-            auto_set_unit=auto_set_unit,
-        )
-    if loop_mode in ('list', 'random'):
-        return ListLoopPlan(
-            loop_count=count,
-            loop_song_mode='random' if loop_mode == 'random' else 'list_next',
-            play_mode='script_auto' if auto_mode == 'script_auto' else 'game_auto',
-            debug_enabled=debug_enabled,
-            ap_multiplier=ap_multiplier,
-            auto_set_unit=auto_set_unit,
-        )
-    raise ValueError(f'未知的循环模式：{loop_mode}')
-
-
->>>>>>> feat/en-server
 def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
+    """把预设转换为 GUI 表单使用的 payload。
+
+    :param preset: 演出预设。
+    :return: 含 countMode/loopMode/playMode/apMultiplier/songName 等键的 payload。
+    """
     plan = preset.plan
     payload: dict[str, object] = {
         'name': preset.name,
@@ -111,20 +49,12 @@ def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
 
 
 def builtin_auto_presets() -> list[dict[str, object]]:
+    """内置演出预设列表（payload 形式，供 GUI 下拉/按钮展示）。
+
+    :return: 内置预设的 payload 列表。
+    """
     presets = [
         AutoLivePreset(
-<<<<<<< HEAD
-            name='CLEARx10',
-            plan=ListLoopPlan(loop_count=10, play_mode='game_auto', ap_multiplier=1),
-        ),
-        AutoLivePreset(
-            name='APx10',
-            plan=SingleLoopPlan(loop_count=10, play_mode='script_auto', ap_multiplier=0),
-        ),
-        AutoLivePreset(
-            name='脚本x999',
-            plan=SingleLoopPlan(loop_count=999, play_mode='script_auto', ap_multiplier=0),
-=======
             name=PRESET_CLEAR_10,
             plan=ListLoopPlan(loop_count=10, play_mode='game_auto', ap_multiplier=1),
         ),
@@ -133,9 +63,8 @@ def builtin_auto_presets() -> list[dict[str, object]]:
             plan=SingleLoopPlan(loop_count=10, play_mode='script_auto', ap_multiplier=0),
         ),
         AutoLivePreset(
-            name=PRESET_LEADER_COUNT,
-            plan=SingleLoopPlan(loop_count=30, play_mode='script_auto', ap_multiplier=0),
->>>>>>> feat/en-server
+            name=PRESET_SCRIPT_999,
+            plan=SingleLoopPlan(loop_count=999, play_mode='script_auto', ap_multiplier=0),
         ),
     ]
     return [preset_to_payload(preset) for preset in presets]

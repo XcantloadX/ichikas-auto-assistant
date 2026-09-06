@@ -75,53 +75,34 @@ PageContainer {
                 RowLayout {
                     Layout.fillWidth: true
                     Button {
-<<<<<<< HEAD
                         text: {
-                            if (root.ctrl_isQueued)   return "排队中"
-                            if (root.ctrl_isStarting) return "启动中"
-                            if (root.ctrl_isStopping) return "停止中"
-                            if (root.ctrl_running)    return "停止"
-                            return "启动"
+                            if (root.ctrl_isQueued)   return App.Globals.t("control.queued")
+                            if (root.ctrl_isStarting) return App.Globals.t("control.starting")
+                            if (root.ctrl_isStopping) return App.Globals.t("control.stopping")
+                            if (root.ctrl_running)    return App.Globals.t("control.stop")
+                            return App.Globals.t("control.start")
                         }
                         enabled: !root.ctrl_busy
                         highlighted: !root.ctrl_running
-=======
-                        text: runController.isStarting
-                            ? App.Globals.t("control.starting")
-                            : (runController.isStopping
-                                ? App.Globals.t("control.stopping")
-                                : (runController.running ? App.Globals.t("control.stop") : App.Globals.t("control.start")))
-                        enabled: !runController.isStarting && !runController.isStopping
-                        highlighted: !runController.running
->>>>>>> feat/en-server
                         onClicked: {
                             if (root.ctrl_running) root.runCtrl.stop()
                             else if (root.runCtrl) root.runCtrl.startRegular()
                         }
                     }
                     Button {
-<<<<<<< HEAD
-                        text: root.ctrl_exportBusy ? "导出中..." : "导出报告"
+                        text: root.ctrl_exportBusy ? App.Globals.t("control.exporting_report") : App.Globals.t("control.export_report")
                         enabled: !root.ctrl_exportBusy
                         onClicked: { if (root.runCtrl) root.runCtrl.exportReport() }
                     }
                     Item { Layout.fillWidth: true }
-                    Label { text: root.ctrl_taskName ? "当前任务：" + root.ctrl_taskName : "" }
-=======
-                        text: runController.exportBusy ? App.Globals.t("control.exporting_report") : App.Globals.t("control.export_report")
-                        enabled: !runController.exportBusy
-                        onClicked: runController.exportReport()
-                    }
-                    Item { Layout.fillWidth: true }
                     Label {
-                        text: runController.currentTaskId
+                        text: root.ctrl_taskName
                             ? App.Globals.t("control.current_task").replace(
                                 "{task}",
-                                App.Globals.taskName(runController.currentTaskId, runController.currentTaskName)
+                                App.Globals.taskName(root.runCtrl ? root.runCtrl.currentTaskId : "", root.ctrl_taskName)
                             )
                             : ""
                     }
->>>>>>> feat/en-server
                 }
 
                 Label {
@@ -185,15 +166,8 @@ PageContainer {
                                 Switch {
                                     visible: !!modelData.checkable
                                     checked: !!modelData.enabled
-<<<<<<< HEAD
                                     enabled: !root.ctrl_busy
-                                    text: modelData.name
                                     onToggled: { if (root.runCtrl) root.runCtrl.setRegularTaskEnabled(modelData.id, checked) }
-=======
-                                    enabled: !runController.running && !runController.isStarting && !runController.isStopping
-                                    text: ""
-                                    onToggled: runController.setRegularTaskEnabled(modelData.id, checked)
->>>>>>> feat/en-server
                                 }
                                 Label {
                                     Layout.fillWidth: true
@@ -204,15 +178,10 @@ PageContainer {
                                     verticalAlignment: Text.AlignVCenter
                                 }
                                 Button {
-<<<<<<< HEAD
-                                    text: "运行"
-                                    enabled: !root.ctrl_busy
-=======
                                     Layout.preferredWidth: 78
                                     Layout.minimumWidth: 68
                                     text: App.Globals.t("control.run_task")
-                                    enabled: !runController.running && !runController.isStarting && !runController.isStopping
->>>>>>> feat/en-server
+                                    enabled: !root.ctrl_busy
                                     onClicked: {
                                         if (modelData.id === "auto_live") {
                                             root.autoLiveDialog.open()

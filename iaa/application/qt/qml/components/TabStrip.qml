@@ -97,7 +97,7 @@ Item {
                     Label {
                         id: overviewLabel
                         Layout.fillWidth: true
-                        text: "总览"
+                        text: App.Globals.t("nav.overview")
                         elide: Text.ElideRight
                         font.pixelSize: 13
                         font.weight: root.currentIndex === 0 ? Font.Medium : Font.Normal
@@ -270,7 +270,7 @@ Item {
 
                     ItemDelegate {
                         width: parent.width
-                        text: "所有配置均已打开"
+                        text: App.Globals.t("config_manager.all_open")
                         enabled: false
                         visible: addTabPopup.available.length === 0
                     }
@@ -311,7 +311,7 @@ Item {
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "配置"
+                    text: App.Globals.t("nav.config")
                     font.pixelSize: 13
                     color: App.IaaTheme.fg
                     opacity: 0.7
@@ -358,7 +358,7 @@ Item {
 
                 Text {
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "偏好"
+                    text: App.Globals.t("nav.preferences")
                     font.pixelSize: 13
                     color: App.IaaTheme.fg
                     opacity: 0.7

@@ -84,12 +84,13 @@ PageContainer {
     property bool avdEnumerationLoading: false
 
     readonly property var songNameOptions: [
-        {label: "保持不变", value: "保持不变"},
+        {label: App.Globals.t("settings.option.live.song.keep"), value: "保持不变"},
         {label: "メルト", value: "メルト"},
         {label: "独りんぼエンヴィー", value: "独りんぼエンヴィー"}
     ]
     readonly property var apMultiplierOptions: [
-        {label: "保持现状", value: "保持现状"},
+        {label: App.Globals.t("settings.option.live.ap.keep"), value: "保持现状"},
+        {label: App.Globals.t("settings.option.live.ap.maximum"), value: "maximum"},
         {label: "0", value: "0"}, {label: "1", value: "1"}, {label: "2", value: "2"},
         {label: "3", value: "3"}, {label: "4", value: "4"}, {label: "5", value: "5"},
         {label: "6", value: "6"}, {label: "7", value: "7"}, {label: "8", value: "8"},
@@ -132,7 +133,7 @@ PageContainer {
     }
     readonly property var resolutionOptionsForImpl: {
         if (root.controlImpl === "qemu_grpc") {
-            return [{value: "keep", label: "保持原始分辨率"}]
+            return [{value: "keep", label: App.Globals.t("settings.option.resolution.keep")}]
         }
         return root.resolutionOptions
     }
@@ -289,7 +290,8 @@ PageContainer {
     FormBinder { id: lcB; data: root.config.device ? root.config.device.lifecycle : null; prefix: "device.lifecycle"; errors: root.errors; onCommitted: function(key, value) { root._commit("device.lifecycle", key, value) } }
     FormBinder { id: connB; data: root.config.device ? root.config.device.connection : null; prefix: "device.connection"; errors: root.errors; onCommitted: function(key, value) { root._commit("device.connection", key, value) } }
 
-    Component.onCompleted: {
+    // 选项文本由 Python 侧按当前语言解析，语言变化后需重新拉取
+    function reloadOptions() {
         root.lifecycleOptions = JSON.parse(root.formController.lifecycleOptionsJson())
         root.connectionOptions = JSON.parse(root.formController.connectionOptionsJson())
         root.serverOptions = JSON.parse(root.formController.serverOptionsJson())
@@ -299,6 +301,10 @@ PageContainer {
         root.challengeCharacters = JSON.parse(root.formController.challengeCharactersJson())
         root.challengeAwards = JSON.parse(root.formController.challengeAwardsJson())
         root.eventShopItems = JSON.parse(root.formController.eventShopItemsJson())
+    }
+
+    Component.onCompleted: {
+        root.reloadOptions()
         root.refreshValidation()
     }
 
@@ -329,6 +335,16 @@ PageContainer {
         }
     }
 
+    // 语言切换后重新拉取 Python 侧下发的选项文本与实例列表占位项
+    Connections {
+        target: App.Globals
+        function onLanguageChanged() {
+            root.reloadOptions()
+            if (root.isMumu) root.refreshMumuInstances()
+            else if (root.lcType === "avd") root.refreshAvdInstances()
+        }
+    }
+
     ScrollView {
         id: scrollView
         anchors.fill: parent
@@ -342,35 +358,35 @@ PageContainer {
 
             // ── 游戏设置 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "游戏设置"
+                title: App.Globals.t("settings.group.game")
                 FormSegmentedButton {
-                    label: "服务器"
+                    label: App.Globals.t("settings.field.game.server")
                     binder: formB
                     field: "game.server"
                     options: root.serverOptions
-                    help: "广告：现招募维护者维护除日服以外的服务器适配~ 如果你有兴趣参与维护，请联系作者。<hr>维护者：<ul><li>日服：作者本人</li><li>台服：空缺</li><li>国服：空缺</li><li>国际服：空缺</li><li>韩服：空缺</li></ul>"
+                    help: App.Globals.t("settings.help.server")
                 }
                 FormSegmentedButton {
-                    label: "引继账号"
+                    label: App.Globals.t("settings.field.game.link_account")
                     binder: formB
                     field: "game.link_account"
                     options: root.linkOptions
                     visible: root.config.game && root.config.game.server === "jp"
-                    help: "每次启动游戏的时候是否使用引继账号登录（仅限日服）"
+                    help: App.Globals.t("settings.help.link_account")
                 }
             }
 
             // ── 设备设置 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "设备设置"
+                title: App.Globals.t("settings.group.device")
                 FormSegmentedButton {
-                    label: "设备类型"
+                    label: App.Globals.t("settings.field.device.lifecycle_type")
                     options: root.lifecycleOptions
                     value: root.lcType
                     onUserSelected: function(v) { root.setLifecycleType(v) }
                 }
                 FormInstancePicker {
-                    label: "多开实例"
+                    label: App.Globals.t("settings.field.device.mumu_instance")
                     binder: lcB
                     field: "instance_id"
                     visible: root.isMumu
@@ -379,23 +395,23 @@ PageContainer {
                     onRefreshTriggered: root.refreshMumuInstances()
                 }
                 FormTextField {
-                    label: "SDK 路径"
+                    label: App.Globals.t("settings.field.device.sdk_path")
                     binder: lcB
                     field: "sdk_path"
                     visible: root.lcType === "avd"
-                    placeholder: "留空自动查找"
-                    help: "Android SDK 路径。自动查找顺序：<ol><li>环境变量 <code>ANDROID_HOME</code> / <code>ANDROID_SDK_ROOT</code></li><li>Windows：<code>%LOCALAPPDATA%\\Android\\Sdk</code></li><li>macOS：<code>~/Library/Android/sdk</code></li><li>Linux：<code>~/Android/Sdk</code></li><li><code>PATH</code> 中的 <code>emulator</code></li></ol>填写后将只在该目录下查找，忽略以上自动查找逻辑。"
+                    placeholder: App.Globals.t("settings.placeholder.sdk_path")
+                    help: App.Globals.t("settings.help.sdk_path")
                 }
                 FormTextField {
-                    label: "额外启动参数"
+                    label: App.Globals.t("settings.field.device.extra_args")
                     binder: lcB
                     field: "extra_args"
                     visible: root.lcType === "avd"
-                    placeholder: "可选，例如 -gpu swiftshader_indirect -no-audio"
-                    help: "追加到 emulator 命令行末尾的参数，以空格分隔。"
+                    placeholder: App.Globals.t("settings.placeholder.extra_args")
+                    help: App.Globals.t("settings.help.extra_args")
                 }
                 FormInstancePicker {
-                    label: "AVD 实例"
+                    label: App.Globals.t("settings.field.device.avd_instance")
                     binder: lcB
                     field: "avd_name"
                     visible: root.lcType === "avd"
@@ -404,141 +420,141 @@ PageContainer {
                     onRefreshTriggered: root.refreshAvdInstances()
                 }
                 FormCheckBox {
-                    label: "检查并启动"
+                    label: App.Globals.t("settings.field.device.check_and_start")
                     binder: lcB
                     field: "check_and_start"
                     visible: root.hasLifecycle
                 }
                 FormCheckBox {
-                    label: "完成后关闭模拟器"
+                    label: App.Globals.t("settings.field.device.stop_on_finish")
                     binder: formB
                     field: "device.stop_on_finish"
                     visible: root.hasLifecycle && root.lcCheckAndStart
-                    help: "所有任务执行完毕后，自动停止由 iaa 本次启动的模拟器。若模拟器在启动前已在运行，则不会关闭。"
+                    help: App.Globals.t("settings.help.stop_on_finish")
                 }
                 FormTextField {
-                    label: "启动命令"
+                    label: App.Globals.t("settings.field.device.custom_start_command")
                     binder: lcB
                     field: "start_command"
                     visible: root.lcType === "custom"
-                    help: "将会通过 shell 方式执行。因此编写时请注意转义等问题。<br>下面两个命令也是一样的。"
+                    help: App.Globals.t("settings.help.custom_start_command")
                 }
                 FormCheckBox {
-                    label: "等待启动命令退出后才继续"
+                    label: App.Globals.t("settings.field.device.custom_wait_start_command")
                     binder: lcB
                     field: "wait_start_command"
                     visible: root.lcType === "custom"
                 }
                 FormTextField {
-                    label: "结束命令"
+                    label: App.Globals.t("settings.field.device.custom_stop_command")
                     binder: lcB
                     field: "stop_command"
                     visible: root.lcType === "custom"
-                    placeholder: "可选。如果为空，将会自动终止启动命令中的进程"
+                    placeholder: App.Globals.t("settings.placeholder.custom_stop_command")
                 }
                 FormTextField {
-                    label: "运行检测命令"
+                    label: App.Globals.t("settings.field.device.custom_running_command")
                     binder: lcB
                     field: "running_command"
                     visible: root.lcType === "custom"
-                    placeholder: "可选。如果为空，将会使用默认的运行检测方式"
+                    placeholder: App.Globals.t("settings.placeholder.custom_running_command")
                 }
             }
 
             // ── 连接设置 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "连接设置"
+                title: App.Globals.t("settings.group.connection")
                 visible: root.showConnectionSection
                 FormSegmentedButton {
-                    label: "连接方式"
+                    label: App.Globals.t("settings.field.device.connection_type")
                     options: root.connectionOptions
                     value: root.connType
                     onUserSelected: function(v) { root.setConnectionType(v) }
                 }
                 FormTextField {
-                    label: "设备序列号"
+                    label: App.Globals.t("settings.field.device.serial")
                     binder: connB
                     field: "device_serial"
                     visible: root.connType === "usb"
-                    placeholder: "留空自动选择第一个 USB 设备"
+                    placeholder: App.Globals.t("settings.placeholder.usb_serial")
                 }
                 FormTextField {
-                    label: "ADB IP"
+                    label: App.Globals.t("settings.field.device.tcp_ip")
                     binder: connB
                     field: "ip"
                     visible: root.connType === "tcp"
                 }
                 FormTextField {
-                    label: "ADB 端口"
+                    label: App.Globals.t("settings.field.device.tcp_port")
                     binder: connB
                     field: "port"
                     visible: root.connType === "tcp"
                 }
                 FormCheckBox {
-                    label: "执行 adb connect"
+                    label: App.Globals.t("settings.field.device.tcp_run_adb_connect")
                     binder: connB
                     field: "run_adb_connect"
                     visible: root.connType === "tcp"
-                    help: "如果需要通过「IP:端口」的形式连接设备，需要勾选。"
+                    help: App.Globals.t("settings.help.tcp_run_adb_connect")
                 }
                 FormTextField {
-                    label: "设备序列号"
+                    label: App.Globals.t("settings.field.device.serial")
                     binder: connB
                     field: "device_serial"
                     visible: root.connType === "tcp"
-                    placeholder: "留空则默认使用 IP:端口 作为序列号"
+                    placeholder: App.Globals.t("settings.placeholder.tcp_device_serial")
                 }
             }
 
             // ── 控制方式 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "控制方式"
+                title: App.Globals.t("settings.group.control")
                 visible: root.lcType !== "playcover"
                 FormSegmentedButton {
-                    label: "控制方式"
+                    label: App.Globals.t("settings.field.device.control_impl")
                     binder: formB
                     field: "device.control_impl"
                     options: root.controlImplOptionsForLc
-                    help: "对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式；对于 AVD，推荐使用 <b>QEMU gRPC</b>（直接读取模拟器帧缓冲，速度最快）或 <b>ADB</b>；对于其他模拟器与物理机，推荐使用 <b>Scrcpy</b> 方式"
+                    help: App.Globals.t("settings.help.control_impl")
                 }
                 FormNotice {
                     style: "tip"
-                    content: "MuMu 模拟器选择 NemuIPC 效果最佳"
+                    content: App.Globals.t("settings.notice.nemu_ipc_tip")
                     visible: root.isMumu && root.controlImpl !== "nemu_ipc"
                 }
                 FormCheckBox {
-                    label: "使用虚拟显示器"
+                    label: App.Globals.t("settings.field.device.scrcpy_virtual_display")
                     binder: formB
                     field: "device.scrcpy_virtual_display"
                     visible: root.controlImpl === "scrcpy"
                 }
                 FormResolutionSelect {
-                    label: "分辨率设置"
+                    label: App.Globals.t("settings.field.device.resolution_method")
                     binder: formB
                     field: "device.resolution_method"
                     options: root.resolutionOptionsForImpl
                     enabled: root.controlImpl !== "qemu_grpc"
                     resetEnabled: root.controlImpl !== "qemu_grpc"
                     onResetRequested: root.formController.resetResolution()
-                    help: "<b>保持原始分辨率</b>：不做任何修改。<br><b>强制修改分辨率</b>：对所有设备执行 <code>wm size</code>。"
+                    help: App.Globals.t("settings.help.resolution_method")
                 }
                 FormNotice {
                     style: "warning"
-                    content: "警告！<b>强制修改分辨率可能导致设备无法正常使用且无法恢复！</b>务必阅读<a href=\"https://p.kdocs.cn/s/AGBH56RBAAAFS?linkname=WKAL5qgRTi\">此处</a>说明后才使用该功能。"
+                    content: App.Globals.t("settings.notice.resolution_wm_size_warning")
                     visible: root.controlImpl !== "qemu_grpc" && root.formController.config?.device?.resolution_method === "wm_size"
                 }
                 FormNotice {
                     style: "tip"
-                    content: "使用 QEMU gRPC 控制方式时，请在 Android Studio AVD Manager 中预先将分辨率配置为 1280x720。"
+                    content: App.Globals.t("settings.notice.qemu_grpc_resolution_tip")
                     visible: root.lcType === "avd" && root.controlImpl === "qemu_grpc"
                 }
             }
 
             // ── 演出设置 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "演出设置"
+                title: App.Globals.t("settings.group.live")
                 FormComboBox {
-                    label: "歌曲名称"
+                    label: App.Globals.t("settings.field.live.song_name")
                     options: root.songNameOptions
                     value: (root.config.tasks && root.config.tasks.solo_live) ? (root.config.tasks.solo_live.song_name || "保持不变") : "保持不变"
                     onUserSelected: function(v) {
@@ -546,27 +562,27 @@ PageContainer {
                     }
                 }
                 FormComboBox {
-                    label: "AP 倍率"
+                    label: App.Globals.t("settings.field.live.ap_multiplier")
                     options: root.apMultiplierOptions
                     value: (root.config.tasks && root.config.tasks.solo_live && root.config.tasks.solo_live.ap_multiplier !== null && root.config.tasks.solo_live.ap_multiplier !== undefined)
                         ? String(root.config.tasks.solo_live.ap_multiplier)
                         : "保持现状"
                     onUserSelected: function(v) {
-                        root.formController.setField("tasks.solo_live.ap_multiplier", v === "保持现状" ? null : parseInt(v, 10))
+                        root.formController.setField("tasks.solo_live.ap_multiplier", v === "保持现状" ? null : (v === "maximum" ? "maximum" : parseInt(v, 10)))
                     }
                 }
                 FormCheckBox {
-                    label: "自动编队"
+                    label: App.Globals.t("settings.field.live.auto_set_unit")
                     binder: formB
                     field: "tasks.solo_live.auto_set_unit"
                 }
                 FormCheckBox {
-                    label: "追加一次 FullCombo 演出"
+                    label: App.Globals.t("settings.field.live.append_fc")
                     binder: formB
                     field: "tasks.solo_live.append_fc"
                 }
                 FormCheckBox {
-                    label: "追加一首随机歌曲"
+                    label: App.Globals.t("settings.field.live.append_random")
                     binder: formB
                     field: "tasks.solo_live.prepend_random"
                 }
@@ -574,9 +590,9 @@ PageContainer {
 
             // ── 挑战演出设置 ────────────────────────────────────────────
             FormGroupBox {
-                title: "挑战演出设置"
+                title: App.Globals.t("settings.group.challenge_live")
                 FormIconItemPicker {
-                    label: "角色"
+                    label: App.Globals.t("settings.field.challenge.characters")
                     binder: formB
                     field: "tasks.challenge_live.characters"
                     options: root.challengeCharacters
@@ -585,7 +601,7 @@ PageContainer {
                     iconSize: 70
                 }
                 FormIconItemPicker {
-                    label: "奖励"
+                    label: App.Globals.t("settings.field.challenge.award")
                     binder: formB
                     field: "tasks.challenge_live.award"
                     options: root.challengeAwards
@@ -596,9 +612,9 @@ PageContainer {
 
             // ── CM 设置 ─────────────────────────────────────────────────
             FormGroupBox {
-                title: "CM 设置"
+                title: App.Globals.t("settings.group.cm")
                 FormTextField {
-                    label: "广告等待秒数"
+                    label: App.Globals.t("settings.field.cm.watch_ad_wait_sec")
                     binder: formB
                     field: "tasks.cm.watch_ad_wait_sec"
                 }
@@ -606,9 +622,9 @@ PageContainer {
 
             // ── 活动商店设置 ────────────────────────────────────────────
             FormGroupBox {
-                title: "活动商店设置"
+                title: App.Globals.t("settings.group.event_shop")
                 FormSortableChecklist {
-                    label: "购买项"
+                    label: App.Globals.t("settings.field.event_shop.purchase_items")
                     binder: formB
                     field: "tasks.event_shop.purchase_items"
                     options: root.eventShopItems
@@ -618,9 +634,9 @@ PageContainer {
 
             // ── 调度设置 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "调度设置"
+                title: App.Globals.t("settings.group.scheduler")
                 FormCheckBox {
-                    label: "错误时继续执行后续任务"
+                    label: App.Globals.t("settings.field.scheduler.continue_on_error")
                     binder: formB
                     field: "scheduler.continue_on_error"
                 }
@@ -628,22 +644,22 @@ PageContainer {
 
             // ── 开发者设置 ──────────────────────────────────────────────
             FormGroupBox {
-                title: "开发者设置（仅供开发使用！）"
+                title: App.Globals.t("settings.group.developer")
                 FormCheckBox {
-                    label: "dump 烤森"
+                    label: App.Globals.t("settings.field.developer.dump_sekai_home")
                     binder: formB
                     field: "developer.dump_sekai_home_enabled"
                 }
                 FormCheckBox {
-                    label: "dump 烤森 - 后处理与预打标"
+                    label: App.Globals.t("settings.field.developer.sekai_dump_post_process")
                     binder: formB
                     field: "developer.sekai_dump_post_process"
                 }
                 FormCheckBox {
-                    label: "自动录屏（需安装 ffmpeg）"
+                    label: App.Globals.t("settings.field.developer.screen_recording")
                     binder: formB
                     field: "developer.screen_recording_enabled"
-                    help: "脚本启动时自动录屏，结束时自动结束。输出到 dumps/screen_records/ 目录。"
+                    help: App.Globals.t("settings.help.screen_recording")
                 }
             }
         }

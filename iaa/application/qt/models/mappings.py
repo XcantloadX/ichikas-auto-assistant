@@ -7,25 +7,17 @@ from iaa.definitions.enums import (
     ChallengeLiveAward,
     GameCharacter,
     LinkAccountOptions,
+    ShopItem,
 )
 from iaa.definitions.consts import ServerName
 
-<<<<<<< HEAD
-LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, str] = {
-    'mumu_v5': 'MuMu 12 (v5)',
-    'mumu': 'MuMu 12 (v4)',
-    'avd': 'AVD',
-    'custom': '自定义模拟器',
-    'none': '物理机 / 手动管理',
-    'playcover': 'PlayCover',
-=======
 LIFECYCLE_TYPE_DISPLAY_MAP: dict[str, TStr] = {
     'mumu_v5': TStr(zh_CN='MuMu 12 (v5)', en_US='MuMu 12 (v5)'),
     'mumu': TStr(zh_CN='MuMu 12 (v4)', en_US='MuMu 12 (v4)'),
+    'avd': TStr(zh_CN='AVD', en_US='AVD'),
     'custom': tstr('settings.option.lifecycle.custom'),
     'none': tstr('settings.option.lifecycle.none'),
     'playcover': TStr(zh_CN='PlayCover', en_US='PlayCover'),
->>>>>>> feat/en-server
 }
 
 CONNECTION_TYPE_DISPLAY_MAP: dict[str, TStr] = {
@@ -33,39 +25,6 @@ CONNECTION_TYPE_DISPLAY_MAP: dict[str, TStr] = {
     'tcp': tstr('settings.option.connection.tcp'),
 }
 
-<<<<<<< HEAD
-SERVER_DISPLAY_MAP: dict[Literal['jp', 'tw', 'cn'], str] = {
-    'jp': '日服',
-    'tw': '台服',
-    'cn': '国服',
-}
-SERVER_VALUE_MAP: dict[str, Literal['jp', 'tw', 'cn']] = {value: key for key, value in SERVER_DISPLAY_MAP.items()}
-
-LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
-    'no': '不引继账号',
-    'google': 'Google 账号',
-    'google_play': 'Google Play',
-}
-LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {value: key for key, value in LINK_DISPLAY_MAP.items()}
-
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'], str] = {
-    'nemu_ipc': 'Nemu IPC',
-    'adb': 'ADB',
-    'uiautomator': 'UIAutomator2',
-    'scrcpy': 'Scrcpy',
-    'qemu_grpc': 'QEMU gRPC',
-}
-CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc']] = {
-    value: key for key, value in CONTROL_IMPL_DISPLAY_MAP.items()
-}
-
-RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['keep', 'wm_size'], str] = {
-    'keep': '保持原始分辨率',
-    'wm_size': '强制修改分辨率',
-}
-RESOLUTION_METHOD_VALUE_MAP: dict[str, Literal['keep', 'wm_size']] = {
-    value: key for key, value in RESOLUTION_METHOD_DISPLAY_MAP.items()
-=======
 SERVER_DISPLAY_MAP: dict[ServerName, TStr] = {
     'jp': tstr('settings.option.server.jp'),
     'tw': tstr('settings.option.server.tw'),
@@ -79,18 +38,17 @@ LINK_DISPLAY_MAP: dict[LinkAccountOptions, TStr] = {
     'google_play': TStr(zh_CN='Google Play', en_US='Google Play'),
 }
 
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy'], TStr] = {
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'], TStr] = {
     'nemu_ipc': TStr(zh_CN='Nemu IPC', en_US='Nemu IPC'),
     'adb': TStr(zh_CN='ADB', en_US='ADB'),
     'uiautomator': TStr(zh_CN='UIAutomator2', en_US='UIAutomator2'),
     'scrcpy': TStr(zh_CN='Scrcpy', en_US='Scrcpy'),
+    'qemu_grpc': TStr(zh_CN='QEMU gRPC', en_US='QEMU gRPC'),
 }
 
-RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['auto', 'keep', 'wm_size'], TStr] = {
-    'auto': tstr('settings.option.resolution.auto'),
+RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['keep', 'wm_size'], TStr] = {
     'keep': tstr('settings.option.resolution.keep'),
     'wm_size': tstr('settings.option.resolution.wm_size'),
->>>>>>> feat/en-server
 }
 
 DEFAULT_MUMU_INSTANCE_LABEL = '默认'
@@ -205,4 +163,41 @@ def challenge_awards_for_ui() -> list[dict[str, Any]]:
             'image': _CHALLENGE_AWARD_IMAGES.get(award, ''),
         }
         for award in ChallengeLiveAward
+    ]
+
+
+# 商店道具的 UI 显示名（英文译名）。zh 侧直接复用 ShopItem 的简中名（item.cn），
+# 枚举里的 jp/cn/tw 是游戏内名称（供 OCR 匹配），与界面显示语言无关。
+_SHOP_ITEM_LABELS_EN: dict[str, str] = {
+    '2star_event_card': '★2 Member Card',
+    '3star_event_card': '★3 Member Card',
+    'cover_card_voucher': 'Vocal Card Exchange Ticket',
+    'crystal': 'Crystals',
+    'wish_piece': 'Wish Fragments',
+    'bonus_energy_drink_s': 'Live Bonus Drink (S)',
+    'stamp_voucher': 'Stamp Exchange Ticket',
+    'practice_score_intermediate': 'Practice Score (Intermediate)',
+    'music_card': 'Music Card',
+    'miracle_gem': 'Miracle Gem',
+    'magic_cloth': 'Magic Cloth',
+    'magic_thread': 'Magic Thread',
+    'magical_seed': 'Magical Seed',
+    'wish_drop': 'Wish Drops',
+    'skill_up_score_intermediate': 'Skill Up Score (Intermediate)',
+    'coin_100000': 'Coins ×100000',
+    'coin_1': 'Coins ×1',
+}
+
+
+def shop_items_for_ui() -> list[dict[str, Any]]:
+    """商店道具选项，label 为跟随界面语言的 TStr。"""
+    return [
+        {
+            'value': item.value,
+            'label': TStr(
+                zh_CN=item.cn,
+                en_US=_SHOP_ITEM_LABELS_EN.get(item.value, item.value),
+            ),
+        }
+        for item in ShopItem
     ]

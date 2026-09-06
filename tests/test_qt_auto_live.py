@@ -1,11 +1,7 @@
 import unittest
 
-<<<<<<< HEAD
-from iaa.tasks.live.live import auto_live_payload_to_plan
-=======
-from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED, SONG_KEEP_UNCHANGED
 from iaa.application.qt.models.auto_live import auto_live_payload_to_plan
->>>>>>> feat/en-server
+from iaa.tasks.live.auto_live_constants import AP_KEEP_UNCHANGED, SONG_KEEP_UNCHANGED
 from iaa.tasks.live.live import ListLoopPlan, SingleLoopPlan
 
 
@@ -64,6 +60,63 @@ class AutoLivePayloadTests(unittest.TestCase):
         )
         self.assertIsInstance(plan, ListLoopPlan)
         self.assertEqual(plan.ap_multiplier, 'maximum')
+
+    def test_ap_keep_payloads_become_none(self) -> None:
+        for raw in (AP_KEEP_UNCHANGED, '保持现状', '', None):
+            with self.subTest(raw=raw):
+                plan = auto_live_payload_to_plan(
+                    {
+                        'countMode': 'all',
+                        'count': '',
+                        'loopMode': 'list',
+                        'playMode': 'game_auto',
+                        'apMultiplier': raw,
+                    }
+                )
+                self.assertIsNone(plan.ap_multiplier)
+
+    def test_numeric_ap_multiplier_payload_becomes_int(self) -> None:
+        for raw, expected in (('0', 0), ('10', 10)):
+            with self.subTest(raw=raw):
+                plan = auto_live_payload_to_plan(
+                    {
+                        'countMode': 'all',
+                        'count': '',
+                        'loopMode': 'list',
+                        'playMode': 'game_auto',
+                        'apMultiplier': raw,
+                    }
+                )
+                self.assertEqual(plan.ap_multiplier, expected)
+
+    def test_out_of_range_ap_multiplier_raises(self) -> None:
+        with self.assertRaises(ValueError):
+            auto_live_payload_to_plan(
+                {
+                    'countMode': 'all',
+                    'count': '',
+                    'loopMode': 'list',
+                    'playMode': 'game_auto',
+                    'apMultiplier': '11',
+                }
+            )
+
+    def test_song_name_sentinel_and_legacy_keep_become_none(self) -> None:
+        for raw in (SONG_KEEP_UNCHANGED, '保持不变', ''):
+            with self.subTest(raw=raw):
+                plan = auto_live_payload_to_plan(
+                    {
+                        'countMode': 'all',
+                        'count': '',
+                        'loopMode': 'single',
+                        'playMode': 'game_auto',
+                        'songName': raw,
+                    }
+                )
+                self.assertIsInstance(plan, SingleLoopPlan)
+                assert isinstance(plan, SingleLoopPlan)
+                self.assertIsNone(plan.song_name)
+                self.assertEqual(plan.song_select_mode, 'current')
 
     def test_invalid_count_raises(self) -> None:
         with self.assertRaises(ValueError):

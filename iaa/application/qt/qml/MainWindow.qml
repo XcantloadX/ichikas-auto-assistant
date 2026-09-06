@@ -74,30 +74,7 @@ ApplicationWindow {
     }
 
     function requestTelemetryConsent() {
-<<<<<<< HEAD
         telemetryConsentDialog.open()
-=======
-        App.Modal.message({
-            title: App.Globals.t("modal.telemetry.title"),
-            content: App.Globals.t("modal.telemetry.content"),
-            buttons: [
-                { text: App.Globals.t("modal.telemetry.deny"), value: "deny" },
-                { text: App.Globals.t("modal.telemetry.allow"), value: "allow", highlighted: true }
-            ],
-            width: 420,
-            closePolicy: Popup.NoAutoClose
-        }, function(result) {
-            if (!window.appCtrl) {
-                return
-            }
-            if (result === "allow") {
-                window.appCtrl.setTelemetryConsent(true)
-            }
-            if (result === "deny") {
-                window.appCtrl.setTelemetryConsent(false)
-            }
-        })
->>>>>>> feat/en-server
     }
 
     function showMigrationMessage(text) {
@@ -149,7 +126,6 @@ ApplicationWindow {
         anchors.fill: parent
         spacing: 0
 
-<<<<<<< HEAD
         TitleBar {
             id: titleBar
             Layout.fillWidth: true
@@ -159,36 +135,6 @@ ApplicationWindow {
             onBackRequested: window.exitPrefsMode()
             onMinimizeRequested: window.showMinimized()
             onCloseRequested: window.requestAppClose()
-=======
-        SideNavigationBar {
-            id: sideNav
-            Layout.fillHeight: true
-            model: [
-                App.Globals.t("nav.control"),
-                App.Globals.t("nav.config"),
-                App.Globals.t("nav.preferences"),
-                App.Globals.t("nav.logs"),
-                // App.Globals.t("nav.help"),
-                App.Globals.t("nav.about")
-            ]
-            currentConfig: App.ProfileStore.currentProfileName
-
-            onCurrentChanging: function(index, previousIndex) {
-                navigation.requestGuardedAction(App.Globals.t("guard.switch_page"), function() {
-                    sideNav.confirmSwitch(index)
-                })
-            }
-
-            onProfileSwitchRequested: function(name) {
-                navigation.requestGuardedAction(App.Globals.t("guard.switch_config"), function() {
-                    window.settingsCtrl.switchProfile(name)
-                })
-            }
-
-            onOpenConfigManager: {
-                configManagerDialog.open()
-            }
->>>>>>> feat/en-server
         }
 
         StackLayout {
@@ -233,25 +179,6 @@ ApplicationWindow {
                     prefsController: window.prefsCtrl
                 }
             }
-<<<<<<< HEAD
-=======
-
-            PreferencesPage {
-                id: preferencesPage
-                prefsController: window.prefsCtrl
-            }
-
-            LogPage {
-                id: logPage
-                logBridge: window.logBridgeObj
-            }
-
-            // HelpPage {
-            //     id: helpPage
-            // }
-
-            AboutPage {}
->>>>>>> feat/en-server
         }
     }
 
@@ -336,13 +263,13 @@ ApplicationWindow {
                 content: message,
                 buttons: [
                     {
-                        text: "复制",
+                        text: App.Globals.t("common.copy"),
                         onClick: function() {
                             App.Clipboard.copyText(message)
-                            App.Notice.show("success", "已复制到剪贴板")
+                            App.Notice.show("success", App.Globals.t("notice.copied_to_clipboard"))
                         }
                     },
-                    { text: "确定", highlighted: true, onClick: "close" }
+                    { text: App.Globals.t("common.ok"), highlighted: true, onClick: "close" }
                 ]
             })
         }
@@ -357,14 +284,14 @@ ApplicationWindow {
         var fields = JSON.parse(invalidFieldsJson)
         var fieldList = fields.map(function(f) { return "&nbsp;&nbsp;• " + f }).join("<br>")
         App.Modal.message({
-            title: "配置校验失败",
-            content: "配置 <b>" + configName + "</b> 中以下字段校验失败：<br>"
-                + fieldList
-                + "<br><br>错误详情：<br>" + errorDetails
-                + "<br><br>是否将这些字段重置为默认值？",
+            title: App.Globals.t("modal.config_reset.title"),
+            content: App.Globals.t("modal.config_reset.content")
+                .replace("{name}", configName)
+                .replace("{fields}", fieldList)
+                .replace("{details}", errorDetails),
             buttons: [
-                { text: "不重置", value: "cancel" },
-                { text: "重置", value: "reset", highlighted: true }
+                { text: App.Globals.t("modal.config_reset.no_reset"), value: "cancel" },
+                { text: App.Globals.t("modal.config_reset.reset"), value: "reset", highlighted: true }
             ],
             width: 480
         }, function(result) {
@@ -377,7 +304,7 @@ ApplicationWindow {
     // ── 匿名上报首次同意弹窗（启动时询问） ──────────────────────
     Dialog {
         id: telemetryConsentDialog
-        title: "数据收集"
+        title: App.Globals.t("preferences.group.telemetry")
         modal: true
         closePolicy: Popup.NoAutoClose
         anchors.centerIn: parent
@@ -388,7 +315,7 @@ ApplicationWindow {
             width: parent.width
             spacing: 10
             Text {
-                text: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa，你也可以随时在“设置”中更改。"
+                text: App.Globals.t("modal.telemetry.content")
                 font.pixelSize: 13
                 color: palette.windowText
                 wrapMode: Text.Wrap
@@ -398,13 +325,13 @@ ApplicationWindow {
 
             Switch {
                 id: staticsSwitch
-                text: "匿名收集统计数据"
+                text: App.Globals.t("preferences.field.telemetry_statics")
                 checked: true
             }
 
             Switch {
                 id: sentrySwitch
-                text: "发送匿名错误报告"
+                text: App.Globals.t("preferences.field.telemetry_sentry")
                 checked: true
             }
 
@@ -414,12 +341,12 @@ ApplicationWindow {
 
                 Switch {
                     id: screenshotSwitch
-                    text: "错误上报时附带游戏截图"
+                    text: App.Globals.t("preferences.field.telemetry_upload_screenshot")
                     checked: true
                 }
 
                 HelpTip {
-                    richText: "只包含游戏画面截图，不含电脑桌面或其他应用内容。<br>如果不希望发送截图，请关闭此选项。"
+                    richText: App.Globals.t("modal.telemetry.screenshot_help")
                     Layout.alignment: Qt.AlignVCenter
                 }
             }
@@ -439,7 +366,7 @@ ApplicationWindow {
                 anchors.rightMargin: 24
                 spacing: 8
                 Button {
-                    text: "确定"
+                    text: App.Globals.t("common.ok")
                     highlighted: true
                     onClicked: {
                         if (window.appCtrl) {
@@ -483,10 +410,10 @@ ApplicationWindow {
             var hasPathIssue = window.appCtrl.checkPathIssues()
             if (hasPathIssue) {
                 App.Modal.message({
-                    title: "提示",
-                    content: "请勿将 iaa 放在 Program Files 程序文件夹下，以及 OneDrive 等云盘同步文件夹内，否则部分功能可能出现异常！",
+                    title: App.Globals.t("modal.path_warning.title"),
+                    content: App.Globals.t("modal.path_warning.content"),
                     buttons: [
-                        { text: "确定", value: "ok", highlighted: true }
+                        { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
                     ],
                     width: 520
                 })

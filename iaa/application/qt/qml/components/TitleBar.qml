@@ -111,7 +111,7 @@ Item {
                 id: pageHeader
                 anchors.fill: parent
                 visible: root.prefsMode
-                title: "一歌小助手"
+                title: App.Globals.t("app.name")
                 iconSource: App.Globals.assetPath("ichika_chibi.png")
                 onBackRequested: root.backRequested()
             }
@@ -132,7 +132,7 @@ Item {
     Dialog {
         id: tabCloseUnsavedDialog
         modal: true
-        title: "未保存更改"
+        title: App.Globals.t("modal.unsaved.title")
         standardButtons: Dialog.NoButton
         width: 420
         anchors.centerIn: Overlay.overlay
@@ -142,20 +142,20 @@ Item {
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "该配置有未保存的更改，关闭 Tab 前请选择处理方式。"
+                text: App.Globals.t("modal.close_tab_unsaved.content")
             }
             RowLayout {
                 Layout.alignment: Qt.AlignRight
                 spacing: 8
                 Button {
-                    text: "取消"
+                    text: App.Globals.t("common.cancel")
                     onClicked: {
                         tabCloseUnsavedDialog.close()
                         root.pendingCloseIndex = -1
                     }
                 }
                 Button {
-                    text: "不保存并关闭"
+                    text: App.Globals.t("modal.close_tab_unsaved.discard")
                     onClicked: {
                         var idx = root.pendingCloseIndex
                         tabCloseUnsavedDialog.close()
@@ -168,7 +168,7 @@ Item {
                     }
                 }
                 Button {
-                    text: "保存并关闭"
+                    text: App.Globals.t("modal.close_tab_unsaved.save")
                     highlighted: true
                     onClicked: {
                         var idx = root.pendingCloseIndex

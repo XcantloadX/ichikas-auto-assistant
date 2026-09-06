@@ -186,15 +186,11 @@ def clear_common_cm():
         logger.debug('Ad skipped.')
 
     state: int = 1 # 1=开始看，2=载入，3=正在看，4=等结果
-<<<<<<< HEAD
     wait_sec = get_conf().tasks.cm.watch_ad_wait_sec
-=======
-    wait_sec = get_conf().cm.watch_ad_wait_sec
     max_provider_exit_attempts = 3
     max_provider_exit_misses = 8
     provider_exit_attempts = 0
     provider_exit_misses = 0
->>>>>>> feat/en-server
     for _ in Loop(interval=0.6):
         if state == 1:
             if current_server == 'en':
@@ -339,11 +335,7 @@ def clear_common_cm():
                 logger.info('Close button clicked. (Applovin/GP ad?)')
                 sleep(1)
                 state = 1
-<<<<<<< HEAD
-            elif R.Cm.Ad1.ButtonSkip.q(threshold=0.6).try_click():
-=======
             elif current_server != 'en' and R.Cm.Ad1.ButtonSkip.q(threshold=0.7).try_click():
->>>>>>> feat/en-server
                 logger.info('Skip button clicked. (Applovin/GP ad?)')
                 sleep(1)
             # GooglePlay App 广告特判：

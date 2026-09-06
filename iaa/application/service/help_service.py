@@ -1,26 +1,13 @@
 import os
 import re
 from pathlib import Path
-<<<<<<< HEAD
+
+from iaa.i18n import _detect_system_language
 
 
 class HelpService:
     def __init__(self):
-        self._topics: list[dict] | None = None
-=======
-from typing import TYPE_CHECKING
-
-from iaa.i18n import _detect_system_language
-
-if TYPE_CHECKING:
-    from .iaa_service import IaaService
-
-
-class HelpService:
-    def __init__(self, iaa_service: 'IaaService'):
-        self._iaa = iaa_service
         self._topics_cache: dict[str, list[dict]] = {}
->>>>>>> feat/en-server
 
     @property
     def help_dir(self) -> str:

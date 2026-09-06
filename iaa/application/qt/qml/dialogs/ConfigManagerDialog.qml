@@ -50,14 +50,8 @@ Dialog {
                 onClicked: {
                     var name = newConfigName.text.trim()
                     if (name.length > 0) {
-<<<<<<< HEAD
                         let doCreate = function () { root.tabManager.createProfile(name); }
-                        root.navigation.requestGuardedAction("切换到新配置", doCreate)
-=======
-                        root.navigation.requestGuardedAction(App.Globals.t("guard.switch_new_config"), function() {
-                            root.settingsCtrl.createProfile(name)
-                        })
->>>>>>> feat/en-server
+                        root.navigation.requestGuardedAction(App.Globals.t("guard.switch_new_config"), doCreate)
                         newConfigName.text = ""
                     }
                 }
@@ -210,17 +204,10 @@ Dialog {
                             deleteConfirmDialog.close()
                             return
                         }
-<<<<<<< HEAD
                         // 如果该配置的 tab 正在运行，拒绝删除
                         if (!root.tabManager.closeTabForConfig(name)) {
                             deleteConfirmDialog.close()
                             return
-=======
-                        if (isCurrent) {
-                            root.navigation.requestGuardedAction(App.Globals.t("guard.delete_current_config"), runner)
-                        } else {
-                            runner()
->>>>>>> feat/en-server
                         }
                         root.settingsCtrl.deleteProfile(name)
                         deleteConfirmDialog.close()

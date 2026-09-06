@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import "../../controls"
+import "../../" as App
 import "../"
 import "formUtils.js" as F
 
@@ -76,7 +77,7 @@ ColumnLayout {
             }
 
             Button {
-                text: "恢复分辨率"
+                text: App.Globals.t("settings.action.reset_resolution")
                 enabled: root.resetEnabled && root.enabled
                 onClicked: root.resetRequested()
             }

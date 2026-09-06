@@ -5,11 +5,7 @@ from typing import Callable
 from PySide6.QtCore import QObject, Property, Signal
 
 from iaa.context import hub as progress_hub
-<<<<<<< HEAD
-from iaa.progress import ProgressHub, TaskProgressEvent
-=======
-from iaa.progress import TaskProgressEvent, Translatable
->>>>>>> feat/en-server
+from iaa.progress import ProgressHub, TaskProgressEvent, Translatable
 
 from ..models import ProgressState, progress_event_to_state
 
@@ -17,11 +13,12 @@ from ..models import ProgressState, progress_event_to_state
 class ProgressBridge(QObject):
     changed = Signal()
 
-<<<<<<< HEAD
-    def __init__(self, parent: QObject | None = None, hub: ProgressHub | None = None) -> None:
-=======
-    def __init__(self, get_language: Callable[[], str], parent: QObject | None = None) -> None:
->>>>>>> feat/en-server
+    def __init__(
+        self,
+        get_language: Callable[[], str],
+        parent: QObject | None = None,
+        hub: ProgressHub | None = None,
+    ) -> None:
         super().__init__(parent)
         self._get_language = get_language
         self._state = ProgressState()

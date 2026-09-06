@@ -42,11 +42,7 @@ PageContainer {
             Layout.alignment: Qt.AlignHCenter
         }
         Label {
-<<<<<<< HEAD
-            text: "版本 v" + AppController.version
-=======
-            text: App.Globals.t("about.version").replace("{version}", appController.version)
->>>>>>> feat/en-server
+            text: App.Globals.t("about.version").replace("{version}", AppController.version)
             Layout.alignment: Qt.AlignHCenter
         }
 

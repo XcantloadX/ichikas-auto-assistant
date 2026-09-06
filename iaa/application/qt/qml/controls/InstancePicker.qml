@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 
 // 选择器 + 加载指示器 + 刷新按钮（裸控件版本，不带 label/binding 封装）。
 // loading 时显示占位项、禁用交互、刷新按钮文案切换。需要 label/binding 请使用 FormInstancePicker。
@@ -21,7 +22,7 @@ RowLayout {
         id: comboBox
         Layout.fillWidth: true
         enabled: root.enabled && !root.loading
-        model: root.loading ? [{label: "载入中...", value: ""}] : (root.options || [])
+        model: root.loading ? [{label: App.Globals.t("common.loading"), value: ""}] : (root.options || [])
         textRole: "label"
         valueRole: "value"
         currentIndex: root.loading ? 0 : root.currentIndex
@@ -36,7 +37,7 @@ RowLayout {
     }
 
     Button {
-        text: root.loading ? "获取中..." : "刷新"
+        text: root.loading ? App.Globals.t("settings.action.loading") : App.Globals.t("settings.action.refresh")
         enabled: root.enabled && !root.loading
         onClicked: root.refreshTriggered()
     }

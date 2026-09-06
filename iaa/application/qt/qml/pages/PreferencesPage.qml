@@ -11,11 +11,7 @@ import "../components/form"
 // 偏好页：QML 直写表单（kaa 风格）。编辑 shared 配置草稿。
 PageContainer {
     id: root
-<<<<<<< HEAD
-    title: "偏好"
-=======
     title: App.Globals.t("nav.preferences")
->>>>>>> feat/en-server
 
     titleRightContent: Rectangle {
         visible: root.dirty
@@ -47,15 +43,15 @@ PageContainer {
     readonly property var config: root.prefsController.config
 
     readonly property var themeColorOptions: [
-        {value: "", label: "跟随系统"},
-        {value: "#0078d4", label: "蓝色（#0078D4）"},
-        {value: "#e81123", label: "红色（#E81123）"},
-        {value: "#107c10", label: "绿色（#107C10）"},
-        {value: "#ff8c00", label: "橙色（#FF8C00）"},
-        {value: "#5c2d91", label: "紫色（#5C2D91）"},
-        {value: "#00b7c3", label: "青色（#00B7C3）"},
-        {value: "#6b69d6", label: "靛蓝（#6B69D6）"},
-        {value: "#4a5459", label: "石墨灰（#4A5459）"}
+        {value: "", label: App.Globals.t("preferences.option.follow_system")},
+        {value: "#0078d4", label: App.Globals.t("preferences.option.theme.blue")},
+        {value: "#e81123", label: App.Globals.t("preferences.option.theme.red")},
+        {value: "#107c10", label: App.Globals.t("preferences.option.theme.green")},
+        {value: "#ff8c00", label: App.Globals.t("preferences.option.theme.orange")},
+        {value: "#5c2d91", label: App.Globals.t("preferences.option.theme.purple")},
+        {value: "#00b7c3", label: App.Globals.t("preferences.option.theme.cyan")},
+        {value: "#6b69d6", label: App.Globals.t("preferences.option.theme.indigo")},
+        {value: "#4a5459", label: App.Globals.t("preferences.option.theme.graphite")}
     ]
 
     FormBinder { id: formB; data: root.config; prefix: ""; errors: root.errors; onCommitted: function(key, value) { root._commit("", key, value) } }
@@ -108,19 +104,19 @@ PageContainer {
 
             // ── 数据收集 ────────────────────────────────────────────────
             FormGroupBox {
-                title: "数据收集"
+                title: App.Globals.t("preferences.group.telemetry")
                 FormCheckBox {
-                    label: "自动发送匿名错误报告"
+                    label: App.Globals.t("preferences.field.telemetry_sentry")
                     binder: formB
                     field: "telemetry.sentry"
                 }
                 FormCheckBox {
-                    label: "错误上报时附带截图"
+                    label: App.Globals.t("preferences.field.telemetry_upload_screenshot")
                     binder: formB
                     field: "telemetry.upload_screenshot"
                 }
                 FormCheckBox {
-                    label: "匿名收集统计数据"
+                    label: App.Globals.t("preferences.field.telemetry_statics")
                     binder: formB
                     field: "telemetry.statics"
                 }
@@ -128,40 +124,50 @@ PageContainer {
 
             // ── 界面 ────────────────────────────────────────────────────
             FormGroupBox {
-                title: "界面"
+                title: App.Globals.t("preferences.group.interface")
                 FormComboBox {
-                    label: "窗口背景样式"
+                    label: App.Globals.t("preferences.field.language")
+                    binder: formB
+                    field: "interface.language"
+                    options: [
+                        {value: "auto", label: App.Globals.t("preferences.option.auto")},
+                        {value: "zh_CN", label: App.Globals.t("preferences.language.zh_CN")},
+                        {value: "en_US", label: App.Globals.t("preferences.language.en_US")}
+                    ]
+                }
+                FormComboBox {
+                    label: App.Globals.t("preferences.field.window_style")
                     binder: formB
                     field: "interface.window_style"
                     options: [
-                        {value: "", label: "自动"},
-                        {value: "mica", label: "Mica（仅 Win 11）"},
-                        {value: "blur", label: "模糊背景"},
-                        {value: "acrylic", label: "亚克力（Win 10 1803+）"},
-                        {value: "solid", label: "纯色背景"}
+                        {value: "", label: App.Globals.t("preferences.option.auto")},
+                        {value: "mica", label: App.Globals.t("preferences.option.window_style.mica")},
+                        {value: "blur", label: App.Globals.t("preferences.option.window_style.blur")},
+                        {value: "acrylic", label: App.Globals.t("preferences.option.window_style.acrylic")},
+                        {value: "solid", label: App.Globals.t("preferences.option.window_style.solid")}
                     ]
                 }
                 FormComboBox {
-                    label: "色彩方案"
+                    label: App.Globals.t("preferences.field.color_scheme")
                     binder: formB
                     field: "interface.color_scheme"
                     options: [
-                        {value: "auto", label: "跟随系统"},
-                        {value: "light", label: "浅色"},
-                        {value: "dark", label: "深色"}
+                        {value: "auto", label: App.Globals.t("preferences.option.follow_system")},
+                        {value: "light", label: App.Globals.t("preferences.option.color_scheme.light")},
+                        {value: "dark", label: App.Globals.t("preferences.option.color_scheme.dark")}
                     ]
                 }
                 FormComboBox {
-                    label: "启动时打开"
+                    label: App.Globals.t("preferences.field.startup_page")
                     binder: formB
                     field: "interface.startup_page"
                     options: [
-                        {value: "overview", label: "总览页面"},
-                        {value: "last_opened", label: "上次打开的配置"}
+                        {value: "overview", label: App.Globals.t("preferences.option.startup_page.overview")},
+                        {value: "last_opened", label: App.Globals.t("preferences.option.startup_page.last_opened")}
                     ]
                 }
                 FormComboBox {
-                    label: "主题色"
+                    label: App.Globals.t("preferences.field.theme_color")
                     options: root.themeColorOptions
                     value: root.config.interface ? (root.config.interface.theme_color || "") : ""
                     onUserSelected: function(v) {
@@ -172,22 +178,22 @@ PageContainer {
 
             // ── 通知 ────────────────────────────────────────────────────
             FormGroupBox {
-                title: "通知"
+                title: App.Globals.t("preferences.group.notify")
                 FormCheckBox {
-                    label: "系统通知"
+                    label: App.Globals.t("preferences.field.notify_system")
                     binder: formB
                     field: "notify.system"
                 }
                 FormCheckBox {
-                    label: "推送通知"
+                    label: App.Globals.t("preferences.field.notify_push")
                     binder: formB
                     field: "notify.push.enabled"
                 }
                 FormComboBox {
-                    label: "推送类型"
+                    label: App.Globals.t("preferences.field.notify_push_type")
                     options: [
-                        {value: "custom", label: "自定义命令"},
-                        {value: "discord", label: "Discord Webhook"}
+                        {value: "custom", label: App.Globals.t("preferences.option.notify_push.custom")},
+                        {value: "discord", label: App.Globals.t("preferences.option.notify_push.discord")}
                     ]
                     value: root.config.notify && root.config.notify.push ? root.config.notify.push.data.type : "custom"
                     visible: root.config.notify && root.config.notify.push.enabled
@@ -201,8 +207,8 @@ PageContainer {
                     }
                 }
                 FormTextField {
-                    label: "自定义命令"
-                    placeholder: "任务完成后执行的命令"
+                    label: App.Globals.t("preferences.field.notify_custom_command")
+                    placeholder: App.Globals.t("preferences.placeholder.notify_custom_command")
                     value: (root.config.notify && root.config.notify.push && root.config.notify.push.data.type === "custom")
                         ? root.config.notify.push.data.command : ""
                     visible: root.config.notify && root.config.notify.push.enabled
@@ -212,7 +218,7 @@ PageContainer {
                 FormTextField {
                     label: "Webhook URL"
                     placeholder: "https://discord.com/api/webhooks/..."
-                    help: "<a href=\"https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks\">如何获取 Discord Webhook URL？</a>"
+                    help: "<a href=\"https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks\">" + App.Globals.t("preferences.help.discord_webhook") + "</a>"
                     value: (root.config.notify && root.config.notify.push && root.config.notify.push.data.type === "discord")
                         ? root.config.notify.push.data.webhook_url : ""
                     visible: root.config.notify && root.config.notify.push.enabled
@@ -223,16 +229,16 @@ PageContainer {
 
             // ── 快捷键 ──────────────────────────────────────────────────
             FormGroupBox {
-                title: "快捷键"
+                title: App.Globals.t("preferences.group.hotkeys")
                 HotkeyField {
-                    label: "启动脚本"
+                    label: App.Globals.t("preferences.field.hotkey_start")
                     value: root.config.hotkeys ? (root.config.hotkeys.start || "") : ""
                     onUserCommitted: function(v) {
                         root.prefsController.setField("hotkeys.start", v ? v : null)
                     }
                 }
                 HotkeyField {
-                    label: "停止脚本"
+                    label: App.Globals.t("preferences.field.hotkey_stop")
                     value: root.config.hotkeys ? (root.config.hotkeys.stop || "") : ""
                     onUserCommitted: function(v) {
                         root.prefsController.setField("hotkeys.stop", v ? v : null)

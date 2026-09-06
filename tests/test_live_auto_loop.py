@@ -58,7 +58,7 @@ class AutoLiveLoopTests(unittest.TestCase):
 
         with mock.patch.dict(
             live.__dict__,
-            {'R': resources, 'sleep': mock.Mock()},
+            {'R': resources, 'sleep': mock.Mock(), 'device': mock.Mock()},
         ):
             live._configure_ap_multiplier('maximum')
 
