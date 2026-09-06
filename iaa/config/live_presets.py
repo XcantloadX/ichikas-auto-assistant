@@ -41,15 +41,25 @@ class LivePresetManager:
             json.dump(preset_to_save.model_dump(mode='json'), f, ensure_ascii=False, indent=2)
     
     def load_last_auto(self) -> Optional[AutoLivePreset]:
-        """加载上次自动演出设定"""
+        """加载上次自动演出设定，``name`` 归一化为 ``LAST_PRESET_NAME``。
+
+        该文件语义上只代表"上次设定"，``name`` 仅有这一个合法值；历史版本曾把
+        展示名「上次设定」强制写盘，任何非哨兵值均为旧版残留，读取时统一归一化。
+
+        :return: 上次自动演出设定（``name`` 恒为 ``LAST_PRESET_NAME``）；文件不存在或损坏时返回 None。
+        """
         if not self.last_auto_file.exists():
             return None
         try:
             with open(self.last_auto_file, 'r', encoding='utf-8') as f:
                 data = json.load(f)
-            return AutoLivePreset.model_validate(data)
+            preset = AutoLivePreset.model_validate(data)
         except Exception:
             return None
+        if preset.name != LAST_PRESET_NAME:
+            # frozen 模型，归一化需重建实例。
+            preset = AutoLivePreset(version=preset.version, name=LAST_PRESET_NAME, plan=preset.plan)
+        return preset
     
     def clear_last_auto(self) -> None:
         """清除上次设定"""

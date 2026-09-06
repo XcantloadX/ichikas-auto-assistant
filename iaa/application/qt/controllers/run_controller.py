@@ -17,15 +17,16 @@ from iaa.tasks.registry import TASK_INFOS
 from iaa.tasks.live.auto_live_constants import (
     AP_KEEP_UNCHANGED,
     LAST_PRESET_NAME,
-    PRESET_CLEAR_10,
-    PRESET_FC_10,
-    PRESET_LEADER_COUNT,
-    PRESET_SCRIPT_999,
     SONG_KEEP_UNCHANGED,
-    preset_name_matches,
 )
 
-from ..models import auto_live_payload_to_plan, builtin_auto_presets, preset_to_payload
+from ..models import (
+    AutoLivePayloadError,
+    auto_live_payload_to_plan,
+    auto_live_preset_label_key,
+    builtin_auto_presets,
+    preset_to_payload,
+)
 from .progress_bridge import ProgressBridge
 
 
@@ -77,30 +78,15 @@ class RunController(QObject):
     apKeepValue = Property(str, _get_ap_keep_value, constant=True)
     songKeepValue = Property(str, _get_song_keep_value, constant=True)
 
-    # TODO: 遗留的展示名称作为配置值带来的问题
     @Slot(str, result=str)
     def autoLivePresetLabel(self, name: str) -> str:
-        if preset_name_matches(name, PRESET_CLEAR_10):
-            return self._tr('auto_live.preset.clear_10')
-        if preset_name_matches(name, PRESET_FC_10):
-            return self._tr('auto_live.preset.fc_10')
-        # 「脚本x999」取代了旧版「队长次数」预设，两者展示名共用同一 i18n 键。
-        if preset_name_matches(name, PRESET_SCRIPT_999) or preset_name_matches(name, PRESET_LEADER_COUNT):
-            return self._tr('auto_live.preset.leader_count')
-        if preset_name_matches(name, LAST_PRESET_NAME):
-            return self._tr('auto_live.preset.last')
-        return name
+        """把预设稳定 ID 翻译为当前界面语言的展示名。
 
-    def _auto_live_error_text(self, message: str) -> str:
-        if message == '指定次数必须为正整数。':
-            return self._tr('auto_live.error.count_positive')
-        if message.startswith('未知的次数模式：'):
-            return self._tr('auto_live.error.unknown_count_mode', mode=message.removeprefix('未知的次数模式：'))
-        if message == 'AP 倍率必须在 0 到 10 之间，或为 maximum。':
-            return self._tr('auto_live.error.ap_multiplier')
-        if message.startswith('未知的循环模式：'):
-            return self._tr('auto_live.error.unknown_loop_mode', mode=message.removeprefix('未知的循环模式：'))
-        return message
+        :param name: 预设稳定 ID（``__preset_*__`` 等哨兵值）。
+        :return: 界面语言下的展示名；未知 ID 原样返回。
+        """
+        key = auto_live_preset_label_key(name)
+        return self._tr(key) if key is not None else name
 
     def _refresh_state(self) -> None:
         self.stateChanged.emit()
@@ -193,8 +179,10 @@ class RunController(QObject):
         payload = json.loads(payload_json)
         try:
             plan = auto_live_payload_to_plan(payload)
-        except ValueError as exc:
-            raise ValueError(self._auto_live_error_text(str(exc))) from exc
+        except AutoLivePayloadError as exc:
+            # 任务层只携带错误键与参数（不感知界面语言），文本在此按当前语言渲染；
+            # 其他 ValueError 原样透传。
+            raise ValueError(self._tr(exc.key, **exc.params)) from exc
         LivePresetManager().save_last_auto(AutoLivePreset(name=LAST_PRESET_NAME, plan=plan))
         if plan.play_mode == 'script_auto':
             self.scriptAutoWarningRequested.emit(self._tr('notice.script_auto_warning'))

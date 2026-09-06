@@ -9,7 +9,7 @@ from kotonebot import device, Loop, action, sleep, color, ocr
 from .. import R
 from ..common import at_home, go_home
 from iaa.context import conf, server, task_reporter, keyboard
-from iaa.i18n import TStr, tstr
+from iaa.i18n import TStr, tstr, translate
 from ._select_song import next_song
 from ._scene import at_song_select
 from .auto_live_constants import AP_KEEP_UNCHANGED, LEGACY_AP_KEEP, LEGACY_SONG_KEEP
@@ -656,6 +656,24 @@ def challenge_live(
     go_home()
 
 
+class AutoLivePayloadError(ValueError):
+    """auto_live payload 解析错误，携带 i18n 翻译键与参数。
+
+    错误身份用 ``key`` + ``params`` 承载，显示层（Qt 控制器）据此按界面语言
+    渲染；``str(exc)`` 渲染 zh_CN 默认文本，供 CLI 等无 i18n 上下文的调用方
+    直接输出，保证任务层不感知界面语言。
+
+    :param key: iaa.i18n 翻译键，如 ``auto_live.error.count_positive``。
+    :param params: 翻译模板的格式化参数，如 ``mode='xxx'``。
+    """
+
+    def __init__(self, key: str, /, **params: object) -> None:
+        text = translate('zh_CN', key)
+        super().__init__(text.format(**params) if params else text)
+        self.key = key
+        self.params = params
+
+
 def normalize_song_name_input(value: str) -> str | None:
     """归一化 payload 中的歌曲名称输入。
 
@@ -673,14 +691,19 @@ def _normalize_ap_multiplier_raw(raw: object) -> ApMultiplier:
 
     兼容 None/空串、旧版中文「保持现状」与哨兵 ``AP_KEEP_UNCHANGED``（返回 None）、
     ``'maximum'`` 以及 0-10 的整数（或整数字符串）。
+
+    :raises AutoLivePayloadError: 数值非法或超出 0-10 范围时。
     """
     if raw in (None, '', *LEGACY_AP_KEEP):
         return None
     if raw == 'maximum':
         return 'maximum'
-    ap_multiplier = int(raw)
+    try:
+        ap_multiplier = int(raw)
+    except ValueError as exc:
+        raise AutoLivePayloadError('auto_live.error.ap_multiplier') from exc
     if not (0 <= ap_multiplier <= 10):
-        raise ValueError('AP 倍率必须在 0 到 10 之间，或为 maximum。')
+        raise AutoLivePayloadError('auto_live.error.ap_multiplier')
     return ap_multiplier
 
 
@@ -691,7 +714,7 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
 
     :param payload: 原始 payload，含 countMode/loopMode/playMode/apMultiplier/songName 等键。
     :return: 解析出的 :class:`SingleLoopPlan` 或 :class:`ListLoopPlan`。
-    :raises ValueError: 指定次数非正整数、次数模式/AP 倍率/循环模式非法时。
+    :raises AutoLivePayloadError: 指定次数非正整数、次数模式/AP 倍率/循环模式非法时。
     """
     count_mode = str(payload.get('countMode') or 'specify')
     loop_mode = str(payload.get('loopMode') or 'list')
@@ -705,10 +728,10 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
     if count_mode == 'specify':
         raw_count = str(payload.get('count') or '').strip()
         if not raw_count.isdigit() or int(raw_count) <= 0:
-            raise ValueError('指定次数必须为正整数。')
+            raise AutoLivePayloadError('auto_live.error.count_positive')
         count = int(raw_count)
     elif count_mode != 'all':
-        raise ValueError(f'未知的次数模式：{count_mode}')
+        raise AutoLivePayloadError('auto_live.error.unknown_count_mode', mode=count_mode)
 
     ap_multiplier = _normalize_ap_multiplier_raw(ap_multiplier_raw)
 
@@ -731,4 +754,4 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
             ap_multiplier=ap_multiplier,
             auto_set_unit=auto_set_unit,
         )
-    raise ValueError(f'未知的循环模式：{loop_mode}')
+    raise AutoLivePayloadError('auto_live.error.unknown_loop_mode', mode=loop_mode)

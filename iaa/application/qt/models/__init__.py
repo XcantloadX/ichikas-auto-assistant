@@ -7,7 +7,9 @@ from iaa.tasks.live.auto_live_constants import (
     SONG_KEEP_UNCHANGED,
 )
 from .auto_live import (
+    AutoLivePayloadError,
     auto_live_payload_to_plan,
+    auto_live_preset_label_key,
     SONG_NAME_OPTIONS,
     builtin_auto_presets,
     preset_to_payload,
@@ -29,6 +31,7 @@ from .progress import ProgressState, progress_event_to_state
 from .scrcpy import DisplayMapping, map_canvas_to_image
 
 __all__ = [
+    'AutoLivePayloadError',
     'CHALLENGE_CHARACTER_GROUPS',
     'CONNECTION_TYPE_DISPLAY_MAP',
     'CONTROL_IMPL_DISPLAY_MAP',
@@ -47,6 +50,7 @@ __all__ = [
     'SONG_NAME_OPTIONS',
     'builtin_auto_presets',
     'auto_live_payload_to_plan',
+    'auto_live_preset_label_key',
     'challenge_awards_for_ui',
     'challenge_character_groups_for_ui',
     'challenge_characters_for_ui',
