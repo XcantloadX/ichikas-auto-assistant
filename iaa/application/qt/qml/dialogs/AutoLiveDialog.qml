@@ -23,7 +23,8 @@ Dialog {
             debugEnabled: false,
             autoSetUnit: false,
             apMultiplier: "保持现状",
-            songName: "保持不变"
+            songName: "保持不变",
+            latencyCompensationMs: "0"
         }
     }
 
@@ -42,7 +43,8 @@ Dialog {
             debugEnabled: preset.debugEnabled,
             autoSetUnit: preset.autoSetUnit,
             apMultiplier: preset.apMultiplier,
-            songName: preset.songName || "保持不变"
+            songName: preset.songName || "保持不变",
+            latencyCompensationMs: preset.latencyCompensationMs || "0"
         }
     }
 
@@ -155,6 +157,15 @@ Dialog {
             enabled: root.formData.loopMode === "single"
             onUserSelected: function(v) { root.updateField("songName", v) }
             onUserEdited: function(v) { root.updateField("songName", v) }
+        }
+
+        FormTextField {
+            visible: root.formData.playMode === "script_auto"
+            label: "延迟补偿（毫秒）"
+            help: "云游戏时，这里填写云游戏内提示的网络延迟。本地模拟器或真机无需填写。\n0 表示不补偿，上限 2000ms。"
+            value: root.formData.latencyCompensationMs
+            placeholder: ""
+            onUserEdited: function(v) { root.updateField("latencyCompensationMs", v) }
         }
 
         FormCheckBox {

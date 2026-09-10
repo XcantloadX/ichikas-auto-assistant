@@ -22,6 +22,7 @@ def preset_to_payload(preset: AutoLivePreset) -> dict[str, object]:
         'apMultiplier': '保持现状' if plan.ap_multiplier is None else str(plan.ap_multiplier),
         'songName': '',
         'loopMode': 'list',
+        'latencyCompensationMs': str(plan.latency_compensation_ms),
     }
     if isinstance(plan, SingleLoopPlan):
         payload['loopMode'] = 'single'

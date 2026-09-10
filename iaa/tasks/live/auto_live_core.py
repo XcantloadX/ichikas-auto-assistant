@@ -11,15 +11,79 @@ from kotonebot.client import Device
 
 logger = logging.getLogger(__name__)
 
+# === 延迟(ms)→提前距离(px)换算 ===
+# 推导引用 OpenSekai（https://github.com/cubeww/OpenSekai）复刻的官服逻辑：
+# - 位置是时间的函数：pos = Lerp(spawn, judgment, g(p))，p 为时间进度（0=出现，1=命中），
+#   NoteBase.CalcProgress = (now + T - hit) / T，关于时间线性（Live/NoteBase.cs:461-469），
+#   BaseNoteView.Move / CalcNotePosition（BaseNoteView.cs:41-93）。
+# - easing：g(p) = 1.06^((p-1)*45)，Live/LiveConfig.cs:GetNoteViewProgress（LiveConfig.cs:292-301）。
+# - 显示时长：T = 4.0 - 3.65*eased，eased = 1-(1-(speed-1)/11)^1.31，
+#   流速 1 时 T = 4.0s，Live/LiveConfig.cs:GetNoteDisplayOffsetTime（LiveConfig.cs:262-273）。
+# 判定线处瞬时速度：dy/dt = D * g'(1) / T，g'(1) = 45*ln(1.06) ≈ 2.6221，
+# 即线附近速度约为全程平均速度的 2.83 倍（指数 easing 越靠近判定线越快）。
+# .. NOTE::
+#   两个未经官服验证的假设：(1) OpenSekai 的 easing 参数与官服一致；
+#   (2) SPAWN_Y_RATIO 几何估计准确。任一不成立都会引入系统性偏差，
+#   届时应转用实测标定（追踪 note 质心 dy/dt）替代本公式，不得静默混用。
+NOTE_SPEED = 1.0
+"""脚本自动演出要求的流速（GUI 警告已强制）。"""
+
+DISPLAY_TIME_S = 4.0
+"""流速 1 时 note 从出现到命中的显示时长（秒）。"""
+
+SPAWN_Y_RATIO = 0.08
+"""note 在屏幕上首次出现的纵坐标（相对高度）。几何估计值，误差会线性传导到换算结果。"""
+
+EASING_SLOPE_AT_HIT = 2.6221
+"""g'(1) = 45*ln(1.06)。判定线处 view-progress 对时间进度的导数。"""
+
+MAX_LATENCY_COMPENSATION_MS = 2000
+"""延迟补偿上限（毫秒）。超过此值所需的提前距离会伸出屏幕，多半是单位填错，拒绝执行。"""
+
+
+def latency_ms_to_px(latency_ms: int, frame_height: int = 720) -> int:
+    """按 OpenSekai 公式把链路延迟换算为判定线附近的提前像素数。
+
+    :param latency_ms: 链路延迟，单位毫秒。
+    :param frame_height: 画面高度（像素），用于出生点→判定线距离。
+    :return: 前视区应上移的像素数（四舍五入）。
+    :raises ValueError: 延迟为负或超过上限时。
+    """
+    if latency_ms < 0:
+        raise ValueError(f'latency_ms must be >= 0, got {latency_ms}.')
+    if latency_ms > MAX_LATENCY_COMPENSATION_MS:
+        raise ValueError(
+            f'latency_ms must be <= {MAX_LATENCY_COMPENSATION_MS}, got {latency_ms}. '
+            'Value too large; check the unit is milliseconds.'
+        )
+    travel_px = (RhythmGameAnalyzer.judgement_line_y_ratio - SPAWN_Y_RATIO) * frame_height
+    return int(round(latency_ms / 1000 * travel_px * EASING_SLOPE_AT_HIT / DISPLAY_TIME_S))
+
+
 class RhythmGameAnalyzer:
     BASE_WIDTH = 1280
     BASE_HEIGHT = 720
+    judgement_line_y_ratio = 0.74
 
-    def __init__(self, device: Device, life_img, num_lanes=6, debug_frame=None, stop_check=None, debug=False):
+    def __init__(self, device: Device, life_img, num_lanes=6, debug_frame=None, stop_check=None, debug=False, latency_compensation_ms: int = 0):
+        """初始化节奏游戏分析器。
+
+        :param device: 设备对象，用于截图与触控。
+        :param life_img: LIFE 模板图，用于确认处于 live 界面。
+        :param num_lanes: 轨道数。
+        :param debug_frame: 调试用单帧，为 None 时实时截图。
+        :param stop_check: 返回 True 时退出主循环。
+        :param debug: 是否启用调试显示。
+        :param latency_compensation_ms: 延迟补偿（毫秒）。按 OpenSekai 公式换算为像素后，
+            前视区上移该距离，空闲态命中前视区即提前按下。
+        :raises AssertionError: LIFE 模板图加载失败时。
+        :raises ValueError: 延迟为负或超过上限时。
+        """
         self.device = device
         self.debug_frame = debug_frame
         self.stop_check = stop_check
         self.debug = debug
+        self.latency_compensation_ms = latency_compensation_ms
         
         # 加载 LIFE 图像用于检测是否在 live 界面
         self.LIFE = life_img
@@ -27,10 +91,9 @@ class RhythmGameAnalyzer:
         
         # === 核心配置参数 ===
         self.num_lanes = num_lanes
-        self.judgement_line_y_ratio = 0.74
         self.margin_side_ratio = 0.10 
         self.box_height = 40
-        self.lookahead_gap_px = 0      # 判定线上方 look 区域的像素偏移
+        self.lookahead_gap_px = latency_ms_to_px(latency_compensation_ms, self.BASE_HEIGHT)
         self.lookahead_box_height = 25   # look 区域高度，可独立调节
         self.lane_inner_padding = 10
         
@@ -114,6 +177,8 @@ class RhythmGameAnalyzer:
         h, w = frame.shape[:2]
         regions, judge_y = self.get_lane_regions(w, h)
         cv2.line(frame, (0, judge_y), (w, judge_y), (255, 100, 100), 2)
+        cv2.putText(frame, f'LAT:{self.latency_compensation_ms}ms GAP:{self.lookahead_gap_px}px',
+                    (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 255), 2)
 
         # 2. 遍历轨道处理
         for i, (main_rect, look_rect) in enumerate(regions):
@@ -134,10 +199,14 @@ class RhythmGameAnalyzer:
                 look_active = l_mean > self.lookahead_brightness
                 is_active = main_active or look_active
             else:
-                # 【触发模式】：严格标准，只看主判定区
+                # 【触发模式】：严格标准，主判定区或前视区任一命中即按下。
+                # 前视区随 lookahead_gap_px（延迟补偿）上移，用于提前打击。
                 if m_mean > self.trigger_brightness:
                     is_active = True
                     main_active = True
+                elif l_mean > self.trigger_brightness:
+                    is_active = True
+                    look_active = True
 
             # --- 状态机控制 (含防抖) ---
             center_x = mx + mw // 2
