@@ -33,6 +33,8 @@ class LivePlan(BaseModel):
     debug_enabled: bool = False
     ap_multiplier: ApMultiplier = None
     auto_set_unit: bool = False
+    latency_compensation_ms: int = 0
+    """延迟补偿（毫秒）。脚本自动演出时按 OpenSekai 公式换算为像素后提前按下，链路延迟越大调越大。"""
 
 
 class OncePlan(LivePlan):
@@ -284,7 +286,7 @@ def _configure_unit() -> None:
     logger.debug('Closed auto set unit dialog.')
 
 
-def _run_live(live_mode: LiveMode, debug_enabled: bool) -> None:
+def _run_live(live_mode: LiveMode, debug_enabled: bool, latency_compensation_ms: int = 0) -> None:
     # 开始演出
     logger.debug('Clicking start live button.')
     R.Live.ButtonStartLive.wait().click()
@@ -293,7 +295,8 @@ def _run_live(live_mode: LiveMode, debug_enabled: bool) -> None:
             device,
             R.Live.TextLife.template.pixels,
             debug=debug_enabled,
-            stop_check=R.Live.TextScoreRank.exists
+            stop_check=R.Live.TextScoreRank.exists,
+            latency_compensation_ms=latency_compensation_ms,
         )
         analyzer.run()
     else:
@@ -428,6 +431,7 @@ def _start_single_live_run(
     song_select_mode: SongChoiceMode,
     song_name: str | None,
     debug_enabled: bool = False,
+    latency_compensation_ms: int = 0,
 ) -> bool:
     _prepare_solo_live(song_select_mode, song_name)
     return start_auto_live(
@@ -436,6 +440,7 @@ def _start_single_live_run(
         debug_enabled=debug_enabled,
         auto_set_unit=auto_set_unit,
         ap_multiplier=ap_multiplier,
+        latency_compensation_ms=latency_compensation_ms,
     )
 
 @action('演出', screenshot_mode='manual')
@@ -447,6 +452,7 @@ def start_auto_live(
     debug_enabled: bool = False,
     auto_set_unit: bool = False,
     ap_multiplier: ApMultiplier = None,
+    latency_compensation_ms: int = 0,
 ) -> bool:
     """
     前置：位于编队界面\n
@@ -470,11 +476,15 @@ def start_auto_live(
     :param debug_enabled: 是否启用调试模式，启用后会在自动演出时显示更多日志，并在脚本自动演出时显示节奏游戏分析器的调试信息。
     :param auto_set_unit: 是否在演出前自动编队
     :param ap_multiplier: AP 倍率，范围 [0, 10]；若为 "maximum"，表示设置为当前可用最大值；若为 None，表示保持现状。
+    :param latency_compensation_ms: 延迟补偿（毫秒），仅脚本自动演出生效。按 OpenSekai 公式换算为像素后提前按下。
     :raises NotImplementedError: 如果未实现的功能被调用。
+    :raises ValueError: 延迟补偿为负数或超过 2000ms 时。
     :return: 若为 False，表示因为 AP 不足没有进行演出。
     """
     if live_mode is None or isinstance(live_mode, int):
         raise NotImplementedError('Not implemented yet.')
+    if not (0 <= latency_compensation_ms <= 2000):
+        raise ValueError(f'latency_compensation_ms must be between 0 and 2000, got {latency_compensation_ms}.')
     rep = task_reporter()
     rep.message(TStr(zh_CN='准备开始演出', en_US='Preparing live'))
     if return_to == 'select':
@@ -498,7 +508,7 @@ def start_auto_live(
     logger.info('Auto live setting finished.')
     # 演出
     rep.message(TStr(zh_CN='演出中', en_US='Live in progress'))
-    _run_live(live_mode, debug_enabled)
+    _run_live(live_mode, debug_enabled, latency_compensation_ms)
     _wait_live_end(live_mode)
     return _finish_live(return_to, finish_pre_check)
 
@@ -524,6 +534,8 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
         raise ValueError('loop_count must be positive.')
     if plan.ap_multiplier is not None and plan.ap_multiplier != 'maximum' and not (0 <= plan.ap_multiplier <= 10):
         raise ValueError('ap_multiplier must be between 0 and 10, "maximum", or None.')
+    if not (0 <= plan.latency_compensation_ms <= 2000):
+        raise ValueError(f'latency_compensation_ms must be between 0 and 2000, got {plan.latency_compensation_ms}.')
     if isinstance(plan, (OncePlan, SingleLoopPlan)) and plan.song_select_mode == 'specified' and not plan.song_name:
         raise ValueError('song_name is required when song_select_mode is specified.')
     reporter = task_reporter()
@@ -531,7 +543,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
     count = 0
     if isinstance(plan, OncePlan):
         _prepare_solo_live(plan.song_select_mode, plan.song_name)
-        start_auto_live('once', return_to='home', auto_set_unit=auto_set_unit, ap_multiplier=plan.ap_multiplier)
+        start_auto_live('once', return_to='home', auto_set_unit=auto_set_unit, ap_multiplier=plan.ap_multiplier, latency_compensation_ms=plan.latency_compensation_ms)
         return
     if isinstance(plan, SingleLoopPlan):
         # 单曲循环
@@ -540,7 +552,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
         if plan.play_mode == 'game_auto':
             reporter.message(TStr(zh_CN='开始单曲循环（游戏自动）', en_US='Starting single-song loop (game auto)'))
             _prepare_solo_live(plan.song_select_mode, plan.song_name)
-            start_auto_live('all', return_to='home', auto_set_unit=auto_set_unit, ap_multiplier=plan.ap_multiplier)
+            start_auto_live('all', return_to='home', auto_set_unit=auto_set_unit, ap_multiplier=plan.ap_multiplier, latency_compensation_ms=plan.latency_compensation_ms)
             reporter.message(TStr(zh_CN='单曲循环完成，返回首页', en_US='Single-song loop complete, returning home'))
         # 脚本自动
         else:
@@ -556,6 +568,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
                         song_select_mode=plan.song_select_mode,
                         song_name=plan.song_name,
                         debug_enabled=plan.debug_enabled,
+                        latency_compensation_ms=plan.latency_compensation_ms,
                     ):
                         break
                     first_run = False
@@ -581,6 +594,7 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
                     debug_enabled=plan.debug_enabled,
                     auto_set_unit=auto_set_unit,
                     ap_multiplier=plan.ap_multiplier if first_run else None,
+                    latency_compensation_ms=plan.latency_compensation_ms,
                 ):
                     logger.info('No AP left for list loop. Stopping.')
                     go_home()
@@ -724,6 +738,13 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
     auto_set_unit = bool(payload.get('autoSetUnit'))
     song_name = normalize_song_name_input(str(payload.get('songName') or ''))
 
+    latency_raw = str(payload.get('latencyCompensationMs', '0') or '0').strip()
+    if 'latencyCompensationPx' in payload:
+        raise ValueError('latencyCompensationPx 已废弃，请改填毫秒（latencyCompensationMs）。')
+    if not latency_raw.isdigit() or not (0 <= int(latency_raw) <= 2000):
+        raise ValueError('延迟补偿必须为 0 到 2000 之间的整数（毫秒）。')
+    latency_compensation_ms = int(latency_raw)
+
     count: int | None = None
     if count_mode == 'specify':
         raw_count = str(payload.get('count') or '').strip()
@@ -744,6 +765,7 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
             debug_enabled=debug_enabled,
             ap_multiplier=ap_multiplier,
             auto_set_unit=auto_set_unit,
+            latency_compensation_ms=latency_compensation_ms,
         )
     if loop_mode in ('list', 'random'):
         return ListLoopPlan(
@@ -753,5 +775,6 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
             debug_enabled=debug_enabled,
             ap_multiplier=ap_multiplier,
             auto_set_unit=auto_set_unit,
+            latency_compensation_ms=latency_compensation_ms,
         )
     raise AutoLivePayloadError('auto_live.error.unknown_loop_mode', mode=loop_mode)

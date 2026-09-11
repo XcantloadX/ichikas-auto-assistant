@@ -26,7 +26,8 @@ Dialog {
             debugEnabled: false,
             autoSetUnit: false,
             apMultiplier: root.apKeepValue,
-            songName: root.songKeepValue
+            songName: root.songKeepValue,
+            latencyCompensationMs: "0"
         }
     }
 
@@ -45,7 +46,8 @@ Dialog {
             debugEnabled: preset.debugEnabled,
             autoSetUnit: preset.autoSetUnit,
             apMultiplier: preset.apMultiplier,
-            songName: preset.songName || root.songKeepValue
+            songName: preset.songName || root.songKeepValue,
+            latencyCompensationMs: preset.latencyCompensationMs || "0"
         }
     }
 
@@ -197,6 +199,15 @@ Dialog {
                 currentIndex: Math.max(0, model.indexOf(root.apMultiplierLabel(formData.apMultiplier)))
                 onActivated: formData = Object.assign({}, formData, { apMultiplier: root.apMultiplierValue(model[currentIndex]) })
             }
+        }
+
+        FormTextField {
+            visible: root.formData.playMode === "script_auto"
+            label: "延迟补偿（毫秒）"
+            help: "云游戏时，这里填写云游戏内提示的网络延迟。本地模拟器或真机无需填写。\n0 表示不补偿，上限 2000ms。"
+            value: root.formData.latencyCompensationMs
+            placeholder: ""
+            onUserEdited: function(v) { root.updateField("latencyCompensationMs", v) }
         }
 
         RowLayout {
