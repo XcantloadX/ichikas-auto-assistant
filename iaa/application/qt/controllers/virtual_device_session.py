@@ -4,7 +4,7 @@ import logging
 import queue
 import threading
 import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 import cv2
 from PySide6.QtCore import (
@@ -22,6 +22,7 @@ from PySide6.QtWidgets import QApplication
 
 from iaa.application.qt.models import DisplayMapping, map_canvas_to_image
 from iaa.application.service.device_factory import DeviceFactory
+from iaa.i18n import translate
 
 from .scrcpy_image_provider import ScrcpyImageProvider
 
@@ -51,18 +52,23 @@ class VirtualDeviceSession(QObject):
         image_provider: ScrcpyImageProvider,
         *,
         device_factory: DeviceFactory,
+        get_language: Callable[[], str],
         parent: QObject | None = None,
     ) -> None:
         super().__init__(parent)
         self._config_name = config_name
         self._config_service = config_service
         self._device_factory = device_factory
+        self._get_language = get_language
         self._provider = image_provider
         self._device: Device | None = None
         self._device_lock = threading.Lock()
         self._device_running = False
         self._frame_token = 0
-        self._status_text = '设备未启动'
+        # 状态文本统一保存 key + args，语言切换时由 refresh_status_text 重新解析
+        self._status_key = 'scrcpy.device_not_started'
+        self._status_args: dict[str, str] = {}
+        self._status_text = self._tr(self._status_key)
         self._view_visible = False
         self._mapping: DisplayMapping | None = None
         self._touch_active = False
@@ -120,6 +126,41 @@ class VirtualDeviceSession(QObject):
             Q_ARG(str, text),
         )
 
+    def _tr(self, key: str, **kwargs: object) -> str:
+        """按注入的 GUI 语言翻译 i18n 键（仿照 ProgressBridge 的语言注入模式）。"""
+        text = translate(self._get_language(), key)
+        return text.format(**kwargs) if kwargs else text
+
+    def _set_status(self, key: str, **args: str) -> None:
+        """记录状态 i18n 键与参数，并异步刷新显示文本。
+
+        保存 key + args 以便语言切换时由 :meth:`refresh_status_text`
+        用新语言重新解析同一条状态。
+        """
+        self._status_key = key
+        self._status_args = args
+        self._notify_status_text(self._tr(key, **args))
+
+    @Slot()
+    def on_language_changed(self) -> None:
+        """语言切换回调：由 AppController 把 i18nController.languageChanged 连到这里。
+
+        :return: 无返回值。
+        """
+        self.refresh_status_text()
+
+    def refresh_status_text(self) -> None:
+        """按当前语言重新解析状态文本并发出 statusTextChanged。
+
+        只更新 ``_status_text`` 并 notify 信号，不做重活，
+        可安全地对运行中/后台状态的 session 调用。
+
+        :return: 无返回值。
+        """
+        if self._status_key is None:
+            return
+        self._notify_status_text(self._tr(self._status_key, **self._status_args))
+
     @Slot(bool)
     def _apply_device_running(self, running: bool) -> None:
         if self._device_running == running:
@@ -130,7 +171,7 @@ class VirtualDeviceSession(QObject):
         if not running:
             self._touch_active = False
             self._mapping = None
-            self._apply_status_text('设备未启动')
+            self._set_status('scrcpy.device_not_started')
             self._provider.remove_image(self._config_name)
             self._frame_token += 1
             self.frameChanged.emit()
@@ -199,7 +240,7 @@ class VirtualDeviceSession(QObject):
         with self._device_lock:
             self._device = device
         self._notify_device_running(True)
-        self._notify_status_text('设备已启动')
+        self._set_status('scrcpy.device_started')
 
     def _worker_stop(self) -> None:
         with self._device_lock:
@@ -242,7 +283,7 @@ class VirtualDeviceSession(QObject):
 
     @Slot(str)
     def _report_start_error(self, message: str) -> None:
-        self._apply_status_text(f'启动失败: {message}')
+        self._set_status('scrcpy.start_failed', message=message)
 
     @Slot()
     def start_device(self) -> None:
@@ -290,7 +331,7 @@ class VirtualDeviceSession(QObject):
             self._frame_token += 1
             self.frameChanged.emit()
         except Exception as exc:  # noqa: BLE001
-            self._apply_status_text(f'等待画面... {exc}')
+            self._set_status('scrcpy.waiting_frame_error', error=str(exc))
 
     @Slot(int, int, int, int, int, int)
     def updateDisplayMetrics(

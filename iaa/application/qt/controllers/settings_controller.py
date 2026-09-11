@@ -3,12 +3,13 @@ from __future__ import annotations
 import json
 import logging
 import threading
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Callable
 
 from PySide6.QtCore import Property, QObject, Signal, Slot
 from PySide6.QtQml import QJSValue
 
 from iaa.config.base import IaaConfig
+from iaa.i18n import TStr, translate, translate_error
 
 from .config_draft import ConfigDraft
 
@@ -48,9 +49,18 @@ class SettingsController(QObject):
     emulatorInstancesReady = Signal(str, str)
     emulatorNotInstalled = Signal(str)
 
-    def __init__(self, iaa_service: 'IaaService', parent=None) -> None:
+    def __init__(
+        self,
+        iaa_service: 'IaaService',
+        parent=None,
+        *,
+        get_language: 'Callable[[], str] | None' = None,
+    ) -> None:
         super().__init__(parent)
         self._iaa = iaa_service
+        # GUI 语言来源（注入 i18nController.language 的 getter）。
+        # config.shared 在偏好保存后不会热更新，不能作为实时语言来源。
+        self._get_language = get_language
         self._last_issues: list[dict[str, Any]] = []
         self._draft = ConfigDraft(self._base_config())
 
@@ -63,6 +73,15 @@ class SettingsController(QObject):
         self._last_issues = []
         self.configChanged.emit()
         self.dirtyChanged.emit(False)
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self._language(), key)
+        return text.format(**kwargs) if kwargs else text
+
+    def _language(self) -> str:
+        if self._get_language is not None:
+            return self._get_language()
+        return self._iaa.config.shared.interface.language
 
     # ── 表单读写 ─────────────────────────────────────────────────────────────
 
@@ -101,10 +120,10 @@ class SettingsController(QObject):
     def save(self) -> bool:
         """提交草稿：归一化 → 校验 → 写盘。"""
         if not self._draft.is_dirty():
-            self.operationSucceeded.emit('没有需要保存的更改')
+            self.operationSucceeded.emit(self._tr('notice.nothing_to_save'))
             return True
         merged = self._normalize(self._draft.view())
-        issues = self._collect_issues(merged)
+        issues = self._collect_issues(merged, self._language())
         errors = [i for i in issues if i.get('severity') == 'error']
         if errors:
             self._last_issues = issues
@@ -114,21 +133,22 @@ class SettingsController(QObject):
             candidate = IaaConfig.model_validate(merged)
         except Exception as exc:  # noqa: BLE001
             logger.warning('Settings draft validation failed: %s', exc)
-            self._last_issues = [{'severity': 'error', 'field': None, 'message': f'配置结构无效：{exc}'}]
-            self.operationFailed.emit(f'配置结构无效：{exc}')
+            message = self._tr('settings.error.invalid_config', error=exc)
+            self._last_issues = [{'severity': 'error', 'field': None, 'message': message}]
+            self.operationFailed.emit(message)
             return False
         try:
             self._iaa.config.conf = candidate
             self._iaa.config.save()
         except Exception as exc:  # noqa: BLE001
             logger.exception('Failed to save settings')
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
             return False
         self._draft = ConfigDraft(candidate.model_dump(mode='json'))
         self._last_issues = []
         self.configChanged.emit()
         self.dirtyChanged.emit(False)
-        self.operationSucceeded.emit('保存成功')
+        self.operationSucceeded.emit(self._tr('notice.save_success'))
         return True
 
     @Slot(result=str)
@@ -136,16 +156,16 @@ class SettingsController(QObject):
         """校验当前草稿（归一化后），返回 issue 列表 JSON。不提交、不写盘。"""
         try:
             merged = self._normalize(self._draft.view())
-            issues = self._collect_issues(merged)
+            issues = self._collect_issues(merged, self._language())
             try:
                 IaaConfig.model_validate(merged)
             except Exception as exc:  # noqa: BLE001
-                issues = issues + [{'severity': 'error', 'field': None, 'message': f'配置结构无效：{exc}'}]
+                issues = issues + [{'severity': 'error', 'field': None, 'message': self._tr('settings.error.invalid_config', error=exc)}]
             return json.dumps(issues, ensure_ascii=False)
         except Exception as exc:  # noqa: BLE001
             logger.exception('Failed to validate settings draft')
             return json.dumps(
-                [{'severity': 'error', 'field': None, 'message': f'校验失败：{exc}'}],
+                [{'severity': 'error', 'field': None, 'message': self._tr('settings.error.validate_failed', error=exc)}],
                 ensure_ascii=False,
             )
 
@@ -222,8 +242,12 @@ class SettingsController(QObject):
         return data
 
     @staticmethod
-    def _collect_issues(data: dict[str, Any]) -> list[dict[str, Any]]:
+    def _collect_issues(data: dict[str, Any], language: str) -> list[dict[str, Any]]:
         """收集业务校验问题（归一化后的 dict）。"""
+        def _msg(key: str, **kwargs: object) -> str:
+            text = translate(language, key)
+            return text.format(**kwargs) if kwargs else text
+
         issues: list[dict[str, Any]] = []
         device = data.get('device', {})
         lifecycle = device.get('lifecycle', {})
@@ -233,28 +257,37 @@ class SettingsController(QObject):
             port = connection.get('port')
             text = '' if port is None else str(port).strip()
             if not text:
-                issues.append({'severity': 'error', 'field': 'device.connection.port', 'message': '端口不能为空'})
+                issues.append({'severity': 'error', 'field': 'device.connection.port', 'message': _msg('settings.error.tcp_port_required')})
             elif not text.isdigit():
-                issues.append({'severity': 'error', 'field': 'device.connection.port', 'message': '端口必须是数字'})
+                issues.append({'severity': 'error', 'field': 'device.connection.port', 'message': _msg('settings.error.tcp_port_numeric')})
 
         if lifecycle.get('type') == 'custom':
             start = str(lifecycle.get('start_command') or '').strip()
             if not start:
-                issues.append({'severity': 'error', 'field': 'device.lifecycle.start_command', 'message': '启动命令不能为空'})
+                issues.append({'severity': 'error', 'field': 'device.lifecycle.start_command', 'message': _msg('settings.error.start_command_required')})
 
         cm = data.get('tasks', {}).get('cm', {})
         wa = cm.get('watch_ad_wait_sec')
         wtext = '' if wa is None else str(wa).strip()
         if not wtext:
-            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': 'CM 广告等待秒数不能为空'})
+            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': _msg('settings.error.watch_ad_wait_sec_required')})
         elif not wtext.isdigit():
-            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': 'CM 广告等待秒数必须是数字'})
+            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': _msg('settings.error.watch_ad_wait_sec_numeric')})
         elif int(wtext) <= 0:
-            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': 'CM 广告等待秒数必须大于 0'})
+            issues.append({'severity': 'error', 'field': 'tasks.cm.watch_ad_wait_sec', 'message': _msg('settings.error.watch_ad_wait_sec_positive')})
 
         return issues
 
     # ── 表单选项数据 ─────────────────────────────────────────────────────────
+
+    def _resolve_label(self, value: object) -> object:
+        """把 TStr 标签按当前 GUI 语言解析为字符串，其余原样返回。"""
+        if isinstance(value, TStr):
+            return value.resolve(self._language())
+        return value
+
+    def _resolve_label_json_default(self, value: object) -> object:
+        return self._resolve_label(value)
 
     @Slot(result=str)
     def lifecycleOptionsJson(self) -> str:
@@ -264,7 +297,7 @@ class SettingsController(QObject):
         from ..models import LIFECYCLE_TYPE_DISPLAY_MAP
 
         options = [
-            {'value': k, 'label': v}
+            {'value': k, 'label': self._resolve_label(v)}
             for k, v in LIFECYCLE_TYPE_DISPLAY_MAP.items()
             if not (k in {'mumu', 'mumu_v5'} and _platform.system() != 'Windows')
             and not (k == 'playcover' and _platform.system() != 'Darwin')
@@ -275,7 +308,7 @@ class SettingsController(QObject):
     def connectionOptionsJson(self) -> str:
         from ..models import CONNECTION_TYPE_DISPLAY_MAP
         return json.dumps(
-            [{'value': k, 'label': v} for k, v in CONNECTION_TYPE_DISPLAY_MAP.items()],
+            [{'value': k, 'label': self._resolve_label(v)} for k, v in CONNECTION_TYPE_DISPLAY_MAP.items()],
             ensure_ascii=False,
         )
 
@@ -283,7 +316,7 @@ class SettingsController(QObject):
     def serverOptionsJson(self) -> str:
         from ..models import SERVER_DISPLAY_MAP
         return json.dumps(
-            [{'value': k, 'label': v} for k, v in SERVER_DISPLAY_MAP.items()],
+            [{'value': k, 'label': self._resolve_label(v)} for k, v in SERVER_DISPLAY_MAP.items()],
             ensure_ascii=False,
         )
 
@@ -291,7 +324,7 @@ class SettingsController(QObject):
     def linkOptionsJson(self) -> str:
         from ..models import LINK_DISPLAY_MAP
         return json.dumps(
-            [{'value': k, 'label': v} for k, v in LINK_DISPLAY_MAP.items()],
+            [{'value': k, 'label': self._resolve_label(v)} for k, v in LINK_DISPLAY_MAP.items()],
             ensure_ascii=False,
         )
 
@@ -299,7 +332,7 @@ class SettingsController(QObject):
     def controlImplOptionsJson(self) -> str:
         from ..models import CONTROL_IMPL_DISPLAY_MAP
         return json.dumps(
-            [{'value': k, 'label': v} for k, v in CONTROL_IMPL_DISPLAY_MAP.items()],
+            [{'value': k, 'label': self._resolve_label(v)} for k, v in CONTROL_IMPL_DISPLAY_MAP.items()],
             ensure_ascii=False,
         )
 
@@ -307,27 +340,30 @@ class SettingsController(QObject):
     def resolutionOptionsJson(self) -> str:
         from ..models import RESOLUTION_METHOD_DISPLAY_MAP
         return json.dumps(
-            [{'value': k, 'label': v} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()],
+            [{'value': k, 'label': self._resolve_label(v)} for k, v in RESOLUTION_METHOD_DISPLAY_MAP.items()],
             ensure_ascii=False,
         )
 
     @Slot(result=str)
     def challengeCharactersJson(self) -> str:
         from ..models import challenge_character_groups_for_ui
-        return json.dumps(challenge_character_groups_for_ui(), ensure_ascii=False)
+        return json.dumps(challenge_character_groups_for_ui(), ensure_ascii=False, default=self._resolve_label_json_default)
 
     @Slot(result=str)
     def challengeAwardsJson(self) -> str:
         from ..models import challenge_awards_for_ui
-        return json.dumps(challenge_awards_for_ui(), ensure_ascii=False)
+        return json.dumps(challenge_awards_for_ui(), ensure_ascii=False, default=self._resolve_label_json_default)
 
     @Slot(result=str)
     def eventShopItemsJson(self) -> str:
-        from iaa.definitions.enums import ShopItem
-        return json.dumps(
-            [{'value': item.value, 'label': item.display('cn')} for item in ShopItem],
-            ensure_ascii=False,
-        )
+        """活动商店道具选项。
+
+        label 为界面显示名，跟随当前 GUI 语言（zh 显示简中名、en 显示英文译名），
+        与所选服务器无关；配置存储的是道具 value。
+        """
+        from ..models import shop_items_for_ui
+
+        return json.dumps(shop_items_for_ui(), ensure_ascii=False, default=self._resolve_label_json_default)
 
     # ── 设备实例枚举 ─────────────────────────────────────────────────────────
 
@@ -344,7 +380,7 @@ class SettingsController(QObject):
                 )
             except Exception as exc:  # noqa: BLE001
                 logger.exception('Failed to enumerate instances for %s', emulator_type)
-                self.operationFailed.emit(f'刷新失败：{exc}')
+                self.operationFailed.emit(self._tr('settings.status.mumu_refresh_failed', error=exc))
                 self.emulatorInstancesReady.emit(emulator_type, '[]')
 
         threading.Thread(target=_run, daemon=True).start()
@@ -354,11 +390,9 @@ class SettingsController(QObject):
         if emulator_type in ('mumu', 'mumu_v5'):
             from kotonebot.client.host import Mumu12Host, Mumu12V5Host
 
-            from ..models import DEFAULT_MUMU_INSTANCE_LABEL
-
             host_cls = Mumu12V5Host if emulator_type == 'mumu_v5' else Mumu12Host
             instances = host_cls.list()
-            return [{'value': '', 'label': DEFAULT_MUMU_INSTANCE_LABEL}] + [
+            return [{'value': '', 'label': translate(self._language(), 'settings.option.mumu_instance.default')}] + [
                 {'value': str(inst.id), 'label': f'[{inst.id}] {inst.name}'}
                 for inst in instances
             ]
@@ -368,7 +402,7 @@ class SettingsController(QObject):
             sdk_path = self._draft.get('device.lifecycle.sdk_path')
             host = AvdHost(sdk_path=sdk_path)
             instances = host.list()
-            return [{'value': '', 'label': '（默认第一个）'}] + [
+            return [{'value': '', 'label': translate(self._language(), 'settings.option.avd_instance.default')}] + [
                 {'value': inst._avd_name,
                  'label': f'{inst._avd_name}{"  [运行中]" if inst.adb_serial else ""}'}
                 for inst in instances
@@ -385,7 +419,7 @@ class SettingsController(QObject):
                 self._do_reset_resolution()
 
             def on_error(exc: Exception) -> None:
-                self.operationFailed.emit(f'连接失败：{exc}')
+                self.operationFailed.emit(self._tr('settings.status.device_connect_failed', error=exc))
 
             self._iaa.scheduler.connect_device(on_success=on_success, on_error=on_error)
             return
@@ -394,13 +428,13 @@ class SettingsController(QObject):
     def _do_reset_resolution(self) -> None:
         device = self._iaa.scheduler.device
         if device is None:
-            self.operationFailed.emit('设备尚未连接')
+            self.operationFailed.emit(self._tr('settings.status.device_not_connected'))
             return
         try:
             device.commands.adb_shell('wm size reset')
-            self.operationSucceeded.emit('已恢复分辨率')
+            self.operationSucceeded.emit(self._tr('settings.status.resolution_restored'))
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'恢复失败：{exc}')
+            self.operationFailed.emit(self._tr('settings.status.resolution_restore_failed', error=exc))
 
     # ── 配置文件管理 ─────────────────────────────────────────────────────────
 
@@ -420,13 +454,13 @@ class SettingsController(QObject):
             self._reload()
             self.configSwitched.emit()
             self.currentProfileChanged.emit(self._iaa.config.current_config_name)
-            self.operationSucceeded.emit(f'已切换到配置: {name}')
+            self.operationSucceeded.emit(self._tr('settings.status.profile_switched', name=name))
             return True
         except RuntimeError as e:
-            self.operationFailed.emit(str(e))
+            self.operationFailed.emit(translate_error(self._language(), e))
             return False
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'切换失败：{exc}')
+            self.operationFailed.emit(self._tr('settings.status.profile_switch_failed', error=exc))
             return False
 
     @Slot(str, result=bool)
@@ -437,10 +471,10 @@ class SettingsController(QObject):
             self.configSwitched.emit()
             self.profilesChanged.emit()
             self.currentProfileChanged.emit(self._iaa.config.current_config_name)
-            self.operationSucceeded.emit(f'已创建并切换到配置: {name}')
+            self.operationSucceeded.emit(self._tr('settings.status.profile_created', name=name))
             return True
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'创建失败：{exc}')
+            self.operationFailed.emit(self._tr('settings.status.profile_create_failed', error=exc))
             return False
 
     @Slot(str, result=bool)
@@ -452,16 +486,16 @@ class SettingsController(QObject):
             if deleted_current:
                 self.configSwitched.emit()
                 self.currentProfileChanged.emit(self._iaa.config.current_config_name)
-            self.operationSucceeded.emit(f'已删除配置: {name}')
+            self.operationSucceeded.emit(self._tr('settings.status.profile_deleted', name=name))
             return True
         except FileNotFoundError:
-            self.operationFailed.emit(f'配置不存在: {name}')
+            self.operationFailed.emit(self._tr('settings.status.profile_missing', name=name))
             return False
         except RuntimeError as e:
-            self.operationFailed.emit(str(e))
+            self.operationFailed.emit(translate_error(self._language(), e))
             return False
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'删除失败：{exc}')
+            self.operationFailed.emit(self._tr('settings.status.profile_delete_failed', error=exc))
             return False
 
     @Slot(str, str, result=bool)
@@ -473,14 +507,14 @@ class SettingsController(QObject):
             if renamed_current:
                 self.configSwitched.emit()
                 self.currentProfileChanged.emit(self._iaa.config.current_config_name)
-            self.operationSucceeded.emit(f'已重命名为: {new_name}')
+            self.operationSucceeded.emit(self._tr('settings.status.profile_renamed', name=new_name))
             return True
         except FileNotFoundError:
-            self.operationFailed.emit(f'配置不存在: {old_name}')
+            self.operationFailed.emit(self._tr('settings.status.profile_missing', name=old_name))
             return False
         except FileExistsError:
-            self.operationFailed.emit(f'配置名称已存在: {new_name}')
+            self.operationFailed.emit(self._tr('settings.status.profile_exists', name=new_name))
             return False
         except Exception as exc:  # noqa: BLE001
-            self.operationFailed.emit(f'重命名失败：{exc}')
+            self.operationFailed.emit(self._tr('settings.status.profile_rename_failed', error=exc))
             return False

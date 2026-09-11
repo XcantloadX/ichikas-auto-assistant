@@ -1,0 +1,42 @@
+{
+  "version": 3,
+  "definitions": {
+    "2eb13fe9-08d5-4cee-a18a-57b8c37215a5": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.TextEventMember",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 860,
+          "y1": 153.67901913153756,
+          "x2": 961.761250884603,
+          "y2": 218.6373433970985
+        }
+      },
+      "displayName": "Event Characters"
+    },
+    "b57ec406-7be0-4220-b7c2-59d8570a8450": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.ButtonConfirm",
+      "variant": "en",
+      "props": {},
+      "displayName": "Select"
+    },
+    "9dd57d2f-2810-4caf-878e-eb7d70438211": {
+      "type": "prefab",
+      "name": "Live.AutoSetDialog.TextUnitRecommend",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 344.20020699411396,
+          "y1": 105.51647465840881,
+          "x2": 398.0832494906558,
+          "y2": 150.4707520042624
+        }
+      },
+      "displayName": "Auto"
+    }
+  }
+}

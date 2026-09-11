@@ -2,7 +2,17 @@ import time
 import unittest
 
 from iaa.application.qt.models.progress import ProgressState, progress_event_to_state
+from iaa.i18n import TStr
 from iaa.progress import TaskProgressEvent
+
+
+def resolve_status(value) -> str:
+    """把 TStr / TStr 列表按 zh_CN 解析成文本（i18n 设计下 status_text 为 Translatable）。"""
+    if isinstance(value, list):
+        return ' > '.join(p.zh_CN if isinstance(p, TStr) else str(p) for p in value)
+    if isinstance(value, TStr):
+        return value.zh_CN
+    return str(value)
 
 
 class ProgressBridgeStateTests(unittest.TestCase):
@@ -18,7 +28,7 @@ class ProgressBridgeStateTests(unittest.TestCase):
             )
         )
         self.assertEqual(state.progress_percent, 0)
-        self.assertEqual(state.status_text, '单人演出 > 开始执行')
+        self.assertEqual(resolve_status(state.status_text), '单人演出 > 开始执行')
 
     def test_phase_message_updates_total_progress(self) -> None:
         prev = ProgressState(status_text='单人演出 > 开始执行', progress_percent=0)
@@ -40,7 +50,7 @@ class ProgressBridgeStateTests(unittest.TestCase):
             prev,
         )
         self.assertEqual(state.progress_percent, 75)
-        self.assertIn('列表循环 (1/2)', state.status_text)
+        self.assertIn('列表循环 (1/2)', resolve_status(state.status_text))
 
     def test_task_failed_sets_error_text(self) -> None:
         state = progress_event_to_state(
@@ -53,8 +63,8 @@ class ProgressBridgeStateTests(unittest.TestCase):
                 payload={'error': 'boom'},
             )
         )
-        self.assertEqual(state.last_error_text, '执行「单人演出」时出错：boom')
-        self.assertEqual(state.status_text, '执行「单人演出」时出错：boom')
+        self.assertEqual(resolve_status(state.last_error_text), '执行「单人演出」时出错：boom')
+        self.assertEqual(resolve_status(state.status_text), '执行「单人演出」时出错：boom')
 
 
 if __name__ == '__main__':

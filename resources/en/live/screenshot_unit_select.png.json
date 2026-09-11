@@ -1,0 +1,50 @@
+{
+  "version": 3,
+  "definitions": {
+    "c6abf269-d131-45f6-983c-5f0d911a987a": {
+      "type": "prefab",
+      "name": "Live.ButtonAutoLiveSettings",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 581.7270688067293,
+          "y1": 652.6496433398092,
+          "x2": 607.7270688067293,
+          "y2": 676.6496433398092
+        }
+      },
+      "displayName": "Auto-play settings button"
+    },
+    "564d2236-f9d6-4d4b-9c10-8c8b31143a81": {
+      "type": "prefab",
+      "name": "Live.SwitchAutoLiveOn",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 462.82978201649405,
+          "y1": 645.1825301085688,
+          "x2": 569.8297820164939,
+          "y2": 684.1825301085688
+        }
+      },
+      "displayName": "AutoLive ON"
+    },
+    "c4eb4872-6d30-4804-8594-9b98a9add2da": {
+      "type": "prefab",
+      "name": "Live.ButtonSetRecommendUnit",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 590.1586437650901,
+          "y1": 89.12948089751825,
+          "x2": 758.1639375869845,
+          "y2": 119.11024594316174
+        }
+      },
+      "displayName": "Recommended Setup"
+    }
+  }
+}

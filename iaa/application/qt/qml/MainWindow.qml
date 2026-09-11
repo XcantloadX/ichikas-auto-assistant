@@ -79,11 +79,11 @@ ApplicationWindow {
 
     function showMigrationMessage(text) {
         App.Modal.message({
-            title: "配置升级",
+            title: App.Globals.t("modal.migration.title"),
             content: text,
             textFormat: Text.RichText,
             buttons: [
-                { text: "确定", value: "ok", highlighted: true }
+                { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
             ],
             width: 520
         })
@@ -97,22 +97,22 @@ ApplicationWindow {
         }
         if (anyRunning) {
             App.Modal.message({
-                title: "确认退出",
-                content: "当前仍在执行任务，确定要退出吗？退出将先停止任务。",
+                title: App.Globals.t("modal.exit.title"),
+                content: App.Globals.t("modal.exit.content"),
                 buttons: [
-                    { text: "取消", value: "cancel" },
-                    { text: "退出", value: "ok", highlighted: true }
+                    { text: App.Globals.t("common.cancel"), value: "cancel" },
+                    { text: App.Globals.t("modal.exit.confirm"), value: "ok", highlighted: true }
                 ],
                 width: 420,
                 closePolicy: Popup.NoAutoClose
             }, function(result) {
                 if (result === "ok") {
-                    navigation.requestGuardedAction("关闭窗口", closeRunner)
+                    navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
                 }
             })
             return
         }
-        navigation.requestGuardedAction("关闭窗口", closeRunner)
+        navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
     }
 
     NavigationCoordinator {
@@ -200,39 +200,48 @@ ApplicationWindow {
     Dialog {
         id: unsavedChangesDialog
         modal: true
-        title: "未保存更改"
+        title: App.Globals.t("modal.unsaved.title")
         standardButtons: Dialog.NoButton
-        width: 420
+        width: Math.max(360, Math.min(540, window.width - 48))
         anchors.centerIn: Overlay.overlay
 
-        property string actionLabel: "继续此操作"
+        property string actionLabel: App.Globals.t("common.continue_action")
 
         contentItem: ColumnLayout {
             spacing: 12
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "当前配置有未保存的更改。" + unsavedChangesDialog.actionLabel + "前，请先选择处理方式。"
+                text: App.Globals.t("modal.unsaved.content").replace("{action}", unsavedChangesDialog.actionLabel)
             }
             RowLayout {
-                Layout.alignment: Qt.AlignRight
+                Layout.fillWidth: true
                 spacing: 8
                 Button {
-                    text: "取消"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.cancel")
                     onClicked: {
                         navigation.clearPendingGuardedAction()
                         unsavedChangesDialog.close()
                     }
                 }
                 Button {
-                    text: "不保存并继续"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.do_not_save_and_continue")
                     onClicked: {
                         unsavedChangesDialog.close()
                         navigation.discardAndContinuePendingAction()
                     }
                 }
                 Button {
-                    text: "保存并继续"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.save_and_continue")
                     highlighted: true
                     onClicked: {
                         unsavedChangesDialog.close()
@@ -254,13 +263,13 @@ ApplicationWindow {
                 content: message,
                 buttons: [
                     {
-                        text: "复制",
+                        text: App.Globals.t("common.copy"),
                         onClick: function() {
                             App.Clipboard.copyText(message)
-                            App.Notice.show("success", "已复制到剪贴板")
+                            App.Notice.show("success", App.Globals.t("notice.copied_to_clipboard"))
                         }
                     },
-                    { text: "确定", highlighted: true, onClick: "close" }
+                    { text: App.Globals.t("common.ok"), highlighted: true, onClick: "close" }
                 ]
             })
         }
@@ -275,14 +284,14 @@ ApplicationWindow {
         var fields = JSON.parse(invalidFieldsJson)
         var fieldList = fields.map(function(f) { return "&nbsp;&nbsp;• " + f }).join("<br>")
         App.Modal.message({
-            title: "配置校验失败",
-            content: "配置 <b>" + configName + "</b> 中以下字段校验失败：<br>"
-                + fieldList
-                + "<br><br>错误详情：<br>" + errorDetails
-                + "<br><br>是否将这些字段重置为默认值？",
+            title: App.Globals.t("modal.config_reset.title"),
+            content: App.Globals.t("modal.config_reset.content")
+                .replace("{name}", configName)
+                .replace("{fields}", fieldList)
+                .replace("{details}", errorDetails),
             buttons: [
-                { text: "不重置", value: "cancel" },
-                { text: "重置", value: "reset", highlighted: true }
+                { text: App.Globals.t("modal.config_reset.no_reset"), value: "cancel" },
+                { text: App.Globals.t("modal.config_reset.reset"), value: "reset", highlighted: true }
             ],
             width: 480
         }, function(result) {
@@ -295,7 +304,7 @@ ApplicationWindow {
     // ── 匿名上报首次同意弹窗（启动时询问） ──────────────────────
     Dialog {
         id: telemetryConsentDialog
-        title: "数据收集"
+        title: App.Globals.t("preferences.group.telemetry")
         modal: true
         closePolicy: Popup.NoAutoClose
         anchors.centerIn: parent
@@ -306,7 +315,7 @@ ApplicationWindow {
             width: parent.width
             spacing: 10
             Text {
-                text: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa，你也可以随时在“设置”中更改。"
+                text: App.Globals.t("modal.telemetry.content")
                 font.pixelSize: 13
                 color: palette.windowText
                 wrapMode: Text.Wrap
@@ -316,13 +325,13 @@ ApplicationWindow {
 
             Switch {
                 id: staticsSwitch
-                text: "匿名收集统计数据"
+                text: App.Globals.t("preferences.field.telemetry_statics")
                 checked: true
             }
 
             Switch {
                 id: sentrySwitch
-                text: "发送匿名错误报告"
+                text: App.Globals.t("preferences.field.telemetry_sentry")
                 checked: true
             }
 
@@ -332,12 +341,12 @@ ApplicationWindow {
 
                 Switch {
                     id: screenshotSwitch
-                    text: "错误上报时附带游戏截图"
+                    text: App.Globals.t("preferences.field.telemetry_upload_screenshot")
                     checked: true
                 }
 
                 HelpTip {
-                    richText: "只包含游戏画面截图，不含电脑桌面或其他应用内容。<br>如果不希望发送截图，请关闭此选项。"
+                    richText: App.Globals.t("modal.telemetry.screenshot_help")
                     Layout.alignment: Qt.AlignVCenter
                 }
             }
@@ -357,7 +366,7 @@ ApplicationWindow {
                 anchors.rightMargin: 24
                 spacing: 8
                 Button {
-                    text: "确定"
+                    text: App.Globals.t("common.ok")
                     highlighted: true
                     onClicked: {
                         if (window.appCtrl) {
@@ -401,10 +410,10 @@ ApplicationWindow {
             var hasPathIssue = window.appCtrl.checkPathIssues()
             if (hasPathIssue) {
                 App.Modal.message({
-                    title: "提示",
-                    content: "请勿将 iaa 放在 Program Files 程序文件夹下，以及 OneDrive 等云盘同步文件夹内，否则部分功能可能出现异常！",
+                    title: App.Globals.t("modal.path_warning.title"),
+                    content: App.Globals.t("modal.path_warning.content"),
                     buttons: [
-                        { text: "确定", value: "ok", highlighted: true }
+                        { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
                     ],
                     width: 520
                 })

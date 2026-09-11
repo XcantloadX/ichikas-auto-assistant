@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "definitions": {
+    "c913df93-6d3c-4e2c-9dc4-4ad9e6d3ac46": {
+      "type": "prefab",
+      "name": "Live.ButtonGoSongSelect",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 830.0049844602122,
+          "y1": 653,
+          "x2": 1001.9948161613793,
+          "y2": 680
+        }
+      },
+      "displayName": "To Song Select"
+    },
+    "8e5e7013-5cd4-45b1-8ab1-c4c71cc788c5": {
+      "type": "prefab",
+      "name": "Live.ButtonLiveCompletedOk",
+      "variant": "en",
+      "props": {},
+      "displayName": "OK"
+    },
+    "883ff9c4-e80c-4987-bb9f-8e1d192cf1ef": {
+      "type": "template",
+      "props": {
+        "image": {
+          "kind": "image",
+          "x1": 278.37414064060346,
+          "y1": 654.9433231553675,
+          "x2": 418.44620772557386,
+          "y2": 678.9681418765846
+        }
+      },
+      "name": "Live.ButtonGetEventToken",
+      "displayName": "Get Event Token"
+    }
+  }
+}

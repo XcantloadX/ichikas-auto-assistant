@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "definitions": {
+    "d708ea2d-f0ff-4552-9e47-e677dad2a86c": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.AdMeta.ButtonClose",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 24,
+          "y1": 24,
+          "x2": 51,
+          "y2": 52
+        },
+        "region": {
+          "kind": "rect",
+          "x1": 0,
+          "y1": 0,
+          "x2": 1280,
+          "y2": 80
+        }
+      },
+      "displayName": "Meta plain close X",
+      "variant_policy": {
+        "tw": "exclude",
+        "cn": "exclude",
+        "en": "inherit"
+      }
+    }
+  }
+}

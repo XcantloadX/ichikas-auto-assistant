@@ -18,7 +18,8 @@
       "displayName": "工具栏 LIVE 按钮（台服活动变体）",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "exclude"
+        "cn": "exclude",
+        "en": "exclude"
       }
     }
   }

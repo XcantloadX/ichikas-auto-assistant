@@ -1,0 +1,25 @@
+{
+  "version": 3,
+  "definitions": {
+    "b5c65d2f-9d11-4d75-b1bb-3f758ab23fcb": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.TextAutoPlayLimitIncreased",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 504,
+          "y1": 352,
+          "x2": 774,
+          "y2": 372
+        }
+      },
+      "displayName": "Auto-Play limit increased.",
+      "variant_policy": {
+        "tw": "exclude",
+        "cn": "exclude",
+        "en": "inherit"
+      }
+    }
+  }
+}

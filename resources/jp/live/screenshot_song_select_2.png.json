@@ -18,7 +18,8 @@
       "displayName": "歌曲选择页面 清空搜索按钮",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

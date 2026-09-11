@@ -9,8 +9,10 @@ from kotonebot import device, Loop, action, sleep, color, ocr
 from .. import R
 from ..common import at_home, go_home
 from iaa.context import conf, server, task_reporter, keyboard
+from iaa.i18n import TStr, tstr, translate
 from ._select_song import next_song
 from ._scene import at_song_select
+from .auto_live_constants import AP_KEEP_UNCHANGED, LEGACY_AP_KEEP, LEGACY_SONG_KEEP
 from .auto_live_core import RhythmGameAnalyzer
 from iaa.definitions.enums import ChallengeLiveAward, GameCharacter
 
@@ -19,6 +21,7 @@ LiveMode = Literal['all'] | Literal['once'] | Literal['script'] | int | None
 SoloPlayMode = Literal['game_auto', 'script_auto']
 SongChoiceMode = Literal['current', 'specified', 'random']
 LoopSongMode = Literal['list_next', 'random']
+ApMultiplier = int | Literal['maximum'] | None
 PrefabClass = TypeVar('PrefabClass', bound=Prefab)
 ChallengeCharacterPrefab = tuple[PrefabClass, PrefabClass | None]
 
@@ -28,7 +31,7 @@ class LivePlan(BaseModel):
     
     play_mode: SoloPlayMode = 'game_auto'
     debug_enabled: bool = False
-    ap_multiplier: int | None = None
+    ap_multiplier: ApMultiplier = None
     auto_set_unit: bool = False
     latency_compensation_ms: int = 0
     """延迟补偿（毫秒）。脚本自动演出时按 OpenSekai 公式换算为像素后提前按下，链路延迟越大调越大。"""
@@ -91,8 +94,8 @@ CHALLENGE_AWARD_PREFABS: dict[ChallengeLiveAward, PrefabClass] = {
 def _skip():
     if server() == 'jp':
         device.click(1, 1)
-    elif server() == 'tw' or server() == 'cn':
-        # 台服要点侧边，点左上角没用
+    elif server() == 'tw' or server() == 'cn' or server() == 'en':
+        # TW/CN/EN need side taps; top-left taps do not reliably advance these screens.
         device.click(6, 346)
     else:
         raise NotImplementedError(f'Unsupported server: {server()}')
@@ -114,10 +117,10 @@ def select_song(song_name: str):
         kbd.enter()
     sleep(0.5)
 
-def _configure_ap_multiplier(ap_multiplier: int) -> None:
+def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
     rep = task_reporter()
     logger.info(f'Setting AP multiplier to {ap_multiplier}.')
-    rep.message('设置 AP 倍率')
+    rep.message(TStr(zh_CN='设置 AP 倍率', en_US='Setting AP multiplier'))
     # 打开 AP 倍率设置
     for _ in Loop():
         if R.Live.ApMultiplierDialog.TextTip.find():
@@ -126,44 +129,64 @@ def _configure_ap_multiplier(ap_multiplier: int) -> None:
             break
         elif R.Live.ButtonApMultiplierSettings.try_click():
             logger.debug('Clicked AP multiplier settings button.')
-    # 执行
-    retry_count = 0
-    def _set(ap_multiplier: int) -> bool:
-        # 设置 AP 倍率
+    def _read_current_multiplier() -> int:
         current_multiplier = ocr.ocr(R.Live.ApMultiplierDialog.BoxApNumber).squash().numbers()
         if not current_multiplier:
             raise RuntimeError('Failed to read current AP multiplier.')
-        current_multiplier = int(current_multiplier[0])
-        logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
-        # 计算点击方向与次数
-        if current_multiplier < ap_multiplier:
-            button = R.Live.ApMultiplierDialog.PointPlus
-            times = ap_multiplier - current_multiplier
-        elif current_multiplier > ap_multiplier:
-            button = R.Live.ApMultiplierDialog.PointMinus
-            times = current_multiplier - ap_multiplier
-        else:
-            logger.debug('Current AP multiplier already at target.')
-            return True
-        # 执行
-        for i in range(times):
-            device.click(button)
-            logger.debug(
-                f'Clicked AP multiplier {"plus" if button == R.Live.ApMultiplierDialog.PointPlus else "minus"} button. ({i + 1}/{times})'
-            )
+        return int(current_multiplier[0])
+
+    def _set_maximum() -> None:
+        for i in range(12):
+            plus_btn = R.Live.ApMultiplierDialog.ButtonPlus.q(enabled=True).find()
+            if plus_btn is None:
+                logger.info('Maximum AP multiplier reached.')
+                return
+            plus_btn.click()
+            logger.debug(f'Clicked AP multiplier plus button while finding maximum. ({i + 1}/12)')
             sleep(0.3)
-        return False
-    while True:
-        device.screenshot()
-        try:
-            if _set(ap_multiplier):
-                break
-        except Exception:
-            logger.exception('Error setting AP multiplier')
-        sleep(0.5)
-        retry_count += 1
-        if retry_count >= 5:
-            raise RuntimeError('Failed to set AP multiplier after 5 attempts.')
+            device.screenshot()
+        raise RuntimeError('Failed to find maximum AP multiplier after 12 attempts.')
+
+    # 执行
+    if ap_multiplier == 'maximum':
+        _set_maximum()
+    else:
+        retry_count = 0
+
+        def _set(ap_multiplier: int) -> bool:
+            # 设置 AP 倍率
+            current_multiplier = _read_current_multiplier()
+            logger.debug(f'Current AP multiplier: {current_multiplier}, target: {ap_multiplier}')
+            # 计算点击方向与次数
+            if current_multiplier < ap_multiplier:
+                button = R.Live.ApMultiplierDialog.ButtonPlus
+                button_name = 'plus'
+                times = ap_multiplier - current_multiplier
+            elif current_multiplier > ap_multiplier:
+                button = R.Live.ApMultiplierDialog.ButtonMinus
+                button_name = 'minus'
+                times = current_multiplier - ap_multiplier
+            else:
+                logger.debug('Current AP multiplier already at target.')
+                return True
+            # 执行
+            for i in range(times):
+                button.click()
+                logger.debug(f'Clicked AP multiplier {button_name} button. ({i + 1}/{times})')
+                sleep(0.3)
+            return False
+
+        while True:
+            device.screenshot()
+            try:
+                if _set(ap_multiplier):
+                    break
+            except Exception:
+                logger.exception('Error setting AP multiplier')
+            sleep(0.5)
+            retry_count += 1
+            if retry_count >= 5:
+                raise RuntimeError('Failed to set AP multiplier after 5 attempts.')
     # 然后关闭弹窗
     R.Live.ApMultiplierDialog.ButtonConfirm.wait().click()
     sleep(0.5)
@@ -194,7 +217,7 @@ def _configure_auto_live(live_mode: LiveMode) -> bool:
                 break
             elif R.Live.TextAtLeastOneAp.find():
                 logger.info('No AP left to enable auto live. Exiting.')
-                rep.message('AP 不足，正在退出')
+                rep.message(TStr(zh_CN='AP 不足，正在退出', en_US='Not enough AP, exiting'))
                 return False
             elif R.Live.ButtonAutoLiveSettings.try_click():
                 logger.debug('Clicked auto live settings button.')
@@ -230,7 +253,7 @@ def _configure_auto_live(live_mode: LiveMode) -> bool:
 def _configure_unit() -> None:
     rep = task_reporter()
     logger.info('Auto setting unit.')
-    rep.message('自动编队中')
+    rep.message(TStr(zh_CN='自动编队中', en_US='Auto team setup'))
     # 首先打开自动编队
     for _ in Loop():
         if R.Live.AutoSetDialog.TextUnitRecommend.find():
@@ -290,7 +313,7 @@ def _wait_live_end(live_mode: LiveMode) -> None:
             # 结束条件是「已完成指定次数的演出」提示
             if R.Live.TextAutoLiveCompleted.exists():
                 _skip()
-                rep.message('AP 不足，正在退出')
+                rep.message(TStr(zh_CN='AP 不足，正在退出', en_US='Not enough AP, exiting'))
                 logger.info('Auto lives all completed.')
                 sleep(0.3)
                 break
@@ -307,8 +330,7 @@ def _wait_live_end(live_mode: LiveMode) -> None:
 def _settle_to_home() -> bool:
     if at_home():
         return True
-    # 台服要点 OK 才行
-    if server() == 'tw' and R.Live.ButtonLiveCompletedOk.try_click():
+    if (server() == 'tw' or server() == 'en') and R.Live.ButtonLiveCompletedOk.try_click():
         logger.debug('Clicked live completed ok button.')
     _skip()
     sleep(0.6)
@@ -349,7 +371,7 @@ def _finish_live(
     if return_to is None:
         return True
     # 返回
-    rep.message('结算中')
+    rep.message(TStr(zh_CN='结算中', en_US='Settling results'))
     for _ in Loop(interval=0.5):
         if finish_pre_check:
             should_skip, should_break = finish_pre_check()
@@ -369,7 +391,7 @@ def _finish_live(
 
 def _enter_song_select() -> None:
     reporter = task_reporter()
-    reporter.message('进入单人演出')
+    reporter.message(TStr(zh_CN='进入单人演出', en_US='Entering solo live'))
     # 进入单人演出
     for _ in Loop(interval=0.6):
         if R.Hud.ButtonLive.q(threshold=0.55).find():
@@ -405,7 +427,7 @@ def _prepare_solo_live(song_select_mode: SongChoiceMode | Literal['list_next'], 
 def _start_single_live_run(
     live_mode: LiveMode,
     auto_set_unit: bool,
-    ap_multiplier: int | None,
+    ap_multiplier: ApMultiplier,
     song_select_mode: SongChoiceMode,
     song_name: str | None,
     debug_enabled: bool = False,
@@ -429,7 +451,7 @@ def start_auto_live(
     finish_pre_check: Callable[[], tuple[bool, bool]] | None = None,
     debug_enabled: bool = False,
     auto_set_unit: bool = False,
-    ap_multiplier: int | None = None,
+    ap_multiplier: ApMultiplier = None,
     latency_compensation_ms: int = 0,
 ) -> bool:
     """
@@ -453,7 +475,7 @@ def start_auto_live(
         如果 `should_skip` 为 True，则 `should_break` 会被忽略。
     :param debug_enabled: 是否启用调试模式，启用后会在自动演出时显示更多日志，并在脚本自动演出时显示节奏游戏分析器的调试信息。
     :param auto_set_unit: 是否在演出前自动编队
-    :param ap_multiplier: AP 倍率，范围 [0, 10]。若为数字，表示演出前自动设置倍率为对应值；若为 None，表示保持现状。
+    :param ap_multiplier: AP 倍率，范围 [0, 10]；若为 "maximum"，表示设置为当前可用最大值；若为 None，表示保持现状。
     :param latency_compensation_ms: 延迟补偿（毫秒），仅脚本自动演出生效。按 OpenSekai 公式换算为像素后提前按下。
     :raises NotImplementedError: 如果未实现的功能被调用。
     :raises ValueError: 延迟补偿为负数或超过 2000ms 时。
@@ -464,7 +486,7 @@ def start_auto_live(
     if not (0 <= latency_compensation_ms <= 2000):
         raise ValueError(f'latency_compensation_ms must be between 0 and 2000, got {latency_compensation_ms}.')
     rep = task_reporter()
-    rep.message('准备开始演出')
+    rep.message(TStr(zh_CN='准备开始演出', en_US='Preparing live'))
     if return_to == 'select':
         logger.warning(
             "return_to='select' is deprecated; prefer return_to='home' and re-enter song select manually."
@@ -485,7 +507,7 @@ def start_auto_live(
         _configure_unit()
     logger.info('Auto live setting finished.')
     # 演出
-    rep.message('演出中')
+    rep.message(TStr(zh_CN='演出中', en_US='Live in progress'))
     _run_live(live_mode, debug_enabled, latency_compensation_ms)
     _wait_live_end(live_mode)
     return _finish_live(return_to, finish_pre_check)
@@ -510,8 +532,8 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
     """
     if isinstance(plan, (SingleLoopPlan, ListLoopPlan)) and plan.loop_count is not None and plan.loop_count <= 0:
         raise ValueError('loop_count must be positive.')
-    if plan.ap_multiplier is not None and not (0 <= plan.ap_multiplier <= 10):
-        raise ValueError('ap_multiplier must be between 0 and 10.')
+    if plan.ap_multiplier is not None and plan.ap_multiplier != 'maximum' and not (0 <= plan.ap_multiplier <= 10):
+        raise ValueError('ap_multiplier must be between 0 and 10, "maximum", or None.')
     if not (0 <= plan.latency_compensation_ms <= 2000):
         raise ValueError(f'latency_compensation_ms must be between 0 and 2000, got {plan.latency_compensation_ms}.')
     if isinstance(plan, (OncePlan, SingleLoopPlan)) and plan.song_select_mode == 'specified' and not plan.song_name:
@@ -528,15 +550,15 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
         max_count = plan.loop_count or float('inf')
         # 游戏内 AUTO
         if plan.play_mode == 'game_auto':
-            reporter.message('开始单曲循环（游戏自动）')
+            reporter.message(TStr(zh_CN='开始单曲循环（游戏自动）', en_US='Starting single-song loop (game auto)'))
             _prepare_solo_live(plan.song_select_mode, plan.song_name)
             start_auto_live('all', return_to='home', auto_set_unit=auto_set_unit, ap_multiplier=plan.ap_multiplier, latency_compensation_ms=plan.latency_compensation_ms)
-            reporter.message('单曲循环完成，返回首页')
+            reporter.message(TStr(zh_CN='单曲循环完成，返回首页', en_US='Single-song loop complete, returning home'))
         # 脚本自动
         else:
             total = (int(max_count) if max_count != float('inf') else None)
-            reporter.message('开始单曲循环（脚本自动）')
-            with reporter.phase('单曲循环', total=total) as phase:
+            reporter.message(TStr(zh_CN='开始单曲循环（脚本自动）', en_US='Starting single-song loop (script auto)'))
+            with reporter.phase(tstr('progress.phase.single_loop'), total=total) as phase:
                 first_run = True
                 while True:
                     if not _start_single_live_run(
@@ -555,32 +577,35 @@ def solo_live(plan: OncePlan | SingleLoopPlan | ListLoopPlan):
                     if count >= max_count:
                         logger.info(f'Completed {count} loops.')
                         break
-            reporter.message('单曲循环完成，返回首页')
+            reporter.message(TStr(zh_CN='单曲循环完成，返回首页', en_US='Single-song loop complete, returning home'))
         return
     if isinstance(plan, ListLoopPlan):
         # 列表循环
         max_count = plan.loop_count or float('inf')
         total = (int(max_count) if max_count != float('inf') else None)
-        reporter.message('开始列表循环')
-        with reporter.phase('列表循环', total=total) as phase:
+        reporter.message(TStr(zh_CN='开始列表循环', en_US='Starting list loop'))
+        with reporter.phase(tstr('progress.phase.list_loop'), total=total) as phase:
             first_run = True
             for _ in Loop():
                 _prepare_solo_live(plan.loop_song_mode, None)
-                start_auto_live(
+                if not start_auto_live(
                     'once' if plan.play_mode == 'game_auto' else 'script',
                     return_to='home',
                     debug_enabled=plan.debug_enabled,
                     auto_set_unit=auto_set_unit,
                     ap_multiplier=plan.ap_multiplier if first_run else None,
                     latency_compensation_ms=plan.latency_compensation_ms,
-                )
+                ):
+                    logger.info('No AP left for list loop. Stopping.')
+                    go_home()
+                    break
                 first_run = False
                 count += 1
                 logger.info(f'Song looped. {count}/{max_count}')
                 phase.step(f'已完成 {count} 次列表循环')
                 if count >= max_count:
                     break
-        reporter.message('列表循环完成')
+        reporter.message(TStr(zh_CN='列表循环完成', en_US='List loop complete'))
         return
     assert_never(plan)
 
@@ -589,7 +614,7 @@ def challenge_live(
     character: GameCharacter
 ):
     rep = task_reporter()
-    rep.message('进入挑战演出')
+    rep.message(TStr(zh_CN='进入挑战演出', en_US='Entering challenge live'))
     # 进入挑战演出
     for _ in Loop(interval=0.6):
         if R.Hud.ButtonLive.q(threshold=0.55).try_click():
@@ -612,7 +637,7 @@ def challenge_live(
             sleep(1)
 
     # 选择角色
-    rep.message(f'选择角色：{character.value}')
+    rep.message(TStr(zh_CN=f'选择角色：{character.value}', en_US=f'Selecting character: {character.value}'))
     logger.info(f'Selecting character: {character.value}')
     char, group = CHARACTER_PREFABS[character]
     for _ in Loop(interval=0.6):
@@ -639,27 +664,76 @@ def challenge_live(
                 sleep(0.3)
                 return True, False
         return False, False
-    rep.message('开始挑战演出')
+    rep.message(TStr(zh_CN='开始挑战演出', en_US='Starting challenge live'))
     start_auto_live('once', finish_pre_check=claim_reward, auto_set_unit=False, ap_multiplier=None)
-    rep.message('挑战演出完成，返回首页')
+    rep.message(TStr(zh_CN='挑战演出完成，返回首页', en_US='Challenge live complete, returning home'))
     go_home()
 
 
-SONG_KEEP_UNCHANGED = '保持不变'
+class AutoLivePayloadError(ValueError):
+    """auto_live payload 解析错误，携带 i18n 翻译键与参数。
+
+    错误身份用 ``key`` + ``params`` 承载，显示层（Qt 控制器）据此按界面语言
+    渲染；``str(exc)`` 渲染 zh_CN 默认文本，供 CLI 等无 i18n 上下文的调用方
+    直接输出，保证任务层不感知界面语言。
+
+    :param key: iaa.i18n 翻译键，如 ``auto_live.error.count_positive``。
+    :param params: 翻译模板的格式化参数，如 ``mode='xxx'``。
+    """
+
+    def __init__(self, key: str, /, **params: object) -> None:
+        text = translate('zh_CN', key)
+        super().__init__(text.format(**params) if params else text)
+        self.key = key
+        self.params = params
 
 
 def normalize_song_name_input(value: str) -> str | None:
+    """归一化 payload 中的歌曲名称输入。
+
+    :param value: 原始输入，可能为空串、旧版「保持不变」值或哨兵 ``SONG_KEEP_UNCHANGED``。
+    :return: 有效歌曲名称；空输入、「保持不变」或哨兵时返回 None。
+    """
     normalized = (value or '').strip()
-    if not normalized or normalized == SONG_KEEP_UNCHANGED:
+    if not normalized or normalized in LEGACY_SONG_KEEP:
         return None
     return normalized
 
 
+def _normalize_ap_multiplier_raw(raw: object) -> ApMultiplier:
+    """归一化 payload 中的 AP 倍率原始值。
+
+    兼容 None/空串、旧版中文「保持现状」与哨兵 ``AP_KEEP_UNCHANGED``（返回 None）、
+    ``'maximum'`` 以及 0-10 的整数（或整数字符串）。
+
+    :raises AutoLivePayloadError: 数值非法或超出 0-10 范围时。
+    """
+    if raw in (None, '', *LEGACY_AP_KEEP):
+        return None
+    if raw == 'maximum':
+        return 'maximum'
+    try:
+        ap_multiplier = int(raw)
+    except ValueError as exc:
+        raise AutoLivePayloadError('auto_live.error.ap_multiplier') from exc
+    if not (0 <= ap_multiplier <= 10):
+        raise AutoLivePayloadError('auto_live.error.ap_multiplier')
+    return ap_multiplier
+
+
 def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListLoopPlan:
+    """把 GUI 导出/CLI 传入的 auto_live payload 解析为演出计划。
+
+    这是 payload 解析的唯一权威实现（Qt models 侧复用，勿另建副本）。
+
+    :param payload: 原始 payload，含 countMode/loopMode/playMode/apMultiplier/songName 等键。
+    :return: 解析出的 :class:`SingleLoopPlan` 或 :class:`ListLoopPlan`。
+    :raises AutoLivePayloadError: 指定次数非正整数、次数模式/AP 倍率/循环模式非法时。
+    """
     count_mode = str(payload.get('countMode') or 'specify')
     loop_mode = str(payload.get('loopMode') or 'list')
     auto_mode = str(payload.get('playMode') or 'game_auto')
-    ap_multiplier_raw = payload.get('apMultiplier', '保持现状')
+    ap_multiplier_raw = payload.get('apMultiplier', AP_KEEP_UNCHANGED)
     debug_enabled = bool(payload.get('debugEnabled'))
     auto_set_unit = bool(payload.get('autoSetUnit'))
     song_name = normalize_song_name_input(str(payload.get('songName') or ''))
@@ -675,17 +749,12 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
     if count_mode == 'specify':
         raw_count = str(payload.get('count') or '').strip()
         if not raw_count.isdigit() or int(raw_count) <= 0:
-            raise ValueError('指定次数必须为正整数。')
+            raise AutoLivePayloadError('auto_live.error.count_positive')
         count = int(raw_count)
     elif count_mode != 'all':
-        raise ValueError(f'未知的次数模式：{count_mode}')
+        raise AutoLivePayloadError('auto_live.error.unknown_count_mode', mode=count_mode)
 
-    if ap_multiplier_raw in (None, '', '保持现状'):
-        ap_multiplier: int | None = None
-    else:
-        ap_multiplier = int(ap_multiplier_raw)
-        if not (0 <= ap_multiplier <= 10):
-            raise ValueError('AP 倍率必须在 0 到 10 之间。')
+    ap_multiplier = _normalize_ap_multiplier_raw(ap_multiplier_raw)
 
     if loop_mode == 'single':
         return SingleLoopPlan(
@@ -708,4 +777,4 @@ def auto_live_payload_to_plan(payload: dict[str, Any]) -> SingleLoopPlan | ListL
             auto_set_unit=auto_set_unit,
             latency_compensation_ms=latency_compensation_ms,
         )
-    raise ValueError(f'未知的循环模式：{loop_mode}')
+    raise AutoLivePayloadError('auto_live.error.unknown_loop_mode', mode=loop_mode)
