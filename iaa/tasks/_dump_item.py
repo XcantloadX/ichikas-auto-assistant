@@ -4,6 +4,7 @@ import cv2
 
 from iaa.game_ui.list_view import ListView
 from iaa.context import task_reporter
+from iaa.i18n import tstr
 
 logger = logging.getLogger(__name__)
 
@@ -50,7 +51,7 @@ def _dump_item(
             saved += 1
 
         logger.info('Saved %d icons to %s', saved, output_dir)
-        rep.message(f'已保存 {saved} 个图标到 {output_dir}')
+        rep.message(tstr('progress.dump_item_saved').format(count=saved, path=output_dir))
     except Exception as e:
         logger.exception('Failed to save icons: %s', e)
-        rep.message(f'保存图标失败: {e}')
+        rep.message(tstr('progress.dump_item_failed').format(error=e))

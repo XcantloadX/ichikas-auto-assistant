@@ -39,7 +39,7 @@ Item {
 
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: root.hasSession && session.deviceRunning ? "停止" : "启动"
+                        text: root.hasSession && session.deviceRunning ? App.Globals.t("control.stop") : App.Globals.t("control.start")
                         // font.pixelSize: 14
                         color: powerBtn.enabled ? App.IaaTheme.fg : palette.placeholderText
                     }
@@ -50,13 +50,13 @@ Item {
                     }
                     if (session.deviceRunning) {
                         App.Modal.message({
-                            title: "停止游戏",
+                            title: App.Globals.t("page.device.stop_game_title"),
                             content: root.scriptRunning
-                                ? "当前正在运行脚本，终止游戏运行可能导致异常。是否继续？"
-                                : "将结束游戏并关闭虚拟屏，是否继续？",
+                                ? App.Globals.t("page.device.stop_game_script_running")
+                                : App.Globals.t("page.device.stop_game_confirm"),
                             buttons: [
-                                { text: "取消", value: "cancel" },
-                                { text: "停止", value: "ok", highlighted: true }
+                                { text: App.Globals.t("common.cancel"), value: "cancel" },
+                                { text: App.Globals.t("control.stop"), value: "ok", highlighted: true }
                             ],
                             width: 360
                         }, function(result) {

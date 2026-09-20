@@ -17,7 +17,8 @@
       "displayName": "星乃 一歌",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "2c1cd5be-19d4-4d04-bcc2-007a3a070a15": {
@@ -36,7 +37,8 @@
       "displayName": "天馬 咲希",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "e111fa38-1ff4-49c7-b1bd-fd876cb5ee3b": {
@@ -55,7 +57,8 @@
       "displayName": "望月 穂波",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "0aa9773e-68b7-464d-b96e-70cf4a630505": {
@@ -74,7 +77,8 @@
       "displayName": "日野森 志歩",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

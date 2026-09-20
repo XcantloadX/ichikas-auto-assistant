@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "definitions": {
+    "587370d6-25ac-441d-beeb-a5dcfdabccd3": {
+      "type": "prefab",
+      "name": "Cm.ButtonPlayCm",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 151,
+          "y1": 315,
+          "x2": 336.98875675675674,
+          "y2": 340
+        }
+      },
+      "displayName": "Watch Ad"
+    }
+  }
+}

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from PySide6.QtCore import QObject, Property, Signal, Slot, QMetaObject, Qt, Q_ARG
 
@@ -68,9 +68,17 @@ class TabManager(QObject):
     activeProfileChanged = Signal(str)
     activeProfilesChanged = Signal()
 
-    def __init__(self, parent: QObject | None = None, *, image_provider: 'ScrcpyImageProvider | None' = None) -> None:
+    def __init__(
+        self,
+        parent: QObject | None = None,
+        *,
+        image_provider: 'ScrcpyImageProvider | None' = None,
+        get_language: 'Callable[[], str] | None' = None,
+    ) -> None:
         super().__init__(parent)
         self._image_provider = image_provider
+        # GUI 语言来源（注入 i18nController.language 的 getter），供 device session 翻译状态文本
+        self._get_language = get_language
         self._tabs: list[_TabEntry] = []
         self._active_index: int = 0
         self._batch_mode: str = ''        # '' | 'sequential' | 'parallel'
@@ -92,9 +100,9 @@ class TabManager(QObject):
         # per-tab factory，与 config 绑定，避免跨 tab 状态污染。
         device_factory = DeviceFactory(bundle.iaa.config)
         bundle.iaa.scheduler._device_factory = device_factory
-        pb = ProgressBridge(self, hub=bundle.progress_hub)
-        rc = RunController(bundle.iaa, pb, self)
-        sc = SettingsController(bundle.iaa, self)
+        pb = ProgressBridge(self._get_language or (lambda: 'auto'), self, hub=bundle.progress_hub)
+        rc = RunController(bundle.iaa, pb, self, get_language=self._get_language)
+        sc = SettingsController(bundle.iaa, self, get_language=self._get_language)
         bundle.iaa.scheduler.on_error = lambda exc: QMetaObject.invokeMethod(
             self, '_on_scheduler_error', Qt.ConnectionType.QueuedConnection, Q_ARG(str, str(exc))
         )
@@ -104,11 +112,14 @@ class TabManager(QObject):
         if device_conf.control_impl == 'scrcpy' and device_conf.scrcpy_virtual_display:
             if self._image_provider is None:
                 raise RuntimeError('Scrcpy image provider is required for virtual display sessions.')
+            if self._get_language is None:
+                raise RuntimeError('Language getter is required for virtual display sessions.')
             device_session = VirtualDeviceSession(
                 config_name,
                 bundle.iaa.config,
                 self._image_provider,
                 device_factory=device_factory,
+                get_language=self._get_language,
                 parent=self,
             )
             # _ensure_device_started 管的是"预览设备就绪"，与"设备创建"正交。
@@ -530,6 +541,16 @@ class TabManager(QObject):
                     entry.device_session.shutdown()
                 except Exception:
                     logger.exception('Failed to shutdown device session for %s', entry.config_name)
+
+    @Slot()
+    def on_language_changed(self) -> None:
+        """语言切换时刷新所有 tab 的 device session 状态文本。
+
+        :return: 无返回值。
+        """
+        for entry in self._tabs:
+            if entry.device_session is not None:
+                entry.device_session.on_language_changed()
 
     activeRunController = Property(QObject, _get_active_run_controller, notify=activeTabChanged)
     activeDeviceSession = Property(QObject, _get_active_device_session, notify=activeTabChanged)

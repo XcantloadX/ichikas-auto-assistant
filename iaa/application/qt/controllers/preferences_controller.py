@@ -8,6 +8,7 @@ from PySide6.QtCore import Property, QObject, Signal, Slot
 
 from iaa.config import manager as config_manager
 from iaa.config.shared import SharedConfig
+from iaa.i18n import translate
 
 from .config_draft import ConfigDraft
 from .settings_controller import _normalize_qt_value
@@ -23,6 +24,7 @@ class PreferencesController(QObject):
     """
 
     configChanged = Signal()
+    languageChanged = Signal(str)
     dirtyChanged = Signal(bool)
     operationSucceeded = Signal(str)
     operationFailed = Signal(str)
@@ -40,6 +42,15 @@ class PreferencesController(QObject):
         self._last_issues = []
         self.configChanged.emit()
         self.dirtyChanged.emit(False)
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        # 优先读草稿中的语言：保存成功/失败的提示应使用用户刚选择的语言，
+        # 草稿期也能实时预览；草稿缺失该字段时回退到已保存值。
+        draft_language = self._draft.get('interface.language')
+        if not draft_language:
+            draft_language = config_manager.read_shared().interface.language
+        text = translate(draft_language, key)
+        return text.format(**kwargs) if kwargs else text
 
     # ── 表单读写 ─────────────────────────────────────────────────────────────
 
@@ -76,27 +87,32 @@ class PreferencesController(QObject):
     def save(self) -> bool:
         """提交草稿：校验 + 写盘。"""
         if not self._draft.is_dirty():
-            self.operationSucceeded.emit('没有需要保存的更改')
+            self.operationSucceeded.emit(self._tr('notice.save_success'))
             return True
         merged = self._draft.view()
+        old_language = (self._base.get('interface') or {}).get('language')
         try:
             candidate = SharedConfig.model_validate(merged)
         except Exception as exc:  # noqa: BLE001
             logger.warning('Preferences draft validation failed: %s', exc)
-            self.operationFailed.emit(f'配置结构无效：{exc}')
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
             return False
         try:
             config_manager.write_shared(candidate)
         except Exception as exc:  # noqa: BLE001
             logger.exception('Failed to save preferences')
-            self.operationFailed.emit(f'保存失败：{exc}')
+            self.operationFailed.emit(self._tr('notice.save_failed', error=exc))
             return False
         self._base = candidate.model_dump(mode='json')
         self._draft = ConfigDraft(self._base)
         self._last_issues = []
         self.configChanged.emit()
         self.dirtyChanged.emit(False)
-        self.operationSucceeded.emit('保存成功')
+        self.operationSucceeded.emit(self._tr('notice.save_success'))
+        # 语言变化时通知 i18n 相关组件刷新
+        new_language = candidate.interface.language
+        if new_language != old_language:
+            self.languageChanged.emit(new_language)
         return True
 
     @Slot(result=str)

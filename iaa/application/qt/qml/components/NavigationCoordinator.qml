@@ -1,4 +1,5 @@
 import QtQuick
+import ".." as App
 
 Item {
     id: root
@@ -39,7 +40,7 @@ Item {
             return
         }
         root.pendingActionRunner = runner
-        root.pendingActionLabel = label || "继续此操作"
+        root.pendingActionLabel = label || App.Globals.t("common.continue_action")
         root.unsavedChangesDialog.actionLabel = root.pendingActionLabel
         root.unsavedChangesDialog.open()
     }

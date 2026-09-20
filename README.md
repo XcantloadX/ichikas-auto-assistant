@@ -1,5 +1,7 @@
 # Ichika's Auto Assistant 一歌小助手
 
+[中文](./README.md) | [English](./README.en.md)
+
 <small>相关项目：[ 
     <a href="https://github.com/XcantloadX/kotones-auto-assistant">琴音小助手</a>、
     <a href="https://github.com/XcantloadX/kotonebot">kotonebot 自动化框架</a>

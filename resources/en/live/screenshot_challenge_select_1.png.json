@@ -1,0 +1,116 @@
+{
+  "version": 3,
+  "definitions": {
+    "6e6fb421-9ef0-4645-a125-1027d2d0945f": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.TextSelectCharacter",
+      "variant": "en",
+      "props": {},
+      "displayName": "Please select a character."
+    },
+    "59294cc5-bbb5-4568-bf81-24bd6cbb8dd5": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaMiku",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 216.4483526865358,
+          "y1": 499,
+          "x2": 318.39967343839277,
+          "y2": 537
+        }
+      },
+      "displayName": "MIKU"
+    },
+    "82997d1e-1f73-440a-82fb-88246e48ee2a": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaRin",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 413.13683599771446,
+          "y1": 500,
+          "x2": 484.01513787735695,
+          "y2": 535
+        }
+      },
+      "displayName": "RIN"
+    },
+    "e3883fd0-5b36-4e2e-b657-f40c32a94216": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaLen",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 590.8482485891919,
+          "y1": 499,
+          "x2": 668.6519711672072,
+          "y2": 535
+        }
+      },
+      "displayName": "LEN"
+    },
+    "5c660ff2-7f22-4968-8845-50bfc7ecc000": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaLuka",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 759.636660510552,
+          "y1": 499,
+          "x2": 863.1342723302922,
+          "y2": 534
+        }
+      },
+      "displayName": "LUKA"
+    },
+    "0c8d55ec-5774-4b16-b019-5dc04d0f4dcc": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaMeiko",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 935.1453357957791,
+          "y1": 501,
+          "x2": 1049.7819963063312,
+          "y2": 535
+        }
+      },
+      "displayName": "MEIKO"
+    },
+    "e55d6310-79ab-4f2d-b6b3-2441fa6dbe66": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.CharaKaito",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1117.6482850952118,
+          "y1": 501,
+          "x2": 1229.9231828030722,
+          "y2": 533
+        }
+      },
+      "displayName": "KAITO"
+    },
+    "654adfab-df80-4a7f-9183-d6d27f0c40f3": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.GroupWonderlandsShowtime",
+      "variant": "en",
+      "props": {},
+      "displayName": "Unit 'WonderlandsXShowtime'"
+    },
+    "7f0c09b8-bf28-469d-84a4-dd6e188b5ecf": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.Group25AtNightcord",
+      "variant": "en",
+      "props": {},
+      "displayName": "Unit 'Nightcord at 25:00''"
+    }
+  }
+}

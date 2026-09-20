@@ -28,6 +28,7 @@ class VirtualDeviceSessionTests(unittest.TestCase):
             config_service,
             ScrcpyImageProvider(),
             device_factory=device_factory,
+            get_language=lambda: 'zh_CN',
         )
 
     def test_ensure_started_is_idempotent(self) -> None:

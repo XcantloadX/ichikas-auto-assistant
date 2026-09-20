@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 
 import "../"
+import "../../" as App
 
 ColumnLayout {
     id: root
@@ -100,7 +101,7 @@ ColumnLayout {
                 text: root.recording
                     ? ""
                     : (root.value ? root.toDisplayText(root.value) : "")
-                placeholderText: root.recording ? qsTr("按下快捷键…（按 ESC 取消）") : qsTr("点击设置")
+                placeholderText: root.recording ? App.Globals.t("preferences.hotkey.placeholder.recording") : App.Globals.t("preferences.hotkey.placeholder.idle")
 
                 onActiveFocusChanged: {
                     if (!activeFocus) {
@@ -145,7 +146,7 @@ ColumnLayout {
             }
 
             Button {
-                text: qsTr("清除")
+                text: App.Globals.t("preferences.hotkey.clear")
                 enabled: !!root.value && !root.recording
                 onClicked: root.userCommitted(null)
             }

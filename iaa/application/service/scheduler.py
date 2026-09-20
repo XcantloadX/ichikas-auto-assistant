@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 from iaa.tasks.registry import TASK_INFOS, name_from_id
 from iaa.context import init as init_config_context
 from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
+from iaa.i18n import tstr
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
@@ -229,7 +230,7 @@ class SchedulerService:
                 logger.info("Preparing context...")
                 self.__prepare_context()
                 if self.device is None:
-                    raise RuntimeError("Device not initialized after context preparation.")
+                    raise RuntimeError(tstr('error.device.not_initialized'))
                 if not self._device_started:
                     self.device.start()
                     self._device_started = True
@@ -261,7 +262,7 @@ class SchedulerService:
                             timestamp=time.time(),
                             type='task_started',
                             payload={
-                                'message': '开始执行',
+                                'message': tstr('progress.executing'),
                                 'run_total_tasks': total_tasks,
                                 'run_completed_tasks': index,
                                 'run_current_task_index': index + 1,
@@ -288,7 +289,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_finished',
                                 payload={
-                                    'message': '执行完成',
+                                    'message': tstr('progress.executed'),
                                     'percent': 100,
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index + 1,
@@ -306,7 +307,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'任务中断：{task_name}',
+                                    'message': tstr('progress.interrupted_with_task').format(task=task_name),
                                     'error': 'KeyboardInterrupt',
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -326,7 +327,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'执行失败：{task_name}',
+                                    'message': tstr('progress.failed_with_task').format(task=task_name),
                                     'error': str(e),
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -401,13 +402,14 @@ class SchedulerService:
                 # 发送通知
                 if completion_status != 'no_tasks':
                     from iaa.notify import NotificationType, send_notification
-                    from iaa.config.manager import read_shared
-                    shared_config = read_shared()
+                    from iaa.i18n import translate
+                    shared_config = self.iaa.config.shared
+                    language = shared_config.interface.language
                     message_map = {
-                        'success': '任务执行完成',
-                        'interrupted': '任务已中断',
-                        'failed': '任务执行失败',
-                        'crashed': '调度器发生错误',
+                        'success': translate(language, 'notice.tasks_completed'),
+                        'interrupted': translate(language, 'notice.tasks_interrupted'),
+                        'failed': translate(language, 'notice.tasks_failed'),
+                        'crashed': translate(language, 'notice.tasks_crashed'),
                     }
                     type_map: dict[str, NotificationType] = {
                         'success': 'success',
@@ -417,7 +419,7 @@ class SchedulerService:
                     }
                     send_notification(
                         'iaa',
-                        message_map.get(completion_status, '任务结束'),
+                        message_map.get(completion_status, translate(language, 'notice.tasks_finished')),
                         shared_config.notify,
                         type=type_map.get(completion_status, 'info'),
                     )
@@ -462,7 +464,7 @@ class SchedulerService:
     ) -> None:
         """运行单个任务。"""
         if task_id not in TASK_INFOS:
-            raise ValueError(f"Unknown manual task: {task_id}")
+            raise ValueError(tstr('error.task.unknown_manual').format(task_id=task_id))
         task_func = TASK_INFOS[task_id].func
         call_args = args or ()
         call_kwargs = kwargs or {}

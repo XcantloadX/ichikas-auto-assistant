@@ -7,7 +7,7 @@ import IaaApp 1.0
 
 PageContainer {
     id: root
-    title: "画面"
+    title: App.Globals.t("nav.device")
     property int tabIndex: 0
     property var formController: null
     property var runCtrl: null
@@ -50,7 +50,7 @@ PageContainer {
             wrapMode: Text.Wrap
             font.pixelSize: 15
             color: App.IaaTheme.fg
-            text: "仅当使用 scrcpy 控制方式时可用"
+            text: App.Globals.t("page.device.scrcpy_only_hint")
         }
     }
 }

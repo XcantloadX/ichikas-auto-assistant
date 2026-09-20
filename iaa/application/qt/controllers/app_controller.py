@@ -7,15 +7,19 @@ from PySide6.QtGui import QDesktopServices
 
 from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
+from iaa.application.service.help_service import HelpService
+from iaa.i18n import translate
 from iaa.telemetry import setup as setup_telemetry
 
 
 from .log_bridge import LogBridge
+from .progress_bridge import ProgressBridge
 from .scrcpy_image_provider import ScrcpyImageProvider
 from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 
 class AppController(QObject):
@@ -28,16 +32,34 @@ class AppController(QObject):
     staticsEnabledChanged = Signal()
     windowStyleChanged = Signal()
     pathWarningRequired = Signal(str)  # 路径问题警告
+    windowTitleChanged = Signal()
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
         self.logBridge = log_bridge
         self.scrcpyImageProvider = ScrcpyImageProvider()
 
-        self.tabManager = TabManager(self, image_provider=self.scrcpyImageProvider)
+        # i18n：集中管理 GUI 语言，语言变化时通知需要刷新的组件。
+        # 须先于 TabManager 创建：恢复 tab 时 VirtualDeviceSession 需要 get_language。
+        self.i18nController = I18nController(config_manager.read_shared().interface.language, self)
+
+        self.tabManager = TabManager(
+            self,
+            image_provider=self.scrcpyImageProvider,
+            get_language=lambda: self.i18nController.language,
+        )
+        self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
+        self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
+        self.i18nController.languageChanged.connect(self.tabManager.on_language_changed)
 
         self.preferencesController = PreferencesController(self)
-        self.helpController = HelpController(self)
+        self.helpService = HelpService()
+        self.helpController = HelpController(
+            self.helpService,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.helpController.on_language_changed)
         self.globalHotkeyController = GlobalHotkeyController(
             self.tabManager,
             self.preferencesController,
@@ -62,19 +84,25 @@ class AppController(QObject):
         self.tabManager.errorDialogRequested.connect(self.errorDialogRequested)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
+        self.preferencesController.languageChanged.connect(self._on_language_changed)
+
+    def _on_language_changed(self, language: str) -> None:
+        self.i18nController.setLanguage(language)
+        self.windowTitleChanged.emit()
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self.i18nController.language, key)
+        return text.format(**kwargs) if kwargs else text
 
     def _get_version(self) -> str:
         return IaaService.app_version()
 
     def _get_window_title(self) -> str:
-        if platform.system() == 'Windows':
-            return '一歌小助手'
-        elif platform.system() == 'Darwin':
-            return '一歌小助手 (on macOS)'
-        elif platform.system() == 'Linux':
-            return '一歌小助手 (on Linux)'
-        else:
-            return '一歌小助手'
+        if platform.system() == 'Darwin':
+            return self._tr('app.window_title_macos')
+        if platform.system() == 'Linux':
+            return self._tr('app.window_title_linux')
+        return self._tr('app.name')
 
     def _get_assets_root_path(self) -> str:
         return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
@@ -109,7 +137,7 @@ class AppController(QObject):
         return config_manager.read_shared().interface.startup_page
 
     version = Property(str, _get_version, constant=True)
-    windowTitle = Property(str, _get_window_title, constant=True)
+    windowTitle = Property(str, _get_window_title, notify=windowTitleChanged)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
@@ -154,7 +182,7 @@ class AppController(QObject):
         self.screenshotEnabledChanged.emit()
         self.staticsEnabledChanged.emit()
         self.telemetryConsentRequiredChanged.emit()
-        self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+        self.notificationRaised.emit('success', self._tr('notice.telemetry_effective'))
 
     @Slot()
     def refreshWindowStyle(self) -> None:
@@ -193,7 +221,7 @@ class AppController(QObject):
             return ''
 
         version = self._get_version()
-        html = [f'<b>配置文件已升级到 v{version}。</b>']
+        html = [self._tr('modal.migration.content_title', version=version)]
         html.append('<ol>')
         for msg in messages:
             if msg.old_version and msg.new_version:

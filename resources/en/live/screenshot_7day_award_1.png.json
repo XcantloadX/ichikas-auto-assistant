@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "definitions": {
+    "fe2e8e2f-c600-44fa-9b18-25613ee88801": {
+      "type": "prefab",
+      "name": "Live.ChallengeLive.TextWeeklyAward",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 436.01059459459464,
+          "y1": 180,
+          "x2": 842.990054054054,
+          "y2": 210
+        }
+      },
+      "displayName": "This week's challenge Stamp reward"
+    }
+  }
+}

@@ -17,7 +17,8 @@
       "displayName": "ランキニグ 按钮图标",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "e951831d-be2a-4501-b39c-b60c8804a7f5": {
@@ -36,7 +37,8 @@
       "displayName": "イベントストーリー 按钮图标",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }
