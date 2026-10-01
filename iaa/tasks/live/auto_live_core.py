@@ -8,6 +8,7 @@ from kotonebot.client.host.mumu12_host import MuMu12HostConfig, Mumu12V5Host
 from kotonebot.backend.image import find
 from kotonebot.primitives import Rect
 from kotonebot.client import Device
+from kotonebot.client.device import MacOSDevice
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +59,18 @@ def latency_ms_to_px(latency_ms: int, frame_height: int = 720) -> int:
         )
     travel_px = (RhythmGameAnalyzer.judgement_line_y_ratio - SPAWN_Y_RATIO) * frame_height
     return int(round(latency_ms / 1000 * travel_px * EASING_SLOPE_AT_HIT / DISPLAY_TIME_S))
+
+
+def _is_playcover(device: Device | None) -> bool:
+    """是否为 PlayCover（macOS）设备。"""
+    if device is None:
+        return False
+    try:
+        if isinstance(device, MacOSDevice):
+            return True
+        return isinstance(getattr(device, '_device', None), MacOSDevice)
+    except Exception:
+        return False
 
 
 class RhythmGameAnalyzer:
@@ -150,6 +163,52 @@ class RhythmGameAnalyzer:
         px, py = self.device.scaler.logic_to_physical((x, y))
         return int(px), int(py)
 
+    def _press(self, touch_id: int, cx: int, cy: int) -> None:
+        """按下单个轨道。
+
+        PlayCover 用鼠标左键按住模拟（单光标，坐标按逻辑坐标传，controller 内换算）；
+        其他设备保持多点按住。
+        """
+        if not self.device:
+            return
+        if _is_playcover(self.device):
+            mouse = self.device.input.mouse
+            mouse.move(cx, cy)
+            mouse.button_down()
+            print('mdown', touch_id, cx, cy)
+        else:
+            tx, ty = self.logic_to_physical_touch_point(cx, cy)
+            self.device.multi_touch.multi_touch_down(tx, ty, touch_id)
+            print('down', touch_id, tx, ty, f'(base:{cx},{cy})')
+
+    def _release(self, touch_id: int, cx: int, cy: int) -> None:
+        """松开单个轨道。PlayCover 抬起鼠标左键；其他设备走多点抬起。
+
+        .. NOTE::
+            PlayCover 只有一个系统光标，同时多押的 Hold 无法各自保持，
+            后按下的轨道 move 会把已按住的拖走——这是单光标的硬限制，
+            不是本分支能解决的。
+        """
+        if not self.device:
+            return
+        if _is_playcover(self.device):
+            self.device.input.mouse.button_up()
+            print('  mup', touch_id, cx, cy)
+            return
+        tx, ty = self.logic_to_physical_touch_point(cx, cy)
+        self.device.multi_touch.multi_touch_up(tx, ty, touch_id)
+        print('  up', touch_id, tx, ty, f'(base:{cx},{cy})')
+
+    def _release_all(self) -> None:
+        """松开所有轨道。PlayCover 下兜底抬起一次左键，防止暂停/退出时卡住按住状态。"""
+        if not self.device:
+            return
+        if _is_playcover(self.device):
+            self.device.input.mouse.button_up()
+            return
+        for i in range(self.num_lanes):
+            self.device.multi_touch.multi_touch_up(0, 0, i)
+
     def analyze_region(self, gray_img, rect):
         x, y, w, h = rect
         roi = gray_img[y:y+h, x:x+w]
@@ -217,9 +276,7 @@ class RhythmGameAnalyzer:
                 if is_active:
                     # 状态：空 -> 有
                     if self.device:
-                        tx, ty = self.logic_to_physical_touch_point(center_x, center_y)
-                        self.device.multi_touch.multi_touch_down(tx, ty, touch_id)
-                        print('down', i, tx, ty, f'(base:{center_x},{center_y})')
+                        self._press(touch_id, center_x, center_y)
                     self.lane_states[i] = True
                     self.lane_empty_counters[i] = 0
                     # self.lookahead_empty_counters[i] = 0
@@ -232,9 +289,7 @@ class RhythmGameAnalyzer:
 
                 if not look_active:
                     if self.device:
-                        tx, ty = self.logic_to_physical_touch_point(center_x, center_y)
-                        self.device.multi_touch.multi_touch_up(tx, ty, touch_id)
-                        print('  up', i, tx, ty, f'(base:{center_x},{center_y})')
+                        self._release(touch_id, center_x, center_y)
                     self.lane_states[i] = False
                     self.lane_empty_counters[i] = 0
             
@@ -297,13 +352,11 @@ class RhythmGameAnalyzer:
                     if self.paused:
                         # 暂停时强制松开所有手指，防止鬼畜
                         if self.device:
-                            for i in range(self.num_lanes):
-                                self.device.multi_touch.multi_touch_up(0, 0, i)
+                            self._release_all()
                         cv2.waitKey(0)
             
         if self.device:
-            for i in range(self.num_lanes):
-                self.device.multi_touch.multi_touch_up(0, 0, i)
+            self._release_all()
         
         if self.debug:
             cv2.destroyAllWindows()
