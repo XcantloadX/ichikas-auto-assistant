@@ -38,12 +38,13 @@ LINK_DISPLAY_MAP: dict[LinkAccountOptions, TStr] = {
     'google_play': TStr(zh_CN='Google Play', en_US='Google Play'),
 }
 
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'], TStr] = {
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc', 'playcover'], TStr] = {
     'nemu_ipc': TStr(zh_CN='Nemu IPC', en_US='Nemu IPC'),
     'adb': TStr(zh_CN='ADB', en_US='ADB'),
     'uiautomator': TStr(zh_CN='UIAutomator2', en_US='UIAutomator2'),
     'scrcpy': TStr(zh_CN='Scrcpy', en_US='Scrcpy'),
     'qemu_grpc': TStr(zh_CN='QEMU gRPC', en_US='QEMU gRPC'),
+    'playcover': TStr(zh_CN='PlayCover', en_US='PlayCover'),
 }
 
 RESOLUTION_METHOD_DISPLAY_MAP: dict[Literal['keep', 'wm_size'], TStr] = {

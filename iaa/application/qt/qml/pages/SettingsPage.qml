@@ -232,9 +232,13 @@ PageContainer {
             newConn = { type: "usb", device_serial: (conn && conn.device_serial) || "" }
         }
 
-        // control_impl 兼容性：切换后若当前控制方式不可用，回退到 adb
+        // control_impl 兼容性：PlayCover 固定 playcover；切走后若残留 playcover 则回退到 adb
         var impl = root.controlImpl
-        if (type === "mumu" || type === "mumu_v5") {
+        if (type === "playcover") {
+            impl = "playcover"
+        } else if (impl === "playcover") {
+            impl = "adb"
+        } else if (type === "mumu" || type === "mumu_v5") {
             // 全部可用
         } else if (type === "avd") {
             if (impl === "nemu_ipc") impl = "adb"
