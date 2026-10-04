@@ -5,13 +5,10 @@ if TYPE_CHECKING:
 
 from ._fragments import handle_data_download, handle_notification
 from . import R
-from iaa.context import server
 
 logger = logging.getLogger(__name__)
 
 def handle_network_error():
-    if server() != 'cn':
-        return False
     if R.NetworkError.DialogConnectionError.Text.exists():
         logger.info('Network error dialog found.')
         if R.NetworkError.DialogConnectionError.ButtonRetry.click():
