@@ -17,7 +17,8 @@
       },
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "exclude"
       }
     },
     "d5aa8b60-a403-472e-bc28-d2df7594f260": {
@@ -36,7 +37,8 @@
       },
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "exclude"
       }
     }
   }
