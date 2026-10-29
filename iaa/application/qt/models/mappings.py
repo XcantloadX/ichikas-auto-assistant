@@ -36,14 +36,13 @@ LINK_DISPLAY_MAP: dict[LinkAccountOptions, str] = {
 }
 LINK_VALUE_MAP: dict[str, LinkAccountOptions] = {value: key for key, value in LINK_DISPLAY_MAP.items()}
 
-CONTROL_IMPL_DISPLAY_MAP: dict[Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'], str] = {
+CONTROL_IMPL_DISPLAY_MAP: dict[Literal['auto', 'nemu_ipc', 'scrcpy', 'qemu_grpc'], str] = {
+    'auto': '自动',
     'nemu_ipc': 'Nemu IPC',
-    'adb': 'ADB',
-    'uiautomator': 'UIAutomator2',
     'scrcpy': 'Scrcpy',
     'qemu_grpc': 'QEMU gRPC',
 }
-CONTROL_IMPL_VALUE_MAP: dict[str, Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc']] = {
+CONTROL_IMPL_VALUE_MAP: dict[str, Literal['auto', 'nemu_ipc', 'scrcpy', 'qemu_grpc']] = {
     value: key for key, value in CONTROL_IMPL_DISPLAY_MAP.items()
 }
 

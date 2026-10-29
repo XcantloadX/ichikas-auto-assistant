@@ -172,11 +172,11 @@ class SettingsController(QObject):
                 connection['type'] = 'usb'
 
         # control_impl 约束
-        impl = device.get('control_impl', 'adb')
+        impl = device.get('control_impl', 'auto')
         if impl == 'nemu_ipc' and lc_type not in ('mumu', 'mumu_v5'):
-            impl = 'adb'
+            impl = 'auto'
         elif impl == 'qemu_grpc' and lc_type != 'avd':
-            impl = 'adb'
+            impl = 'auto'
         device['control_impl'] = impl
         if impl == 'qemu_grpc':
             device['resolution_method'] = 'keep'

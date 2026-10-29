@@ -105,7 +105,7 @@ PageContainer {
     }
     readonly property string controlImpl: {
         var d = root.config ? root.config.device : null
-        return d ? String(d.control_impl || "adb") : "adb"
+        return d ? String(d.control_impl || "auto") : "auto"
     }
     readonly property string connType: {
         var conn = (root.config && root.config.device) ? root.config.device.connection : null
@@ -230,14 +230,14 @@ PageContainer {
             newConn = { type: "usb", device_serial: (conn && conn.device_serial) || "" }
         }
 
-        // control_impl 兼容性：切换后若当前控制方式不可用，回退到 adb
+        // control_impl 兼容性：切换后若当前控制方式不可用，回退到「自动」
         var impl = root.controlImpl
         if (type === "mumu" || type === "mumu_v5") {
             // 全部可用
         } else if (type === "avd") {
-            if (impl === "nemu_ipc") impl = "adb"
+            if (impl === "nemu_ipc") impl = "auto"
         } else {
-            if (impl === "nemu_ipc" || impl === "qemu_grpc") impl = "adb"
+            if (impl === "nemu_ipc" || impl === "qemu_grpc") impl = "auto"
         }
 
         root.formController.setField("device.lifecycle", newLc)
@@ -498,12 +498,7 @@ PageContainer {
                     binder: formB
                     field: "device.control_impl"
                     options: root.controlImplOptionsForLc
-                    help: "对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式；对于 AVD，推荐使用 <b>QEMU gRPC</b>（直接读取模拟器帧缓冲，速度最快）或 <b>ADB</b>；对于其他模拟器与物理机，推荐使用 <b>Scrcpy</b> 方式"
-                }
-                FormNotice {
-                    style: "tip"
-                    content: "MuMu 模拟器选择 NemuIPC 效果最佳"
-                    visible: root.isMumu && root.controlImpl !== "nemu_ipc"
+                    help: "推荐使用 <b>自动</b>（将按设备能力自动选择截图与输入方式）。<br><b>Nemu IPC</b> 仅适用于 MuMu 模拟器；<b>QEMU gRPC</b> 仅适用于 AVD（直接读取模拟器帧缓冲，速度最快）；<b>Scrcpy</b> 适用于其他模拟器与物理机，且画面页预览必须使用它。"
                 }
                 FormCheckBox {
                     label: "使用虚拟显示器"

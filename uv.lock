@@ -635,7 +635,7 @@ requires-dist = [
     { name = "av", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" },
     { name = "click" },
     { name = "grpcio" },
-    { name = "kotonebot", extras = ["android"], specifier = "==0.19.1" },
+    { name = "kotonebot", extras = ["android"], specifier = "==0.21.0" },
     { name = "numpy", specifier = "<2.0" },
     { name = "numpy", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" },
     { name = "onnxruntime", marker = "sys_platform == 'linux' or sys_platform == 'win32'", specifier = "==1.14.0" },
@@ -816,10 +816,11 @@ wheels = [
 
 [[package]]
 name = "kotonebot"
-version = "0.19.1"
+version = "0.21.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "ksaa-res" },
+    { name = "maafw" },
     { name = "mouse" },
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
     { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
@@ -832,9 +833,9 @@ dependencies = [
     { name = "rapidocr-onnxruntime" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/3f/93/155dd97479fb43a6be732f39d8df6ddb3adecb5fe4e1789f7bdd28cec950/kotonebot-0.19.1.tar.gz", hash = "sha256:3afe9b3638dfccaedfdf1cb678849b923c303e9bac6c6f49d3a62ff415a68275", size = 1674561, upload-time = "2026-08-07T00:54:33.709Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/27/97/3e80debee43b6efa29ae606a013361683bc21f52a0c004fe6828500cc7e1/kotonebot-0.21.0.tar.gz", hash = "sha256:696bb55f7cb611690b4795f6a067caf57c91bffb2757951ccfc87144d2590a91", size = 1682605, upload-time = "2026-10-23T12:55:31.144Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7e/04/fa05d6bd99aab758fbaf9241bda481970028cfcb3c9ec5a1b91cf6f0da32/kotonebot-0.19.1-py3-none-any.whl", hash = "sha256:9fe0e029dba7d82924596bc9fde51a0f04a5938338456126634845e6c7c3e3da", size = 1747052, upload-time = "2026-08-07T00:54:37.725Z" },
+    { url = "https://files.pythonhosted.org/packages/c2/41/a2c3a0982f2a2a1ef276b53629088e9cf64568a8497382a1ad8fbe7b7717/kotonebot-0.21.0-py3-none-any.whl", hash = "sha256:efd26eda73ace401f4bccf785474851e1ca82a7e16ac78f17ae07daa376d6ec3", size = 1757664, upload-time = "2026-10-23T12:55:15.146Z" },
 ]
 
 [package.optional-dependencies]
@@ -937,6 +938,33 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/01/8b/fde194529ee8a27e6f5966d7eef05fa16f0567e4a8e8abc3b855ef6b3400/lxml-6.0.0-pp310-pypy310_pp73-manylinux_2_27_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:9ab542c91f5a47aaa58abdd8ea84b498e8e49fe4b883d67800017757a3eb78e8", size = 4268788, upload-time = "2025-06-26T16:28:02.776Z" },
     { url = "https://files.pythonhosted.org/packages/99/a8/3b8e2581b4f8370fc9e8dc343af4abdfadd9b9229970fc71e67bd31c7df1/lxml-6.0.0-pp310-pypy310_pp73-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:013090383863b72c62a702d07678b658fa2567aa58d373d963cca245b017e065", size = 4411394, upload-time = "2025-06-26T16:28:05.179Z" },
     { url = "https://files.pythonhosted.org/packages/e7/a5/899a4719e02ff4383f3f96e5d1878f882f734377f10dfb69e73b5f223e44/lxml-6.0.0-pp310-pypy310_pp73-win_amd64.whl", hash = "sha256:c86df1c9af35d903d2b52d22ea3e66db8058d21dc0f59842ca5deb0595921141", size = 3517946, upload-time = "2025-06-26T16:28:07.665Z" },
+]
+
+[[package]]
+name = "maaagentbinary"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/b9/89/6b173d2e151517a8a24c3194bc8783643f49186547ae53c8b635be19d310/MaaAgentBinary-1.0.1-py3-none-any.whl", hash = "sha256:d97bcc9f35b52add199b287932511ecfcddcb83930c6b532d1c7010b432ec8bf", size = 5320174, upload-time = "2024-04-12T13:00:29.505Z" },
+]
+
+[[package]]
+name = "maafw"
+version = "5.14.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "maaagentbinary" },
+    { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
+    { name = "numpy", version = "1.26.4", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
+    { name = "strenum" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/62/10/e00e25d0974deb3ffd3ad69674c65a69d6806802a3c924e6a7c743ae2e55/maafw-5.14.3-py3-none-macosx_13_0_arm64.whl", hash = "sha256:1f7be844dd1b0dbdf8b361cb836cfc6b2611603bce40899a4bcb762b4bf49e9c", size = 18805161, upload-time = "2026-10-10T06:37:44.47Z" },
+    { url = "https://files.pythonhosted.org/packages/23/39/16ffb198f2de9d563b758547d6f412426db19bb4f74a494b27e896cdaf4e/maafw-5.14.3-py3-none-macosx_13_0_x86_64.whl", hash = "sha256:bc5dcb2de9bb57781c6a7d45f844643763433f51b7a42dd148938121732ea1fb", size = 20946477, upload-time = "2026-10-10T06:37:47.786Z" },
+    { url = "https://files.pythonhosted.org/packages/83/a8/56fa1e306d04f9cffa44c3320901e590281b89c9d43f09f14e03a97632d6/maafw-5.14.3-py3-none-manylinux2014_aarch64.whl", hash = "sha256:b26ab3c4e9e91469dfdb5207918eee17ab4da4dc4fc833c5289b35dfe6bd4892", size = 21181198, upload-time = "2026-10-10T06:37:50.116Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/2a/ce32ec6be75a857b03da6b88bc19d8f3109497da2f26ee5cfb546892870a/maafw-5.14.3-py3-none-manylinux2014_x86_64.whl", hash = "sha256:b6fb6b7a6f31db8940622ec1f8ffb2d8ab319238a20b4fcd5bdb07b6a662ebdc", size = 23484491, upload-time = "2026-10-10T06:37:52.484Z" },
+    { url = "https://files.pythonhosted.org/packages/63/13/139f635742beb6ae8fc63c9975c0de414905af2022d1174f59e054bf261d/maafw-5.14.3-py3-none-win_amd64.whl", hash = "sha256:5fcd48d85b2110150f19848da777564abe64e4ca64966704cb8dec948d243ce5", size = 36390526, upload-time = "2026-10-10T06:37:55.342Z" },
+    { url = "https://files.pythonhosted.org/packages/23/2e/225c1911bc6cf89816072fad7493f1fbee79c1bfa301c80dd1fa60cdf19b/maafw-5.14.3-py3-none-win_arm64.whl", hash = "sha256:609e8306c8c39a4bc60f56c17df5a2fd0d63df955b87d040567b208b53eef139", size = 36968952, upload-time = "2026-10-10T06:37:58.335Z" },
 ]
 
 [[package]]
@@ -1993,6 +2021,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/04/57/d062573f391d062710d4088fa1369428c38d51460ab6fedff920efef932e/starlette-0.47.2.tar.gz", hash = "sha256:6ae9aa5db235e4846decc1e7b79c4f346adf41e9777aebeb49dfd09bbd7023d8", size = 2583948, upload-time = "2025-07-20T17:31:58.522Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f7/1f/b876b1f83aef204198a42dc101613fefccb32258e5428b5f9259677864b4/starlette-0.47.2-py3-none-any.whl", hash = "sha256:c5847e96134e5c5371ee9fac6fdf1a67336d5815e09eb2a01fdb57a351ef915b", size = 72984, upload-time = "2025-07-20T17:31:56.738Z" },
+]
+
+[[package]]
+name = "strenum"
+version = "0.4.15"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/85/ad/430fb60d90e1d112a62ff57bdd1f286ec73a2a0331272febfddd21f330e1/StrEnum-0.4.15.tar.gz", hash = "sha256:878fb5ab705442070e4dd1929bb5e2249511c0bcf2b0eeacf3bcd80875c82eff", size = 23384, upload-time = "2023-06-29T22:02:58.399Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/69/297302c5f5f59c862faa31e6cb9a4cd74721cd1e052b38e464c5b402df8b/StrEnum-0.4.15-py3-none-any.whl", hash = "sha256:a30cda4af7cc6b5bf52c8055bc4bf4b2b6b14a93b574626da33df53cf7740659", size = 8851, upload-time = "2023-06-29T22:02:56.947Z" },
 ]
 
 [[package]]

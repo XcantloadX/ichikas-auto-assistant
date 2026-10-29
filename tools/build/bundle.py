@@ -67,14 +67,17 @@ def _resolve_qml_dirs(config: BuildConfig, root: Path) -> list[tuple[str, str]]:
 
 # kotonebot 框架的核心依赖，所有下游项目均需 collect_all()。
 # 可在 BuildConfig.collect_packages 追加项目特有的包。
-_FRAMEWORK_COLLECT_PACKAGES = ['kotonebot', 'PySide6', 'uiautomator2', 'av', 'rapidocr_onnxruntime']
+_FRAMEWORK_COLLECT_PACKAGES = ['kotonebot', 'PySide6', 'uiautomator2', 'av', 'rapidocr_onnxruntime', 'maa']
+
+_EXTRA_DATA_PACKAGES = ['MaaAgentBinary']
+"""非 Python 包、仅含数据文件的发行包，按数据文件收集（``maa`` 会从同级目录查找它）。"""
 
 
 def collect_packages_for_spec(
     config: BuildConfig, root: Path
 ) -> tuple[list, list, list]:
     """为 BuildConfig 收集 PyInstaller 所需的 datas、binaries、hiddenimports。"""
-    from PyInstaller.utils.hooks import collect_all
+    from PyInstaller.utils.hooks import collect_all, collect_data_files
 
     qml_dirs = _resolve_qml_dirs(config, root)
     datas = [(str(root / s), d) for s, d in config.extra_datas]
@@ -89,6 +92,9 @@ def collect_packages_for_spec(
         datas += pkg_d
         binaries += pkg_b
         hiddenimports += pkg_h
+
+    for pkg in _EXTRA_DATA_PACKAGES:
+        datas += collect_data_files(pkg)
 
     return datas, binaries, hiddenimports
 

@@ -72,7 +72,14 @@ DeviceConnection = Annotated[
 class DeviceConfig(BaseModel):
     lifecycle: DeviceLifecycle = Field(default_factory=lambda: MuMuDevice(type='mumu_v5'))
     connection: DeviceConnection = Field(default_factory=lambda: AutoConnection(type='auto'))
-    control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'] = 'nemu_ipc'
+    control_impl: Literal['auto', 'nemu_ipc', 'scrcpy', 'qemu_grpc'] = 'auto'
+    """控制方式。
+
+    * `"auto"`：自动。由 MaaFramework 的 ADB 后端按设备能力自动挑选截图/输入方式。
+    * `"nemu_ipc"`：MuMu 专用，Maa ADB 的 EmulatorExtras（`external_renderer_ipc`）。
+    * `"scrcpy"`：Scrcpy（同时用于画面页预览）。
+    * `"qemu_grpc"`：AVD 专用，直接读取模拟器帧缓冲。
+    """
     scrcpy_virtual_display: bool = False
     resolution_method: Literal['keep', 'wm_size'] = 'keep'
     stop_on_finish: bool = False
