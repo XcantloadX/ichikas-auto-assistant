@@ -8,7 +8,7 @@ from .schemas import (
     TasksConfig,
 )
 
-CONFIG_VERSION_CODE = 4
+CONFIG_VERSION_CODE = 6
 
 class IaaConfig(BaseModel):
     version: int = CONFIG_VERSION_CODE

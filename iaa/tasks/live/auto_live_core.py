@@ -4,7 +4,7 @@ import logging
 import cv2
 import numpy as np
 
-from kotonebot.client.host.mumu12_host import MuMu12HostConfig, Mumu12V5Host
+from kotonebot.client.host.mumu12_host import Mumu12V5Host
 from kotonebot.backend.image import find
 from kotonebot.primitives import Rect
 from kotonebot.client import Device
@@ -373,8 +373,10 @@ if __name__ == "__main__":
 
     d = None
     if not USE_DEBUG_IMAGE:
+        from iaa.application.service.device_factory import mumu_maa_adb_config
+
         mumu = Mumu12V5Host.list()[0]
-        d = mumu.create_device('nemu_ipc', MuMu12HostConfig())
+        d = mumu.create_device('maa_adb', mumu_maa_adb_config())
 
     LIFE = cv2.imread('life.png')
     assert LIFE is not None, 'Failed to load life.png'

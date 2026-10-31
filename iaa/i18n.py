@@ -670,8 +670,8 @@ _TRANSLATIONS: dict[str, TStr] = {
         en_US='The color scheme takes effect after a restart.',
     ),
     'notice.script_auto_warning': TStr(
-        zh_CN='使用"脚本自动"时必须满足：\n1. 当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3. 使用 MuMu 模拟器且控制方法选择「nemu_ipc」，或其他模拟器选择「scrcpy」\n4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担',
-        en_US='Script auto requires:\n1. The selected live song must be on EASY difficulty\n2. Note speed must be 1 and effects must be lightweight\n3. MuMu must use the nemu_ipc control method; other emulators must use scrcpy\n4. The resolution must be 16:9, including 1280x720 and proportional scales\n5. All risks and consequences of using script auto are borne by the user',
+        zh_CN='使用"脚本自动"时必须满足：\n1. 当前选中演出歌曲为 EASY 难度\n2. 流速为 1，特效为轻量\n3. 使用 MuMu 模拟器且控制方法选择「自动」或「nemu_ipc」，或其他模拟器选择「scrcpy」\n4. 分辨率为 16:9，支持 1280x720 及其等比例缩放\n5. 使用脚本自动演出带来的一切风险与后果由使用者自行承担',
+        en_US='Script auto requires:\n1. The selected live song must be on EASY difficulty\n2. Note speed must be 1 and effects must be lightweight\n3. MuMu must use the auto or nemu_ipc control method; other emulators must use scrcpy\n4. The resolution must be 16:9, including 1280x720 and proportional scales\n5. All risks and consequences of using script auto are borne by the user',
     ),
     'dialog.save_report.title': TStr(
         zh_CN='保存报告',
@@ -1226,8 +1226,8 @@ _TRANSLATIONS: dict[str, TStr] = {
         en_US='Enable this when connecting to a device through IP:port.',
     ),
     'settings.help.control_impl': TStr(
-        zh_CN='对于 MuMu 模拟器，推荐使用 <b>Nemu IPC</b> 方式；对于 AVD，推荐使用 <b>QEMU gRPC</b>（直接读取模拟器帧缓冲，速度最快）或 <b>ADB</b>；对于其他模拟器与物理机，推荐使用 <b>Scrcpy</b> 方式',
-        en_US='For MuMu, <b>Nemu IPC</b> is recommended. For AVD, <b>QEMU gRPC</b> (reads the emulator framebuffer directly, fastest) or <b>ADB</b> is recommended. For other emulators and physical devices, <b>Scrcpy</b> is recommended.',
+        zh_CN='推荐使用 <b>自动</b>（将按设备能力自动选择截图与输入方式）。<br><b>Nemu IPC</b> 仅适用于 MuMu 模拟器；<b>QEMU gRPC</b> 仅适用于 AVD（直接读取模拟器帧缓冲，速度最快）；<b>Scrcpy</b> 适用于其他模拟器与物理机，且画面页预览必须使用它。',
+        en_US='<b>Auto</b> is recommended (it picks the screenshot and input method based on device capabilities).<br><b>Nemu IPC</b> works only with MuMu. <b>QEMU gRPC</b> works only with AVD (reads the emulator framebuffer directly, fastest). <b>Scrcpy</b> works with other emulators and physical devices, and is required for the screen preview page.',
     ),
     'settings.help.screen_recording': TStr(
         zh_CN='脚本启动时自动录屏，结束时自动结束。输出到 dumps/screen_records/ 目录。',

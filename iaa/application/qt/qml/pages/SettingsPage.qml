@@ -107,7 +107,7 @@ PageContainer {
     }
     readonly property string controlImpl: {
         var d = root.config ? root.config.device : null
-        return d ? String(d.control_impl || "adb") : "adb"
+        return d ? String(d.control_impl || "auto") : "auto"
     }
     readonly property string connType: {
         var conn = (root.config && root.config.device) ? root.config.device.connection : null
@@ -232,18 +232,18 @@ PageContainer {
             newConn = { type: "usb", device_serial: (conn && conn.device_serial) || "" }
         }
 
-        // control_impl 兼容性：PlayCover 固定 playcover；切走后若残留 playcover 则回退到 adb
+        // control_impl 兼容性：PlayCover 固定 playcover；切走后若残留 playcover 则回退到「自动」
         var impl = root.controlImpl
         if (type === "playcover") {
             impl = "playcover"
         } else if (impl === "playcover") {
-            impl = "adb"
+            impl = "auto"
         } else if (type === "mumu" || type === "mumu_v5") {
             // 全部可用
         } else if (type === "avd") {
-            if (impl === "nemu_ipc") impl = "adb"
+            if (impl === "nemu_ipc") impl = "auto"
         } else {
-            if (impl === "nemu_ipc" || impl === "qemu_grpc") impl = "adb"
+            if (impl === "nemu_ipc" || impl === "qemu_grpc") impl = "auto"
         }
 
         root.formController.setField("device.lifecycle", newLc)

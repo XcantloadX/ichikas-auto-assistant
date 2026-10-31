@@ -191,16 +191,16 @@ class SettingsController(QObject):
             if conn_type == 'auto':
                 connection['type'] = 'usb'
 
-        # control_impl 约束：PlayCover 固定 playcover；其他 lifecycle 存 playcover 回退到 adb
-        impl = device.get('control_impl', 'adb')
+        # control_impl 约束：PlayCover 固定 playcover；其他 lifecycle 存 playcover 回退到 auto
+        impl = device.get('control_impl', 'auto')
         if lc_type == 'playcover':
             impl = 'playcover'
         elif impl == 'playcover':
-            impl = 'adb'
+            impl = 'auto'
         elif impl == 'nemu_ipc' and lc_type not in ('mumu', 'mumu_v5'):
-            impl = 'adb'
+            impl = 'auto'
         elif impl == 'qemu_grpc' and lc_type != 'avd':
-            impl = 'adb'
+            impl = 'auto'
         device['control_impl'] = impl
         if impl == 'qemu_grpc':
             device['resolution_method'] = 'keep'

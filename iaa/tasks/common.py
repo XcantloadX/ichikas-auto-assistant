@@ -30,13 +30,13 @@ def go_home(*, check_alive: bool = False, extra_callback: Callable[[], None] | N
             sleep(5)
             continue
         
-        if R.Hud.ButtonLive.find() or (server() == 'tw' and R.Hud.ButtonLiveTwEvent.find()):
+        if R.Hud.ButtonLive.q(threshold=0.6).find() or (server() == 'tw' and R.Hud.ButtonLiveTwEvent.q(threshold=0.6).find()):
             logger.debug('Live button found.')
             break
         elif R.Hud.ButtonGoBack.try_click():
             logger.debug('Go back button found and clicked.')
         else:
-            device.click(1, 367)
+            device.click(1, 211)
 
 def has_red_dot(box: HintBox) -> bool:
     return color.find('#ff5589', rect=box) is not None
