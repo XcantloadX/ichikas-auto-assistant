@@ -460,6 +460,30 @@ wheels = [
 ]
 
 [[package]]
+name = "frida"
+version = "17.25.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/19/79/6fb6f3e805e914adbd1d267f198cea6101b906a1d05cca31adf273d539ec/frida-17.25.2.tar.gz", hash = "sha256:2249a4380dfcc1bd93f5fe9e794757abb10737c953736ed96349a845ec36cee3", size = 1113768, upload-time = "2026-11-02T22:19:00.119Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/97/47/bb404c701a9a02050e66ba79389e6ffbbb8ee8d713fce9429ba7567f8f7e/frida-17.25.2-cp37-abi3-macosx_10_13_x86_64.whl", hash = "sha256:0b8722c52b5725360af7db805e5fe82c0e6dd96e9098712e2e8dd934810452d8", size = 33485014, upload-time = "2026-11-02T22:18:19.417Z" },
+    { url = "https://files.pythonhosted.org/packages/81/44/80aa42d32b8aeb5d15110fb342a33d74f126408a829b7538ef75b9fc415d/frida-17.25.2-cp37-abi3-macosx_11_0_arm64.whl", hash = "sha256:090b0107b225c18a18e2edf7f0a53da17338e95d7c9909983cc4a1d56af0101e", size = 46685355, upload-time = "2026-11-02T22:18:23.863Z" },
+    { url = "https://files.pythonhosted.org/packages/96/35/e5c53a1924a6964abf3c2c29a977ef7d32abb2ad2d7d7894cec1e205288e/frida-17.25.2-cp37-abi3-manylinux1_i686.whl", hash = "sha256:f444ef5b4970a36cb8e073be260f121a8db563150172d4740822552fe82fbb8b", size = 31339881, upload-time = "2026-11-02T22:18:26.717Z" },
+    { url = "https://files.pythonhosted.org/packages/9c/87/665cfe5a55fa13d167dc2cf29686cc8e6d6985a09a770d5a8aef9266ef05/frida-17.25.2-cp37-abi3-manylinux1_x86_64.whl", hash = "sha256:226998c9b3cb79d99871138533d2c58525ede3b1ea45647c6483d28ced8abb73", size = 52807256, upload-time = "2026-11-02T22:18:29.588Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/76/fdb951619739a8f13878dc149385ce4f14dbfc569bcc1e09aab14b9a613f/frida-17.25.2-cp37-abi3-manylinux2014_aarch64.whl", hash = "sha256:bef0bc2be97d5c560d7d499cafe8ddfdd3907264d4fdc4d9f4402b920c5517e2", size = 38499850, upload-time = "2026-11-02T22:18:32.539Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/80/38d01705f23b95949b24dae1f09e13084cc1532ada2dfb19d714df76d53e/frida-17.25.2-cp37-abi3-manylinux2014_armv7l.whl", hash = "sha256:4ae948a632c920c05ab7f5364723b893889338ea3063a05a42bd8ef71cca7cec", size = 28489559, upload-time = "2026-11-02T22:18:35.31Z" },
+    { url = "https://files.pythonhosted.org/packages/9e/a1/9b6217b1e367bdc1c4c93ef13a889b131f0d07a85681c43f97298f8c8fbd/frida-17.25.2-cp37-abi3-manylinux_2_17_aarch64.whl", hash = "sha256:ba69324c16b3ea018241519621d69f75896adbdce07f1afb1f60d7a322d17175", size = 38499850, upload-time = "2026-11-02T22:18:38.74Z" },
+    { url = "https://files.pythonhosted.org/packages/17/a7/d1657dc7fed86b32dcedec3763a33025e9c7ce382b6e367cd404d135e19b/frida-17.25.2-cp37-abi3-manylinux_2_17_armv7l.whl", hash = "sha256:2945311732b7e6fe8dd809dcc10ec0e3a5ae2ac301ebef091b11d1695f24cbc6", size = 28489560, upload-time = "2026-11-02T22:18:41.502Z" },
+    { url = "https://files.pythonhosted.org/packages/b4/ab/6f8dafadad58c8366e1493343e18181e9ca754e304b0ff589aa7e07a0452/frida-17.25.2-cp37-abi3-manylinux_2_5_i686.whl", hash = "sha256:157c19ee40b42186a73fcb3ef92324516eb5f4352e73079308f052eebbda69ef", size = 31339885, upload-time = "2026-11-02T22:18:43.936Z" },
+    { url = "https://files.pythonhosted.org/packages/0b/09/bc0387f9ed843d644bb15e3863f437f7d4f1373e1301efc3396a2f6bb36d/frida-17.25.2-cp37-abi3-manylinux_2_5_x86_64.whl", hash = "sha256:55cb5f7f6f75922a37e451449ec71e695400e3d6a009c275c285abf88a49dd53", size = 52807257, upload-time = "2026-11-02T22:18:46.912Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/a4/61c8bd204f4e71248cf819717a6ebad7c6036ab87b1af82d7e279404488f/frida-17.25.2-cp37-abi3-win32.whl", hash = "sha256:a6bb86c501a721b3889715a19dae97ae0ba7e9ed13cd6252eef8e7e584bec5cb", size = 54948538, upload-time = "2026-11-02T22:18:50.52Z" },
+    { url = "https://files.pythonhosted.org/packages/f7/db/c027765620a1139a85ba2782682340d845738cd700b5f9fc709a859e99b3/frida-17.25.2-cp37-abi3-win_amd64.whl", hash = "sha256:0b4417264041e227364df268c77b8d4d8a9920beffd5ac55cec2a06d74e0839e", size = 61214748, upload-time = "2026-11-02T22:18:54.299Z" },
+    { url = "https://files.pythonhosted.org/packages/46/bb/a543f0cfc224224f906dc134e2cf23ed4974297e1248a84c99a401b94e47/frida-17.25.2-cp37-abi3-win_arm64.whl", hash = "sha256:ab246bc60f44868dfdc84d5702a33a640a93f59d40f90c2c98bd12db39016c89", size = 72910617, upload-time = "2026-11-02T22:18:57.637Z" },
+]
+
+[[package]]
 name = "frozenlist"
 version = "1.8.0"
 source = { registry = "https://pypi.org/simple" }
@@ -606,6 +630,7 @@ source = { virtual = "." }
 dependencies = [
     { name = "av", version = "14.3.0", source = { url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" }, marker = "sys_platform == 'win32'" },
     { name = "click" },
+    { name = "frida" },
     { name = "grpcio" },
     { name = "kotonebot", extra = ["android"] },
     { name = "numpy", version = "1.26.4", source = { registry = "https://pypi.org/simple" }, marker = "sys_platform != 'win32'" },
@@ -634,6 +659,7 @@ dev = [
 requires-dist = [
     { name = "av", marker = "sys_platform == 'win32'", url = "https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl" },
     { name = "click" },
+    { name = "frida", specifier = "==17.25.2" },
     { name = "grpcio" },
     { name = "kotonebot", extras = ["android"], specifier = "==0.21.0" },
     { name = "numpy", specifier = "<2.0" },
