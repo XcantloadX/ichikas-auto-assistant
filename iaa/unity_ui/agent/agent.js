@@ -13,7 +13,24 @@
 // 基础设施
 // ---------------------------------------------------------------------------
 
-const itf = Module.getExportByName('libhoudini.so', 'NativeBridgeItf');
+/** frida 16/17 兼容的按模块取导出（frida 17 移除了静态 Module.getExportByName）。 */
+function getExport(modName, exportName) {
+    if (typeof Module.getExportByName === 'function') {
+        try { return Module.getExportByName(modName, exportName); } catch (e) { }
+    }
+    const m = Process.findModuleByName(modName);
+    if (m) {
+        if (typeof m.getExportByName === 'function') return m.getExportByName(exportName);
+        if (typeof m.findExportByName === 'function') return m.findExportByName(exportName);
+    }
+    if (typeof Module.findGlobalExportByName === 'function') {
+        const a = Module.findGlobalExportByName(exportName);
+        if (a) return a;
+    }
+    throw new Error('export not found: ' + modName + '!' + exportName);
+}
+
+const itf = getExport('libhoudini.so', 'NativeBridgeItf');
 const pGetTrampoline = itf.add(24).readPointer();
 const getTrampolineFn = new NativeFunction(pGetTrampoline, 'pointer', ['pointer', 'pointer', 'pointer', 'uint32', 'uint32']);
 

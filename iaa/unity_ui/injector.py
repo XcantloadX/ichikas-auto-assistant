@@ -104,6 +104,11 @@ class AgentSession:
                 self._on_message(message['payload'])
             except Exception:  # noqa: BLE001 回调异常不影响 agent
                 pass
+        elif message['type'] == 'error':
+            # agent 脚本异常必须可见，否则加载失败会被静默吞掉
+            import logging
+
+            logging.getLogger(__name__).error('agent error: %s', message.get('stack') or message.get('description'))
 
     def call(self, method: str, *args, timeout: float = 30):
         """调用 agent 的 rpc.exports 方法。
