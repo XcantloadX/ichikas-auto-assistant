@@ -22,9 +22,9 @@ def gift():
         elif R.Daily.ButtonGift.try_click():
             logger.debug('Clicked gift button')
             sleep(0.5)
-    # 领取礼物
-    if R.Hud.ButtonClaimAll.q(colored=True).find():
-        device.click()
+    # 领取礼物（colored 模板语义 → interactable：仅有可领礼物时按钮可用）
+    if (btn := R.Hud.ButtonClaimAll.q(interactable=True).find()) is not None:
+        btn.click()
         sleep(0.5)
     else:
         logger.info('No gift to claim')
