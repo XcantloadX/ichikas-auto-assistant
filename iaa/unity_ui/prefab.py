@@ -140,6 +140,28 @@ def _make_query(**kwargs: Any) -> 'UIQuery':
     return UIQuery(**fields)
 
 
+def _snapshot_resilient() -> list[UINode] | None:
+    """取一次快照；失败时重建一次会话再试，仍失败返回 None。
+
+    游戏重启/加载期/白屏时 dump 不可用，返回 None 让调用方按"未找到"处理
+    （与模板匹配行为对齐，任务轮询循环可自然重试）。
+
+    :return: 快照森林；不可用返回 None
+    """
+    ui = get_default_client()
+    try:
+        return ui.snapshot()
+    except Exception as e:  # noqa: BLE001 基础设施故障降级为"未找到"
+        logger.warning('snapshot failed (%s), rebuilding once', e)
+    try:
+        ui._bootstrapped = False
+        ui.ensure_ready()
+        return ui.snapshot()
+    except Exception as e:  # noqa: BLE001
+        logger.warning('snapshot still failing after rebuild: %s', e)
+        return None
+
+
 class UIPrefab(Prefab[UIGameObject]):
     """Unity UI 树 Prefab 基类。
 
@@ -199,35 +221,36 @@ class UIPrefab(Prefab[UIGameObject]):
 
     @classmethod
     def _find_all_impl(cls, query: UIQuery) -> list[UIGameObject]:
-        """在当前 UI 树快照中查找全部匹配。"""
-        import logging as kb_logging
+        """在当前 UI 树快照中查找全部匹配。
 
-        ui = get_default_client()
-        roots = ui.snapshot()
+        与模板匹配语义对齐：agent 不可用时（游戏重启中/白屏等）返回空列表
+        而非抛异常，让上层轮询循环自然重试。
+        """
+        roots = _snapshot_resilient()
+        if roots is None:
+            return []
         results: list[UIGameObject] = []
         for node in flat_nodes(roots):
             if node.screen_rect is None:
                 continue
             if cls._matches(node, query):
                 results.append(UIGameObject(node))
-        kb_logging.debug(f'{cls.__name__}.find_all -> {len(results)}')
         return results
 
     @classmethod
     def _find_impl(cls, query: UIQuery) -> UIGameObject | None:
-        """查找第一个匹配（先序）。"""
-        import logging as kb_logging
-
-        ui = get_default_client()
-        roots = ui.snapshot()
+        """查找第一个匹配（先序）；agent 不可用时返回 None（语义同模板匹配）。"""
+        roots = _snapshot_resilient()
+        if roots is None:
+            return None
         for node in flat_nodes(roots):
             if node.screen_rect is None:
                 continue
             if cls._matches(node, query):
                 obj = UIGameObject(node)
-                kb_logging.debug(f'{cls.__name__}.find -> {node.path}')
+                logger.debug('%s.find -> %s', cls.__name__, node.path)
                 return obj
-        kb_logging.debug(f'{cls.__name__}.find -> None')
+        logger.debug('%s.find -> None', cls.__name__)
         return None
 
     @classmethod

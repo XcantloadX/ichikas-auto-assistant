@@ -24,8 +24,8 @@ def handle_data_download():
     return False
 
 def handle_notification():
-    if R.Login.IconNotification.find():
-        device.click(0, 0)  # 点击空白处关闭通知
+    if btn := R.Login.IconNotification.find():
+        btn.click()  # 点弹窗右上角关闭按钮（UI 树定位）
         logger.debug('Notification found and closed.')
         return True
     # 台服、国服特有弹窗
