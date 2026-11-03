@@ -1,0 +1,7443 @@
+{
+ "nodes": [
+  {
+   "name": "UniWebViewAndroidStaticListener",
+   "path": "/UniWebViewAndroidStaticListener",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Live2DRenderStudio1",
+   "path": "/Live2DRenderStudio1",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Backstage",
+   "path": "/Live2DRenderStudio1/Backstage",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Stage",
+   "path": "/Live2DRenderStudio1/Stage",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Live2DUIModel_live2d/model/v2_08shizuku_school01",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Drawables",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh195",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh195",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh193",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh193",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh207",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh207",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh307",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh307",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh198",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh198",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh308",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh308",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh206",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh206",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh210",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh210",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh209",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh209",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh309",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh309",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh310",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh310",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh311",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh311",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh44",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh44",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh191",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh191",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh109",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh109",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh110",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh110",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh128",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh128",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh120",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh120",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh121",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh121",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh127",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh127",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh122",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh122",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh129",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh129",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh132",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh132",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh111",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh111",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh168",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh168",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh112",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh112",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh133",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh133",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh114",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh114",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh169",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh169",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh125",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh125",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh170",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh170",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh171",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh171",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh126",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh126",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh172",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh172",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh199",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh199",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh134",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh134",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh222",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh222",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh223",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh223",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh224",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh224",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh225",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh225",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh226",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh226",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh135",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh135",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh136",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh136",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh227",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh227",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh137",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh137",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh228",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh228",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh251",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh251",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh252",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh252",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh107",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh107",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh253",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh253",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh254",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh254",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh255",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh255",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh256",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh256",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh113",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh113",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh138",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh138",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh257",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh257",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh139",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh139",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh141",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh141",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh287",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh287",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh288",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh288",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh289",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh289",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh290",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh290",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh291",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh291",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh292",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh292",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh264",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh264",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh265",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh265",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh266",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh266",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh267",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh267",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh155",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh155",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh294",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh294",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh295",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh295",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh271",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh271",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh296",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh296",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh297",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh297",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh298",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh298",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh299",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh299",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh300",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh300",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Mouth_Mask2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/Mouth_Mask2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh142",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh142",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh143",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh143",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh144",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh144",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh145",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh145",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh119",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh119",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh146",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh146",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh156",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh156",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh301",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh301",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh302",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh302",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh303",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh303",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh304",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh304",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh200",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh200",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "face2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/face2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh201",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh201",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh202",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh202",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh140",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh140",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh305",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh305",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh306",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh306",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh284",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh284",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh285",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh285",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh286",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh286",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh158",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh158",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh159",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh159",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh108",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh108",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh106",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh106",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh85",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh85",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh10",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh10",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh9",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh9",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh283",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh283",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh84",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh84",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh282",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh282",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh64",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh64",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh281",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh281",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh280",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh280",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh277",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh277",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh93",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh93",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh150",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh150",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh235",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh235",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh152",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh152",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh124",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh124",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh32",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh32",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh219",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh219",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh244",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh244",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh94",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh94",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh153",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh153",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh245",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh245",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh220",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh220",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh213",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh213",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh246",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh246",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh118",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh118",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh116",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh116",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh214",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh214",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh247",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh247",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh248",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh248",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh232",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh232",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh249",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh249",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh233",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh233",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh221",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh221",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh250",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh250",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh154",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh154",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh131",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh131",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh236",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh236",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh30",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh30",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh36",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh36",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh42",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh42",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh43",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh43",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh46",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh46",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh55",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh55",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh56",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh56",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh66",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh66",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh72",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh72",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh74",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh74",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh75",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh75",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh76",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh76",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh78",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh78",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh80",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh80",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh81",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh81",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh82",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh82",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh89",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh89",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh96",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh96",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh97",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh97",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh99",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh99",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh100",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh100",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh103",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh103",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh104",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh104",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh105",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh105",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh86",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh86",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh31",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh31",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh8",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh8",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh11",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh11",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh62",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh62",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh57",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh57",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh278",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh278",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh58",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh58",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh279",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh279",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh269",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh269",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh5",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh5",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh268",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh268",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh276",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh276",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh275",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh275",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh274",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh274",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Torso",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/Torso",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Chest",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/Chest",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh273",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh273",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh272",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh272",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh270",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh270",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh263",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh263",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh262",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh262",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh261",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh261",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh260",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh260",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh259",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh259",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh258",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh258",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh79",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh79",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh92",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh92",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh101",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh101",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh98",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh98",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh95",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh95",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh88",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh88",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh87",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh87",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh77",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh77",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh73",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh73",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh71",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh71",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh70",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh70",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh69",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh69",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh68",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh68",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh67",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh67",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh65",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh65",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh61",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh61",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh54",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh54",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh53",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh53",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh45",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh45",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh41",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh41",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh35",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh35",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh34",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh34",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh29",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh29",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh231",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh231",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh130",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh130",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh151",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh151",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh243",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh243",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh218",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh218",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh230",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh230",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh242",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh242",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh229",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh229",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh241",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh241",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh240",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh240",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh212",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh212",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh115",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh115",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh117",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh117",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh239",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh239",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh211",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh211",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh217",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh217",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh238",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh238",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh148",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh148",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh91",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh91",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh237",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh237",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh216",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh216",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh123",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh123",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh149",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh149",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh234",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh234",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh147",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh147",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh102",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh102",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh59",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh59",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh4",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh4",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh3",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh3",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh6",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh6",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh90",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh90",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh15",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh15",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh7",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh7",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh14",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh14",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh48",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh48",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh49",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh49",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh50",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh50",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh51",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh51",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh83",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh83",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh63",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh63",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh18",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh18",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ArtMesh60",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Drawables/ArtMesh60",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Parts",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHandR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHandR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHandL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHandL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHairBack",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHairBack",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartFace",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartFace",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartMouth",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartMouth",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartEyeL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartEyeL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartEyeR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartEyeR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHeadEffect",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHeadEffect",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHairFront",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHairFront",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartCry",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartCry",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartArmR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartArmR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartArmL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartArmL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartBody2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartBody2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartBody1",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartBody1",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartHead2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartHead2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PartCore",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parts/PartCore",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Parameters",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSize2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSize2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSize",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSize",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHuwaControl",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHuwaControl",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodySwingB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodySwingB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodySwingA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodySwingA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHeadSwingC",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHeadSwingC",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHeadSwingB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHeadSwingB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHeadSwingA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHeadSwingA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSkirtFuwa",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSkirtFuwa",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSkirtSwing",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSkirtSwing",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBustY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBustY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBustX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBustX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairHuwa2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairHuwa2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairHuwa",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairHuwa",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairFrontHuwa",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairFrontHuwa",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairBackB2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairBackB2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairBackB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairBackB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairBackA2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairBackA2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairBackA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairBackA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairSideB2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairSideB2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairSideB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairSideB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairSideA2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairSideA2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairSideA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairSideA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairFront2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairFront2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHairFront",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHairFront",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamUnderBodyHangZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamUnderBodyHangZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodyHangZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodyHangZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHeadHangZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHeadHangZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamFingerL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamFingerL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLP",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLP",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLO",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLO",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLN",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLN",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLM",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLM",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLK",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLK",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLJ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLJ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLI",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLI",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLH",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLH",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLG",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLG",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLF",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLF",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLE",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLD",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLD",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLC",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLC",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandLA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandLA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL9",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL9",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL8",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL8",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL7",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL7",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL6",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL6",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL5",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL5",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL4",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL4",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL3",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL3",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmL1",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmL1",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamShoulderL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamShoulderL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamFingerR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamFingerR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRP",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRP",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRO",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRO",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRN",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRN",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRM",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRM",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRK",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRK",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRJ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRJ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRI",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRI",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRH",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRH",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRG",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRG",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRF",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRF",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRE",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRD",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRD",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRC",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRC",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRB",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRB",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamHandRA",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamHandRA",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR9",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR9",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR8",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR8",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR7",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR7",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR6",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR6",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR5",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR5",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR4",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR4",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR3",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR3",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamArmR1",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamArmR1",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamShoulderR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamShoulderR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamLegRZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamLegRZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamLegLZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamLegLZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBreath",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBreath",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamUpperBody",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamUpperBody",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamUpperBodyZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamUpperBodyZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodyAngleZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodyAngleZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodyAngleY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodyAngleY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBodyAngleX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBodyAngleX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamCheekAngryL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamCheekAngryL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamCheekAngryR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamCheekAngryR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamCheekAngry",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamCheekAngry",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSweatMove",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSweatMove",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamSweatOn",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamSweatOn",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamFaceShadow",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamFaceShadow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamCheek",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamCheek",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthPositionY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthPositionY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthScaleY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthScaleY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthScaleX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthScaleX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTeeth",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTeeth",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthForm2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthForm2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthOpenY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthOpenY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamMouthForm",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamMouthForm",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeSize",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeSize",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTear",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTear",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeTeary",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeTeary",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeballY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeballY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeballX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeballX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeLForm",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeLForm",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeLSmile",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeLSmile",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeLOpen",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeLOpen",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeRForm",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeRForm",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeRSmile",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeRSmile",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamEyeROpen",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamEyeROpen",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowWrinkleL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowWrinkleL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowLForm",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowLForm",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowLAngle",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowLAngle",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowLY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowLY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowLX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowLX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowWrinkleR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowWrinkleR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowRForm",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowRForm",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowRAngle",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowRAngle",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowRY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowRY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamBrowRX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamBrowRX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamAngleZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamAngleZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamAngleY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamAngleY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamAngleX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamAngleX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamRotationZ",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamRotationZ",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamPositionY",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamPositionY",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamPositionX",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamPositionX",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTearR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTearR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTearL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTearL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTearHighlightR",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTearHighlightR",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTearHighlightL",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTearHighlightL",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTear3",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTear3",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTear4",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTear4",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ParamTear2",
+   "path": "/Live2DRenderStudio1/Stage/Live2DUIModel_live2d/model/v2_08shizuku_school01/Parameters/ParamTear2",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Camera",
+   "path": "/Live2DRenderStudio1/Camera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "IAPUtil",
+   "path": "/IAPUtil",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "_SRServiceManager",
+   "path": "/_SRServiceManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AndroidReceivedNotificationMainThreadDispatcher",
+   "path": "/AndroidReceivedNotificationMainThreadDispatcher",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Firebase Services",
+   "path": "/Firebase Services",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PlayGames_QueueRunner",
+   "path": "/PlayGames_QueueRunner",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "[DOTween]",
+   "path": "/[DOTween]",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CRIWARE",
+   "path": "/CRIWARE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SingletonManager",
+   "path": "/SingletonManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "NewsDialogAsyncCacheWritter",
+   "path": "/SingletonManager/NewsDialogAsyncCacheWritter",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MysekaiTopicsManager",
+   "path": "/SingletonManager/MysekaiTopicsManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetBundleMetaManager",
+   "path": "/SingletonManager/AssetBundleMetaManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AdjustManager",
+   "path": "/SingletonManager/AdjustManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "FontAssetManager",
+   "path": "/SingletonManager/FontAssetManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MobileNotificationManager",
+   "path": "/SingletonManager/MobileNotificationManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MultiplayCore",
+   "path": "/SingletonManager/MultiplayCore",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ImageDownloaderManager",
+   "path": "/SingletonManager/ImageDownloaderManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "FireBaseManager",
+   "path": "/SingletonManager/FireBaseManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SocialManager",
+   "path": "/SingletonManager/SocialManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PurchaseManager",
+   "path": "/SingletonManager/PurchaseManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AdRewardManager",
+   "path": "/SingletonManager/AdRewardManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AppLovinManager",
+   "path": "/SingletonManager/AppLovinManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MovieManager",
+   "path": "/SingletonManager/MovieManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "InputManager",
+   "path": "/SingletonManager/InputManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SceneManager",
+   "path": "/SingletonManager/SceneManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetManager",
+   "path": "/SingletonManager/AssetManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetBundleManager",
+   "path": "/SingletonManager/AssetBundleManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UserDataManager",
+   "path": "/SingletonManager/UserDataManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MasterDataManager",
+   "path": "/SingletonManager/MasterDataManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UserAccountManager",
+   "path": "/SingletonManager/UserAccountManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "APIManager",
+   "path": "/SingletonManager/APIManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SoundManager",
+   "path": "/SingletonManager/SoundManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CRIWARE",
+   "path": "/SingletonManager/SoundManager/CRIWARE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ApplicationLogger",
+   "path": "/SingletonManager/ApplicationLogger",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "EventSystem",
+   "path": "/SingletonManager/EventSystem",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "EntryPoint",
+   "path": "/EntryPoint",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CanvasRoot",
+   "path": "/CanvasRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    1281.6,
+    720.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIBlurLayerManager(Clone)",
+   "path": "/CanvasRoot/UIBlurLayerManager(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/UIBlurLayerManager(Clone)/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "BaseCamera",
+   "path": "/CanvasRoot/BaseCamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UICamera",
+   "path": "/CanvasRoot/UICamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_UI",
+   "path": "/CanvasRoot/Layer_UI",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerLive2DCharacter",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsLive2DAndTalkWindowViewer(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    720.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TalkWindow",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    608.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Root",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    608.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClickArea",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/ClickArea",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    741.6,
+    2001.6,
+    799.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Window",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    550.8,
+    396.00000000000006,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "EndSign",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window/EndSign",
+   "text": null,
+   "ia": null,
+   "rect": [
+    758.8,
+    676.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "star",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window/EndSign/star",
+   "text": null,
+   "ia": null,
+   "rect": [
+    744.4,
+    655.2,
+    7.2,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window/EndSign/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    758.8,
+    676.8,
+    21.599999999999998,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Words",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window/Words",
+   "text": "木の葉が色づいて落ちるのは\n風情があるわね。……ところで、\nここはどこかしら？",
+   "ia": null,
+   "rect": [
+    287.2,
+    619.2,
+    72.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Direction",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TalkWindow/Root/Window/Direction",
+   "text": null,
+   "ia": null,
+   "rect": [
+    179.2,
+    532.8,
+    39.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsLive2DCharacterViewer",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/UIPartsLive2DCharacterViewer",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    745.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/UIPartsLive2DCharacterViewer/content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    385.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ModelTexture",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/UIPartsLive2DCharacterViewer/content/ModelTexture",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    745.2,
+    1620.0,
+    1080.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TapCollider",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/UIPartsLive2DCharacterViewer/content/ModelTexture/TapCollider",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    205.2,
+    478.8,
+    720.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ShortestRectPos",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/ShortestRectPos",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    730.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TollestRectPos",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLive2DCharacter/ComponentRoot/UIPartsLive2DAndTalkWindowViewer(Clone)/TollestRectPos",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    759.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerLiveTop",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TapBlocker",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/TapBlocker",
+   "text": null,
+   "ia": true,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "SafeArea",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/SafeArea",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TopLeft",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/SafeArea/TopLeft",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -0.7999999999999545,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPhoneRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    902.8,
+    597.6,
+    687.6,
+    1296.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPhone",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone",
+   "text": null,
+   "ia": null,
+   "rect": [
+    902.8,
+    597.6,
+    687.6,
+    1296.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontCanvas",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas",
+   "text": null,
+   "ia": null,
+   "rect": [
+    902.8,
+    597.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Mask",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    50.400000000000006,
+    61.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "VirtualLive_MV_Event",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Event",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1072.0,
+    601.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "EventRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event/EventRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    125.20000000000005,
+    133.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Event",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event/EventRoot/Event",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1108.0,
+    597.6,
+    169.2,
+    133.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event/EventRoot/Event/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1108.0,
+    597.6,
+    169.2,
+    86.39999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "icon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event/icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1039.6,
+    514.8,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/Event/Title",
+   "text": "EVENT",
+   "ia": null,
+   "rect": [
+    1054.0,
+    496.8,
+    219.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "MV",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV",
+   "text": null,
+   "ia": null,
+   "rect": [
+    949.6,
+    594.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "icon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    920.8,
+    507.6,
+    14.4,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/Title",
+   "text": "MV",
+   "ia": null,
+   "rect": [
+    935.2,
+    489.6,
+    219.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "ButtonMV",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/ButtonMV",
+   "text": null,
+   "ia": true,
+   "rect": [
+    956.8,
+    590.4,
+    118.80000000000001,
+    144.0
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/ButtonMV/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    956.8,
+    590.4,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/ButtonMV/CustomText",
+   "text": "MV視聴",
+   "ia": null,
+   "rect": [
+    956.8,
+    637.2,
+    21.599999999999998,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/MV/ButtonMV/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    960.4,
+    576.0,
+    54.0,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "VirtualLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive",
+   "text": null,
+   "ia": null,
+   "rect": [
+    852.4,
+    633.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "ButtonVirtualLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive",
+   "text": null,
+   "ia": true,
+   "rect": [
+    751.6,
+    579.6,
+    298.8,
+    144.0
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    579.6,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsBalloon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/UIPartsBalloon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    910.0,
+    518.4,
+    190.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/UIPartsBalloon/Text",
+   "text": "開演まであと21時間",
+   "ia": null,
+   "rect": [
+    812.8,
+    514.8,
+    190.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "hint",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/UIPartsBalloon/hint",
+   "text": null,
+   "ia": null,
+   "rect": [
+    852.4,
+    540.0,
+    25.200000000000003,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/Title",
+   "text": "VIRTUAL LIVE",
+   "ia": null,
+   "rect": [
+    647.2,
+    475.2,
+    219.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/SubTitleText",
+   "text": "VIRTUAL LIVE",
+   "ia": null,
+   "rect": [
+    744.4,
+    655.2,
+    284.40000000000003,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/TitleText",
+   "text": "バーチャルライブ",
+   "ia": null,
+   "rect": [
+    748.0,
+    601.2,
+    0.0,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "LeftBalloonRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/ButtonVirtualLive/LeftBalloonRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    931.6,
+    507.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "IconVirtualLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/VirtualLive_MV_Event/VirtualLive/IconVirtualLive",
+   "text": null,
+   "ia": null,
+   "rect": [
+    629.2,
+    482.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "Live",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Bottom",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "RankLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1057.6,
+    406.8,
+    298.8,
+    100.80000000000001
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsReleaseConditionsBalloon (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1061.2,
+    374.4,
+    291.6,
+    108.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1061.2,
+    320.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/TransitionButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1061.2,
+    320.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/CustomText",
+   "text": "第N話を読了で解放",
+   "ia": null,
+   "rect": [
+    1061.2,
+    320.4,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1061.2,
+    327.6,
+    43.199999999999996,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Right",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/Base/Right",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1082.8,
+    324.0,
+    144.0,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/Base/Right/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1154.8,
+    327.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/UIPartsReleaseConditionsBalloon (1)/Content/Base/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1039.6,
+    320.4,
+    144.0,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1057.6,
+    406.8,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/SubTitleText",
+   "text": "RANK MATCH",
+   "ia": null,
+   "rect": [
+    1111.6,
+    453.6,
+    158.4,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    982.0,
+    399.6,
+    79.2,
+    50.400000000000006
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/RankLive/CustomText",
+   "text": "ランクマッチ",
+   "ia": null,
+   "rect": [
+    1111.6,
+    435.6,
+    158.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "ChallengeLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive",
+   "text": null,
+   "ia": true,
+   "rect": [
+    758.8,
+    392.4,
+    298.8,
+    100.80000000000001
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsReleaseConditionsBalloon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon",
+   "text": null,
+   "ia": true,
+   "rect": [
+    773.2,
+    360.0,
+    291.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    773.2,
+    327.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/TransitionButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    773.2,
+    327.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/CustomText",
+   "text": "第N話を読了で解放",
+   "ia": null,
+   "rect": [
+    766.0,
+    327.6,
+    54.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    773.2,
+    334.8,
+    43.199999999999996,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Right",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/Base/Right",
+   "text": null,
+   "ia": null,
+   "rect": [
+    794.8,
+    331.2,
+    108.0,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/Base/Right/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    848.8,
+    331.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/UIPartsReleaseConditionsBalloon/Content/Base/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    327.6,
+    125.99999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    758.8,
+    392.4,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "badge",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/badge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    356.4,
+    28.8,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/SubTitleText",
+   "text": "CHALLENGE LIVE",
+   "ia": null,
+   "rect": [
+    798.4,
+    439.2,
+    158.4,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/CustomText",
+   "text": "チャレンジライブ",
+   "ia": null,
+   "rect": [
+    802.0,
+    421.2,
+    187.20000000000002,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Bottom/ChallengeLive/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    668.8,
+    388.8,
+    79.2,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Top",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top",
+   "text": null,
+   "ia": null,
+   "rect": [
+    899.2,
+    604.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicScoreMaker",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MusicScoreMaker",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1115.2,
+    262.8,
+    198.00000000000003,
+    190.8
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MusicScoreMaker/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1115.2,
+    262.8,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MusicScoreMaker/SubTitleText",
+   "text": "CHART MAKER",
+   "ia": null,
+   "rect": [
+    1111.6,
+    360.0,
+    158.4,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MusicScoreMaker/TitleText",
+   "text": "譜面メーカー",
+   "ia": null,
+   "rect": [
+    1115.2,
+    302.4,
+    176.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "MultiLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MultiLive",
+   "text": null,
+   "ia": true,
+   "rect": [
+    917.2,
+    252.0,
+    198.00000000000003,
+    190.8
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MultiLive/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    917.2,
+    252.0,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MultiLive/SubTitleText",
+   "text": "MULTI LIVE",
+   "ia": null,
+   "rect": [
+    910.0,
+    349.2,
+    198.00000000000003,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/MultiLive/TitleText",
+   "text": "みんなでライブ",
+   "ia": null,
+   "rect": [
+    913.6,
+    295.2,
+    176.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "FreeLive",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/FreeLive",
+   "text": null,
+   "ia": true,
+   "rect": [
+    719.2,
+    241.2,
+    198.00000000000003,
+    190.8
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/FreeLive/EffectImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "SubTitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/FreeLive/SubTitleText",
+   "text": "SOLO LIVE",
+   "ia": null,
+   "rect": [
+    712.0,
+    338.4,
+    198.00000000000003,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/FreeLive/TitleText",
+   "text": "ひとりでライブ",
+   "ia": null,
+   "rect": [
+    715.6,
+    284.4,
+    176.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "Header",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header",
+   "text": null,
+   "ia": null,
+   "rect": [
+    928.0,
+    147.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/Title",
+   "text": "RHYTHM GAME",
+   "ia": null,
+   "rect": [
+    668.8,
+    115.19999999999999,
+    219.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "MultiLiveAudioSpectrumAnalyzer",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer",
+   "text": null,
+   "ia": null,
+   "rect": [
+    636.4,
+    104.4,
+    39.6,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_5",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_5",
+   "text": null,
+   "ia": null,
+   "rect": [
+    658.0,
+    133.2,
+    3.6,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_4",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_4",
+   "text": null,
+   "ia": null,
+   "rect": [
+    654.4,
+    133.2,
+    3.6,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_3",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    650.8,
+    133.2,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_2",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    647.2,
+    133.2,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_1",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    133.2,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_0",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Content/Live/Top/Header/MultiLiveAudioSpectrumAnalyzer/Bar_0",
+   "text": null,
+   "ia": null,
+   "rect": [
+    636.4,
+    133.2,
+    3.6,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerLiveTop/ComponentRoot/CellPhoneRoot/CellPhone/FrontCanvas/Mask/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1039.6,
+    86.39999999999998,
+    385.20000000000005,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Header",
+   "path": "/CanvasRoot/Layer_Header",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerHeader",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "LeftTop",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -0.7999999999999545,
+    0.0,
+    82.8,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsBackButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    10.0,
+    10.800000000000011,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Icon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton/Icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    42.39999999999998,
+    43.19999999999999,
+    28.8,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectBase",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton/EffectBase",
+   "text": null,
+   "ia": null,
+   "rect": [
+    42.39999999999998,
+    43.19999999999999,
+    3.6,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsMenuButton (1)",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1270.0,
+    10.800000000000011,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "badge",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)/badge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1259.2,
+    21.600000000000023,
+    21.599999999999998,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "MenuIcon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)/MenuIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1237.6,
+    43.19999999999999,
+    25.200000000000003,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "MenuLayout",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1270.0,
+    43.19999999999999,
+    597.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "MenuButtonPadding",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/MenuButtonPadding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1237.6,
+    43.19999999999999,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayerInfo",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1169.2,
+    43.19999999999999,
+    496.79999999999995,
+    57.6
+   ],
+   "active": true
+  },
+  {
+   "name": "LiveBoost",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1097.2,
+    43.19999999999999,
+    144.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "LiveBoostText",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/LiveBoostText",
+   "text": "25/25",
+   "ia": null,
+   "rect": [
+    1093.6,
+    43.19999999999999,
+    72.0,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsSettingButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/UIPartsSettingButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1151.2,
+    43.19999999999999,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Plus",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/UIPartsSettingButton/Plus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1151.2,
+    43.19999999999999,
+    21.599999999999998,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "LiveBoostIcon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/LiveBoostIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    43.19999999999999,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "LiveBoostBG",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/LiveBoostBG",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    43.19999999999999,
+    133.2,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Currency",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency",
+   "text": null,
+   "ia": null,
+   "rect": [
+    928.0,
+    43.19999999999999,
+    169.2,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "MultiBalloon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/MultiBalloon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1025.2,
+    79.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsBalloon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/MultiBalloon/UIPartsBalloon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1025.2,
+    79.19999999999999,
+    64.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/MultiBalloon/UIPartsBalloon/Text",
+   "text": "{0}",
+   "ia": null,
+   "rect": [
+    992.8,
+    79.19999999999999,
+    25.200000000000003,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "hint",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/MultiBalloon/UIPartsBalloon/hint",
+   "text": null,
+   "ia": null,
+   "rect": [
+    974.8,
+    57.60000000000002,
+    25.200000000000003,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CurrencyText",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/CurrencyText",
+   "text": "131365",
+   "ia": null,
+   "rect": [
+    924.4000000000001,
+    43.19999999999999,
+    90.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsPlusButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/UIPartsPlusButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    996.4,
+    43.19999999999999,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Icon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/UIPartsPlusButton/Icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    996.4,
+    43.19999999999999,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CurrencyIcon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/CurrencyIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    863.2,
+    43.19999999999999,
+    28.8,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "CurrencyBG",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Currency/CurrencyBG",
+   "text": null,
+   "ia": null,
+   "rect": [
+    838.0,
+    43.19999999999999,
+    162.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Rank",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank",
+   "text": null,
+   "ia": true,
+   "rect": [
+    751.6,
+    43.19999999999999,
+    158.4,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsCommonBalloon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    68.39999999999998,
+    298.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    100.80000000000001,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content/CustomText",
+   "text": "",
+   "ia": null,
+   "rect": [
+    751.6,
+    100.80000000000001,
+    298.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    93.60000000000002,
+    43.199999999999996,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Right",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content/Base/Right",
+   "text": null,
+   "ia": null,
+   "rect": [
+    730.0,
+    100.80000000000001,
+    125.99999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content/Base/Right/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    668.8,
+    100.80000000000001,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/UIPartsCommonBalloon/Content/Base/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    773.2,
+    100.80000000000001,
+    125.99999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "RankText",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankText",
+   "text": "209",
+   "ia": null,
+   "rect": [
+    762.4,
+    43.19999999999999,
+    57.6,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "RankStr",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankStr",
+   "text": "ランク",
+   "ia": null,
+   "rect": [
+    715.6,
+    43.19999999999999,
+    57.6,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "RankIcon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    697.6,
+    43.19999999999999,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "RankExpGauge",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    661.6,
+    43.19999999999999,
+    180.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGauge",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge/UIPartsGauge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    758.8,
+    43.19999999999999,
+    251.99999999999997,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Gauge",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge/UIPartsGauge/Gauge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    43.19999999999999,
+    169.2,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "GaugeBase",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge/UIPartsGauge/Gauge/GaugeBase",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Mask",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge/UIPartsGauge/Gauge/GaugeBase/Mask",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    43.19999999999999,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "GaugeFill",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/Rank/RankExpGauge/UIPartsGauge/Gauge/GaugeBase/Mask/GaugeFill",
+   "text": null,
+   "ia": null,
+   "rect": [
+    751.6,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "BlockListButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "block",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton/block",
+   "text": null,
+   "ia": null,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    3.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "add",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton/add",
+   "text": null,
+   "ia": null,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    3.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_BG",
+   "path": "/CanvasRoot/Layer_BG",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerBackground",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/FrontParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PartsParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/FrontParticle/PartsParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    38.80000000000007,
+    946.8,
+    36000.0,
+    36000.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Root",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Common",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root/Common",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root/Common/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    1558.8,
+    961.1999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "CommonParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/CommonParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PartsParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/CommonParticle/PartsParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    38.80000000000007,
+    946.8,
+    36000.0,
+    36000.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Blocker",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Blocker",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaTransitioner(Clone)",
+   "path": "/CanvasRoot/Layer_BG/AreaTransitioner(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerArea",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Balloons",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot/Balloons",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "IconHUD",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot/IconHUD",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaRoot",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CameraTarget",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/CameraTarget",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CameraBackup",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/CameraBackup",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaCamera",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaCamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Collider",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaCamera/Collider",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_ScreenEffect",
+   "path": "/CanvasRoot/Layer_ScreenEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerInsertNoti",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos04",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos04",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    392.4,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (3)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos04/NoticeCell (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    414.0,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos03",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos03",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    295.2,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (2)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos03/NoticeCell (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    316.8,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos02",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos02",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    201.6,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (1)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos02/NoticeCell (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    223.2,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos01",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos01",
+   "text": null,
+   "ia": null,
+   "rect": [
+    13.600000000000023,
+    104.4,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos01/NoticeCell",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    126.0,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Cover",
+   "path": "/CanvasRoot/Layer_ScreenEffect/Cover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    86.39999999999999,
+    86.39999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Scenario",
+   "path": "/CanvasRoot/Layer_Scenario",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Overlay",
+   "path": "/CanvasRoot/Layer_Overlay",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerTouchEffect",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TouchEffect (3)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect (2)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect (1)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_Loading",
+   "path": "/CanvasRoot/Layer_Loading",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Dialog",
+   "path": "/CanvasRoot/Layer_Dialog",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  }
+ ]
+}

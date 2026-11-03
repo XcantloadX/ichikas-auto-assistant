@@ -122,3 +122,43 @@ adb -s 127.0.0.1:5555 forward tcp:29170 tcp:29170
 
 - `3bb9eba` feat: frida UI 树方案调研与通用框架骨架（此前全部工作的压缩基线）
 - 后续：agent.so 编译/注入/门控破译等尚未提交（guest_agent/ 目录与 probe 新脚本 untracked）——**交接后第一件事先 commit**
+
+---
+
+## 9. 2026-11-04 进展：框架全通 + 渐进迁移底座建成
+
+### 9.1 已完成（全部实测验证）
+
+1. **agent 修复**（`adb9849`、`bc6e2e7`）：
+   - 单字符名字 bug → `mono_string_to_utf8()` 直接读 String 对象（len@0x10、UTF-16@0x14、代理对→UTF-8）
+   - 双实例 bind 竞争 → `g_started` 原子标志
+   - 装箱值 bug → `runtime_invoke` 值类型返回装箱指针，`childCount/active/interactable` 必须读 +0x10
+   - **boot 前调 dump/dbg 会 `runtime_invoke(NULL)` 崩坏 GC 状态**（后续所有 runtime_invoke 挂死）→ 已加防护
+2. **坐标映射**：`screen = (wx*S + 640, 360 - wy*S)`，`S = viewport_h / canvas_world_h`（CanvasRoot 世界高）。实测叠加截图完全对齐。
+3. **TCP 框架**（`iaa/unity_ui/`）：`guest_agent.py`（行协议客户端）、`injector.py`（幂等注入，javaloader 收进仓库）、`client.py`（编排+失效重建）、`tree.py`（parent 指针建树+screen_rect）、`prefab.py`（kotonebot Prefab 协议接入）、`locator/element`（Playwright 风格）。
+   - dump 285 节点 0.05s；点击闭环验证（新闻弹窗关闭按钮）；游戏重启自动重注入。
+4. **渐进迁移底座**：`make_resources.py` 产物 R.py 保留为 fallback；`iaa/unity_ui/uimap.py` 的 `MAP` dict 逐名覆盖 → UI 树驱动；`iaa/tasks/__init__.py` 导入即安装（`IAA_UI_TREE=0` 禁用）。未映射的名字自动回退模板匹配，**所有 task 当前都能跑**。
+5. **已迁移并端到端验证**：`common.py`（at_home/go_home 零改动）、`gift.py`（colored→interactable，实跑领到金币）、`mission_rewards.py`（实跑）、`start_game.py`（force-stop→launch→自动注入→关新闻→at_home）、`_fragments.handle_notification`（点 UIPartsCloseButton）。
+
+### 9.2 已知映射（uimap.MAP）
+
+ButtonLive/MySekai/Story/Gacha/Member（底栏 MainMenu/Base/*）、ButtonGoBack（`/UIPartsBackButton$`）、ButtonClaimAll（Present/Mission 页 footer UIPartsCommonButton）、Login.IconNotification（NewsDialog 关闭钮）。
+
+### 9.3 关键坑与约定
+
+- **Unity 重名加后缀**：`UIPartsMenuButton (1)`——正则要容忍 `( \(\d+\))?`
+- **FindObjectsOfType 只返回激活节点**（active 恒 1），隐藏 UI 不可见；inactive 需 FindObjectsOfTypeAll 或层级遍历（未做）
+- **3D 世界地图对象不在 UI 树**（世界地图建筑/图标是场景 mesh）→ cm.py 的地图导航部分保留模板匹配（fallback 自动生效）
+- **`(Clone)` 后缀**：实例化节点路径带 `(Clone)`，正则需转义
+- **开发环境**：worktree venv 在 `D:/iaa_frida_venv`（E 盘满）；`uv sync` + `UV_PROJECT_ENVIRONMENT`；probe 用 `logs/probe_boot.py`（顶层直线执行，**勿包进函数**——exec+函数+contextvar 有坑：getter 会丢，原因未查明）
+- **probe 注意**：UI 树优先路径不走截图，须先 `device.screenshot()` 一次初始化 scaler 物理分辨率（probe_boot 已做）
+- **白屏**：偶发（不注入也复现），重启模拟器/重开游戏可恢复；UIPrefab find 已降级为"未找到"可自然重试
+- **kotonebot @task/@action** 会自动管理 context；裸函数调 device 需 init_context 后使用
+
+### 9.4 下一步
+
+1. **live.py 迁移**（最大头）：LIVE 顶部页已 dump（`probe/ui_dump_songselect.json`，ScreenLayerLiveTop 的 FreeLive/MultiLive/ChallengeLive/MV/VirtualLive 按钮全可见）。待映射：ButtonDecide（选歌列表决定钮）、歌单 cell、ApMultiplierDialog（OCR 改读 TMP text `CurrencyText` 式节点）、AutoSetDialog、结算页。autolive（auto_live_core.py）不动。
+2. **event_shop.py**：MenuDialog/ShopCell→CrystalShop 已探明；商品 cell（ShopCell(Clone)/ShopCellRootView）结构待研究——若 TMP 文本含商品名可整体替换 icon 模板匹配 + ListView walking。
+3. **story/mysekai/area_convos**：skip_stories、Story.ButtonStoryMenu 等待映射（进剧情即可 dump）。
+4. **NetworkError 弹窗**：等自然触发时 dump（今天出现 2 次：通信エラー/タイトルへ戻る）。
+5. agent 可选增强：按名字查询命令、autodump 循环、FindObjectsOfTypeAll 支持隐藏 UI。
