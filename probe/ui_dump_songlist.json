@@ -1,0 +1,7452 @@
+{
+ "nodes": [
+  {
+   "name": "UniWebViewAndroidStaticListener",
+   "path": "/UniWebViewAndroidStaticListener",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "IAPUtil",
+   "path": "/IAPUtil",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "_SRServiceManager",
+   "path": "/_SRServiceManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AndroidReceivedNotificationMainThreadDispatcher",
+   "path": "/AndroidReceivedNotificationMainThreadDispatcher",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Firebase Services",
+   "path": "/Firebase Services",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PlayGames_QueueRunner",
+   "path": "/PlayGames_QueueRunner",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "[DOTween]",
+   "path": "/[DOTween]",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CRIWARE",
+   "path": "/CRIWARE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SingletonManager",
+   "path": "/SingletonManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "NewsDialogAsyncCacheWritter",
+   "path": "/SingletonManager/NewsDialogAsyncCacheWritter",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MysekaiTopicsManager",
+   "path": "/SingletonManager/MysekaiTopicsManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetBundleMetaManager",
+   "path": "/SingletonManager/AssetBundleMetaManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AdjustManager",
+   "path": "/SingletonManager/AdjustManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "FontAssetManager",
+   "path": "/SingletonManager/FontAssetManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MobileNotificationManager",
+   "path": "/SingletonManager/MobileNotificationManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MultiplayCore",
+   "path": "/SingletonManager/MultiplayCore",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ImageDownloaderManager",
+   "path": "/SingletonManager/ImageDownloaderManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "FireBaseManager",
+   "path": "/SingletonManager/FireBaseManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SocialManager",
+   "path": "/SingletonManager/SocialManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PurchaseManager",
+   "path": "/SingletonManager/PurchaseManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AdRewardManager",
+   "path": "/SingletonManager/AdRewardManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AppLovinManager",
+   "path": "/SingletonManager/AppLovinManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MovieManager",
+   "path": "/SingletonManager/MovieManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "InputManager",
+   "path": "/SingletonManager/InputManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SceneManager",
+   "path": "/SingletonManager/SceneManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetManager",
+   "path": "/SingletonManager/AssetManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "AssetBundleManager",
+   "path": "/SingletonManager/AssetBundleManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UserDataManager",
+   "path": "/SingletonManager/UserDataManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "MasterDataManager",
+   "path": "/SingletonManager/MasterDataManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UserAccountManager",
+   "path": "/SingletonManager/UserAccountManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "APIManager",
+   "path": "/SingletonManager/APIManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SoundManager",
+   "path": "/SingletonManager/SoundManager",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CRIWARE",
+   "path": "/SingletonManager/SoundManager/CRIWARE",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "ApplicationLogger",
+   "path": "/SingletonManager/ApplicationLogger",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "EventSystem",
+   "path": "/SingletonManager/EventSystem",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "EntryPoint",
+   "path": "/EntryPoint",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CanvasRoot",
+   "path": "/CanvasRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    1281.6,
+    720.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIBlurLayerManager(Clone)",
+   "path": "/CanvasRoot/UIBlurLayerManager(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/UIBlurLayerManager(Clone)/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "BaseCamera",
+   "path": "/CanvasRoot/BaseCamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "UICamera",
+   "path": "/CanvasRoot/UICamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_UI",
+   "path": "/CanvasRoot/Layer_UI",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerFreeLiveCellPhone",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPhone",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    493.2,
+    503.99999999999994,
+    943.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CanvasGroup",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    493.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MainButtonContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MainButtonContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    414.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PositiveButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MainButtonContent/PositiveButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1007.2,
+    594.0,
+    172.79999999999998,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MainButtonContent/PositiveButton/Text",
+   "text": "決定",
+   "ia": null,
+   "rect": [
+    1007.2,
+    594.0,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "ButtonImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MainButtonContent/PositiveButton/ButtonImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1007.2,
+    594.0,
+    172.79999999999998,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "GlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MainButtonContent/PositiveButton/GlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1007.2,
+    594.0,
+    7.2,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CommonButtonContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    417.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "GameObject",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1003.6,
+    655.2,
+    468.0,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "ChangeVocalButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject/ChangeVocalButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1068.4,
+    658.8,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Cover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject/ChangeVocalButton/Cover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1068.4,
+    658.8,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject/ChangeVocalButton/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1068.4,
+    658.8,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "ShuffleButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject/ShuffleButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    942.4,
+    651.6,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/CommonButtonContent/GameObject/ShuffleButton/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    942.4,
+    651.6,
+    46.800000000000004,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "ScoreRankContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/ScoreRankContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    414.0,
+    0.0,
+    162.0
+   ],
+   "active": true
+  },
+  {
+   "name": "RankBase",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/ScoreRankContent/RankBase",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1176.4,
+    399.6,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Interaction",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/ScoreRankContent/RankBase/Interaction",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1176.4,
+    399.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Empty",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/ScoreRankContent/RankBase/Empty",
+   "text": "--",
+   "ia": null,
+   "rect": [
+    1176.4,
+    399.6,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Rank",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/ScoreRankContent/RankBase/Rank",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1176.4,
+    399.6,
+    46.800000000000004,
+    50.400000000000006
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultySelectContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    435.6,
+    0.0,
+    118.80000000000001
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsReleaseConditionsBalloon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1086.4,
+    442.8,
+    291.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1086.4,
+    442.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/TransitionButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1086.4,
+    442.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsTransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/TransitionButton/UIPartsTransitionButton",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1226.8,
+    442.8,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Icon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/TransitionButton/UIPartsTransitionButton/Icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1201.6,
+    442.8,
+    21.599999999999998,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/CustomText",
+   "text": "",
+   "ia": null,
+   "rect": [
+    1039.6,
+    442.8,
+    291.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    450.0,
+    39.6,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Right",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/Base/Right",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1190.8,
+    442.8,
+    61.2,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/Base/Right/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1223.2,
+    442.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/UIPartsReleaseConditionsBalloon/Content/Base/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1154.8,
+    442.8,
+    324.0,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Difficulty",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    507.6,
+    385.20000000000005,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Master",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1172.8,
+    504.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master/DifficultyText",
+   "text": "MASTER",
+   "ia": null,
+   "rect": [
+    1169.2,
+    547.2,
+    122.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyLevel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master/DifficultyLevel",
+   "text": "29",
+   "ia": null,
+   "rect": [
+    1172.8,
+    504.0,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master/DifficultyImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    504.0,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Selected",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master/DifficultyImage/Selected",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    504.0,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontGlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Master/FrontGlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Expert",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1093.6,
+    500.4,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert/DifficultyText",
+   "text": "EXPERT",
+   "ia": null,
+   "rect": [
+    1090.0,
+    543.6,
+    122.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyLevel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert/DifficultyLevel",
+   "text": "25",
+   "ia": null,
+   "rect": [
+    1093.6,
+    500.4,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert/DifficultyImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1093.6,
+    500.4,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Selected",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert/DifficultyImage/Selected",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1093.6,
+    500.4,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontGlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Expert/FrontGlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1093.6,
+    500.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Hard",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1014.4000000000001,
+    496.8,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard/DifficultyText",
+   "text": "HARD",
+   "ia": null,
+   "rect": [
+    1010.8,
+    540.0,
+    122.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyLevel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard/DifficultyLevel",
+   "text": "17",
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    496.8,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard/DifficultyImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    496.8,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Selected",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard/DifficultyImage/Selected",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    496.8,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontGlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Hard/FrontGlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    496.8,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Normal",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal",
+   "text": null,
+   "ia": true,
+   "rect": [
+    935.2,
+    493.2,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal/DifficultyText",
+   "text": "NORMAL",
+   "ia": null,
+   "rect": [
+    931.6,
+    536.4,
+    122.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyLevel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal/DifficultyLevel",
+   "text": "12",
+   "ia": null,
+   "rect": [
+    935.2,
+    493.2,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal/DifficultyImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    935.2,
+    493.2,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Selected",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal/DifficultyImage/Selected",
+   "text": null,
+   "ia": null,
+   "rect": [
+    935.2,
+    493.2,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontGlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Normal/FrontGlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    935.2,
+    493.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Easy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy",
+   "text": null,
+   "ia": false,
+   "rect": [
+    856.0,
+    486.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy/DifficultyText",
+   "text": "EASY",
+   "ia": null,
+   "rect": [
+    852.4,
+    532.8,
+    122.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyLevel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy/DifficultyLevel",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    856.0,
+    486.0,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "DifficultyImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy/DifficultyImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    856.0,
+    486.0,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Selected",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy/DifficultyImage/Selected",
+   "text": null,
+   "ia": null,
+   "rect": [
+    856.0,
+    486.0,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontGlowCover",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/DifficultySelectContent/Difficulty/Easy/FrontGlowCover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    856.0,
+    486.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicInfoContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1018.0,
+    399.6,
+    503.99999999999994,
+    752.4
+   ],
+   "active": true
+  },
+  {
+   "name": "VocalName",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/VocalName",
+   "text": null,
+   "ia": null,
+   "rect": [
+    967.6,
+    417.6,
+    295.2,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/VocalName/Text",
+   "text": "Vo. 初音ミク",
+   "ia": null,
+   "rect": [
+    823.6,
+    410.4,
+    140.4,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ArtistName",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/ArtistName",
+   "text": null,
+   "ia": null,
+   "rect": [
+    971.2,
+    392.4,
+    295.2,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/ArtistName/Text",
+   "text": "ryo  (supercell)",
+   "ia": null,
+   "rect": [
+    823.6,
+    385.2,
+    169.2,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicTitle",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/MusicTitle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    971.2,
+    363.6,
+    295.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/MusicInfoContent/MusicTitle/Text",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    823.6,
+    356.4,
+    100.80000000000001,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1036.0,
+    50.39999999999998,
+    36.0,
+    284.40000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "ExternalLink",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/ExternalLink",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1219.6,
+    90.0,
+    39.6,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    208.8,
+    251.99999999999997,
+    251.99999999999997
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Jacket/JacketImage",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    208.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ShuffleBG",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Jacket/ShuffleBG",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    208.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "icon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Jacket/ShuffleBG/icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    208.8,
+    72.0,
+    72.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Empty",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Jacket/Empty",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    208.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketMask",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/JacketMask",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1036.0,
+    50.39999999999998,
+    468.0,
+    468.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/JacketMask/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1036.0,
+    50.39999999999998,
+    0.0,
+    381.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsBlurMusicJacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/JacketMask/Jacket/UIPartsBlurMusicJacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1025.2,
+    241.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/JacketMask/Jacket/UIPartsBlurMusicJacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1025.2,
+    241.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Positions",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Positions",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1028.8,
+    194.4,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicShuffle",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Positions/MusicShuffle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1032.4,
+    72.0,
+    90.0,
+    90.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelect",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/CellPhone/CanvasGroup/JacketContent/Positions/MusicSelect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1036.0,
+    -7.199999999999989,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TransformList",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/TransformList",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "DefaultPosition",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveCellPhone/ComponentRoot/TransformList/DefaultPosition",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1014.4000000000001,
+    493.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerFreeLiveMusicSelect",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TournamentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/TournamentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectList",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ChangeViewButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/ChangeViewButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    715.6,
+    43.19999999999999,
+    133.2,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "IconGrid",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/ChangeViewButton/IconGrid",
+   "text": null,
+   "ia": null,
+   "rect": [
+    665.2,
+    43.19999999999999,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomTextMesh",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/ChangeViewButton/IconGrid/CustomTextMesh",
+   "text": "ジャケット",
+   "ia": null,
+   "rect": [
+    726.4,
+    43.19999999999999,
+    133.2,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsSearchField",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField",
+   "text": null,
+   "ia": true,
+   "rect": [
+    132.40000000000003,
+    18.0,
+    507.59999999999997,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "IconRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/IconRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    611.2,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "SearchIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/IconRoot/SearchIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    611.2,
+    43.19999999999999,
+    21.599999999999998,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Text Area",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/Text Area",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    43.19999999999999,
+    14.4,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Text",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/Text Area/Text",
+   "text": "​",
+   "ia": null,
+   "rect": [
+    373.6,
+    43.19999999999999,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Placeholder",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/Text Area/Placeholder",
+   "text": "曲名・クリエイター名から探す",
+   "ia": null,
+   "rect": [
+    373.6,
+    43.19999999999999,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TopRIght",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1032.4,
+    43.19999999999999,
+    277.2,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FilterButtonRoot",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1032.4,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsDropdown",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/UIPartsDropdown",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1079.2,
+    43.19999999999999,
+    187.20000000000002,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/UIPartsDropdown/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1079.2,
+    43.19999999999999,
+    10.799999999999999,
+    10.799999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "Label",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/UIPartsDropdown/Base/Label",
+   "text": "デフォルト",
+   "ia": null,
+   "rect": [
+    1079.2,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FilterButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/FilterButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    946.0,
+    43.19999999999999,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "FilteredIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/FilterButton/FilteredIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    946.0,
+    43.19999999999999,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "NotFilteredIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/TopRIght/FilterButtonRoot/FilterButton/NotFilteredIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    946.0,
+    43.19999999999999,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListContent",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    360.0,
+    608.4,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListView",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView",
+   "text": null,
+   "ia": null,
+   "rect": [
+    445.6,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Viewport",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    0.0,
+    0.0,
+    190.8
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    187.20000000000002,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    234.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    234.0,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    234.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    255.60000000000002,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "3DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    632.8,
+    255.60000000000002,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon/CustomText",
+   "text": "3D\n",
+   "ia": null,
+   "rect": [
+    632.8,
+    255.60000000000002,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "2DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    694.0,
+    255.60000000000002,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon/CustomText",
+   "text": "2D\n",
+   "ia": null,
+   "rect": [
+    694.0,
+    255.60000000000002,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    241.2,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    255.60000000000002,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    255.60000000000002,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    255.60000000000002,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    255.60000000000002,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    255.60000000000002,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    255.60000000000002,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    255.60000000000002,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    241.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    219.6,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "独りんぼエンヴィー",
+   "ia": null,
+   "rect": [
+    305.2,
+    219.6,
+    190.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    266.4,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    234.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    234.0,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    234.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "6",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    234.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    90.0,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    140.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    140.4,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    187.20000000000002,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    140.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    158.39999999999998,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    144.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    158.39999999999998,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    158.39999999999998,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    158.39999999999998,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    158.39999999999998,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    158.39999999999998,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    158.39999999999998,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    158.39999999999998,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    147.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    122.39999999999998,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    305.2,
+    122.39999999999998,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    172.79999999999998,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    140.4,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    140.4,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    140.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    140.4,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    -3.6000000000000227,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    43.19999999999999,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    93.60000000000002,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    64.80000000000001,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "3DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    632.8,
+    64.80000000000001,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon/CustomText",
+   "text": "3D\n",
+   "ia": null,
+   "rect": [
+    632.8,
+    64.80000000000001,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "2DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    694.0,
+    64.80000000000001,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon/CustomText",
+   "text": "2D\n",
+   "ia": null,
+   "rect": [
+    694.0,
+    64.80000000000001,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    50.39999999999998,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    64.80000000000001,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    64.80000000000001,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    64.80000000000001,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    64.80000000000001,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    64.80000000000001,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    64.80000000000001,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    64.80000000000001,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    50.39999999999998,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    28.80000000000001,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "独りんぼエンヴィー",
+   "ia": null,
+   "rect": [
+    305.2,
+    28.80000000000001,
+    190.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    75.59999999999997,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    43.19999999999999,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    43.19999999999999,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "6",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    43.19999999999999,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    -100.80000000000001,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    -53.99999999999994,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    -53.99999999999994,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    -3.6000000000000227,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    -53.99999999999994,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    -32.400000000000034,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    -46.799999999999955,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    -32.400000000000034,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    -32.400000000000034,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    -32.400000000000034,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    -32.400000000000034,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    -32.400000000000034,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    -32.400000000000034,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    -32.400000000000034,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    -46.799999999999955,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    -68.39999999999998,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    305.2,
+    -68.39999999999998,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    -21.600000000000023,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    -53.99999999999994,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    -53.99999999999994,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    -53.99999999999994,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    -53.99999999999994,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    723.6,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    774.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    774.0,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    820.8,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    774.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    792.0,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    777.5999999999999,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    792.0,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    792.0,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    792.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    792.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    792.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    792.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    792.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    777.5999999999999,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    756.0,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    305.2,
+    756.0,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    806.4,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    774.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    774.0,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    774.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    774.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    630.0,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    676.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    676.8,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    727.2,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    676.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    694.8,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "3DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    632.8,
+    694.8,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon/CustomText",
+   "text": "3D\n",
+   "ia": null,
+   "rect": [
+    632.8,
+    698.4,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "2DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    694.0,
+    694.8,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon/CustomText",
+   "text": "2D\n",
+   "ia": null,
+   "rect": [
+    694.0,
+    698.4,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    680.4,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    698.4,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    698.4,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    698.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    698.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    698.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    698.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    698.4,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    684.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    658.8,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "独りんぼエンヴィー",
+   "ia": null,
+   "rect": [
+    305.2,
+    658.8,
+    190.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    709.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    676.8,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    676.8,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    676.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "6",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    676.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    532.8,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    579.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    579.6,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    630.0,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    579.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    601.2,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    586.8,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    601.2,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    601.2,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    601.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    601.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    601.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    601.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    601.2,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    586.8,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    565.2,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    305.2,
+    565.2,
+    64.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    612.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    579.6,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    579.6,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    579.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    579.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    435.6,
+    597.6,
+    97.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    486.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Neutral",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    486.0,
+    597.6,
+    129.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UnderLine",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/UnderLine",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    532.8,
+    572.4,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    486.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    571.6,
+    504.0,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "3DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    632.8,
+    504.0,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/3DMVIcon/CustomText",
+   "text": "3D\n",
+   "ia": null,
+   "rect": [
+    632.8,
+    504.0,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "2DMVIcon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    694.0,
+    504.0,
+    54.0,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/MVMode/2DMVIcon/CustomText",
+   "text": "2D\n",
+   "ia": null,
+   "rect": [
+    694.0,
+    504.0,
+    3.6,
+    7.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    190.0,
+    489.6,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus",
+   "text": null,
+   "ia": null,
+   "rect": [
+    377.2,
+    504.0,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    395.2,
+    504.0,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    384.4,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    366.4,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    344.8,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/UIPartsGroupMusicDifficultyClearStatus/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    504.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    355.59999999999997,
+    489.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    468.0,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/TitleText/Title/TitleText",
+   "text": "独りんぼエンヴィー",
+   "ia": null,
+   "rect": [
+    305.2,
+    468.0,
+    190.8,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Jacket",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket",
+   "text": null,
+   "ia": null,
+   "rect": [
+    287.2,
+    518.4,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "JacketThumbnail",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/Jacket/JacketThumbnail",
+   "text": null,
+   "ia": null,
+   "rect": [
+    254.79999999999995,
+    486.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    486.0,
+    54.0,
+    54.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    486.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Neutral/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "6",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    486.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectListCell(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    139.60000000000002,
+    284.4,
+    597.6,
+    154.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base",
+   "text": null,
+   "ia": true,
+   "rect": [
+    438.4,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Highlight",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    360.0,
+    597.6,
+    154.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsReleaseConditionsBalloon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon",
+   "text": null,
+   "ia": true,
+   "rect": [
+    445.6,
+    262.8,
+    291.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    445.6,
+    262.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/TransitionButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    445.6,
+    262.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsTransitionButton",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/TransitionButton/UIPartsTransitionButton",
+   "text": null,
+   "ia": null,
+   "rect": [
+    582.4,
+    262.8,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Icon",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/TransitionButton/UIPartsTransitionButton/Icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    560.8,
+    262.8,
+    21.599999999999998,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CustomText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/CustomText",
+   "text": "第N話を読了で解放",
+   "ia": null,
+   "rect": [
+    445.6,
+    262.8,
+    158.4,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    445.6,
+    270.0,
+    43.199999999999996,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Right",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/Base/Right",
+   "text": null,
+   "ia": null,
+   "rect": [
+    467.20000000000005,
+    262.8,
+    125.99999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Image",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/Base/Right/Image",
+   "text": null,
+   "ia": null,
+   "rect": [
+    528.4,
+    262.8,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/UIPartsReleaseConditionsBalloon/Content/Base/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    424.0,
+    262.8,
+    125.99999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    438.4,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MVMode",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/MVMode",
+   "text": null,
+   "ia": null,
+   "rect": [
+    578.8,
+    410.4,
+    291.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    380.8,
+    360.0,
+    453.6,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsGroupMusicDifficultyClearStatus (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    373.6,
+    414.0,
+    154.8,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Padding",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/Padding",
+   "text": null,
+   "ia": null,
+   "rect": [
+    431.20000000000005,
+    414.0,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (4)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/ClearStatusEasy (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    413.2,
+    410.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (3)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/ClearStatusEasy (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    388.0,
+    410.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (2)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/ClearStatusEasy (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    362.8,
+    410.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/ClearStatusEasy (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    337.6,
+    410.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "ClearStatusEasy",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/UIPartsGroupMusicDifficultyClearStatus (1)/ClearStatusEasy",
+   "text": null,
+   "ia": null,
+   "rect": [
+    308.8,
+    410.4,
+    25.200000000000003,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText",
+   "text": null,
+   "ia": null,
+   "rect": [
+    326.8,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Vocal",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Vocal",
+   "text": null,
+   "ia": null,
+   "rect": [
+    298.0,
+    370.8,
+    413.99999999999994,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "VocalText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Vocal/VocalText",
+   "text": "Vo. 初音ミク",
+   "ia": null,
+   "rect": [
+    298.0,
+    370.8,
+    111.6,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Artist",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Artist",
+   "text": null,
+   "ia": null,
+   "rect": [
+    298.0,
+    345.6,
+    410.4,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "ArtistText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Artist/ArtistText",
+   "text": "ryo  (supercell)",
+   "ia": null,
+   "rect": [
+    298.0,
+    345.6,
+    140.4,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Title",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Title",
+   "text": null,
+   "ia": null,
+   "rect": [
+    294.40000000000003,
+    313.2,
+    410.4,
+    36.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TitleText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/TitleText/Title/TitleText",
+   "text": "メルト",
+   "ia": null,
+   "rect": [
+    294.40000000000003,
+    313.2,
+    79.2,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "AudioSpectrumAnalyzer",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer",
+   "text": null,
+   "ia": null,
+   "rect": [
+    251.2,
+    352.8,
+    50.400000000000006,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_5",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_5",
+   "text": null,
+   "ia": null,
+   "rect": [
+    280.0,
+    385.2,
+    3.6,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_4",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_4",
+   "text": null,
+   "ia": null,
+   "rect": [
+    269.2,
+    385.2,
+    3.6,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_3",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    262.0,
+    385.2,
+    3.6,
+    32.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_2",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    251.2,
+    385.2,
+    3.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_1",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    240.39999999999998,
+    385.2,
+    3.6,
+    39.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Bar_0",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/AudioSpectrumAnalyzer/Bar_0",
+   "text": null,
+   "ia": null,
+   "rect": [
+    233.20000000000005,
+    385.2,
+    3.6,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLv",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/PlayLv",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    360.0,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvTitle",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/PlayLv/PlayLvTitle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    331.2,
+    68.4,
+    25.200000000000003
+   ],
+   "active": true
+  },
+  {
+   "name": "Default",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/PlayLv/Default",
+   "text": null,
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "PlayLvText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/MusicSelectListContent/MusicSelectListView/Viewport/Content/MusicSelectListCell(Clone)/Base/Highlight/Content/Left/PlayLv/Default/PlayLvText",
+   "text": "7",
+   "ia": null,
+   "rect": [
+    186.39999999999998,
+    360.0,
+    0.0,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Left",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTabList",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList",
+   "text": null,
+   "ia": null,
+   "rect": [
+    28.0,
+    360.0,
+    90.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Arrow (1)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/Arrow (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    50.39999999999998,
+    10.799999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Arrow",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/Arrow",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    669.6,
+    10.799999999999999,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "BackPanel",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScrollList",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    644.4000000000001,
+    0.0,
+    111.6
+   ],
+   "active": true
+  },
+  {
+   "name": "Viewport",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport",
+   "text": null,
+   "ia": null,
+   "rect": [
+    28.0,
+    75.59999999999997,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Content",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    36.0,
+    0.0,
+    608.4
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    568.8,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "speed",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    601.2,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    500.4,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "その他",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    536.4,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    435.6,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    468.0,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    464.4,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    367.2,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    399.6,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    396.0,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    302.4,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    334.8,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    331.2,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    234.0,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    266.4,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    262.8,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    169.2,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    201.6,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    198.0,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    100.80000000000001,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    133.2,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "TabImage",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabImage",
+   "text": null,
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    129.6,
+    75.6,
+    75.6
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelectUnitTab(Clone)",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    74.79999999999995,
+    36.0,
+    75.6,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "TabText",
+   "path": "/CanvasRoot/Layer_UI/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/Left/MusicSelectUnitTabList/BackPanel/ScrollList/Viewport/Content/MusicSelectUnitTab(Clone)/TabText",
+   "text": "すべて",
+   "ia": true,
+   "rect": [
+    74.79999999999995,
+    68.39999999999998,
+    0.0,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Header",
+   "path": "/CanvasRoot/Layer_Header",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerHeader",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "LeftTop",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -0.7999999999999545,
+    0.0,
+    82.8,
+    82.8
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsBackButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    10.0,
+    10.800000000000011,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "Icon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton/Icon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    42.39999999999998,
+    43.19999999999999,
+    28.8,
+    28.8
+   ],
+   "active": true
+  },
+  {
+   "name": "EffectBase",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/LeftTop/UIPartsBackButton/EffectBase",
+   "text": null,
+   "ia": null,
+   "rect": [
+    42.39999999999998,
+    43.19999999999999,
+    3.6,
+    3.6
+   ],
+   "active": true
+  },
+  {
+   "name": "UIPartsMenuButton (1)",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)",
+   "text": null,
+   "ia": true,
+   "rect": [
+    1270.0,
+    10.800000000000011,
+    64.8,
+    64.8
+   ],
+   "active": true
+  },
+  {
+   "name": "badge",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)/badge",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1259.2,
+    21.600000000000023,
+    21.599999999999998,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "MenuIcon",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/UIPartsMenuButton (1)/MenuIcon",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1237.6,
+    43.19999999999999,
+    25.200000000000003,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "BlockListButton",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton",
+   "text": null,
+   "ia": true,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    46.800000000000004,
+    46.800000000000004
+   ],
+   "active": true
+  },
+  {
+   "name": "block",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton/block",
+   "text": null,
+   "ia": null,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    3.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "add",
+   "path": "/CanvasRoot/Layer_Header/ScreenLayerHeader/ComponentRoot/BlockListButton/add",
+   "text": null,
+   "ia": null,
+   "rect": [
+    546.4,
+    -183.60000000000002,
+    3.6,
+    21.599999999999998
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_BG",
+   "path": "/CanvasRoot/Layer_BG",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerBackground",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "FrontParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/FrontParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PartsParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/FrontParticle/PartsParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    38.80000000000007,
+    946.8,
+    36000.0,
+    36000.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Root",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "MusicSelect",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root/MusicSelect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Base",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Root/MusicSelect/Base",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    1558.8,
+    961.1999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "CommonParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/CommonParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PartsParticle",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/CommonParticle/PartsParticle",
+   "text": null,
+   "ia": null,
+   "rect": [
+    38.80000000000007,
+    946.8,
+    36000.0,
+    36000.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Blocker",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerBackground/ComponentRoot/Blocker",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaTransitioner(Clone)",
+   "path": "/CanvasRoot/Layer_BG/AreaTransitioner(Clone)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerArea",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "UIRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Balloons",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot/Balloons",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "IconHUD",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/UIRoot/IconHUD",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaRoot",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaRoot",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "CameraTarget",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/CameraTarget",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "CameraBackup",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/CameraBackup",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "AreaCamera",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaCamera",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Collider",
+   "path": "/CanvasRoot/Layer_BG/ScreenLayerArea/ComponentRoot/AreaCamera/Collider",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_ScreenEffect",
+   "path": "/CanvasRoot/Layer_ScreenEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerInsertNoti",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos04",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos04",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    392.4,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (3)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos04/NoticeCell (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    414.0,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos03",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos03",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    295.2,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (2)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos03/NoticeCell (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    316.8,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos02",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos02",
+   "text": null,
+   "ia": null,
+   "rect": [
+    17.200000000000045,
+    201.6,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell (1)",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos02/NoticeCell (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    223.2,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "CellPos01",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos01",
+   "text": null,
+   "ia": null,
+   "rect": [
+    13.600000000000023,
+    104.4,
+    334.8,
+    43.199999999999996
+   ],
+   "active": true
+  },
+  {
+   "name": "NoticeCell",
+   "path": "/CanvasRoot/Layer_ScreenEffect/ScreenLayerInsertNoti/ComponentRoot/CellPos01/NoticeCell",
+   "text": null,
+   "ia": null,
+   "rect": [
+    -317.6,
+    126.0,
+    464.40000000000003,
+    79.2
+   ],
+   "active": true
+  },
+  {
+   "name": "Cover",
+   "path": "/CanvasRoot/Layer_ScreenEffect/Cover",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    86.39999999999999,
+    86.39999999999999
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Scenario",
+   "path": "/CanvasRoot/Layer_Scenario",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Overlay",
+   "path": "/CanvasRoot/Layer_Overlay",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ScreenLayerTouchEffect",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "ComponentRoot",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "TouchEffect (4)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    719.2,
+    241.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (4)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect (3)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    1172.8,
+    651.6,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (3)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect (2)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    726.4,
+    421.2,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (2)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect (1)",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect (1)/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "TouchEffect",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "Follow",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "fx_Tap_flick",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_flick/root/SekaiEffect2_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_loop",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_02",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/PT_02",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    18.0,
+    18.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/Follow/fx_Tap_loop/root/SekaiEffect2_1/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    4086.0,
+    4086.0
+   ],
+   "active": true
+  },
+  {
+   "name": "fx_Tap_single",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "SekaiEffect_2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "back",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "particle1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    14.4,
+    14.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2_1",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle2_1",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle3",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle3",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "particle2",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/SekaiEffect_2/back/particle1/particle2",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    2282.4,
+    2282.4
+   ],
+   "active": true
+  },
+  {
+   "name": "root",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/root",
+   "text": null,
+   "ia": null,
+   "rect": [
+    56.799999999999955,
+    57.60000000000002,
+    68.4,
+    68.4
+   ],
+   "active": true
+  },
+  {
+   "name": "PT_01",
+   "path": "/CanvasRoot/Layer_Overlay/ScreenLayerTouchEffect/ComponentRoot/TouchEffect/fx_Tap_single/root/PT_01",
+   "text": null,
+   "ia": null,
+   "rect": null,
+   "active": true
+  },
+  {
+   "name": "Layer_Loading",
+   "path": "/CanvasRoot/Layer_Loading",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  },
+  {
+   "name": "Layer_Dialog",
+   "path": "/CanvasRoot/Layer_Dialog",
+   "text": null,
+   "ia": null,
+   "rect": [
+    640.0,
+    360.0,
+    0.0,
+    0.0
+   ],
+   "active": true
+  }
+ ]
+}

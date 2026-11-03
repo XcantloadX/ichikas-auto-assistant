@@ -39,6 +39,8 @@ MAP: dict[str, dict[str, Any]] = {
     'Hud.ButtonMember': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Member$'),
     # ---- 一括受取按钮（礼物页/任务页 footer）----
     'Hud.ButtonClaimAll': dict(path_re=r'/(ScreenLayerPresent|ScreenLayerMission)/.*(Fotters|ListViewRoot)/UIPartsCommonButton$'),
+    # ---- LIVE 选歌决定按钮（3D 手机 UI 主按钮，各 live 模式同构）----
+    'Live.ButtonDecide': dict(path_re=r'/MainButtonContent/PositiveButton$'),
     # ---- 启动时的新闻弹窗（お知らせ）关闭按钮 ----
     'Login.IconNotification': dict(path_re=r'/NewsDialog\(Clone\)/.*/UIPartsCloseButton$'),
     # ---- 通用返回按钮（各页面 Layer_Header 左上角）----
