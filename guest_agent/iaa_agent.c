@@ -131,6 +131,18 @@ static void read_vec3(void *boxed, float *o) {
     o[0] = f[0]; o[1] = f[1]; o[2] = f[2];
 }
 
+/* runtime_invoke 对值类型返回装箱对象指针（klass/monitor 头 0x10B + 值），
+   不能直接把指针当值用（childCount 曾因此输出垃圾、bool 恒真）。 */
+static int read_boxed_int(void *boxed) {
+    if (!boxed) return 0;
+    return *(int *)((char *)boxed + 0x10);
+}
+
+static int read_boxed_bool(void *boxed) {
+    if (!boxed) return 0;
+    return *(unsigned char *)((char *)boxed + 0x10) != 0;
+}
+
 /* 输出缓冲区（每连接独立；容量按 maxNodes 估算，node*~160B） */
 struct obuf {
     char *data;
@@ -233,10 +245,9 @@ static int dump_tree(struct obuf *o, int max_nodes) {
         if (!go) continue;
         r->gameobject = go;
         r->name = mono_string_to_utf8(invoke(M_go_name, go, NULL));
-        r->active = invoke(M_go_active_h, go, NULL) ? 1 : 0;
+        r->active = read_boxed_bool(invoke(M_go_active_h, go, NULL));
         r->parent = invoke(M_t_parent, t, NULL);
-        void *cc = invoke(M_t_childcount, t, NULL);
-        r->child_count = cc ? (int)(long)cc : 0;
+        r->child_count = read_boxed_int(invoke(M_t_childcount, t, NULL));
         /* 文本（TMP_Text 缓存表外直接尝试）*/
         /* 注：为省调用，文本/交互性用二次 FindObjectsOfType 的映射表，见下方 */
         /* 矩形 */
@@ -250,7 +261,9 @@ static int dump_tree(struct obuf *o, int max_nodes) {
             r->has_rect = 1;
             r->cx = pos[0]; r->cy = pos[1];
             r->w = sd[0] * scale[0];
+            if (r->w < 0) r->w = -r->w;
             r->h = sd[1] * scale[1];
+            if (r->h < 0) r->h = -r->h;
         }
         m++;
     }
@@ -293,7 +306,10 @@ static int dump_tree(struct obuf *o, int max_nodes) {
                 if (!go) continue;
                 void *ok = invoke(M_sel_interactable, c, NULL);
                 for (int j = 0; j < m; j++) {
-                    if (recs[j].gameobject == go) { recs[j].interactable = ok ? 1 : 0; break; }
+                    if (recs[j].gameobject == go) {
+                        recs[j].interactable = read_boxed_bool(ok);
+                        break;
+                    }
                 }
             }
         }
