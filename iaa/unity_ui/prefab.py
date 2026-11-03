@@ -100,6 +100,11 @@ class UIGameObject:
         return self.ui_node.name
 
     @property
+    def center(self) -> tuple[int, int]:
+        """中心点（screen rect 中心）。"""
+        return self.rect.center
+
+    @property
     def path(self) -> str:
         """完整路径。"""
         return self.ui_node.path

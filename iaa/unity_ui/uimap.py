@@ -37,6 +37,8 @@ MAP: dict[str, dict[str, Any]] = {
     'Hud.ButtonStory': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Story$'),
     'Hud.ButtonGacha': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Gacha$'),
     'Hud.ButtonMember': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Member$'),
+    # ---- 通用返回按钮（各页面 Layer_Header 左上角）----
+    'Hud.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$'),
     # ---- 首页右上角入口（TopRight）----
     'Daily.ButtonGift': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Present$'),
     'Daily.ButtonMission': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Mission$'),
