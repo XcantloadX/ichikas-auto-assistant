@@ -50,29 +50,29 @@ class UIElement:
         return self.node.active
 
     def center(self) -> tuple[float, float] | None:
-        """估算元素中心（逻辑分辨率坐标，如 1280x720）。
+        """元素中心的屏幕坐标（像素，与 ``input tap`` 同一坐标系）。
 
-        agent dump 提供 {cx, cy, w, h}（世界坐标，Screen Space - Overlay 画布
-        且画布分辨率等于逻辑分辨率时即为屏幕坐标）。
+        由 agent dump 的 RectTransform 世界坐标经画布比例换算得到
+        （见 :func:`iaa.unity_ui.tree.build_forest`）。
 
-        :return: (cx, cy)；信息不足返回 None
+        :return: (cx, cy)；节点无 RectTransform 时返回 None
         """
-        rect = self.node.rect
+        rect = self.node.screen_rect
         if not rect:
             return None
-        return rect['cx'], rect['cy']
+        return rect[0], rect[1]
 
     def click(self) -> None:
         """点击元素中心（走模拟点击，不走 hook）。
 
-        :raises RuntimeError: 无法换算坐标时
+        :raises RuntimeError: 节点无 RectTransform 无法换算坐标时
         """
         c = self.center()
         if c is None:
             raise RuntimeError(f'no rect for element: {self.node.path}')
         from kotonebot import device  # 局部导入避免循环依赖
 
-        device.click(c[0], c[1])
+        device.click(int(c[0]), int(c[1]))
 
     def __repr__(self) -> str:
         """调试表示。"""

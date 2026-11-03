@@ -1,7 +1,8 @@
 """UI 树数据模型。
 
-snapshot 由 agent 的 ``dump`` 产生（JSON），这里还原为 :class:`UINode` 森林，
-供定位器查询。节点带 transform 信息时包含世界坐标（用于点击）。
+agent 的 ``dump`` 返回平铺节点列表（含 ``parent`` Transform 指针），
+这里还原为 :class:`UINode` 森林，供定位器查询。节点带 RectTransform
+信息时同时给出世界坐标与屏幕坐标（后者用于点击）。
 """
 from __future__ import annotations
 
@@ -29,13 +30,13 @@ class UINode:
     """子节点列表。"""
 
     transform_ptr: str = ''
-    """agent 侧 Transform 对象地址（调试/去重用）。"""
+    """agent 侧 Transform 对象地址（十进制字符串，调试/建树用）。"""
 
     gameobject_ptr: str = ''
     """agent 侧 GameObject 对象地址。"""
 
     path: str = ''
-    """从根到本节点的路径，如 ``/Canvas/HomeRoot/ButtonLive``。"""
+    """从根到本节点的路径，如 ``/CanvasRoot/Layer_UI/ButtonLive``。"""
 
     text: str | None = None
     """节点上 TMP_Text/Text 的文本（无文本组件为 None）。"""
@@ -44,7 +45,11 @@ class UINode:
     """Selectable.interactable（非 Selectable 为 None）。"""
 
     rect: tuple[float, float, float, float] | None = None
-    """世界坐标 (left, top, width, height)，逻辑分辨率；未知为 None。"""
+    """世界坐标 (cx, cy, w, h)（中心点+宽高，Canvas 世界单位）；未知为 None。"""
+
+    screen_rect: tuple[float, float, float, float] | None = None
+    """屏幕坐标 (cx, cy, w, h)（像素，中心点+宽高，与 ``input tap`` 同一坐标系）；
+    无 RectTransform 或未提供视口时为 None。"""
 
     def iter_descendants(self):
         """先序遍历自身与全部后代。"""
@@ -57,12 +62,23 @@ class UINode:
         return not self.children
 
 
-def build_forest(dump: dict) -> list[UINode]:
-    """把 agent dump 的 JSON 还原为 UINode 森林。
+def build_forest(dump: dict, viewport: tuple[int, int] | None = None) -> list[UINode]:
+    """把 agent ``dump`` 的 JSON 还原为 :class:`UINode` 森林。
 
-    :param dump: agent ``dump`` 返回的 ``tree`` 字段
-    :return: 根节点列表
+    dump 是平铺节点列表（``{"ok":true,"n":N,"nodes":[...]}``），节点间以
+    ``parent`` Transform 指针关联；``parent`` 不在列表中的节点即根。
+
+    :param dump: agent ``dump`` 命令的原始响应
+    :param viewport: 屏幕逻辑分辨率 (w, h)；提供时为每个节点换算 ``screen_rect``
+    :return: 根节点列表（每棵场景层级树一个根；UI 画布通常为 ``CanvasRoot``）
     """
+    nodes = dump.get('nodes', [])
+    by_t = {nd['t']: nd for nd in nodes}
+    roots_raw = [nd for nd in nodes if nd['parent'] not in by_t]
+
+    scale = _canvas_scale(roots_raw, viewport) if viewport else None
+    converted: dict[str, UINode] = {}
+
     def convert(d: dict, parent: UINode | None, prefix: str) -> UINode:
         node = UINode(
             name=d.get('name', ''),
@@ -72,11 +88,51 @@ def build_forest(dump: dict) -> list[UINode]:
             gameobject_ptr=d.get('go', ''),
         )
         node.path = prefix + '/' + node.name
+        converted[d['t']] = node
+        rect = d.get('rect')
+        if rect:
+            node.rect = tuple(rect)  # type: ignore[assignment]
+            if scale is not None:
+                w, h = viewport  # type: ignore[misc]
+                node.screen_rect = (
+                    rect[0] * scale + w / 2,
+                    h / 2 - rect[1] * scale,
+                    rect[2] * scale,
+                    rect[3] * scale,
+                )
+        node.text = d.get('text')
+        ia = d.get('ia')
+        node.interactable = None if ia is None else bool(ia)
         for c in d.get('children', []):
             node.children.append(convert(c, node, node.path))
         return node
 
-    return [convert(r, None, '') for r in dump.get('roots', [])]
+    # 平铺 → children 挂接（在原始 dict 上做，再走 convert 递归）
+    for nd in nodes:
+        p = by_t.get(nd['parent'])
+        if p is not None:
+            p.setdefault('children', []).append(nd)
+    for nd in roots_raw:
+        nd.setdefault('children', [])
+    return [convert(r, None, '') for r in roots_raw]
+
+
+def _canvas_scale(roots_raw: list[dict], viewport: tuple[int, int]) -> float:
+    """从根画布的世界尺寸推算 world→pixel 比例。
+
+    Screen Space - Overlay 画布的世界高度 = 屏幕像素高 / scaleFactor，
+    故 ``scale = viewport_h / canvas_world_h``。
+
+    :param roots_raw: 原始根节点 dict 列表
+    :param viewport: (w, h)
+    :return: 比例；找不到画布根时按 720p 基准退化
+    """
+    vh = viewport[1]
+    for r in roots_raw:
+        rect = r.get('rect')
+        if rect and rect[3] >= 1.0:
+            return vh / rect[3]
+    return vh / 720.0
 
 
 def flat_nodes(roots: list[UINode]) -> list[UINode]:

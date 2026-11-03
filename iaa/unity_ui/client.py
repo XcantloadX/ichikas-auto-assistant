@@ -1,98 +1,133 @@
-"""agent RPC 的 Python 封装：bootstrap / snapshot / 窗口重试。
+"""Unity UI 树客户端：注入 → bootstrap → dump → 定位。
 
-因为 MuMu 的 hook 门控，guest 调用呈"窗口"性：agent 内部已有逐调用重试，
-这里再兜一层"整个操作重试"与"会话重建"。
+用法::
+
+    ui = UnityUITree('com.sega.pjsekai')
+    ui.ensure_ready()
+    roots = ui.snapshot()
+    btn = ui.locator(name='UIPartsCloseButton').first()
+    btn.click()
 """
 from __future__ import annotations
 
 import json
+import subprocess
 import time
 from pathlib import Path
-from typing import Callable
 
 from . import injector
+from .guest_agent import AGENT_PORT, GuestAgentClient, GuestAgentError
 from .tree import UINode, build_forest, flat_nodes
 
-#: bootstrap 结果缓存路径（按进程 pid 区分）
-_CACHE_DIR = Path(__file__).parent / '.cache'
+
+def detect_viewport(serial: str) -> tuple[int, int]:
+    """查询设备屏幕分辨率（恒以横向为准，w >= h）。
+
+    :param serial: adb 设备 serial
+    :return: (w, h)
+    """
+    out = injector.adb_shell('wm size', serial)
+    size = ''
+    for line in out.splitlines():
+        if 'Physical size' in line or 'Override size' in line:
+            size = line.split(':')[-1].strip()
+    w, h = (int(v) for v in size.split('x'))
+    return (w, h) if w >= h else (h, w)
 
 
 class UnityUITree:
-    """Unity 游戏 UI 树客户端。
+    """Unity 游戏 UI 树客户端（guest agent TCP 链路）。
 
-    用法::
-
-        ui = UnityUITree('com.sega.pjsekai')
-        ui.ensure_bootstrap()
-        roots = ui.snapshot()
-        btn = ui.locator(name='StartButton').first()
-        btn.click()
+    生命周期：进程重启后 agent 失效，:meth:`ensure_ready` 会自动重注入；
+    dump 期间进程死亡则抛出 :class:`GuestAgentError`，由调用方决定重建。
     """
 
-    def __init__(self, package: str, on_message: Callable | None = None) -> None:
-        """连接游戏进程并加载 agent。
+    def __init__(self, package: str, serial: str = injector.ADB_SERIAL,
+                 port: int = AGENT_PORT, viewport: tuple[int, int] | None = None) -> None:
+        """创建客户端（不立即注入，首次 :meth:`ensure_ready` 时按需注入）。
 
         :param package: android 包名
-        :param on_message: agent 消息回调
-        :raises RuntimeError: 进程未运行时
+        :param serial: adb 设备 serial
+        :param port: agent TCP 端口
+        :param viewport: 屏幕逻辑分辨率 (w, h)；缺省用 ``wm size`` 自动检测
         """
         self.package = package
-        self._session = injector.AgentSession(package, on_message)
+        """android 包名。"""
+
+        self.serial = serial
+        """adb 设备 serial。"""
+
+        self.viewport = viewport or detect_viewport(serial)
+        """屏幕逻辑分辨率 (w, h)，横向。"""
+
+        self._agent = GuestAgentClient(serial, port)
         self._bootstrapped = False
 
-    # -- 基础 ---------------------------------------------------------------
+    # -- 连接管理 -----------------------------------------------------------
 
     def ping(self) -> bool:
-        """探测 agent 与窗口状态。
+        """探测 agent 是否存活。
 
-        :return: 窗口是否打开
+        :return: agent 可响应时 True
         """
-        return bool(self._session.call('ping').get('ok'))
+        return self._agent.ping()
 
-    def ensure_bootstrap(self, max_wait_s: float = 600.0) -> dict:
-        """确保 agent 完成 bootstrap（窗口内执行，失败时轮询重试）。
+    def ensure_ready(self) -> None:
+        """确保 agent 已注入并完成 bootstrap（幂等；失效时自动重注入）。
 
-        :param max_wait_s: 最长等待窗口时间
-        :return: bootstrap 摘要
-        :raises TimeoutError: 等待窗口超时
+        :raises RuntimeError: 游戏进程未运行或注入反复失败时
         """
-        if self._bootstrapped:
-            return {}
-        deadline = time.time() + max_wait_s
-        last_err = None
-        while time.time() < deadline:
-            r = self._session.call('bootstrap')
-            if r.get('ok'):
-                self._bootstrapped = True
-                return r['result']
-            last_err = r.get('err')
-            if not self._session.alive():
-                self._rebuild()
-            time.sleep(1.0)
-        raise TimeoutError(f'bootstrap not completed: {last_err}')
+        if self._bootstrapped and self.ping():
+            return
+        # 先试直连（agent 可能早已加载，只是 forward 丢了）
+        self._agent.ensure_forward()
+        if not self.ping():
+            injector.ensure_agent_so(self.serial)
+            injector.inject(self.serial, self.package)
+            # 注入后 server 线程就绪可能慢一拍
+            deadline = time.time() + 15
+            while time.time() < deadline:
+                if self.ping():
+                    break
+                time.sleep(0.5)
+            else:
+                raise RuntimeError('agent did not come online after injection')
+        self._agent.boot()
+        self._bootstrapped = True
 
-    def snapshot(self, max_nodes: int = 6000) -> list[UINode]:
+    # -- 快照 ---------------------------------------------------------------
+
+    def snapshot(self, max_nodes: int = 8000) -> list[UINode]:
         """dump 当前 UI 树并还原为节点森林。
 
         :param max_nodes: 节点数上限
         :return: 根节点列表（每棵场景层级树一个根）
-        :raises RuntimeError: dump 失败时
+        :raises GuestAgentError: dump 失败时
+        :raises RuntimeError: agent 失效且重注入后仍失败时
         """
-        r = self._session.call('dump', max_nodes, timeout=180)
-        if not r.get('ok'):
-            raise RuntimeError(f"dump failed: {r.get('err')}")
-        return build_forest(r['tree'])
+        self.ensure_ready()
+        try:
+            r = self._agent.dump(max_nodes)
+        except GuestAgentError:
+            # 进程可能已重启：强制重注入一次
+            self._bootstrapped = False
+            self.ensure_ready()
+            r = self._agent.dump(max_nodes)
+        return build_forest(r, self.viewport)
 
-    def snapshot_json(self, path: str, max_nodes: int = 6000) -> dict:
+    def snapshot_json(self, path: str, max_nodes: int = 8000) -> dict:
         """dump 并把原始 JSON 保存到文件（调试用）。
 
         :param path: 输出 json 路径
         :param max_nodes: 节点数上限
         :return: 原始 dump dict
         """
-        r = self._session.call('dump', max_nodes, timeout=180)
+        self.ensure_ready()
+        r = self._agent.dump(max_nodes)
         Path(path).write_text(json.dumps(r, ensure_ascii=False, indent=1), encoding='utf-8')
         return r
+
+    # -- 定位 ---------------------------------------------------------------
 
     def locator(self, *, name: str | None = None, name_re: str | None = None,
                 path: str | None = None, path_re: str | None = None,
@@ -121,20 +156,3 @@ class UnityUITree:
         if snapshot is not None:
             loc.use_snapshot(snapshot)
         return loc
-
-    # -- 内部 ---------------------------------------------------------------
-
-    def _rebuild(self) -> None:
-        """目标进程已死或会话失效时重建会话（等待游戏重新运行）。"""
-        try:
-            self._session.detach()
-        except Exception:  # noqa: BLE001
-            pass
-        for _ in range(120):
-            try:
-                self._session = injector.AgentSession(self.package)
-                self._bootstrapped = False
-                return
-            except RuntimeError:
-                time.sleep(1.0)
-        raise RuntimeError('cannot rebuild agent session')
