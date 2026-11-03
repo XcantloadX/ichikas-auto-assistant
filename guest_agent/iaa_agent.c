@@ -75,9 +75,48 @@ static void *M_go_name, *M_go_active_h, *M_comp_go, *M_t_parent,
 /* 小工具                                                              */
 /* ------------------------------------------------------------------ */
 
-static const char *istr(void *s) { return s ? f_string_chars(s) : NULL; }
+/* 直接读 il2cpp String 对象（length@0x10, UTF-16 chars@0x14），自行转 UTF-8。
+   不走 il2cpp_string_chars：其返回的临时缓冲在本环境只读得到 1 字符（见 findings §6）。
+   返回 malloc 的 C 字符串（调用方 free），失败返回 NULL。 */
+static char *mono_string_to_utf8(void *str) {
+    if (!str) return NULL;
+    int slen = *(int *)((char *)str + 0x10);
+    if (slen < 0 || slen > 8192) return NULL;
+    const unsigned short *u16 = (const unsigned short *)((char *)str + 0x14);
+    char *out = (char *)malloc((size_t)slen * 4 + 1);
+    if (!out) return NULL;
+    size_t o = 0;
+    for (int i = 0; i < slen; i++) {
+        unsigned int c = u16[i];
+        if (c >= 0xD800 && c < 0xDC00 && i + 1 < slen) {
+            unsigned int lo = u16[i + 1];
+            if (lo >= 0xDC00 && lo < 0xE000) {
+                c = 0x10000 + ((c - 0xD800) << 10) + (lo - 0xDC00);
+                i++;
+            }
+        }
+        if (c < 0x80) {
+            out[o++] = (char)c;
+        } else if (c < 0x800) {
+            out[o++] = (char)(0xC0 | (c >> 6));
+            out[o++] = (char)(0x80 | (c & 0x3F));
+        } else if (c < 0x10000) {
+            out[o++] = (char)(0xE0 | (c >> 12));
+            out[o++] = (char)(0x80 | ((c >> 6) & 0x3F));
+            out[o++] = (char)(0x80 | (c & 0x3F));
+        } else {
+            out[o++] = (char)(0xF0 | (c >> 18));
+            out[o++] = (char)(0x80 | ((c >> 12) & 0x3F));
+            out[o++] = (char)(0x80 | ((c >> 6) & 0x3F));
+            out[o++] = (char)(0x80 | (c & 0x3F));
+        }
+    }
+    out[o] = 0;
+    return out;
+}
 
 static void *invoke(void *method, void *obj, void **args) {
+    if (!method) return NULL; /* runtime_invoke(NULL) 会崩坏 GC 状态，必须挡住 */
     void *exc = NULL;
     return f_runtime_invoke(method, obj, args, &exc);
 }
@@ -148,11 +187,11 @@ static void ob_put_float(struct obuf *o, float v) {
 struct node_rec {
     void *transform;
     void *gameobject;
-    const char *name;
+    char *name;            /* malloc 所有权归本结构 */
     int active;
     void *parent;
     int child_count;
-    const char *text;      /* 可为 NULL */
+    char *text;            /* 可为 NULL；malloc 所有权归本结构 */
     int interactable;      /* -1 未知 */
     float cx, cy, w, h;    /* 世界矩形；has_rect=0 时无效 */
     int has_rect;
@@ -193,7 +232,7 @@ static int dump_tree(struct obuf *o, int max_nodes) {
         void *go = invoke(M_comp_go, t, NULL);
         if (!go) continue;
         r->gameobject = go;
-        r->name = istr(invoke(M_go_name, go, NULL));
+        r->name = mono_string_to_utf8(invoke(M_go_name, go, NULL));
         r->active = invoke(M_go_active_h, go, NULL) ? 1 : 0;
         r->parent = invoke(M_t_parent, t, NULL);
         void *cc = invoke(M_t_childcount, t, NULL);
@@ -228,10 +267,16 @@ static int dump_tree(struct obuf *o, int max_nodes) {
                 void *c = arr_item(arr, i);
                 void *go = invoke(M_comp_go, c, NULL);
                 if (!go) continue;
-                const char *txt = istr(invoke(M_tmp_text, c, NULL));
+                char *txt = mono_string_to_utf8(invoke(M_tmp_text, c, NULL));
+                int assigned = 0;
                 for (int j = 0; j < m; j++) {
-                    if (recs[j].gameobject == go) { recs[j].text = txt; break; }
+                    if (recs[j].gameobject == go && !recs[j].text) {
+                        recs[j].text = txt;
+                        assigned = 1;
+                        break;
+                    }
                 }
+                if (!assigned) free(txt);
             }
         }
     }
@@ -287,6 +332,10 @@ static int dump_tree(struct obuf *o, int max_nodes) {
     }
     ob_put(o, "]}");
 
+    for (int j = 0; j < m; j++) {
+        free(recs[j].name);
+        free(recs[j].text);
+    }
     free(transforms);
     free(recs);
     return m;
@@ -375,6 +424,9 @@ static int bootstrap(void) {
 static void *handle_client(void *arg) {
     int fd = (int)(long)arg;
     char req[256];
+    /* 本线程要用 il2cpp_runtime_invoke，先挂到 il2cpp domain（幂等） */
+    void *domain = f_domain_get();
+    if (domain) f_thread_attach(domain);
     struct obuf o;
     o.cap = 4 * 1024 * 1024;
     o.data = (char *)malloc(o.cap);
@@ -390,37 +442,34 @@ static void *handle_client(void *arg) {
     if (strstr(req, "\"ping\"")) {
         ob_put(&o, "{\"ok\":true,\"agent\":\"iaa\",\"il2cpp\":true}");
     } else if (strstr(req, "\"dbg\"")) {
-        /* 调试：字符串往返 + 第一个 Transform 的名字原始字节 */
+        /* 调试：直接读 String 对象，输出前几个 Transform 的名字（验证 mono_string_to_utf8） */
+        if (!M_find_all) {
+            ob_put(&o, "{\"ok\":false,\"err\":\"not bootstrapped, send boot first\"}");
+        } else {
         void *domain = f_domain_get();
         f_thread_attach(domain);
         ob_put(&o, "{\"ok\":true");
         void **ts = (void **)malloc(sizeof(void *) * 8);
-        int n = find_all_transforms(&ts, 8);
+        int nts = find_all_transforms(&ts, 8);
         ob_put(&o, ",\"tn\":");
-        ob_put_int(&o, n);
-        if (n > 0) {
-            void *go = invoke(M_comp_go, ts[0], NULL);
-            void *nm = invoke(M_go_name, go, NULL);
-            char tmp[512];
-            snprintf(tmp, sizeof(tmp), ",\"nameobj\":\"%p\",\"chars\":\"%p\"", nm, nm ? f_string_chars(nm) : NULL);
-            ob_put(&o, tmp);
-            if (nm) {
-                const unsigned char *raw = (const unsigned char *)f_string_chars(nm);
-                ob_put(&o, ",\"raw\":[");
-                for (int i = 0; i < 24 && raw[i]; i++) {
-                    if (i) ob_put(&o, ",");
-                    ob_put_int(&o, raw[i]);
-                }
-                ob_put(&o, "]");
-                /* String 对象头：klass/monitor/length */
-                int slen = *(int *)((char *)nm + 0x10);
-                ob_put(&o, ",\"slen\":");
-                ob_put_int(&o, slen);
+        ob_put_int(&o, nts);
+        if (nts > 0) {
+            ob_put(&o, ",\"names\":[");
+            for (int i = 0; i < nts && i < 4; i++) {
+                if (i) ob_put(&o, ",");
+                void *go = invoke(M_comp_go, ts[i], NULL);
+                void *nm = go ? invoke(M_go_name, go, NULL) : NULL;
+                ob_put_json_str(&o, mono_string_to_utf8(nm));
             }
+            ob_put(&o, "]");
         }
         free(ts);
         ob_put(&o, "}");
+        }
     } else if (strstr(req, "\"dump\"")) {
+        if (!M_find_all) {
+            ob_put(&o, "{\"ok\":false,\"err\":\"not bootstrapped, send boot first\"}");
+        } else {
         int max = 6000;
         const char *mp = strstr(req, "\"max\":");
         if (mp) max = atoi(mp + 6);
@@ -428,6 +477,7 @@ static void *handle_client(void *arg) {
         if (dump_tree(&o, max) < 0) {
             o.len = 0;
             ob_put(&o, "{\"ok\":false,\"err\":\"dump failed\"}");
+        }
         }
     } else if (strstr(req, "\"boot\"")) {
         int r = bootstrap();
@@ -499,10 +549,24 @@ static void *server_thread(void *arg) {
 /*   1) JNI_OnLoad：System.load 触发（反作弊环境下通常到不了这里）        */
 /*   2) constructor：DT_NEEDED 劫持触发——guest linker 加载依赖库时执行，  */
 /*      早于运行时完整性监控。此处 il2cpp 可能尚未加载，轮询等待。          */
+/* System.load 路径下 JNI_OnLoad 与 constructor 都会执行 → 用 g_started   */
+/* 原子标志保证只有一个 server（否则两实例抢 bind，第二个 fallback unix）  */
 /* ------------------------------------------------------------------ */
+
+static volatile int g_started = 0;
+static pthread_mutex_t g_start_mx = PTHREAD_MUTEX_INITIALIZER;
 
 static void *init_thread(void *arg) {
     (void)arg;
+    pthread_mutex_lock(&g_start_mx);
+    if (g_started) {
+        pthread_mutex_unlock(&g_start_mx);
+        LOGI("init_thread: already started, skip");
+        return NULL;
+    }
+    g_started = 1;
+    pthread_mutex_unlock(&g_start_mx);
+
     /* 等待 libil2cpp 加载（最多 10 分钟） */
     for (int i = 0; i < 600; i++) {
         void *sym = dlsym(RTLD_DEFAULT, "il2cpp_domain_get");
