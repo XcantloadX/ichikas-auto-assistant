@@ -134,3 +134,10 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+probe/frida-server-*
+probe/*.so
+probe/*.dat
+probe/*.mem
+probe/meta_*.bin
+probe/libhp12_mem.so
+probe/*.png
