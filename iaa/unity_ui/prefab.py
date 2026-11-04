@@ -138,7 +138,13 @@ class UIGameObject:
 
 
 def _make_query(**kwargs: Any) -> 'UIQuery':
-    """把 q() kwargs 组装为 UIQuery（容忍模板 API 的参数并忽略）。"""
+    """把 q() kwargs 组装为 UIQuery（容忍模板 API 的参数并忽略）。
+
+    ``enabled`` 是 ``interactable`` 的模板 API 别名（Selectable.enabled 与
+    interactable 在 UI 树语境下同义）。
+    """
+    if 'enabled' in kwargs and 'interactable' not in kwargs:
+        kwargs['interactable'] = kwargs.pop('enabled')
     ignored = {k: v for k, v in kwargs.items()
                if k in ('threshold', 'colored', 'region') and v is not None}
     if ignored:

@@ -84,15 +84,40 @@ MAP: dict[str, dict[str, Any]] = {
     # 「通信エラー」重试弹窗（Common2ButtonDialog；结构按 1 按钮版类比，未实测）
     'NetworkError.DialogConnectionError.Text': dict(name='MessageBody', path_re=r'/Common2ButtonDialog\(Clone\)/'),
     'NetworkError.DialogConnectionError.ButtonRetry': dict(path_re=r'/Common2ButtonDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text_re=r'リトライ'),
+    # ---- LIVE 详情确认页（ScreenLayerFreeLiveFinalConfirmation，各 live 模式同构）----
+    # 头部 LiveBoost 设置按钮（打开 AP 倍率弹窗）
+    'Live.ButtonApMultiplierSettings': dict(path_re=r'/ScreenLayerHeader/ComponentRoot/MenuLayout/PlayerInfo/LiveBoost/UIPartsSettingButton$'),
+    # AP 倍率弹窗（BoostRecoveryDialog，含 ライブボーナス消費 内容）
+    'Live.ApMultiplierDialog.TextTip': dict(path_re=r'/BoostRecoveryDialog\(Clone\)$'),
+    'Live.ApMultiplierDialog.ButtonPlus': dict(path_re=r'/BoostRecoveryDialog\(Clone\)/.*UIPartsIncrementButton$'),
+    'Live.ApMultiplierDialog.ButtonMinus': dict(path_re=r'/BoostRecoveryDialog\(Clone\)/.*UIPartsDecrementButton$'),
+    'Live.ApMultiplierDialog.ButtonConfirm': dict(path_re=r'/BoostRecoveryDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text=r'決定'),
+    # 当前倍率数字（NumText，如 '0'）——替代 BoxApNumber+OCR（新增叶子名）
+    'Live.ApMultiplierDialog.TextApNumber': dict(path_re=r'/BoostRecoveryDialog\(Clone\)/.*NumText$'),
+    # 自動編成弹窗（RecommendedDeckOrganizationDialog）
+    'Live.ButtonSetRecommendUnit': dict(path_re=r'/ScreenLayerFreeLiveFinalConfirmation/ComponentRoot/ContentArea/DeckListView/DeckView/AutoEditButton$'),
+    'Live.AutoSetDialog.TextUnitRecommend': dict(path_re=r'/RecommendedDeckOrganizationDialog\(Clone\)$'),
+    'Live.AutoSetDialog.TextRecommend': dict(path_re=r'/RecommendedDeckOrganizationDialog\(Clone\)/.*UIPartsGroupFiterUnitRadio/Recommend$'),
+    'Live.AutoSetDialog.TextEventMember': dict(path_re=r'/RecommendedDeckOrganizationDialog\(Clone\)/.*UIPartsGroupFiterUnitRadio/[^/]+$', has_text_re=r'イベント'),
+    'Live.AutoSetDialog.ButtonConfirm': dict(path_re=r'/RecommendedDeckOrganizationDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text=r'決定'),
+    # 开始演出（3D 手机 UI 的 PlayButton）
+    'Live.ButtonStartLive': dict(path_re=r'/SoloLiveFinalConfirmButton/PlayButton$'),
+    # AUTO 演出开关（UIPartsToggle 的 Off/On 子节点存在性即状态；仅激活节点被 dump）
+    'Live.SwitchAutoLiveOn': dict(path_re=r'/AutoLiveToggle/ToggleRoot/UIPartsToggle/On$'),
+    'Live.SwitchAutoLiveOff': dict(path_re=r'/AutoLiveToggle/ToggleRoot/UIPartsToggle/Off$'),
+    'Live.ButtonAutoLiveSettings': dict(path_re=r'/AutoLiveToggle/ConsecutiveAutoLiveRoot/ConsecutiveAutoLiveSetting/Button$'),
 }
 
 
 def install(r_module: object) -> int:
     """把映射表安装到 R 模块：已映射的名字替换为 UIPrefab 子类。
 
+    允许叶子名在 R 中不存在（如替代 OCR 的 ``TextApNumber``）——此时在
+    父级上新建属性；中间层级仍必须存在，防映射名拼错。
+
     :param r_module: ``iaa.tasks.R`` 模块对象
     :return: 安装的映射数
-    :raises AttributeError: R 路径不存在时（映射名拼错）
+    :raises AttributeError: 映射的中间层级不存在时（映射名拼错）
     """
     n = 0
     for dotted, spec in MAP.items():

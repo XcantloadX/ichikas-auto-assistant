@@ -4,7 +4,7 @@ from pydantic import BaseModel, ConfigDict
 
 from kotonebot import logging
 from kotonebot.core import AnyOf, Prefab
-from kotonebot import device, Loop, action, sleep, color, ocr
+from kotonebot import device, Loop, action, sleep, color
 
 from .. import R
 from ..common import at_home, go_home
@@ -130,10 +130,23 @@ def _configure_ap_multiplier(ap_multiplier: int | Literal['maximum']) -> None:
         elif R.Live.ButtonApMultiplierSettings.try_click():
             logger.debug('Clicked AP multiplier settings button.')
     def _read_current_multiplier() -> int:
-        current_multiplier = ocr.ocr(R.Live.ApMultiplierDialog.BoxApNumber).squash().numbers()
-        if not current_multiplier:
-            raise RuntimeError('Failed to read current AP multiplier.')
-        return int(current_multiplier[0])
+        """读当前 AP 倍率数字（UI 树 NumText，如 '0'/'10'）。
+
+        替代旧的 ``BoxApNumber`` HintBox + OCR：弹窗（BoostRecoveryDialog）
+        布局与旧 ApMultiplierDialog 不同，固定 ROI 已失效。
+
+        :return: 当前倍率
+        :raises RuntimeError: 节点不存在或文本不可解析时
+        """
+        import re
+
+        node = R.Live.ApMultiplierDialog.TextApNumber.find()
+        if node is None or not node.text:
+            raise RuntimeError('Failed to read current AP multiplier (NumText not found).')
+        m = re.search(r'\d+', node.text)
+        if m is None:
+            raise RuntimeError(f'Unreadable AP multiplier text: {node.text!r}')
+        return int(m.group())
 
     def _set_maximum() -> None:
         for i in range(12):
