@@ -162,3 +162,47 @@ ButtonLive/MySekai/Story/Gacha/Member（底栏 MainMenu/Base/*）、ButtonGoBack
 3. **story/mysekai/area_convos**：skip_stories、Story.ButtonStoryMenu 等待映射（进剧情即可 dump）。
 4. **NetworkError 弹窗**：等自然触发时 dump（今天出现 2 次：通信エラー/タイトルへ戻る）。
 5. agent 可选增强：按名字查询命令、autodump 循环、FindObjectsOfTypeAll 支持隐藏 UI。
+
+---
+
+## 10. 2026-11-04（晚）：agent 迁移到 UnityResolve.hpp + CMake 规范化
+
+### 10.1 结构
+
+```
+guest_agent/
+├── CMakeLists.txt            # NDK 构建入口（arm64-v8a, android-24, ANDROID_STL=c++_static）
+├── src/iaa_agent.cpp         # C++ agent（协议不变：ping/boot/dbg/dump）
+├── src/stubs.c               # guest libc 缺失符号空桩（必须链接）
+├── third_party/UnityResolve/ # UnityResolve.hpp（MIT，vendored）
+├── README.md                 # 构建/部署/约束说明
+└── iaa_agent.so              # 产物（提交，injector 按大小重推）
+```
+
+编译组合结论：**默认 crt + ANDROID_STL=c++_static + stubs 可被 houdini 加载**
+（stubs 内联消化 `__register_atfork/__cxa_atexit` 后产物无未定义导入；
+DT_NEEDED 仅 liblog/libm/libdl/libc）。不再需要 -nostdlib。
+
+### 10.2 踩坑记录（都很贵，别重复）
+
+1. **`String::ToString()` 在 Android 是错的**：以 4 字节 wchar_t 读 UTF-16 缓冲
+   （wchar_t 只有 Windows 是 2 字节），且不处理代理对 → 保留自有
+   `mono_string_to_utf8()`。
+2. **`Method::Invoke` 是直接调函数指针**（il2cpp methodInfo 首指针、无尾随
+   MethodInfo*、不走 runtime_invoke）——本环境实测 FindObjectsOfType 挂死。
+   **必须走 `il2cpp_runtime_invoke`**，且 params 语义要对：本环境引用类型
+   参数按值放 params[i]（`params[0]=type_obj`，旧 C agent 验证过的形态），
+   `Method::RuntimeInvoke` 的 `&arg` 形态会导致收到栈地址 → 挂死。
+   → 统一用 `rt_invoke()` 辅助（见 iaa_agent.cpp 注释）。
+3. **`Class::Get` 只搜本类方法**：`get_name` 等声明在 UnityEngine.Object 上，
+   必须**沿继承链向上搜**（`resolve_in_hierarchy`，对齐
+   il2cpp_class_get_method_from_name 的行为）。
+4. **boot 前不能 `UR::ThreadAttach()`**：依赖 Init 缓存的 pDomain，boot 前
+   调用 = il2cpp_thread_attach(NULL) 挂死整个 handler 线程（ping 都不回）。
+5. 诊断手法：反作弊环境下 logcat 看不到 agent 日志 → 错误原因必须走协议
+   返回（boot 响应带 err 字段）。
+
+### 10.3 回归
+
+boot ~10s（全量枚举程序集/类/方法，一次性），dump 281 节点 0.03s，
+名字/文本/交互性/矩形与旧 C agent 输出一致；宿主 iaa/unity_ui 无改动直接可用。
