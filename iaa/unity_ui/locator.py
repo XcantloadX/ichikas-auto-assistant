@@ -56,6 +56,12 @@ class Locator:
     has_text_re: str | None = None
     """自身或任一子孙节点的文本匹配该正则。"""
 
+    sprite: str | None = None
+    """节点上 Image 的 sprite 名精确匹配（图标身份；仅 UI 定位域）。"""
+
+    sprite_re: str | None = None
+    """Image 的 sprite 名正则（仅 UI 定位域）。"""
+
     interactable: bool | None = None
     """Selectable.interactable 过滤（None 不过滤）。"""
 
@@ -98,6 +104,10 @@ class Locator:
         if self.has_text is not None and not _self_or_desc_text(node, lambda t: self.has_text in t):  # type: ignore[union-attr]
             return False
         if self.has_text_re is not None and not _self_or_desc_text(node, lambda t: re.search(self.has_text_re, t) is not None):  # type: ignore[arg-type]
+            return False
+        if self.sprite is not None and node.sprite != self.sprite:
+            return False
+        if self.sprite_re is not None and (node.sprite is None or not re.search(self.sprite_re, node.sprite)):
             return False
         if self.interactable is not None and node.interactable != self.interactable:
             return False

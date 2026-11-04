@@ -77,6 +77,12 @@ class UIQuery(FindQuery[Any]):
     has_text_re: str | None = None
     """自身或任一子孙节点的文本匹配该正则。"""
 
+    sprite: str | None = None
+    """节点上 Image 的 sprite 名精确匹配（图标身份；仅 UI 定位域）。"""
+
+    sprite_re: str | None = None
+    """Image 的 sprite 名正则（仅 UI 定位域）。"""
+
     interactable: bool | None = None
     """Selectable.interactable 过滤。"""
 
@@ -209,6 +215,12 @@ class UIPrefab(Prefab[UIGameObject]):
     ui_has_text_re: str | None = None
     """自身或任一子孙节点的文本匹配该正则。"""
 
+    ui_sprite: str | None = None
+    """Image 的 sprite 名精确匹配（图标身份）。"""
+
+    ui_sprite_re: str | None = None
+    """Image 的 sprite 名正则。"""
+
     ui_interactable: bool | None = None
     """interactable 过滤。"""
 
@@ -248,6 +260,10 @@ class UIPrefab(Prefab[UIGameObject]):
         if cls.ui_has_text is not None and not _has_text(node, cls.ui_has_text):
             return False
         if cls.ui_has_text_re is not None and not _has_text_re(node, cls.ui_has_text_re):
+            return False
+        if cls.ui_sprite is not None and node.sprite != cls.ui_sprite:
+            return False
+        if cls.ui_sprite_re is not None and (node.sprite is None or not re.search(cls.ui_sprite_re, node.sprite)):
             return False
         if cls.ui_interactable is not None and node.interactable != cls.ui_interactable:
             return False
@@ -320,6 +336,10 @@ def _query_matches(node: UINode, query: UIQuery) -> bool:
     if query.has_text is not None and not _has_text(node, query.has_text):
         return False
     if query.has_text_re is not None and not _has_text_re(node, query.has_text_re):
+        return False
+    if query.sprite is not None and node.sprite != query.sprite:
+        return False
+    if query.sprite_re is not None and (node.sprite is None or not re.search(query.sprite_re, node.sprite)):
         return False
     if query.interactable is not None and node.interactable != query.interactable:
         return False

@@ -73,12 +73,18 @@ UR::Method* M_get_world_corners = nullptr; // RectTransform.GetWorldCorners(Vect
 UR::Method* M_canvas_render_mode = nullptr; // Canvas.get_renderMode（可选）
 UR::Method* M_canvas_world_camera = nullptr; // Canvas.get_worldCamera（可选）
 UR::Method* M_w2s = nullptr;             // Camera.WorldToScreenPoint(Vector3)（可选）
+UR::Method* M_img_sprite = nullptr;      // Image.get_sprite（可选，UI 图标身份）
+UR::Method* M_obj_name = nullptr;        // Object.get_name（Sprite 名等，可选）
+UR::Method* M_renderer_bounds = nullptr; // Renderer.get_bounds（可选，3D 定位）
+UR::Method* M_cam_main = nullptr;        // Camera.get_main（静态，可选）
 UR::Class* K_RectTransform = nullptr;    // 用于 klass 指针比较
 UR::Class* K_Transform = nullptr;
 UR::Class* K_TmpText = nullptr;
 UR::Class* K_Selectable = nullptr;
 UR::Class* K_Canvas = nullptr;
 UR::Class* K_Vector3 = nullptr;
+UR::Class* K_Image = nullptr;            // UnityEngine.UI.Image
+UR::Class* K_Renderer = nullptr;         // UnityEngine.Renderer
 void* g_corners_arr = nullptr;           // Vector3[4] 复用缓冲（GetWorldCorners 出参）
 
 /* bootstrap 完成后置 1：handle_client 依此决定是否 ThreadAttach */
@@ -304,9 +310,36 @@ void ensure_pixel_handles() {
         if (auto* m = K_camera->Get<UR::Method>("WorldToScreenPoint", std::vector<std::string>{"*"}))
             if (m->address) M_w2s = m;
     }
-    LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d",
+    /* UI 图标身份（sprite 名）+ 3D 定位（Renderer bounds 投影）句柄。
+       与 UI/3D 定位协议分离对应：spr 字段进 UI dump，3D 走 find3d 命令。 */
+    if (!K_Image) {
+        if (auto* ui_asm2 = UR::Get("UnityEngine.UI.dll")) K_Image = ui_asm2->Get("Image", "UnityEngine.UI");
+        if (!K_Image && core) K_Image = core->Get("Image", "UnityEngine.UI");
+    }
+    if (K_Image && !M_img_sprite) {
+        if (auto* m = resolve_in_hierarchy(core, K_Image, "get_sprite", 0))
+            if (m->address) M_img_sprite = m;
+    }
+    if (core && !M_obj_name) {
+        if (auto* K_obj = core->Get("Object", "UnityEngine")) {
+            if (auto* m = resolve_in_hierarchy(core, K_obj, "get_name", 0))
+                if (m->address) M_obj_name = m;
+        }
+    }
+    if (!K_Renderer) K_Renderer = find_class_all("Renderer", "UnityEngine");
+    if (K_Renderer && !M_renderer_bounds) {
+        if (auto* m = resolve_in_hierarchy(core, K_Renderer, "get_bounds", 0))
+            if (m->address) M_renderer_bounds = m;
+    }
+    if (K_camera && !M_cam_main) {
+        if (auto* m = K_camera->Get<UR::Method>("get_main", std::vector<std::string>{}))
+            if (m->address) M_cam_main = m;
+    }
+    LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d sprite=%d objname=%d bounds=%d cammain=%d",
          M_get_world_corners != nullptr, g_corners_arr != nullptr,
-         M_canvas_render_mode != nullptr, M_canvas_world_camera != nullptr, M_w2s != nullptr);
+         M_canvas_render_mode != nullptr, M_canvas_world_camera != nullptr, M_w2s != nullptr,
+         M_img_sprite != nullptr, M_obj_name != nullptr,
+         M_renderer_bounds != nullptr, M_cam_main != nullptr);
 }
 
 #define BOOT_FAIL(msg)                                                                       \
@@ -404,6 +437,7 @@ struct node_rec {
     void* parent;
     int child_count;
     char* text;            /* 可为 NULL；malloc 所有权归本结构 */
+    char* sprite;          /* Image.sprite 名（图标身份）；可为 NULL；malloc 归本结构 */
     int interactable;      /* -1 未知 */
     float cx, cy, w, h;    /* 世界矩形；has_rect=0 时无效 */
     int has_rect;
@@ -599,6 +633,33 @@ int dump_tree(struct obuf* o, const int max_nodes) {
         }
         }
     }
+    /* UI 图标身份映射表：Image → sprite 名（go 指针 → 名字，线性查找代价
+       与 TMP 文本表同量级；sprite 名是重名图标节点唯一可区分的身份） */
+    if (M_img_sprite && M_obj_name && K_Image) {
+        if (void* type = K_Image->GetType()) {
+            void* params[1] = { type };
+            void* arr = rt_invoke(M_find_all, nullptr, params);
+            if (arr) {
+                const auto cnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(arr) + 0x18);
+                auto* items = reinterpret_cast<void**>(reinterpret_cast<char*>(arr) + 0x20);
+                for (uintptr_t i = 0; i < cnt; i++) {
+                    void* c = items[i];
+                    void* go = rt_invoke(M_comp_go, c, nullptr);
+                    if (!go) continue;
+                    void* sp = rt_invoke(M_img_sprite, c, nullptr);
+                    if (!sp) continue;
+                    char* nm = mono_string_to_utf8(rt_invoke(M_obj_name, sp, nullptr));
+                    if (!nm) continue;
+                    for (int j = 0; j < m; j++) {
+                        if (recs[j].gameobject == go && !recs[j].sprite) {
+                            recs[j].sprite = nm;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
     /* 交互性映射表 */
     if (K_Selectable) {
         if (void* type = K_Selectable->GetType()) {
@@ -646,6 +707,7 @@ int dump_tree(struct obuf* o, const int max_nodes) {
         ob_put(o, "\",\"cc\":");
         ob_put_int(o, r->child_count);
         if (r->text) { ob_put(o, ",\"text\":"); ob_put_json_str(o, r->text); }
+        if (r->sprite) { ob_put(o, ",\"spr\":"); ob_put_json_str(o, r->sprite); }
         if (r->interactable >= 0) { ob_put(o, ",\"ia\":"); ob_put_int(o, r->interactable); }
         if (r->has_rect) {
             ob_put(o, ",\"rect\":[");
@@ -670,6 +732,7 @@ int dump_tree(struct obuf* o, const int max_nodes) {
     for (int j = 0; j < m; j++) {
         free(recs[j].name);
         free(recs[j].text);
+        free(recs[j].sprite);
     }
     free(transforms);
     free(recs);
@@ -752,6 +815,104 @@ void* handle_client(void* arg) {
             ob_put_json_str(&o, tmp);
             ob_put(&o, "}");
         }
+        }
+    } else if (strstr(req, "\"find3d\"")) {
+        /* 3D 对象定位（独立于 UI dump 域）：FindObjectsOfType(Renderer)，
+           按 GameObject 名子串过滤，bounds 8 角经相机投影出屏幕像素矩形。
+           请求：{"cmd":"find3d","name":"子串","max":100}（name 可省=全部） */
+        if (!g_bootstrapped || !M_renderer_bounds || !M_w2s || !g_corners_arr) {
+            ob_put(&o, "{\"ok\":false,\"err\":\"find3d unavailable (not bootstrapped or handles missing)\"}");
+        } else {
+            ensure_pixel_handles();
+            /* 解析 name/max（容忍冒号后空格；GO 名无转义字符） */
+            char name[128] = {0};
+            const char* np = strstr(req, "\"name\"");
+            if (np) {
+                np = strchr(np + 6, ':');
+                if (np) {
+                    while (*++np == ' ') {}
+                    if (*np == '"') {
+                        np++;
+                        size_t ni = 0;
+                        while (*np && *np != '"' && ni < sizeof(name) - 1) name[ni++] = *np++;
+                        name[ni] = 0;
+                    }
+                }
+            }
+            int fmax = 100;
+            const char* xp = strstr(req, "\"max\"");
+            if (xp) fmax = atoi(strchr(xp + 5, ':') + 1);
+            if (fmax > 500) fmax = 500;
+            void* cam = nullptr;
+            if (M_cam_main) cam = rt_invoke(M_cam_main, nullptr, nullptr);
+            if (cam) {
+                void* type_obj = K_Renderer ? K_Renderer->GetType() : nullptr;
+                void* arr = nullptr;
+                if (type_obj) {
+                    void* params[1] = { type_obj };
+                    arr = rt_invoke(M_find_all, nullptr, params);
+                }
+                ob_put(&o, "{\"ok\":true,\"items\":[");
+                int emitted = 0;
+                std::unordered_map<void*, int> seen_go;
+                if (arr) {
+                    const auto cnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(arr) + 0x18);
+                    auto* items = reinterpret_cast<void**>(reinterpret_cast<char*>(arr) + 0x20);
+                    for (uintptr_t i = 0; i < cnt && emitted < fmax; i++) {
+                        void* c = items[i];
+                        void* go = rt_invoke(M_comp_go, c, nullptr);
+                        if (!go || seen_go.count(go)) continue;
+                        seen_go[go] = 1;
+                        char* nm = mono_string_to_utf8(rt_invoke(M_go_name, go, nullptr));
+                        if (!nm) continue;
+                        const bool hit = name[0] == 0 || strstr(nm, name) != nullptr;
+                        if (!hit) { free(nm); continue; }
+                        void* boxed_b = rt_invoke(M_renderer_bounds, c, nullptr);
+                        if (!boxed_b) { free(nm); continue; }
+                        const float* bf = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_b) + 0x10);
+                        const float ctr[3] = { bf[0], bf[1], bf[2] };
+                        const float ext[3] = { bf[3], bf[4], bf[5] };
+                        float xmin = 0, xmax = -1, ymin = 0, ymax = 0;
+                        for (int ci = 0; ci < 8; ci++) {
+                            const float p[3] = {
+                                ctr[0] + ((ci & 1) ? ext[0] : -ext[0]),
+                                ctr[1] + ((ci & 2) ? ext[1] : -ext[1]),
+                                ctr[2] + ((ci & 4) ? ext[2] : -ext[2]),
+                            };
+                            void* boxed = invoke_w2s(cam, p);
+                            if (!boxed) { xmin = 0; xmax = -1; break; }
+                            const float* s = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed) + 0x10);
+                            if (ci == 0) { xmin = xmax = s[0]; ymin = ymax = s[1]; }
+                            else {
+                                xmin = xmin < s[0] ? xmin : s[0];
+                                xmax = xmax > s[0] ? xmax : s[0];
+                                ymin = ymin < s[1] ? ymin : s[1];
+                                ymax = ymax > s[1] ? ymax : s[1];
+                            }
+                        }
+                        if (xmax > xmin) {
+                            if (emitted) ob_put(&o, ",");
+                            ob_put(&o, "{\"name\":");
+                            ob_put_json_str(&o, nm);
+                            ob_put(&o, ",\"px\":[");
+                            ob_put_float(&o, xmin); ob_put(&o, ",");
+                            ob_put_float(&o, ymin); ob_put(&o, ",");
+                            ob_put_float(&o, xmax - xmin); ob_put(&o, ",");
+                            ob_put_float(&o, ymax - ymin);
+                            ob_put(&o, "],\"go\":\"");
+                            ob_put_int(&o, reinterpret_cast<long>(go));
+                            ob_put(&o, "\"}");
+                            emitted++;
+                        }
+                        free(nm);
+                    }
+                }
+                ob_put(&o, "],\"n\":");
+                ob_put_int(&o, emitted);
+                ob_put(&o, "}");
+            } else {
+                ob_put(&o, "{\"ok\":false,\"err\":\"no camera (get_main unavailable)\"}");
+            }
         }
     } else {
         ob_put(&o, "{\"ok\":false,\"err\":\"unknown cmd\"}");

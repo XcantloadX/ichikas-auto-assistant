@@ -41,6 +41,9 @@ class UINode:
     text: str | None = None
     """节点上 TMP_Text/Text 的文本（无文本组件为 None）。"""
 
+    sprite: str | None = None
+    """节点上 Image 的 sprite 名（图标身份；重名图标节点的唯一区分手段）。"""
+
     interactable: bool | None = None
     """Selectable.interactable（非 Selectable 为 None）。"""
 
@@ -108,6 +111,7 @@ def build_forest(dump: dict, viewport: tuple[int, int] | None = None) -> list[UI
                     rect[3] * scale,
                 )
         node.text = d.get('text')
+        node.sprite = d.get('spr')
         ia = d.get('ia')
         node.interactable = None if ia is None else bool(ia)
         for c in d.get('children', []):

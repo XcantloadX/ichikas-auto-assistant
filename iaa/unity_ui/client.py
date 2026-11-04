@@ -133,10 +133,11 @@ class UnityUITree:
                 path: str | None = None, path_re: str | None = None,
                 text: str | None = None, text_re: str | None = None,
                 has_text: str | None = None, has_text_re: str | None = None,
+                sprite: str | None = None, sprite_re: str | None = None,
                 interactable: bool | None = None,
                 include_inactive: bool = False,
                 snapshot: list[UINode] | None = None):
-        """创建 Playwright 风格定位器。
+        """创建 Playwright 风格定位器（仅 UI 域：snapshot 快照内求值）。
 
         :param name: GameObject 名精确匹配
         :param name_re: 名正则
@@ -146,17 +147,62 @@ class UnityUITree:
         :param text_re: 节点自身文本正则
         :param has_text: 自身或任一子孙文本包含该子串
         :param has_text_re: 自身或任一子孙文本匹配该正则
+        :param sprite: Image 的 sprite 名精确匹配（图标身份）
+        :param sprite_re: sprite 名正则
         :param interactable: 可交互性过滤
         :param include_inactive: 含未激活节点
         :param snapshot: 复用已有快照（避免重复 dump）
         :return: :class:`Locator`
+        :raises TypeError: 与 3D 定位混用时不可用——3D 对象请用 :meth:`locator3d`
         """
         from .locator import Locator
 
         loc = Locator(self, name=name, name_re=name_re, path=path, path_re=path_re,
                       text=text, text_re=text_re, has_text=has_text,
-                      has_text_re=has_text_re, interactable=interactable,
+                      has_text_re=has_text_re, sprite=sprite, sprite_re=sprite_re,
+                      interactable=interactable,
                       include_inactive=include_inactive)
         if snapshot is not None:
             loc.use_snapshot(snapshot)
         return loc
+
+    # -- 3D 对象定位（独立协议域，与 UI 快照互不混用） ----------------------
+
+    def find3d(self, name: str = '', max_results: int = 100) -> list[dict]:
+        """按 GameObject 名子串查找 3D 对象并投影屏幕矩形（独立协议命令）。
+
+        与 UI 定位的区别：UI 走 snapshot 快照森林（RectTransform 域），
+        3D 走 ``find3d`` 命令（Renderer.bounds 经相机投影），数据来源与
+        语义完全分离，不共用任何查找代码。
+
+        :param name: GameObject 名子串过滤；空串返回全部（受 max_results 限制）
+        :param max_results: 结果上限
+        :return: ``[{'name': 名, 'px': [x, y, w, h]（屏幕像素，y 自底部起）,
+            'go': 对象指针}, ...]``；离屏/退化矩形已被过滤
+        :raises GuestAgentError: 请求失败时
+        """
+        r = self._agent.call({'cmd': 'find3d', 'name': name, 'max': max_results}, timeout=120)
+        if not r.get('ok'):
+            raise RuntimeError(f"find3d failed: {r.get('err')}")
+        vw, vh = self.viewport
+        items = []
+        for it in r.get('items', []):
+            x, y, w, h = it['px']
+            # 过滤离屏/退化矩形（Spine 静态绑骨等 bounds 异常巨大的对象）
+            if w <= 1 or h <= 1 or w > vw * 2 or h > vh * 2:
+                continue
+            if x > vw or y > vh or x + w < 0 or y + h < 0:
+                continue
+            items.append(it)
+        return items
+
+    def locator3d(self, *, name: str | None = None, name_re: str | None = None):
+        """创建 3D 对象定位器（独立协议域；不可与 :meth:`locator` 混用）。
+
+        :param name: GameObject 名子串过滤
+        :param name_re: 名正则（先拉全量名再过滤，较慢）
+        :return: :class:`iaa.unity_ui.object3d.Locator3D`
+        """
+        from .object3d import Locator3D
+
+        return Locator3D(self, name=name, name_re=name_re)
