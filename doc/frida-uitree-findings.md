@@ -206,3 +206,88 @@ DT_NEEDED 仅 liblog/libm/libdl/libc）。不再需要 -nostdlib。
 
 boot ~10s（全量枚举程序集/类/方法，一次性），dump 281 节点 0.03s，
 名字/文本/交互性/矩形与旧 C agent 输出一致；宿主 iaa/unity_ui 无改动直接可用。
+
+## 11. 业务迁移进度（2026-11-05）
+
+### 11.1 框架增强（本批次新增）
+
+- **Camera Canvas 像素坐标**：`Layer_Scenario`（剧情层）等是独立
+  Screen Space-Camera Canvas，节点世界坐标与 CanvasRoot 不可比，宿主端
+  比例换算全错（点 Skip 开了 Log）。agent 端走
+  `RectTransform.GetWorldCorners` + `Canvas.worldCamera.WorldToScreenPoint`
+  输出 `px` 字段（真实屏幕像素，y 自底部起）；Overlay Canvas 仍走宿主
+  世界坐标换算。dump 诊断计数 `pxok/gipfail/pafail` 随响应返回。
+- **踩坑**：
+  - `RectTransformUtility.PixelAdjustRect` 返回的是**节点本地 rect**
+    （pivot 居中 + 像素对齐），不是屏幕空间，不可用于定位。
+  - `GameObject.GetComponentInParent(Type)` 被游戏裁剪（metadata 在而
+    methodInfo->address=0，invoke 返回 null）。Canvas 组件改由
+    `FindObjectsOfType(Canvas)` + dump 内 parent 链回溯定位（零额外 invoke）。
+  - **il2cpp 裁剪**会把游戏未调用的方法体 strip——所有可选句柄必须校验
+    `method->address != 0`。
+  - boot 时机不同枚举结果不同：标题画面只枚举 158 个程序集（全量 2528），
+    可选句柄在 dump 时惰性重试（`ensure_pixel_handles`）。
+  - boot 需幂等守卫（二次 `UR::Init` 有崩溃风险）。
+- **定位框架**（playwright 语义补齐）：
+  - `has_text`/`has_text_re`：自身或任一子孙文本匹配（按钮文本挂在子节点
+    `Text` 上，`text_re` 匹配不到）。
+  - `not_exists_re`：跨节点否定——快照中出现匹配节点则整体视为未找到。
+    用于"底层 screen 层仍 active 但被覆盖"（剧情播放时
+    ScreenLayerStorySelect 还在树里，ButtonBookmark/GoBack 需否定
+    ScreenLayerScenario 才不假阳性）。
+  - `q(enabled=True)` 作为 `interactable` 的别名。
+  - uimap.install 允许新增叶子名（如替代 OCR 的 `TextApNumber`）。
+- **经验**：宽容器 rect 中心可能落在边缘/间隙上（点行没反应），优先点
+  内部文本节点；CanvasGroup alpha=0 的按钮 raycast 仍生效（菜单隐藏时
+  ScenarioMenu 按钮可直点）。
+
+### 11.2 已映射并验证（uimap.MAP）
+
+| 页面 | 映射 |
+|---|---|
+| 首页 HUD | ButtonLive/MySekai/Story/Gacha/Member、ButtonClaimAll、ButtonGoBack(¬Scenario)、Daily.ButtonGift/Mission |
+| 剧情全链路 | ImageMainStory、StoryList.ButtonFilter/ButtonEnter/ButtonExpandUnit、ButtonBookmark(¬Scenario)、ButtonStoryMenu、ButtonIconSkip/Fastforward、ButtonWithoutVoice(has_text)、ButtonSkipStory(确认弹窗)、TextMvPausedDialog/ButtonSkipMv(MusicVideoPoseDialog)、ButtonGoBack(¬Scenario) |
+| 网络错误 | DialogReturningToTitle.Text/ButtonOk（Common1ButtonDialog 实测）；DialogConnectionError（Common2ButtonDialog 类比，未实测） |
+| LIVE 详情 | ButtonApMultiplierSettings、ApMultiplierDialog.TextTip/ButtonPlus/ButtonMinus/ButtonConfirm/TextApNumber(NumText，替代 OCR)、ButtonSetRecommendUnit、AutoSetDialog.TextUnitRecommend/TextRecommend/TextEventMember/ButtonConfirm、ButtonStartLive、SwitchAutoLiveOn/Off、ButtonAutoLiveSettings |
+| LIVE 选歌 | Live.ButtonDecide（MainButtonContent/PositiveButton） |
+| 启动 | Login.IconNotification、start_game 生命周期 |
+
+验证：剧情链路 E2E（go_home→列表→分集→进剧情→跳过→返回）全 UI 树通过；
+AP 倍率 0→+1→-1→決定、自動編成、AUTO 开关状态读取通过。
+live.py 的 `_read_current_multiplier` 已改读 NumText（旧 OCR 的固定 ROI
+对新弹窗布局失效，属必须迁移）。
+
+### 11.3 未迁移 / 受阻
+
+- **MySekai**（批次2）：服务器连接挂起（マイセカイに向かっています…永久
+  Loading），Hud.ButtonLayout/DialogCrowded 待页面可达后探页补映射。
+- **area_convos**（批次2）：`R.Map.IconNewAreaConvo` 在 3D 世界地图上，
+  预计不在 UI 树（3D 场景对象不 dump），大概率保留模板。`Story.ButtonStoryMenu`
+  已映射，剧情部分自动受益。
+- **event_shop**（批次4）：商品图标匹配（15 个 R.Jp.Shop.Items.*）依赖
+  ListViewItem.icon_image 截图比对；若商品 cell 无 TMP 名称则无法 UI 化，
+  保留模板。导航部分（TextEndTimeUntil/ButtonExchange 等）待活动页探页。
+- **cm.py / 世界地图**（批次5）：R.Map.* 与 R.Scene.Intersection.* 同为
+  3D 场景，预计保留模板。
+- **ChallengeLive**（批次6）：26 角色 + 5 组合 + 6 奖励图标模板，纯图标
+  无文本，保留模板是合理终点。
+- **live.py 结算页**（TextScoreRank/TextAutoLiveCompleted/ButtonLiveCompleted*
+  等）：需实跑一次演出才能探页，暂走模板 fallback。
+- **settle/select_song**：SongSelect.IconSearch/ButtonClearSearch（键盘搜索）
+  未映射，模板 fallback 可用。
+
+### 11.4 probe 脚本坑（logs/story_probe/ 有全套可复用导航脚本）
+
+- probe 顶层 exec 环境下：`@action`/`@task` 调用会消耗基础 context 帧，
+  其后的裸 `Loop`/`device.screenshot()` 报 "No context stack found" →
+  主体包进 `with manual_context('manual'):`。
+- 普通函数里的 Loop 同样丢 contextvar（`_go_list` 直调失败），逻辑内联
+  到顶层或包 manual_context；生产 @task/@action 不受影响。
+- `manual_context` 内的模板匹配需先 `device.screenshot()` 填缓存；或用裸
+  `cv2.matchTemplate(img, R.X.template.pixels, ...)` 绕开。
+- 游戏重启会话丢失：`UnityUITree.ensure_ready()` 自动重注入；agent .so
+  更新后必须重启游戏（进程内 so 不能换）。
+- Git Bash 里 `adb push` 路径转义不可靠（/data → C:/Program Files/Git/data），
+  用 `iaa.unity_ui.injector.ensure_agent_so()`（Python subprocess）推。
+- 游戏偶发自崩（剧情转场时 dump 高发）+ NetworkError 弹窗自然出现——
+  已顺势抓到 Common1ButtonDialog / Common2ButtonDialog 结构。
