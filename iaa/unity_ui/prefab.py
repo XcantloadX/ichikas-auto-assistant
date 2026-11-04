@@ -70,6 +70,12 @@ class UIQuery(FindQuery[Any]):
     text_re: str | None = None
     """TMP 文本正则。"""
 
+    has_text: str | None = None
+    """自身或任一子孙节点的文本包含该子串（playwright ``has-text`` 语义）。"""
+
+    has_text_re: str | None = None
+    """自身或任一子孙节点的文本匹配该正则。"""
+
     interactable: bool | None = None
     """Selectable.interactable 过滤。"""
 
@@ -181,7 +187,13 @@ class UIPrefab(Prefab[UIGameObject]):
     """GameObject 名精确匹配。"""
 
     ui_text: str | None = None
-    """TMP 文本精确匹配。"""
+    """TMP 文本精确匹配（节点自身）。"""
+
+    ui_has_text: str | None = None
+    """自身或任一子孙节点的文本包含该子串。"""
+
+    ui_has_text_re: str | None = None
+    """自身或任一子孙节点的文本匹配该正则。"""
 
     ui_interactable: bool | None = None
     """interactable 过滤。"""
@@ -214,6 +226,10 @@ class UIPrefab(Prefab[UIGameObject]):
         if cls.ui_name is not None and node.name != cls.ui_name:
             return False
         if cls.ui_text is not None and node.text != cls.ui_text:
+            return False
+        if cls.ui_has_text is not None and not _has_text(node, cls.ui_has_text):
+            return False
+        if cls.ui_has_text_re is not None and not _has_text_re(node, cls.ui_has_text_re):
             return False
         if cls.ui_interactable is not None and node.interactable != cls.ui_interactable:
             return False
@@ -284,8 +300,36 @@ def _query_matches(node: UINode, query: UIQuery) -> bool:
         return False
     if query.text_re is not None and (node.text is None or not re.search(query.text_re, node.text)):
         return False
+    if query.has_text is not None and not _has_text(node, query.has_text):
+        return False
+    if query.has_text_re is not None and not _has_text_re(node, query.has_text_re):
+        return False
     if query.interactable is not None and node.interactable != query.interactable:
         return False
     if query.predicate is not None and not query.predicate(node):
         return False
     return True
+
+
+def _has_text(node: UINode, needle: str) -> bool:
+    """自身或任一子孙节点的文本是否包含 ``needle``。
+
+    :param node: 起始节点
+    :param needle: 子串
+    :return: 包含时 True
+    """
+    if node.text is not None and needle in node.text:
+        return True
+    return any(_has_text(c, needle) for c in node.children)
+
+
+def _has_text_re(node: UINode, pattern: str) -> bool:
+    """自身或任一子孙节点的文本是否匹配正则 ``pattern``。
+
+    :param node: 起始节点
+    :param pattern: 正则
+    :return: 匹配时 True
+    """
+    if node.text is not None and re.search(pattern, node.text):
+        return True
+    return any(_has_text_re(c, pattern) for c in node.children)

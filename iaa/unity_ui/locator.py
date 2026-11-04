@@ -50,6 +50,12 @@ class Locator:
     text_re: str | None = None
     """TMP 文本内容正则。"""
 
+    has_text: str | None = None
+    """自身或任一子孙节点的文本包含该子串（playwright ``has-text`` 语义）。"""
+
+    has_text_re: str | None = None
+    """自身或任一子孙节点的文本匹配该正则。"""
+
     interactable: bool | None = None
     """Selectable.interactable 过滤（None 不过滤）。"""
 
@@ -88,6 +94,10 @@ class Locator:
         if self.text is not None and (node.text or None) != self.text:
             return False
         if self.text_re is not None and (node.text is None or not re.search(self.text_re, node.text)):
+            return False
+        if self.has_text is not None and not _self_or_desc_text(node, lambda t: self.has_text in t):  # type: ignore[union-attr]
+            return False
+        if self.has_text_re is not None and not _self_or_desc_text(node, lambda t: re.search(self.has_text_re, t) is not None):  # type: ignore[arg-type]
             return False
         if self.interactable is not None and node.interactable != self.interactable:
             return False
@@ -146,3 +156,15 @@ class Locator:
     def exists(self) -> bool:
         """是否有匹配。"""
         return bool(self.resolve())
+
+
+def _self_or_desc_text(node: UINode, pred: 'Callable[[str], bool]') -> bool:
+    """自身或任一子孙节点的文本是否满足 ``pred``。
+
+    :param node: 起始节点
+    :param pred: 文本谓词
+    :return: 任一文本满足时 True
+    """
+    if node.text is not None and pred(node.text):
+        return True
+    return any(_self_or_desc_text(c, pred) for c in node.children)

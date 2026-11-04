@@ -89,10 +89,17 @@ def build_forest(dump: dict, viewport: tuple[int, int] | None = None) -> list[UI
         )
         node.path = prefix + '/' + node.name
         converted[d['t']] = node
+        # 像素级矩形（agent 端 GetWorldCorners+WorldToScreenPoint，仅 Camera
+        # Canvas 产出）：真实屏幕像素，y 自底部起（Unity 屏幕坐标）。
+        px = d.get('px')
+        if px and viewport is not None:
+            x, y, w, h = px
+            vw, vh = viewport
+            node.screen_rect = (x + w / 2, vh - (y + h / 2), w, h)
         rect = d.get('rect')
         if rect:
             node.rect = tuple(rect)  # type: ignore[assignment]
-            if scale is not None:
+            if scale is not None and px is None:
                 w, h = viewport  # type: ignore[misc]
                 node.screen_rect = (
                     rect[0] * scale + w / 2,

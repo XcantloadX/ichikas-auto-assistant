@@ -132,6 +132,7 @@ class UnityUITree:
     def locator(self, *, name: str | None = None, name_re: str | None = None,
                 path: str | None = None, path_re: str | None = None,
                 text: str | None = None, text_re: str | None = None,
+                has_text: str | None = None, has_text_re: str | None = None,
                 interactable: bool | None = None,
                 include_inactive: bool = False,
                 snapshot: list[UINode] | None = None):
@@ -141,8 +142,10 @@ class UnityUITree:
         :param name_re: 名正则
         :param path: 完整路径精确匹配
         :param path_re: 路径正则
-        :param text: TMP 文本精确匹配
-        :param text_re: 文本正则
+        :param text: TMP 文本精确匹配（节点自身）
+        :param text_re: 节点自身文本正则
+        :param has_text: 自身或任一子孙文本包含该子串
+        :param has_text_re: 自身或任一子孙文本匹配该正则
         :param interactable: 可交互性过滤
         :param include_inactive: 含未激活节点
         :param snapshot: 复用已有快照（避免重复 dump）
@@ -151,7 +154,8 @@ class UnityUITree:
         from .locator import Locator
 
         loc = Locator(self, name=name, name_re=name_re, path=path, path_re=path_re,
-                      text=text, text_re=text_re, interactable=interactable,
+                      text=text, text_re=text_re, has_text=has_text,
+                      has_text_re=has_text_re, interactable=interactable,
                       include_inactive=include_inactive)
         if snapshot is not None:
             loc.use_snapshot(snapshot)

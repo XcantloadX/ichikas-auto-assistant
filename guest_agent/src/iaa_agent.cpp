@@ -18,12 +18,16 @@
  *       {"cmd":"dump","max":6000}       → {"ok":true,"n":N,"nodes":[...]}
  *
  * 产出节点字段（宿主侧 build_forest 建树 + 换算屏幕坐标）：
- *   t/go=对象指针, name, active, parent, cc, text?, ia?, rect=[cx,cy,w,h]
+ *   t/go=对象指针, name, active, parent, cc, text?, ia?, rect=[cx,cy,w,h],
+ *   px?=[x,y,w,h]（PixelAdjustRect 像素级屏幕矩形，y 自底部起；
+ *   Screen Space-Camera 的 Canvas——如 Layer_Scenario——只有 px 可靠）
  */
 #include <jni.h>
 #include <android/log.h>
 
 #include <cctype>
+#include <unordered_map>
+#include <vector>
 #include <cerrno>
 #include <cstdio>
 #include <cstdlib>
@@ -56,6 +60,7 @@ UR::Assembly* core = nullptr;
 UR::Method* M_go_name = nullptr;         // GameObject.get_name
 UR::Method* M_go_active_h = nullptr;     // GameObject.get_activeInHierarchy
 UR::Method* M_comp_go = nullptr;         // Component.get_gameObject
+UR::Method* M_comp_transform = nullptr;  // Component.get_transform
 UR::Method* M_t_parent = nullptr;        // Transform.GetParent
 UR::Method* M_t_childcount = nullptr;    // Transform.get_childCount
 UR::Method* M_t_position = nullptr;      // Transform.get_position
@@ -64,10 +69,17 @@ UR::Method* M_rt_sizedelta = nullptr;    // RectTransform.get_sizeDelta
 UR::Method* M_tmp_text = nullptr;        // TMP_Text.get_text
 UR::Method* M_sel_interactable = nullptr;// Selectable.get_interactable
 UR::Method* M_find_all = nullptr;        // Object.FindObjectsOfType(Type)
+UR::Method* M_get_world_corners = nullptr; // RectTransform.GetWorldCorners(Vector3[4])（可选）
+UR::Method* M_canvas_render_mode = nullptr; // Canvas.get_renderMode（可选）
+UR::Method* M_canvas_world_camera = nullptr; // Canvas.get_worldCamera（可选）
+UR::Method* M_w2s = nullptr;             // Camera.WorldToScreenPoint(Vector3)（可选）
 UR::Class* K_RectTransform = nullptr;    // 用于 klass 指针比较
 UR::Class* K_Transform = nullptr;
 UR::Class* K_TmpText = nullptr;
 UR::Class* K_Selectable = nullptr;
+UR::Class* K_Canvas = nullptr;
+UR::Class* K_Vector3 = nullptr;
+void* g_corners_arr = nullptr;           // Vector3[4] 复用缓冲（GetWorldCorners 出参）
 
 /* bootstrap 完成后置 1：handle_client 依此决定是否 ThreadAttach */
 volatile int g_bootstrapped = 0;
@@ -78,10 +90,39 @@ volatile int g_bootstrapped = 0;
  * exc 传有效槽位。不用 Method::RuntimeInvoke：其以 &arg（指向实参的指针）
  * 构造 params，对本环境的 il2cpp 会导致 FindObjectsOfType 收到栈地址。
  */
+/* 最近一次 runtime_invoke 的异常对象（诊断用） */
+void* g_last_exc = nullptr;
+
 void* rt_invoke(UR::Method* m, void* obj, void** params) {
     if (!m) return nullptr;
     void* exc = nullptr;
-    return UR::Invoke<void*>("il2cpp_runtime_invoke", m->address, obj, params, &exc);
+    void* r = UR::Invoke<void*>("il2cpp_runtime_invoke", m->address, obj, params, &exc);
+    g_last_exc = exc;
+    return r;
+}
+
+/**
+ * Camera.WorldToScreenPoint(Vector3)：值类型参数的传递约定在 il2cpp 上
+ * 存在两种实现（指针到未装箱值 / 装箱对象）。先按 mono 约定传栈上值，
+ * 失败自动改传装箱 Vector3 并记住结果。
+ */
+void* invoke_w2s(void* cam, const float* v) {
+    static int boxed_conv = -1; /* -1 未知, 0 指针, 1 装箱 */
+    if (boxed_conv != 1) {
+        void* params[1] = { const_cast<float*>(v) };
+        void* r = rt_invoke(M_w2s, cam, params);
+        if (r) { boxed_conv = 0; return r; }
+    }
+    if (K_Vector3) {
+        void* b = UR::Invoke<void*>("il2cpp_object_new", K_Vector3->address);
+        if (b) {
+            memcpy(reinterpret_cast<char*>(b) + 0x10, v, 12);
+            void* params[1] = { b };
+            void* r = rt_invoke(M_w2s, cam, params);
+            if (r) { boxed_conv = 1; return r; }
+        }
+    }
+    return nullptr;
 }
 
 /* runtime_invoke 对值类型返回装箱对象指针（klass/monitor 头 0x10B + 值），
@@ -216,6 +257,58 @@ UR::Method* resolve_in_hierarchy(UR::Assembly* asm_, UR::Class* klass, const cha
 /* 最近一次 bootstrap 失败原因（协议可见，反作弊环境下 logcat 不可依赖） */
 char g_boot_err[256] = {0};
 
+/**
+ * 跨全部程序集按 名字+命名空间 找类（类所在模块因 Unity 版本/裁剪而异，
+ * 如 Canvas/RectTransformUtility 在 UnityEngine.UIModule 而非 CoreModule/UI）。
+ */
+UR::Class* find_class_all(const char* name, const char* ns) {
+    for (auto* a : UR::assembly) {
+        if (!a) continue;
+        if (auto* k = a->Get(name, ns)) return k;
+    }
+    return nullptr;
+}
+
+/**
+ * 可选句柄：Camera Canvas 的屏幕矩形（GetWorldCorners + WorldToScreenPoint）。
+ * 幂等；解析失败仅降级（宿主对 Overlay 用世界坐标换算，本就正确）。
+ *
+ * .. NOTE:: il2cpp 裁剪会把游戏未调用的方法体 strip（metadata 在而
+ *    methodInfo->address=0），故这里校验 address，避免 invoke 空指针。
+ *    实测 PixelAdjustRect 返回的是节点本地 rect（pivot 居中），非屏幕空间，
+ *    不可用；GetComponentInParent(Type) 也被本游戏裁剪。
+ */
+void ensure_pixel_handles() {
+    if (M_get_world_corners && M_w2s && g_corners_arr) return;
+    if (!core) return;
+    if (!K_Vector3) K_Vector3 = find_class_all("Vector3", "UnityEngine");
+    auto* K_camera = find_class_all("Camera", "UnityEngine");
+    if (!K_Canvas) K_Canvas = find_class_all("Canvas", "UnityEngine");
+    if (K_Vector3 && !g_corners_arr)
+        g_corners_arr = UR::Invoke<void*>("il2cpp_array_new", K_Vector3->address, 4);
+    if (K_RectTransform && !M_get_world_corners) {
+        if (auto* m = resolve_in_hierarchy(core, K_RectTransform, "GetWorldCorners", 1))
+            if (m->address) M_get_world_corners = m;
+    }
+    if (K_Canvas) {
+        if (!M_canvas_render_mode) {
+            if (auto* m = resolve_in_hierarchy(core, K_Canvas, "get_renderMode", 0))
+                if (m->address) M_canvas_render_mode = m;
+        }
+        if (!M_canvas_world_camera) {
+            if (auto* m = resolve_in_hierarchy(core, K_Canvas, "get_worldCamera", 0))
+                if (m->address) M_canvas_world_camera = m;
+        }
+    }
+    if (K_camera && !M_w2s) {
+        if (auto* m = K_camera->Get<UR::Method>("WorldToScreenPoint", std::vector<std::string>{"*"}))
+            if (m->address) M_w2s = m;
+    }
+    LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d",
+         M_get_world_corners != nullptr, g_corners_arr != nullptr,
+         M_canvas_render_mode != nullptr, M_canvas_world_camera != nullptr, M_w2s != nullptr);
+}
+
 #define BOOT_FAIL(msg)                                                                       \
     do {                                                                                     \
         LOGE("%s", msg);                                                                     \
@@ -267,6 +360,7 @@ int bootstrap() {
     M_go_name = resolve_in_hierarchy(core, K_GO, "get_name", 0);
     M_go_active_h = resolve_in_hierarchy(core, K_GO, "get_activeInHierarchy", 0);
     M_comp_go = resolve_in_hierarchy(core, K_Component, "get_gameObject", 0);
+    M_comp_transform = resolve_in_hierarchy(core, K_Component, "get_transform", 0);
     M_t_parent = resolve_in_hierarchy(core, K_Transform, "GetParent", 0);
     M_t_childcount = resolve_in_hierarchy(core, K_Transform, "get_childCount", 0);
     M_t_position = resolve_in_hierarchy(core, K_Transform, "get_position", 0);
@@ -276,7 +370,10 @@ int bootstrap() {
     M_sel_interactable = resolve_in_hierarchy(ui_asm, K_Selectable, "get_interactable", 0);
     M_find_all = resolve_in_hierarchy(core, K_Object, "FindObjectsOfType", 1);
 
-    if (!M_go_name || !M_go_active_h || !M_comp_go || !M_t_parent || !M_t_childcount
+    /* 可选句柄（失败不作 bootstrap 失败条件；dump 前会兜底重试） */
+    ensure_pixel_handles();
+
+    if (!M_go_name || !M_go_active_h || !M_comp_go || !M_comp_transform || !M_t_parent || !M_t_childcount
         || !M_t_position || !M_t_scale || !M_rt_sizedelta || !M_tmp_text
         || !M_sel_interactable || !M_find_all) {
         snprintf(g_boot_err, sizeof(g_boot_err),
@@ -310,6 +407,8 @@ struct node_rec {
     int interactable;      /* -1 未知 */
     float cx, cy, w, h;    /* 世界矩形；has_rect=0 时无效 */
     int has_rect;
+    float px_x, px_y, px_w, px_h; /* 像素级屏幕矩形（y 自底部起，PixelAdjustRect 语义）；has_px=1 时有效 */
+    int has_px;
 };
 
 int find_all_transforms(void*** out, const int max) {
@@ -330,15 +429,48 @@ int find_all_transforms(void*** out, const int max) {
 }
 
 int dump_tree(struct obuf* o, const int max_nodes) {
+    /* boot 时程序集可能未加载全（标题画面 158 个 vs 全量 2528 个），
+       每次 dump 兜底重试可选句柄 */
+    ensure_pixel_handles();
+
     auto** transforms = static_cast<void**>(malloc(sizeof(void*) * max_nodes));
     auto* recs = static_cast<node_rec*>(malloc(sizeof(node_rec) * max_nodes));
     if (!transforms || !recs) { free(transforms); free(recs); return -1; }
+    memset(recs, 0, sizeof(node_rec) * max_nodes);
 
     const int n = find_all_transforms(&transforms, max_nodes);
     if (n < 0) { free(transforms); free(recs); return -1; }
 
+    /* Canvas 组件表：FindObjectsOfType(Canvas) → 其 Transform 指针。
+       GetComponentInParent(Type) 在本游戏被裁剪（address=0）不可用，
+       改由节点沿 parent 链回溯查此表（见下方二次扫描）。 */
+    void** canvas_ts = nullptr;
+    void** canvas_cs = nullptr;
+    int n_canvas = 0;
+    void* type_canvas = K_Canvas ? K_Canvas->GetType() : nullptr;
+    if (M_find_all && type_canvas) {
+        void* find_params[1] = { type_canvas };
+        if (void* arr = rt_invoke(M_find_all, nullptr, find_params)) {
+            const auto cnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(arr) + 0x18);
+            auto* items = reinterpret_cast<void**>(reinterpret_cast<char*>(arr) + 0x20);
+            const auto cap = cnt < 32 ? cnt : 32;
+            canvas_ts = static_cast<void**>(malloc(sizeof(void*) * cap));
+            canvas_cs = static_cast<void**>(malloc(sizeof(void*) * cap));
+            for (uintptr_t i = 0; i < cnt && n_canvas < static_cast<int>(cap); i++) {
+                void* c = items[i];
+                /* Component.get_transform：Canvas 组件自身即挂在该 GameObject 上 */
+                void* t = rt_invoke(M_comp_transform, c, nullptr);
+                if (!t) continue;
+                canvas_ts[n_canvas] = t;
+                canvas_cs[n_canvas] = c;
+                n_canvas++;
+            }
+        }
+    }
+
     /* 逐节点收集 */
     int m = 0;
+    int gip_fail = 0, pa_fail = 0, px_ok = 0;
     for (int i = 0; i < n; i++) {
         void* t = transforms[i];
         node_rec* r = &recs[m];
@@ -368,6 +500,78 @@ int dump_tree(struct obuf* o, const int max_nodes) {
         }
         m++;
     }
+
+    /* 像素级矩形二次扫描：transform→rec 索引 + Canvas transform→组件映射，
+       节点沿 parent 链（已在 recs 内，零 invoke）找到所属 Canvas。
+       - Camera Canvas（renderMode≠Overlay 且 worldCamera 可用）：四角
+         GetWorldCorners 后逐角 WorldToScreenPoint，px=真实屏幕像素
+         （y 自底部起）。Screen Space-Camera 的 Canvas——如 Layer_Scenario
+         ——只有此路径可靠。
+       - Overlay Canvas：不产出 px，宿主用世界坐标×画布比例换算（正确）。
+     */
+    if (M_get_world_corners && g_corners_arr && n_canvas > 0) {
+        std::unordered_map<void*, int> t2i;
+        t2i.reserve(static_cast<size_t>(m) * 2);
+        for (int j = 0; j < m; j++) t2i[recs[j].transform] = j;
+        std::unordered_map<void*, void*> t2canvas;
+        t2canvas.reserve(static_cast<size_t>(n_canvas) * 2);
+        for (int i = 0; i < n_canvas; i++) t2canvas[canvas_ts[i]] = canvas_cs[i];
+        for (int j = 0; j < m; j++) {
+            node_rec* r = &recs[j];
+            if (!r->has_rect) continue;
+            int idx = j;
+            void* canvas = nullptr;
+            for (int hops = 0; idx >= 0 && hops < 64; hops++) {
+                const auto it = t2canvas.find(recs[idx].transform);
+                if (it != t2canvas.end()) { canvas = it->second; break; }
+                const auto pit = t2i.find(recs[idx].parent);
+                if (pit == t2i.end()) break;
+                idx = pit->second;
+            }
+            if (!canvas) { gip_fail++; continue; }
+            /* Overlay：宿主启发式已正确，跳过 */
+            if (M_canvas_render_mode) {
+                const int rm = read_boxed_int(rt_invoke(M_canvas_render_mode, canvas, nullptr));
+                if (rm == 0) continue;
+            }
+            if (!M_canvas_world_camera || !M_w2s) continue;
+            void* cam = rt_invoke(M_canvas_world_camera, canvas, nullptr);
+            if (!cam) continue;
+            void* params[1] = { g_corners_arr };
+            rt_invoke(M_get_world_corners, r->transform, params);
+            const float* f = reinterpret_cast<const float*>(reinterpret_cast<char*>(g_corners_arr) + 0x20);
+            float xmin = 0, xmax = 0, ymin = 0, ymax = 0;
+            for (int c2 = 0; c2 < 4; c2++) {
+                const float* p = &f[c2 * 3];
+                void* boxed = invoke_w2s(cam, p);
+                if (!boxed) { xmin = 0; xmax = -1; break; } /* 投影失败标记 */
+                const float* s = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed) + 0x10);
+                if (c2 == 0) { xmin = xmax = s[0]; ymin = ymax = s[1]; }
+                else {
+                    xmin = xmin < s[0] ? xmin : s[0];
+                    xmax = xmax > s[0] ? xmax : s[0];
+                    ymin = ymin < s[1] ? ymin : s[1];
+                    ymax = ymax > s[1] ? ymax : s[1];
+                }
+            }
+            if (xmax > xmin) {
+                r->px_x = xmin; r->px_y = ymin;
+                r->px_w = xmax - xmin; r->px_h = ymax - ymin;
+                r->has_px = 1;
+                px_ok++;
+            } else {
+                pa_fail++;
+                if (pa_fail == 1 && g_last_exc) {
+                    /* 诊断：投影失败的异常类名（只记第一次） */
+                    void* klass = UR::Invoke<void*>("il2cpp_object_get_class", g_last_exc);
+                    const char* nm = klass ? UR::Invoke<const char*>("il2cpp_class_get_name", klass) : nullptr;
+                    LOGI("w2s exc: %s", nm ? nm : "(null)");
+                }
+            }
+        }
+    }
+    free(canvas_ts);
+    free(canvas_cs);
 
     /* 文本映射表：TMP_Text 全量建表 */
     if (K_TmpText) {
@@ -422,6 +626,9 @@ int dump_tree(struct obuf* o, const int max_nodes) {
     /* 输出：nodes 数组（宿主侧建树） */
     ob_put(o, "{\"ok\":true,\"n\":");
     ob_put_int(o, m);
+    ob_put(o, ",\"pxok\":");  ob_put_int(o, px_ok);
+    ob_put(o, ",\"gipfail\":"); ob_put_int(o, gip_fail);
+    ob_put(o, ",\"pafail\":"); ob_put_int(o, pa_fail);
     ob_put(o, ",\"nodes\":[");
     for (int j = 0; j < m; j++) {
         node_rec* r = &recs[j];
@@ -446,6 +653,14 @@ int dump_tree(struct obuf* o, const int max_nodes) {
             ob_put_float(o, r->cy); ob_put(o, ",");
             ob_put_float(o, r->w); ob_put(o, ",");
             ob_put_float(o, r->h);
+            ob_put(o, "]");
+        }
+        if (r->has_px) {
+            ob_put(o, ",\"px\":[");
+            ob_put_float(o, r->px_x); ob_put(o, ",");
+            ob_put_float(o, r->px_y); ob_put(o, ",");
+            ob_put_float(o, r->px_w); ob_put(o, ",");
+            ob_put_float(o, r->px_h);
             ob_put(o, "]");
         }
         ob_put(o, "}");
@@ -523,6 +738,10 @@ void* handle_client(void* arg) {
             }
         }
     } else if (strstr(req, "\"boot\"")) {
+        /* 幂等：重复 boot 不得重新枚举（二次 UR::Init 有崩溃风险） */
+        if (g_bootstrapped) {
+            ob_put(&o, "{\"ok\":true,\"cached\":true}");
+        } else {
         const int r = bootstrap();
         if (r == 0) {
             ob_put(&o, "{\"ok\":true}");
@@ -532,6 +751,7 @@ void* handle_client(void* arg) {
             ob_put(&o, "{\"ok\":false,\"err\":");
             ob_put_json_str(&o, tmp);
             ob_put(&o, "}");
+        }
         }
     } else {
         ob_put(&o, "{\"ok\":false,\"err\":\"unknown cmd\"}");
