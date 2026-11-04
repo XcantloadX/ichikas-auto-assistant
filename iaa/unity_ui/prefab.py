@@ -13,6 +13,7 @@ UI 树上：实现 :class:`UIPrefab` 后，kotonebot 的全部查找/等待 mach
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass
 from typing import Any
 
@@ -220,7 +221,6 @@ class UIPrefab(Prefab[UIGameObject]):
         if cls.ui_path is not None and node.path != cls.ui_path:
             return False
         if cls.ui_path_re is not None:
-            import re
             if not re.search(cls.ui_path_re, node.path):
                 return False
         if cls.ui_name is not None and node.name != cls.ui_name:
@@ -286,8 +286,6 @@ class UIPrefab(Prefab[UIGameObject]):
 
 def _query_matches(node: UINode, query: UIQuery) -> bool:
     """UIQuery 条件求值。"""
-    import re
-
     if query.path is not None and node.path != query.path:
         return False
     if query.path_re is not None and not re.search(query.path_re, node.path):

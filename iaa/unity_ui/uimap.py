@@ -48,6 +48,36 @@ MAP: dict[str, dict[str, Any]] = {
     # ---- 首页右上角入口（TopRight）----
     'Daily.ButtonGift': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Present$'),
     'Daily.ButtonMission': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Mission$'),
+    # ---- 剧情分类页（ScreenLayerStoryCategorySelect）----
+    # メイン/イベントストーリー 横幅入口
+    'Story.ImageMainStory': dict(path_re=r'/ScreenLayerStoryCategorySelect/ComponentRoot/MainAndEventStory$'),
+    # ---- 剧情列表页（ScreenLayerArchiveEventSelect）----
+    'Story.StoryList.ButtonFilter': dict(path_re=r'/ScreenLayerArchiveEventSelect/ComponentRoot/ContentArea/RightTop/UIPartsFilterButton$'),
+    # 決定按钮（选中章节后进入分集列表）
+    'Story.StoryList.ButtonEnter': dict(path_re=r'/ScreenLayerArchiveEventSelect/ComponentRoot/ContentArea/RightBottom/ReadButton$'),
+    # 左侧「ユニット すべて」展开 tab
+    'Story.StoryList.ButtonExpandUnit': dict(path_re=r'/UnitLogoTabSubWindowDialog\(Clone\)/UnitLogoTabSubWindowDialog/Window/ContentRoot/Info$'),
+    # ---- 分集列表页（ScreenLayerStorySelect）----
+    'Story.ButtonBookmark': dict(path_re=r'/ScreenLayerStorySelect/ComponentRoot/Front/Top/UIPartsBookMarkButton$'),
+    'Story.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$'),
+    # ---- 剧情播放（ScreenLayerScenario）----
+    # 右上「…」菜单按钮：剧情画面标志物；菜单隐藏时 ScenarioMenu 内按钮
+    # 依旧可点（CanvasGroup alpha=0 但 raycast 生效，实测 Skip 直点可弹确认）
+    'Story.ButtonStoryMenu': dict(path_re=r'/ScreenLayerScenario/ComponentRoot/UILayer/RightTop/UIPartsMenuButton$'),
+    'Story.ButtonIconSkip': dict(path_re=r'/ScenarioMenu/Base/Content/Skip$'),
+    'Story.ButtonIconFastforward': dict(path_re=r'/ScenarioMenu/Base/Content/Fast$'),
+    # 剧情开始确认弹窗（StoryReadConfirmDialog）：无语音播放按钮。
+    # 按钮为同名 UIPartsCommonButton+序号后缀，按子孙文本区分。
+    'Story.ButtonWithoutVoice': dict(path_re=r'/StoryReadConfirmDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton( \(1\))?$', has_text_re=r'ボイスなし'),
+    # 跳过确认弹窗（ScenarioAllSkipConfirmDialog）的 スキップ 按钮
+    'Story.ButtonSkipStory': dict(path_re=r'/ScenarioAllSkipConfirmDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text=r'スキップ'),
+    # ---- 网络错误弹窗（Common1/2ButtonDialog，globals.handle_network_error）----
+    # 「タイトルへ戻ります」1 按钮弹窗
+    'NetworkError.DialogReturningToTitle.Text': dict(name='MessageBody', path_re=r'/Common1ButtonDialog\(Clone\)/'),
+    'NetworkError.DialogReturningToTitle.ButtonOk': dict(path_re=r'/Common1ButtonDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', interactable=True),
+    # 「通信エラー」重试弹窗（Common2ButtonDialog；结构按 1 按钮版类比，未实测）
+    'NetworkError.DialogConnectionError.Text': dict(name='MessageBody', path_re=r'/Common2ButtonDialog\(Clone\)/'),
+    'NetworkError.DialogConnectionError.ButtonRetry': dict(path_re=r'/Common2ButtonDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text_re=r'リトライ'),
 }
 
 
