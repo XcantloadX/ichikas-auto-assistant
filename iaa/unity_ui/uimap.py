@@ -44,7 +44,9 @@ MAP: dict[str, dict[str, Any]] = {
     # ---- 启动时的新闻弹窗（お知らせ）关闭按钮 ----
     'Login.IconNotification': dict(path_re=r'/NewsDialog\(Clone\)/.*/UIPartsCloseButton$'),
     # ---- 通用返回按钮（各页面 Layer_Header 左上角）----
-    'Hud.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$'),
+    # 剧情播放期间底层 layer 仍 active，需否定 ScreenLayerScenario 保持
+    # "被覆盖即不可见"语义（否则 skip_stories 结束条件会假阳性）
+    'Hud.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$', not_exists_re=r'/ScreenLayerScenario/'),
     # ---- 首页右上角入口（TopRight）----
     'Daily.ButtonGift': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Present$'),
     'Daily.ButtonMission': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopRight/Mission$'),
@@ -58,8 +60,9 @@ MAP: dict[str, dict[str, Any]] = {
     # 左侧「ユニット すべて」展开 tab
     'Story.StoryList.ButtonExpandUnit': dict(path_re=r'/UnitLogoTabSubWindowDialog\(Clone\)/UnitLogoTabSubWindowDialog/Window/ContentRoot/Info$'),
     # ---- 分集列表页（ScreenLayerStorySelect）----
-    'Story.ButtonBookmark': dict(path_re=r'/ScreenLayerStorySelect/ComponentRoot/Front/Top/UIPartsBookMarkButton$'),
-    'Story.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$'),
+    'Story.ButtonBookmark': dict(path_re=r'/ScreenLayerStorySelect/ComponentRoot/Front/Top/UIPartsBookMarkButton$',
+                                 not_exists_re=r'/ScreenLayerScenario/'),
+    'Story.ButtonGoBack': dict(path_re=r'/UIPartsBackButton$', not_exists_re=r'/ScreenLayerScenario/'),
     # ---- 剧情播放（ScreenLayerScenario）----
     # 右上「…」菜单按钮：剧情画面标志物；菜单隐藏时 ScenarioMenu 内按钮
     # 依旧可点（CanvasGroup alpha=0 但 raycast 生效，实测 Skip 直点可弹确认）
@@ -71,6 +74,9 @@ MAP: dict[str, dict[str, Any]] = {
     'Story.ButtonWithoutVoice': dict(path_re=r'/StoryReadConfirmDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton( \(1\))?$', has_text_re=r'ボイスなし'),
     # 跳过确认弹窗（ScenarioAllSkipConfirmDialog）的 スキップ 按钮
     'Story.ButtonSkipStory': dict(path_re=r'/ScenarioAllSkipConfirmDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text=r'スキップ'),
+    # MV 暂停弹窗（MusicVideoPoseDialog，游戏内拼写如此）——主线剧情 MV 暂停后跳过
+    'Story.TextMvPausedDialog': dict(name='MessageBody', path_re=r'/MusicVideoPoseDialog\(Clone\)/'),
+    'Story.ButtonSkipMv': dict(path_re=r'/MusicVideoPoseDialog\(Clone\)/WindowRoot/FooterButtons/UIPartsCommonButton$', has_text=r'スキップ'),
     # ---- 网络错误弹窗（Common1/2ButtonDialog，globals.handle_network_error）----
     # 「タイトルへ戻ります」1 按钮弹窗
     'NetworkError.DialogReturningToTitle.Text': dict(name='MessageBody', path_re=r'/Common1ButtonDialog\(Clone\)/'),

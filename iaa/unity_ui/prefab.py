@@ -169,6 +169,13 @@ def _snapshot_resilient() -> list[UINode] | None:
         return None
 
 
+def _suppressed(cls: type['UIPrefab'], roots: list[UINode]) -> bool:
+    """跨节点否定判定：快照中存在 ``ui_not_exists_re`` 匹配的节点时为 True。"""
+    if cls.ui_not_exists_re is None:
+        return False
+    return any(re.search(cls.ui_not_exists_re, n.path) for n in roots for n in n.iter_descendants())
+
+
 class UIPrefab(Prefab[UIGameObject]):
     """Unity UI 树 Prefab 基类。
 
@@ -198,6 +205,11 @@ class UIPrefab(Prefab[UIGameObject]):
 
     ui_interactable: bool | None = None
     """interactable 过滤。"""
+
+    ui_not_exists_re: str | None = None
+    """跨节点否定：快照中存在路径匹配该正则的节点时，本 prefab 一律视为
+    未找到。用于"底层 screen 层仍 active 但被上层覆盖"的场景（如剧情播放时
+    ScreenLayerStorySelect 仍在树中），对齐模板匹配"被覆盖即不可见"语义。"""
 
     display_name: str | None = None
 
@@ -243,7 +255,7 @@ class UIPrefab(Prefab[UIGameObject]):
         而非抛异常，让上层轮询循环自然重试。
         """
         roots = _snapshot_resilient()
-        if roots is None:
+        if roots is None or _suppressed(cls, roots):
             return []
         results: list[UIGameObject] = []
         for node in flat_nodes(roots):
@@ -257,7 +269,8 @@ class UIPrefab(Prefab[UIGameObject]):
     def _find_impl(cls, query: UIQuery) -> UIGameObject | None:
         """查找第一个匹配（先序）；agent 不可用时返回 None（语义同模板匹配）。"""
         roots = _snapshot_resilient()
-        if roots is None:
+        if roots is None or _suppressed(cls, roots):
+            logger.debug('%s.find -> None', cls.__name__)
             return None
         for node in flat_nodes(roots):
             if node.screen_rect is None:
