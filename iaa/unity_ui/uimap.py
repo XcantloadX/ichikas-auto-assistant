@@ -106,6 +106,9 @@ MAP: dict[str, dict[str, Any]] = {
     'Live.SwitchAutoLiveOn': dict(path_re=r'/AutoLiveToggle/ToggleRoot/UIPartsToggle/On$'),
     'Live.SwitchAutoLiveOff': dict(path_re=r'/AutoLiveToggle/ToggleRoot/UIPartsToggle/Off$'),
     'Live.ButtonAutoLiveSettings': dict(path_re=r'/AutoLiveToggle/ConsecutiveAutoLiveRoot/ConsecutiveAutoLiveSetting/Button$'),
+    # ---- 活动商店（ScreenLayerEventExchange）----
+    # 「2026/11/18 20:59まで」结束时间文本：位于活动商店的标志
+    'Shop.TextEndTimeUntil': dict(name='EndAtText'),
 }
 
 

@@ -1,110 +1,79 @@
-from typing import Literal
-from typing_extensions import assert_never
 
-import cv2
 from kotonebot import task, logging, Loop, device, sleep
-from kotonebot.core import TemplateMatchPrefab
-from kotonebot.backend import image
 
 from . import R
 from iaa.definitions.enums import ShopItem
 from iaa.context import conf as get_conf, task_reporter, server
 from iaa.i18n import TStr, tstr
-from iaa.game_ui.list_view import ListViewItem
 from iaa.game_ui.side_tabbar import SideTabbar
 
 logger = logging.getLogger(__name__)
 
-def _shop_item_to_resource(item: ShopItem) -> type[TemplateMatchPrefab]:
-    match item:
-        case ShopItem.ITEM_CRYSTAL:
-            return R.Jp.Shop.Items.Crystal
-        case ShopItem.ITEM_WISH_PIECE:
-            return R.Jp.Shop.Items.WishPiece
-        case ShopItem.ITEM_BONUS_ENERGY_DRINK_S:
-            return R.Jp.Shop.Items.BonusEnergyDrinkS
-        case ShopItem.ITEM_STAMP_VOUCHER:
-            return R.Jp.Shop.Items.StampVoucher
-        case ShopItem.ITEM_PRACTICE_SCORE_INTERMEDIATE:
-            return R.Jp.Shop.Items.PracticeScoreIntermediate
-        case ShopItem.ITEM_MUSIC_CARD:
-            return R.Jp.Shop.Items.MusicCard
-        case ShopItem.ITEM_MIRACLE_GEM:
-            return R.Jp.Shop.Items.MiracleGem
-        case ShopItem.ITEM_MAGIC_CLOTH:
-            return R.Jp.Shop.Items.MagicCloth
-        case ShopItem.ITEM_MAGIC_THREAD:
-            return R.Jp.Shop.Items.MagicThread
-        case ShopItem.ITEM_MAGICAL_SEED:
-            return R.Jp.Shop.Items.MagicalSeed
-        case ShopItem.ITEM_WISH_DROP:
-            return R.Jp.Shop.Items.WishDrop
-        case ShopItem.ITEM_COVER_CARD_VOUCHER:
-            return R.Jp.Shop.Items.CoverCardVoucher
-        case ShopItem.ITEM_COIN_100000:
-            return R.Jp.Shop.Items.Coin100000
-        case ShopItem.ITEM_COIN_1:
-            return R.Jp.Shop.Items.Coin1
-        case ShopItem.ITEM_SKILL_UP_SCORE_INTERMEDIATE:
-            return R.Jp.Shop.Items.SkillUpScoreIntermediate
-        case ShopItem.ITEM_3STAR_MEMBER | ShopItem.ITEM_2STAR_MEMBER:
-            raise Exception('3Star and 2Star member items should be handled separately due to their variable icons')
-        case _:
-            assert_never(item)
+def _ui_read_cells() -> list[dict]:
+    """从 UI 树读取当前可见的商品 cell（文本身份）。
 
-def _match_item(item: ListViewItem, targets: list[ShopItem]) -> ShopItem | None:
-    star_count = _is_char_item(item)
-    if star_count is not None:
-        if star_count == 2 and ShopItem.ITEM_2STAR_MEMBER in targets:
-            return ShopItem.ITEM_2STAR_MEMBER
-        elif star_count == 3 and ShopItem.ITEM_3STAR_MEMBER in targets:
-            return ShopItem.ITEM_3STAR_MEMBER
-        else:
-            return None
-    
-    for target in targets:
-        if target in (ShopItem.ITEM_3STAR_MEMBER, ShopItem.ITEM_2STAR_MEMBER):
-            continue
-        resource = _shop_item_to_resource(target)
-        # 需要先处理缩放
-        # 有时候 icon_image 会略小于模板，导致匹配失败
-        icon_image = item.icon_image
-        template = resource.template.pixels
-        icon_height, icon_width = icon_image.shape[:2]
-        template_height, template_width = template.shape[:2]
-        if icon_height < template_height or icon_width < template_width:
-            scale = max(template_width / icon_width, template_height / icon_height)
-            icon_image = cv2.resize(icon_image, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
+    EventExchangeCell 含 ItemName（商品名 TMP 文本）、Num（价格）、
+    Remaining（剩余次数），可整体替代图标模板匹配。角色卡（ItemName 为
+    角色名，不在 :class:`ShopItem` 名表内）按价格判星（15000=★3、5000=★2，
+    与旧 Icon5000/15000EventCoin 图标逻辑等价）。
 
-        # ret = image.find(icon_image, template, threshold=0)
-        # logger.debug("Match: %s confidence=%.2f", target.display(server()), ret.score if ret else -1)
-        # cv2.imshow('icon_image', icon_image)
-        # cv2.imshow('template', template)
-        # cv2.waitKey(0)
-
-        # 由于不同服务器右下角文本字体不一致，这里调低阈值
-        if image.find(icon_image, template, threshold=0.5):
-            return target
-    return None
-
-def _is_char_item(item: ListViewItem) -> Literal[2] | Literal[3] | None:
-    """判断一个商品是否为角色卡片。
-
-    :return: 若是，返回卡片星级，否则返回 None。
+    :return: ``[{'name': 商品名, 'price': 价格文本, 'rem': 剩余次数文本,
+        'center': (x, y) 屏幕坐标}, ...]``；UI 树不可用时返回空列表
     """
-    img = item.image
-    # 首先根据 Lv1 文本判断是否为角色
-    if not image.find(img, R.Shop.TextLv1.template):
-        return None
-    
-    # 然后根据价格判断星级
-    if image.find(img, R.Shop.Icon5000EventCoin.template):
-        return 2
-    elif image.find(img, R.Shop.Icon15000EventCoin.template):
-        return 3
-    else:
-        logger.warning("Failed to determine character card star count for item %d", item.index)
-        return None
+    import re as _re
+
+    from iaa.unity_ui.prefab import get_default_client
+    from iaa.unity_ui.tree import flat_nodes
+
+    try:
+        roots = get_default_client().snapshot()
+    except Exception:  # noqa: BLE001 基础设施故障降级为"未找到"
+        return []
+    cells: list[dict] = []
+    for n in flat_nodes(roots):
+        if n.name != 'EventExchangeCell(Clone)' or n.screen_rect is None:
+            continue
+        info: dict = {'name': None, 'price': None, 'rem': None, 'center': None}
+        stack = [n]
+        while stack:
+            x = stack.pop()
+            t = x.text
+            if x.name == 'ItemName' and t:
+                info['name'] = t
+            elif x.name == 'Remaining' and t:
+                info['rem'] = _re.sub(r'<[^>]+>', '', t)
+            elif x.name == 'Num' and t and not t.startswith('×') and info['price'] is None:
+                info['price'] = t
+            stack.extend(x.children)
+        if info['name']:
+            info['center'] = (int(n.screen_rect[0]), int(n.screen_rect[1]))
+            cells.append(info)
+    return cells
+
+
+_JP_ITEM_NAMES: dict[str, ShopItem] | None = None
+
+
+def _match_item_ui(cell: dict) -> ShopItem | None:
+    """按 ItemName 文本匹配 :class:`ShopItem`（UI 树路径，替代图标模板）。
+
+    :param cell: :func:`_ui_read_cells` 的条目
+    :return: 匹配的商品；无法识别返回 None
+    """
+    global _JP_ITEM_NAMES
+    if _JP_ITEM_NAMES is None:
+        _JP_ITEM_NAMES = {i.display('jp'): i for i in ShopItem}
+    name = cell['name'] or ''
+    # ボーカルカード交換チケット 类商品名带单位前缀（'25時、…\nボーカルカード交換チケット'）
+    for jp, item in _JP_ITEM_NAMES.items():
+        if name == jp or name.endswith(jp):
+            return item
+    # 角色卡：名称不在名表内，按价格判星
+    if cell.get('price') == '15000':
+        return ShopItem.ITEM_3STAR_MEMBER
+    if cell.get('price') == '5000':
+        return ShopItem.ITEM_2STAR_MEMBER
+    return None
 
 def goto_event_shop() -> None:
     """导航到活动商店界面
@@ -123,16 +92,19 @@ def goto_event_shop() -> None:
         elif R.Login.ButtonMenu.try_click():
             logger.debug("Clicked on Menu button")
 
-def _purchase(item: ListViewItem):
-    assert item.price_rect is not None
+def _purchase(center: tuple[int, int]) -> bool:
+    """购买一个商品（UI 树 cell 中心点击打开数量弹窗，弹窗内走模板 fallback）。
 
+    :param center: 商品 cell 中心屏幕坐标
+    :return: 是否购买成功（跳过/失败返回 False）
+    """
     # 首先打开购买对话框
     for _ in Loop():
         if R.Shop.AmountDialog.ButtonConfirm.exists():
             logger.info("Purchase dialog opened")
             break
         else:
-            device.click(item.price_rect.center)
+            device.click(center)
             sleep(0.5)
     
     # 调整大小
@@ -178,28 +150,26 @@ def _purchase(item: ListViewItem):
 def _do_single() -> None:
     rep = task_reporter()
     targets = list(get_conf().tasks.event_shop.purchase_items)
-    all_items = list(ShopItem)
-    
+
     view = R.Shop.EventShopListView.require()
     assert view.scrollable is not None
     view.scrollable.measure_bounds()
 
+    # UI 树全量扫描：按文本匹配商品（替代图标模板）
     rep.message(TStr(zh_CN='扫描列表', en_US='Scanning list'))
     view.scrollable.to_top()
-    remaining = set(targets)
     available_targets: set[ShopItem] = set()
-    for item in view.walk(reset_to_top=False):
-        # 按 remaining 更高效，但是为了调试方便，按 all_items 来
-        # matched_item = _match_item(item, list(remaining))
-        matched_item = _match_item(item, all_items)
-        if matched_item is None:
-            logger.warning("Item %d does not match any target", item.index)
-            continue
-        logger.debug("Matched item %s", matched_item.display(server()))
-        available_targets.add(matched_item)
-        remaining.discard(matched_item)
-        # if not remaining:
-        #     break
+    cell_center: dict[ShopItem, tuple[int, int]] = {}
+    for _progress in view.scrollable.walk_down(step=0.8):
+        for cell in _ui_read_cells():
+            matched = _match_item_ui(cell)
+            if matched is None:
+                logger.debug("UI cell %r does not match any target", cell['name'])
+                continue
+            logger.debug("Matched cell %s", matched.display(server()))
+            available_targets.add(matched)
+            cell_center[matched] = cell['center']
+
     purchasable_targets = [target for target in targets if target in available_targets]
 
     for target in targets:
@@ -210,24 +180,32 @@ def _do_single() -> None:
         logger.info("No configured target items found in event shop.")
         return
 
-    with rep.phase(tstr('progress.phase.purchase_items'), total=len(purchasable_targets)) as phase:
+    with rep.phase(tstr('progress.phase.event'), total=len(purchasable_targets)) as phase:
         for target in purchasable_targets:
             phase.step(target.display(server()))
+            # 购买后商品列表会变化且界面回顶，每轮重新滚动查找该商品
             view.scrollable.to_top()
-
-            for item in view.walk(reset_to_top=False):
-                matched_item = _match_item(item, [target])
-                if matched_item != target:
-                    continue
-
-                logger.info("Found target item %s", target.display(server()))
-                if _purchase(item):
-                    # 购买后商品列表会变化，并且界面会自动回顶；
-                    # 当前 walk() 的滚动与坐标上下文都已失效，必须整轮重扫。
+            found: tuple[int, int] | None = None
+            for _progress in view.scrollable.walk_down(step=0.8):
+                for cell in _ui_read_cells():
+                    if _match_item_ui(cell) == target:
+                        found = cell['center']
+                        break
+                if found is not None:
                     break
 
-                logger.info("Skipping target item %s because it cannot be purchased now", target.display(server()))
-                break
+            if found is None:
+                logger.info("Target item %s disappeared after repurchase. Skipping.", target.display(server()))
+                continue
+
+            logger.info("Found target item %s", target.display(server()))
+            if _purchase(found):
+                # 购买后商品列表会变化，并且界面会自动回顶；
+                # 与旧实现语义一致：每个目标每轮只购买一次，进入下一目标。
+                view.scrollable.to_top()
+                continue
+
+            logger.info("Skipping target item %s because it cannot be purchased now", target.display(server()))
 
 @task('活动商店', screenshot_mode='manual')
 def event_shop():
