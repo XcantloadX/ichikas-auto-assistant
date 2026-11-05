@@ -168,7 +168,8 @@ class UnityUITree:
 
     # -- 3D 对象定位（独立协议域，与 UI 快照互不混用） ----------------------
 
-    def find3d(self, name: str = '', max_results: int = 100) -> list[dict]:
+    def find3d(self, name: str = '', max_results: int = 100,
+               readtext: bool = False) -> list[dict]:
         """按 GameObject 名子串查找 3D 对象并投影屏幕矩形（独立协议命令）。
 
         与 UI 定位的区别：UI 走 snapshot 快照森林（RectTransform 域），
@@ -177,11 +178,17 @@ class UnityUITree:
 
         :param name: GameObject 名子串过滤；空串返回全部（受 max_results 限制）
         :param max_results: 结果上限
+        :param readtext: 同时读取对象 GO 上的 TMP 文本（世界空间标签，
+            如世界地图区域名）；配合 :class:`Locator3D` 的文本过滤使用
         :return: ``[{'name': 名, 'px': [x, y, w, h]（物理屏幕像素，y 自底部起）,
-            'go': 对象指针}, ...]``；离屏/退化矩形已被过滤
+            'go': 对象指针, 'cam': 渲染相机名, 'text': TMP 文本（有则带）}, ...]``；
+            离屏/退化矩形已被过滤
         :raises GuestAgentError: 请求失败时
         """
-        r = self._agent.call({'cmd': 'find3d', 'name': name, 'max': max_results}, timeout=120)
+        req: dict = {'cmd': 'find3d', 'name': name, 'max': max_results}
+        if readtext:
+            req['text'] = 1
+        r = self._agent.call(req, timeout=120)
         if not r.get('ok'):
             raise RuntimeError(f"find3d failed: {r.get('err')}")
         vw, vh = self.viewport
@@ -199,16 +206,29 @@ class UnityUITree:
                 continue
             if x > vw or y > vh or x + w < 0 or y + h < 0:
                 continue
-            items.append({'name': it['name'], 'px': [x, y, w, h], 'go': it['go']})
+            item = {'name': it['name'], 'px': [x, y, w, h], 'go': it['go']}
+            if 'cam' in it:
+                item['cam'] = it['cam']
+            if 'text' in it:
+                item['text'] = it['text']
+            if 'p' in it:
+                item['p'] = it['p']
+            items.append(item)
         return items
 
-    def locator3d(self, *, name: str | None = None, name_re: str | None = None):
+    def locator3d(self, *, name: str | None = None, name_re: str | None = None,
+                  text: str | None = None, text_re: str | None = None,
+                  path_re: str | None = None):
         """创建 3D 对象定位器（独立协议域；不可与 :meth:`locator` 混用）。
 
         :param name: GameObject 名子串过滤
         :param name_re: 名正则（先拉全量名再过滤，较慢）
+        :param text: GO 上 TMP 文本精确匹配（世界空间标签，较慢）
+        :param text_re: GO 上 TMP 文本正则（较慢）
+        :param path_re: 父链路径正则（如 ``Area1/AreaIcon$``），区分同名实例
         :return: :class:`iaa.unity_ui.object3d.Locator3D`
         """
         from .object3d import Locator3D
 
-        return Locator3D(self, name=name, name_re=name_re)
+        return Locator3D(self, name=name, name_re=name_re,
+                         text=text, text_re=text_re, path_re=path_re)

@@ -37,6 +37,13 @@ class Object3D:
     ui: 'UnityUITree' = field(repr=False, compare=False)
     """所属客户端（用于点击回连）。"""
 
+    text: str | None = None
+    """GO 上的 TMP 文本（世界空间标签，如地图区域名）；未读时为 None。"""
+
+    path: str | None = None
+    """父链路径（至多 5 层，含自身，如 ``Area1/AreaIcon/Enable``）；
+    用于区分同名实例。未请求时为 None。"""
+
     @property
     def center(self) -> tuple[int, int]:
         """屏幕中心（input tap 坐标系，y 已翻转为自顶部起）。"""
@@ -59,7 +66,7 @@ class Locator3D:
     """3D 对象定位器（每次 resolve 实时发起 ``find3d`` 命令）。
 
     与 :class:`iaa.unity_ui.locator.Locator` 完全独立：不接受 snapshot、
-    不读 UI 快照森林；仅 name/name_re 两个条件。
+    不读 UI 快照森林；仅 name/name_re/text/text_re 四个条件。
     """
 
     ui: 'UnityUITree'
@@ -71,8 +78,31 @@ class Locator3D:
     name_re: str | None = None
     """名正则（host 侧执行：拉全量名再过滤，较慢）。"""
 
+    text: str | None = None
+    """GO 上 TMP 文本精确匹配（隐含 readtext=True，多一轮枚举，较慢）。"""
+
+    text_re: str | None = None
+    """GO 上 TMP 文本正则（隐含 readtext=True，多一轮枚举，较慢）。"""
+
+    path_re: str | None = None
+    """父链路径正则（如 ``Area1/AreaIcon$``），区分同名实例。"""
+
     extra: Callable[[Object3D], bool] | None = None
     """自定义谓词。"""
+
+    def _wants_text(self) -> bool:
+        """是否需要读取对象文本。"""
+        return self.text is not None or self.text_re is not None
+
+    def _accept(self, obj: Object3D) -> bool:
+        """对象是否满足文本/路径条件与自定义谓词。"""
+        if self.text is not None and obj.text != self.text:
+            return False
+        if self.text_re is not None and (obj.text is None or not re.search(self.text_re, obj.text)):
+            return False
+        if self.path_re is not None and (obj.path is None or not re.search(self.path_re, obj.path)):
+            return False
+        return self.extra is None or self.extra(obj)
 
     # -- 求值 ---------------------------------------------------------------
 
@@ -84,20 +114,23 @@ class Locator3D:
         out: list[Object3D] = []
         if self.name_re is not None:
             # 正则：拉全量名（无投影，cheap），host 过滤后逐名精确查询
-            all_items = self.ui.find3d('', max_results=500)
+            all_items = self.ui.find3d('', max_results=500, readtext=self._wants_text())
             names = sorted({it['name'] for it in all_items})
             for nm in names:
                 if re.search(self.name_re, nm):
-                    for it in self.ui.find3d(nm, max_results=50):
+                    for it in self.ui.find3d(nm, max_results=50, readtext=self._wants_text()):
                         obj = Object3D(name=it['name'], px=tuple(it['px']),
-                                       go=it['go'], ui=self.ui)
-                        if self.extra is None or self.extra(obj):
+                                       go=it['go'], ui=self.ui,
+                                       text=it.get('text'), path=it.get('p'))
+                        if self._accept(obj):
                             out.append(obj)
         else:
-            for it in self.ui.find3d(self.name or '', max_results=100):
+            for it in self.ui.find3d(self.name or '', max_results=100,
+                                     readtext=self._wants_text()):
                 obj = Object3D(name=it['name'], px=tuple(it['px']),
-                               go=it['go'], ui=self.ui)
-                if self.extra is None or self.extra(obj):
+                               go=it['go'], ui=self.ui,
+                               text=it.get('text'), path=it.get('p'))
+                if self._accept(obj):
                     out.append(obj)
         return out
 

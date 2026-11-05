@@ -80,6 +80,9 @@ UR::Method* M_cam_main = nullptr;        // Camera.get_main（静态，可选）
 UR::Method* M_cam_pixelw = nullptr;      // Camera.get_pixelWidth（可选）
 UR::Method* M_cam_pixelh = nullptr;      // Camera.get_pixelHeight（可选）
 UR::Method* M_beh_enabled = nullptr;     // Behaviour.get_enabled（可选，相机过滤）
+UR::Method* M_cam_target_tex = nullptr;  // Camera.get_targetTexture（可选，诊断 RT 渲染）
+UR::Method* M_go_layer = nullptr;        // GameObject.get_layer（可选，3D 相机过滤）
+UR::Method* M_cam_culling_mask = nullptr;// Camera.get_cullingMask（可选，3D 相机过滤）
 UR::Class* K_RectTransform = nullptr;    // 用于 klass 指针比较
 UR::Class* K_Transform = nullptr;
 UR::Class* K_TmpText = nullptr;
@@ -350,6 +353,22 @@ void ensure_pixel_handles() {
         /* Behaviour.get_enabled：多相机场景按对象选相机时过滤未启用者 */
         if (auto* m = resolve_in_hierarchy(core, K_camera, "get_enabled", 0))
             if (m->address) M_beh_enabled = m;
+    }
+    if (K_camera && !M_cam_target_tex) {
+        /* Camera.get_targetTexture：诊断地图建筑不投影是否因 RenderTexture */
+        if (auto* m = resolve_in_hierarchy(core, K_camera, "get_targetTexture", 0))
+            if (m->address) M_cam_target_tex = m;
+    }
+    /* 相机-对象归属过滤：UI 相机（先入列表）会误收 3D 对象（中心投影恰在
+       UI 相机视野内），导致 px 用错相机空间。按 layer & cullingMask 过滤。 */
+    if (!M_go_layer) {
+        if (auto* K_go = find_class_all("GameObject", "UnityEngine"))
+            if (auto* m = resolve_in_hierarchy(core, K_go, "get_layer", 0))
+                if (m->address) M_go_layer = m;
+    }
+    if (K_camera && !M_cam_culling_mask) {
+        if (auto* m = resolve_in_hierarchy(core, K_camera, "get_cullingMask", 0))
+            if (m->address) M_cam_culling_mask = m;
     }
     LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d sprite=%d objname=%d bounds=%d cammain=%d",
          M_get_world_corners != nullptr, g_corners_arr != nullptr,
@@ -759,6 +778,39 @@ int dump_tree(struct obuf* o, const int max_nodes) {
 /* TCP 服务                                                            */
 /* ------------------------------------------------------------------ */
 
+/**
+ * 对象完整路径（父链至多 5 层，含自身，如 ``Area1/AreaIcon/Enable``）。
+ * 同名实例（各区域标记均叫 Enable）的区分手段。
+ *
+ * :return: malloc 字符串（调用方 free）；失败返回 nullptr
+ */
+char* obj_path(void* comp) {
+    char* names[5];
+    int depth = 0;
+    void* t = comp ? rt_invoke(M_comp_transform, comp, nullptr) : nullptr;
+    while (t && depth < 5) {
+        void* g = rt_invoke(M_comp_go, t, nullptr);
+        if (!g) break;
+        char* nm = mono_string_to_utf8(rt_invoke(M_go_name, g, nullptr));
+        if (!nm) break;
+        names[depth++] = nm;
+        void* p = rt_invoke(M_t_parent, t, nullptr);
+        if (!p) break;
+        t = p;
+    }
+    if (depth == 0) return nullptr;
+    size_t cap = 1;
+    for (int i = 0; i < depth; i++) cap += strlen(names[i]) + 1;
+    char* out = static_cast<char*>(malloc(cap));
+    out[0] = 0;
+    for (int i = depth - 1; i >= 0; i--) {
+        strcat(out, names[i]);
+        if (i) strcat(out, "/");
+        free(names[i]);
+    }
+    return out;
+}
+
 void* handle_client(void* arg) {
     const int fd = static_cast<int>(reinterpret_cast<intptr_t>(arg));
     char req[256];
@@ -859,6 +911,14 @@ void* handle_client(void* arg) {
             const char* xp = strstr(req, "\"max\"");
             if (xp) fmax = atoi(strchr(xp + 5, ':') + 1);
             if (fmax > 500) fmax = 500;
+            /* diag=1：不投影过滤，原样输出匹配对象的 bounds + 逐相机中心
+               投影 + 相机元数据（尺寸/targetTexture/位置）——排查"对象
+               存在但投影不落视野"问题（如 RenderTexture 渲染） */
+            const int diag = strstr(req, "\"diag\"") ? 1 : 0;
+            /* text=1：为每个匹配对象读其 GO 上的 TMP 文本（世界空间标签，
+               如世界地图的区域名「スクランブル交差点」），经 FindObjectsOfType
+               (TMP_Text) 建 go→text 映射，避免依赖可能被裁剪的 GetComponent */
+            const int readtext = strstr(req, "\"text\"") ? 1 : 0;
             /* 相机列表：Camera.main 优先，其后全部启用的相机（多相机场景，
                每个对象取"中心投影在屏内"的第一个相机——世界地图等
                Layer 自带相机渲染，Camera.main 往往不是渲染者） */
@@ -895,9 +955,60 @@ void* handle_client(void* arg) {
                 }
                 ob_put(&o, "{\"ok\":true,\"ncam\":");
                 ob_put_int(&o, static_cast<long>(cams.size()));
+                if (diag) {
+                    ob_put(&o, ",\"cams\":[");
+                    for (size_t ci = 0; ci < cams.size(); ci++) {
+                        if (ci) ob_put(&o, ",");
+                        void* cam = cams[ci];
+                        ob_put(&o, "{\"name\":");
+                        void* cgo = M_comp_go ? rt_invoke(M_comp_go, cam, nullptr) : nullptr;
+                        char* cn = cgo ? mono_string_to_utf8(rt_invoke(M_go_name, cgo, nullptr)) : nullptr;
+                        ob_put_json_str(&o, cn ? cn : "");
+                        free(cn);
+                        int cw = M_cam_pixelw ? read_boxed_int(rt_invoke(M_cam_pixelw, cam, nullptr)) : -1;
+                        int ch = M_cam_pixelh ? read_boxed_int(rt_invoke(M_cam_pixelh, cam, nullptr)) : -1;
+                        ob_put(&o, ",\"w\":"); ob_put_int(&o, cw);
+                        ob_put(&o, ",\"h\":"); ob_put_int(&o, ch);
+                        void* tex = M_cam_target_tex ? rt_invoke(M_cam_target_tex, cam, nullptr) : nullptr;
+                        ob_put(&o, ",\"tex\":\""); ob_put_int(&o, reinterpret_cast<long>(tex)); ob_put(&o, "\"");
+                        void* ctrans = M_comp_transform ? rt_invoke(M_comp_transform, cam, nullptr) : nullptr;
+                        if (ctrans && M_t_position) {
+                            void* boxed_p = rt_invoke(M_t_position, ctrans, nullptr);
+                            if (boxed_p) {
+                                const float* pf = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_p) + 0x10);
+                                ob_put(&o, ",\"pos\":[");
+                                ob_put_float(&o, pf[0]); ob_put(&o, ",");
+                                ob_put_float(&o, pf[1]); ob_put(&o, ",");
+                                ob_put_float(&o, pf[2]);
+                                ob_put(&o, "]");
+                            }
+                        }
+                        ob_put(&o, "}");
+                    }
+                    ob_put(&o, "]");
+                }
                 ob_put(&o, ",\"items\":[");
                 int emitted = 0;
                 std::unordered_map<void*, int> seen_go;
+                /* go→TMP 文本映射（readtext=1 时） */
+                std::unordered_map<void*, char*> go_text;
+                if (readtext && K_TmpText) {
+                    if (void* ttype = K_TmpText->GetType()) {
+                        void* tparams[1] = { ttype };
+                        void* tarr = rt_invoke(M_find_all, nullptr, tparams);
+                        if (tarr) {
+                            const auto tcnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(tarr) + 0x18);
+                            auto* titems = reinterpret_cast<void**>(reinterpret_cast<char*>(tarr) + 0x20);
+                            for (uintptr_t k = 0; k < tcnt; k++) {
+                                void* c = titems[k];
+                                void* g = rt_invoke(M_comp_go, c, nullptr);
+                                if (!g) continue;
+                                char* tx = mono_string_to_utf8(rt_invoke(M_tmp_text, c, nullptr));
+                                if (tx && tx[0]) go_text[g] = tx;
+                            }
+                        }
+                    }
+                }
                 if (arr) {
                     const auto cnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(arr) + 0x18);
                     auto* items = reinterpret_cast<void**>(reinterpret_cast<char*>(arr) + 0x20);
@@ -915,6 +1026,35 @@ void* handle_client(void* arg) {
                         const float* bf = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_b) + 0x10);
                         const float ctr[3] = { bf[0], bf[1], bf[2] };
                         const float ext[3] = { bf[3], bf[4], bf[5] };
+                        if (diag) {
+                            /* diag：逐相机输出中心投影（含 z 深度），不过滤 */
+                            if (emitted) ob_put(&o, ",");
+                            ob_put(&o, "{\"name\":");
+                            ob_put_json_str(&o, nm);
+                            ob_put(&o, ",\"b\":[");
+                            ob_put_float(&o, ctr[0]); ob_put(&o, ",");
+                            ob_put_float(&o, ctr[1]); ob_put(&o, ",");
+                            ob_put_float(&o, ctr[2]); ob_put(&o, ",");
+                            ob_put_float(&o, ext[0]); ob_put(&o, ",");
+                            ob_put_float(&o, ext[1]); ob_put(&o, ",");
+                            ob_put_float(&o, ext[2]);
+                            ob_put(&o, "],\"proj\":[");
+                            for (size_t ci = 0; ci < cams.size(); ci++) {
+                                if (ci) ob_put(&o, ",");
+                                void* boxed_c = invoke_w2s(cams[ci], ctr);
+                                if (!boxed_c) { ob_put(&o, "null"); continue; }
+                                const float* sc = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_c) + 0x10);
+                                ob_put(&o, "[");
+                                ob_put_float(&o, sc[0]); ob_put(&o, ",");
+                                ob_put_float(&o, sc[1]); ob_put(&o, ",");
+                                ob_put_float(&o, sc[2]);
+                                ob_put(&o, "]");
+                            }
+                            ob_put(&o, "]}");
+                            emitted++;
+                            free(nm);
+                            continue;
+                        }
                         /* 逐相机试投：中心在相机像素空间内者才做 8 角全投 */
                         int camw = -1, camh = -1;
                         float xmin = 0, xmax = -1, ymin = 0, ymax = 0;
@@ -926,6 +1066,13 @@ void* handle_client(void* arg) {
                                 ch = read_boxed_int(rt_invoke(M_cam_pixelh, cam, nullptr));
                             }
                             if (cw <= 0 || ch <= 0) continue;
+                            /* layer & cullingMask：对象不属于该相机渲染范围则跳过
+                               （UI 相机排在前会误收 3D 对象，px 落错相机空间） */
+                            if (M_go_layer && M_cam_culling_mask) {
+                                const int layer = read_boxed_int(rt_invoke(M_go_layer, go, nullptr));
+                                const int mask = read_boxed_int(rt_invoke(M_cam_culling_mask, cam, nullptr));
+                                if (layer >= 0 && layer < 32 && (mask & (1 << layer)) == 0) continue;
+                            }
                             void* boxed_c = invoke_w2s(cam, ctr);
                             if (!boxed_c) continue;
                             const float* sc = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_c) + 0x10);
@@ -968,7 +1115,30 @@ void* handle_client(void* arg) {
                             ob_put(&o, ",\"camh\":"); ob_put_int(&o, camh);
                             ob_put(&o, ",\"go\":\"");
                             ob_put_int(&o, reinterpret_cast<long>(go));
-                            ob_put(&o, "\"}");
+                            ob_put(&o, "\"");
+                            if (hit_cam && M_comp_go) {
+                                void* hgo = rt_invoke(M_comp_go, hit_cam, nullptr);
+                                if (hgo) {
+                                    char* hn = mono_string_to_utf8(rt_invoke(M_go_name, hgo, nullptr));
+                                    ob_put(&o, ",\"cam\":");
+                                    ob_put_json_str(&o, hn ? hn : "");
+                                    free(hn);
+                                }
+                            }
+                            auto ti = go_text.find(go);
+                            if (ti != go_text.end()) {
+                                ob_put(&o, ",\"text\":");
+                                ob_put_json_str(&o, ti->second);
+                            }
+                            {
+                                char* pp = obj_path(c);
+                                if (pp) {
+                                    ob_put(&o, ",\"p\":");
+                                    ob_put_json_str(&o, pp);
+                                    free(pp);
+                                }
+                            }
+                            ob_put(&o, "}");
                             emitted++;
                         }
                         free(nm);
@@ -977,6 +1147,7 @@ void* handle_client(void* arg) {
                 ob_put(&o, "],\"n\":");
                 ob_put_int(&o, emitted);
                 ob_put(&o, "}");
+                for (auto& kv : go_text) free(kv.second);
             } else {
                 ob_put(&o, "{\"ok\":false,\"err\":\"no cameras\"}");
             }

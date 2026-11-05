@@ -315,3 +315,42 @@ live.py 的 `_read_current_multiplier` 已改读 NumText（旧 OCR 的固定 ROI
 - **坑**：dump 内 UIPartsTabListCellView 先序是自底向顶，别想当然；
   probe 的 go_home 遇新闻弹窗会死循环（弹窗盖住返回键，点背面无效）——
   先手动关弹窗再跑。
+
+### 11.6 世界地图 3D 定位破案 + cm.py 迁移（2026-11-06）
+
+- **diag 模式**：`find3d` 请求带 `"diag":1` 时不过滤投影，原样输出每个
+  匹配 renderer 的 bounds + 逐相机中心投影（含 z 深度）+ 相机元数据
+  （`cams[]`：名字/像素尺寸/targetTexture/世界位置）。排查利器。
+- **破案（世界地图"建筑消失"）**：两个原因叠加——
+  1. **相机选错**：相机列表里 UICamera 在前，其中心投影门（±0.5 屏
+     容差）把地图对象的中心也放行了 → 对象按 UICamera 空间投影，px
+     全错。修复：**按 layer & cullingMask 过滤相机**（新增
+     `GameObject.get_layer`/`Camera.get_cullingMask` 句柄），只有
+     渲染归属相机参与投影。修后 7 个区域标记全部正确归 WorldmapCamera。
+  2. **名字过滤不中**：地图标记的 GO 名是 `Enable`/`center`/`circle`/
+     `background`，不含 "Intersection"/"Building"。且 WorldmapCamera
+     无 RenderTexture（tex=0）——RT 假设不成立。
+- **标记结构**：区域标记是 3D 内容
+  `/CanvasRoot/Layer_BG/ScreenLayerWorldmap/ComponentRoot/WorldmapRoot/
+  AreaContents(Clone)/AreaN/AreaIcon/Enable`（无 RectTransform，UI 树
+  dump 无 rect）；左上角 `AreaInfo/.../text1` 是当前区域名 TMP 文本
+  （如「スクランブル交差点」）。区域名标签本身是精灵图，无文本可读
+  （find3d `"text":1` 读 GO 上 TMP 文本实测 None）。
+- **父链路径 `p` 字段**：find3d 每项输出至多 5 层父链路径
+  （`WorldmapRoot/AreaContents(Clone)/Area1/AreaIcon/Enable`），host
+  `Locator3D` 新增 `path_re` 区分同名实例。实测区域编号：**Area1=
+  スクランブル交差点、Area3=ショッピングモール、Area4=音楽ショップ、
+  Area11=神山高校、Area12=テーマパーク**（Area13 在屏外，未核）。
+- **E2E**：`locator3d(name='Enable', path_re=r'Area1/AreaIcon')` 点击 →
+  进入交差点成功；音楽ショップ出发 `go_intersection()` 全链路成功。
+- **cm.py 迁移**：`is_at_intersection` 优先 `Scene.Intersection.
+  TextAreaName`（uimap：AreaInfo text1 + `text='スクランブル交差点'`，
+  各区域首页同构仅此文本不同），模板回退；`go_intersection` 的标记
+  点击走 `_click_intersection_marker()`（3D path_re 优先，模板回退）。
+  `Map.ButtonOpenMap` 已入 uimap。
+- **不迁移**：`Map.ButtonGoToReality/ButtonGoToSekai`（SekaiSwitchButton）
+  ——两种模式下两节点均 active 在树中（视觉隐藏靠 CanvasGroup），
+  rect 点击可能误触另一个按钮，模板的"可见即可点"语义更安全。
+- **运维**：agent .so 更新必须重启游戏（进程内 so 不能换）——本次会话
+  重启 4 次，每次都要过 TAP TO START → 数据下载 → 通信エラーリトライ →
+  新闻弹窗关闭，probe 脚本前先人工把页面导航到位最省事。

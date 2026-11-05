@@ -30,14 +30,37 @@ def _sleep(sec: float, msg: 'Callable[[int], TStr] | None' = None, interval: flo
 
 @action('是否位于交叉路口')
 def is_at_intersection() -> bool:
-    # return AnyOf[
-    #     R.Scene.Intersection.BuildingLogo,
-    #     R.Scene.Intersection.IconCm
-    # ].find(threshold=0.8) is not None
+    # 渐进迁移：UI 树优先（首页左上角 AreaInfo 显示当前区域名），
+    # 3D 场景模板匹配回退（agent 不可用/UI 树未加载时）
+    if R.Scene.Intersection.TextAreaName.exists():
+        return True
     return (
         R.Scene.Intersection.BuildingLogo.q(threshold=0.9).find() is not None or
         R.Scene.Intersection.IconCm.q(threshold=0.9).find() is not None
     )
+
+def _click_intersection_marker() -> bool:
+    """点击世界地图上的 スクランブル交差点 区域标记。
+
+    区域标记是 3D 内容（WorldmapRoot/AreaContents，无 RectTransform，区域名
+    为精灵图无 TMP 文本），UI 树不可定位，走 find3d 独立协议（3D 域）：
+    区域图标均名 Enable，按父链 Area1/AreaIcon/Enable 区分（实测 Area1 =
+    スクランブル交差点）。3D 链路不可用（agent 未注入/不在地图页）时回退
+    模板匹配。
+
+    :return: 是否点击了标记
+    """
+    try:
+        from iaa.unity_ui.prefab import get_default_client
+        loc = get_default_client().locator3d(
+            name='Enable',
+            path_re=r'WorldmapRoot/AreaContents\(Clone\)/Area1/AreaIcon')
+        if loc.exists():
+            loc.first().click()
+            return True
+    except Exception as e:
+        logger.debug('3D marker locate failed (%s), fallback to template.', e)
+    return R.Map.Intersection.try_click()
 
 @action('前往交叉路口', screenshot_mode='manual')
 def go_intersection():
@@ -66,7 +89,7 @@ def go_intersection():
     swipe_count = 0
     MAX_SWIPE_COUNT = 5
     for _ in Loop(interval=0.6):
-        if R.Map.Intersection.try_click():
+        if _click_intersection_marker():
             logger.debug('Clicked intersection on map.')
         elif is_at_intersection():
             logger.debug('Now at intersection.')

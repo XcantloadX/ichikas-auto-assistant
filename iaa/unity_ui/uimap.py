@@ -119,6 +119,15 @@ MAP: dict[str, dict[str, Any]] = {    # ---- 首页 HUD（底栏菜单，ScreenL
     'Live.ChallengeLive.GroupVividBadSquad': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=2),
     'Live.ChallengeLive.GroupWonderlandsShowtime': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=1),
     'Live.ChallengeLive.Group25AtNightcord': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=0),
+    # ---- 世界地图（ScreenLayerHome TopLeft 入口）----
+    # 地图切换按钮（SekaiSwitchButton/ToReal|ToSekai）不迁移：两种模式下
+    # 两节点均 active 在树中（视觉隐藏靠 CanvasGroup），rect 点击可能误触
+    # 另一个按钮，模板匹配的"可见即可点"语义更安全
+    'Map.ButtonOpenMap': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopLeft/Worldmap$'),
+    # 当前所在区域名（首页左上角 AreaInfo）；限 スクランブル交差点 以区分
+    # 「当前位于交叉路口」（各区域首页同构，仅该文本不同）
+    'Scene.Intersection.TextAreaName': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopLeft/AreaInfo/.*/text1$',
+                                            text='スクランブル交差点'),
 }
 
 # 挑战演出角色卡：CharacterRoot/characterN/content（N 为固定编号）。
