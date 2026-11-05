@@ -229,6 +229,10 @@ class UIPrefab(Prefab[UIGameObject]):
     未找到。用于"底层 screen 层仍 active 但被上层覆盖"的场景（如剧情播放时
     ScreenLayerStorySelect 仍在树中），对齐模板匹配"被覆盖即不可见"语义。"""
 
+    ui_index: int | None = None
+    """匹配列表中的第 N 个（0 基）作为唯一结果。用于完全同名的实例
+    （如 UIPartsTabListCellView 的第 k 个 tab）；越界时视为未找到。"""
+
     display_name: str | None = None
 
     @classmethod
@@ -285,22 +289,20 @@ class UIPrefab(Prefab[UIGameObject]):
                 continue
             if cls._matches(node, query):
                 results.append(UIGameObject(node))
+        if cls.ui_index is not None:
+            return results[cls.ui_index:cls.ui_index + 1]
         return results
 
     @classmethod
     def _find_impl(cls, query: UIQuery) -> UIGameObject | None:
-        """查找第一个匹配（先序）；agent 不可用时返回 None（语义同模板匹配）。"""
-        roots = _snapshot_resilient()
-        if roots is None or _suppressed(cls, roots):
-            logger.debug('%s.find -> None', cls.__name__)
-            return None
-        for node in flat_nodes(roots):
-            if node.screen_rect is None:
-                continue
-            if cls._matches(node, query):
-                obj = UIGameObject(node)
-                logger.debug('%s.find -> %s', cls.__name__, node.path)
-                return obj
+        """查找第一个匹配（先序）；agent 不可用时返回 None（语义同模板匹配）。
+
+        委托 :meth:`_find_all_impl`（保证 ``ui_index`` 语义一致）。
+        """
+        results = cls._find_all_impl(query)
+        if results:
+            logger.debug('%s.find -> %s', cls.__name__, results[0].path)
+            return results[0]
         logger.debug('%s.find -> None', cls.__name__)
         return None
 

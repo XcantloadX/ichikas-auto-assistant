@@ -30,8 +30,7 @@ def make_prefab(cls_name: str, spec: dict[str, Any]) -> type[UIPrefab]:
 
 
 #: R 路径（如 ``Hud.ButtonLive``）→ 定位条件
-MAP: dict[str, dict[str, Any]] = {
-    # ---- 首页 HUD（底栏菜单，ScreenLayerHome）----
+MAP: dict[str, dict[str, Any]] = {    # ---- 首页 HUD（底栏菜单，ScreenLayerHome）----
     'Hud.ButtonLive': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Live$'),
     'Hud.ButtonMySekai': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Mysekai$'),
     'Hud.ButtonStory': dict(path_re=r'/ScreenLayerHome/ComponentRoot/BottomRight/MainMenu/Base/Story$'),
@@ -109,7 +108,35 @@ MAP: dict[str, dict[str, Any]] = {
     # ---- 活动商店（ScreenLayerEventExchange）----
     # 「2026/11/18 20:59まで」结束时间文本：位于活动商店的标志
     'Shop.TextEndTimeUntil': dict(name='EndAtText'),
+    # ---- 挑战演出（ScreenLayerLiveCharacterSelect）----
+    # 选人界面标志（画面底部「キャラクターを選択してください」所在页）
+    'Live.ChallengeLive.TextSelectCharacter': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect$'),
+    # 左侧组合 tab：6 个同名 UIPartsTabListCellView，dump 先序自底向顶，
+    # ui_index 为 dump 序（25時=0 … VS=5）
+    'Live.ChallengeLive.GroupVirtualSinger': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=5),
+    'Live.ChallengeLive.GroupLeoneed': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=4),
+    'Live.ChallengeLive.GroupMoreMoreJump': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=3),
+    'Live.ChallengeLive.GroupVividBadSquad': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=2),
+    'Live.ChallengeLive.GroupWonderlandsShowtime': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=1),
+    'Live.ChallengeLive.Group25AtNightcord': dict(path_re=r'/ScreenLayerChallengeLiveCharacterSelect/ComponentRoot/UIPartsTabList/.*/UIPartsTabListCellView$', interactable=True, index=0),
 }
+
+# 挑战演出角色卡：CharacterRoot/characterN/content（N 为固定编号）。
+# 编号经逐 tab dump 实测核对（STAGE 数/锁定态与画面一致）：
+#   1-4=Leo  5-8=MMJ  9-12=VBS  13-16=WxS  17-20=25時  21-26=VS，
+# 组内顺序与 R.py CHARACTER_PREFABS 一致。
+_CHALLENGE_CHARA_N: dict[str, int] = {
+    'Ichika': 1, 'Saki': 2, 'Honami': 3, 'Shiho': 4,
+    'Minori': 5, 'Haruka': 6, 'Airi': 7, 'Shizuku': 8,
+    'Kohane': 9, 'An': 10, 'Akito': 11, 'Toya': 12,
+    'Tsukasa': 13, 'Emu': 14, 'Nene': 15, 'Rui': 16,
+    'Kanade': 17, 'Mafuyu': 18, 'Ena': 19, 'Mizuki': 20,
+    'Miku': 21, 'Rin': 22, 'Len': 23, 'Luka': 24,
+    'Meiko': 25, 'Kaito': 26,
+}
+for _chara, _n in _CHALLENGE_CHARA_N.items():
+    MAP[f'Live.ChallengeLive.Chara{_chara}'] = dict(
+        path_re=rf'/CharacterRoot/character{_n}/content$', interactable=True)
 
 
 def install(r_module: object) -> int:
