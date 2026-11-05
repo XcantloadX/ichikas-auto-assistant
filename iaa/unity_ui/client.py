@@ -177,7 +177,7 @@ class UnityUITree:
 
         :param name: GameObject 名子串过滤；空串返回全部（受 max_results 限制）
         :param max_results: 结果上限
-        :return: ``[{'name': 名, 'px': [x, y, w, h]（屏幕像素，y 自底部起）,
+        :return: ``[{'name': 名, 'px': [x, y, w, h]（物理屏幕像素，y 自底部起）,
             'go': 对象指针}, ...]``；离屏/退化矩形已被过滤
         :raises GuestAgentError: 请求失败时
         """
@@ -185,15 +185,19 @@ class UnityUITree:
         if not r.get('ok'):
             raise RuntimeError(f"find3d failed: {r.get('err')}")
         vw, vh = self.viewport
+        camw, camh = r.get('camw', -1), r.get('camh', -1)
+        sx = vw / camw if camw and camw > 0 else 1.0
+        sy = vh / camh if camh and camh > 0 else 1.0
         items = []
         for it in r.get('items', []):
             x, y, w, h = it['px']
+            x, y, w, h = x * sx, y * sy, w * sx, h * sy
             # 过滤离屏/退化矩形（Spine 静态绑骨等 bounds 异常巨大的对象）
             if w <= 1 or h <= 1 or w > vw * 2 or h > vh * 2:
                 continue
             if x > vw or y > vh or x + w < 0 or y + h < 0:
                 continue
-            items.append(it)
+            items.append({'name': it['name'], 'px': [x, y, w, h], 'go': it['go']})
         return items
 
     def locator3d(self, *, name: str | None = None, name_re: str | None = None):

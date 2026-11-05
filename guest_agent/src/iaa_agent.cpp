@@ -77,6 +77,8 @@ UR::Method* M_img_sprite = nullptr;      // Image.get_sprite（可选，UI 图�
 UR::Method* M_obj_name = nullptr;        // Object.get_name（Sprite 名等，可选）
 UR::Method* M_renderer_bounds = nullptr; // Renderer.get_bounds（可选，3D 定位）
 UR::Method* M_cam_main = nullptr;        // Camera.get_main（静态，可选）
+UR::Method* M_cam_pixelw = nullptr;      // Camera.get_pixelWidth（可选）
+UR::Method* M_cam_pixelh = nullptr;      // Camera.get_pixelHeight（可选）
 UR::Class* K_RectTransform = nullptr;    // 用于 klass 指针比较
 UR::Class* K_Transform = nullptr;
 UR::Class* K_TmpText = nullptr;
@@ -334,6 +336,12 @@ void ensure_pixel_handles() {
     if (K_camera && !M_cam_main) {
         if (auto* m = K_camera->Get<UR::Method>("get_main", std::vector<std::string>{}))
             if (m->address) M_cam_main = m;
+    }
+    if (K_camera && !M_cam_pixelw) {
+        if (auto* m = resolve_in_hierarchy(core, K_camera, "get_pixelWidth", 0))
+            if (m->address) M_cam_pixelw = m;
+        if (auto* m = resolve_in_hierarchy(core, K_camera, "get_pixelHeight", 0))
+            if (m->address) M_cam_pixelh = m;
     }
     LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d sprite=%d objname=%d bounds=%d cammain=%d",
          M_get_world_corners != nullptr, g_corners_arr != nullptr,
@@ -852,7 +860,17 @@ void* handle_client(void* arg) {
                     void* params[1] = { type_obj };
                     arr = rt_invoke(M_find_all, nullptr, params);
                 }
-                ob_put(&o, "{\"ok\":true,\"items\":[");
+                ob_put(&o, "{\"ok\":true");
+                /* 相机像素空间（可能是 RT/更高分辨率）：宿主按
+                   viewport/cam 尺寸归一化到物理屏幕 */
+                int camw = -1, camh = -1;
+                if (M_cam_pixelw && M_cam_pixelh) {
+                    camw = read_boxed_int(rt_invoke(M_cam_pixelw, cam, nullptr));
+                    camh = read_boxed_int(rt_invoke(M_cam_pixelh, cam, nullptr));
+                    ob_put(&o, ",\"camw\":"); ob_put_int(&o, camw);
+                    ob_put(&o, ",\"camh\":"); ob_put_int(&o, camh);
+                }
+                ob_put(&o, ",\"items\":[");
                 int emitted = 0;
                 std::unordered_map<void*, int> seen_go;
                 if (arr) {

@@ -291,3 +291,27 @@ live.py 的 `_read_current_multiplier` 已改读 NumText（旧 OCR 的固定 ROI
   用 `iaa.unity_ui.injector.ensure_agent_so()`（Python subprocess）推。
 - 游戏偶发自崩（剧情转场时 dump 高发）+ NetworkError 弹窗自然出现——
   已顺势抓到 Common1ButtonDialog / Common2ButtonDialog 结构。
+
+### 11.5 sprite 身份 + 3D 定位（dcfe0ed + 后续）
+
+- **sprite 名采集**：dump 新增 `spr`（FindObjectsOfType(Image) →
+  get_sprite → get_name）；UI 定位域新增 `sprite`/`sprite_re` 参数
+  （Locator/UIQuery/UIPrefab）。实测首页 90/282 节点带 sprite 名。
+- **3D 定位独立协议域**：`find3d` 命令（FindObjectsOfType(Renderer) →
+  bounds 8 角 → Camera.main 投影）+ host `object3d.py` 的
+  `Locator3D/Object3D`。**API 严格分离**：Locator3D 不接受 snapshot、
+  不读 UI 快照森林；UI 定位也不含 3D。
+- **相机像素空间**：`WorldToScreenPoint` 返回的是相机自身像素空间
+  （RT/分辨率可不同），find3d 响应带 `camw/camh`，host 按
+  viewport 比例归一化。
+- **已知缺口（世界地图建筑定位受阻）**：场景有多相机——世界地图的建筑
+  由 ScreenLayerWorldmap 自己的相机渲染，`Camera.main` 仍指向商店相机，
+  投影全部出屏被过滤（85 个 renderer 只剩 6 个特效对象）。下一步：
+  find3d 枚举 `FindObjectsOfType(Camera)` 按对象逐相机投影取在屏者。
+- **挑战演出选人界面（79c0800）**：`CharacterRoot/characterN/content`
+  编号固定（1-4=Leo 5-8=MMJ 9-12=VBS 13-16=WxS 17-20=25時 21-26=VS，
+  逐 tab dump 的 STAGE/锁态交叉核对）；6 组合 tab 为同名实例，UIPrefab
+  新增 `ui_index`（_find_impl 委托 _find_all_impl 保证语义一致）。
+- **坑**：dump 内 UIPartsTabListCellView 先序是自底向顶，别想当然；
+  probe 的 go_home 遇新闻弹窗会死循环（弹窗盖住返回键，点背面无效）——
+  先手动关弹窗再跑。
