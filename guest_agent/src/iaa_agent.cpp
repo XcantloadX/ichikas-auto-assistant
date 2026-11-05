@@ -79,6 +79,7 @@ UR::Method* M_renderer_bounds = nullptr; // Renderer.get_bounds（可选，3D �
 UR::Method* M_cam_main = nullptr;        // Camera.get_main（静态，可选）
 UR::Method* M_cam_pixelw = nullptr;      // Camera.get_pixelWidth（可选）
 UR::Method* M_cam_pixelh = nullptr;      // Camera.get_pixelHeight（可选）
+UR::Method* M_beh_enabled = nullptr;     // Behaviour.get_enabled（可选，相机过滤）
 UR::Class* K_RectTransform = nullptr;    // 用于 klass 指针比较
 UR::Class* K_Transform = nullptr;
 UR::Class* K_TmpText = nullptr;
@@ -87,6 +88,7 @@ UR::Class* K_Canvas = nullptr;
 UR::Class* K_Vector3 = nullptr;
 UR::Class* K_Image = nullptr;            // UnityEngine.UI.Image
 UR::Class* K_Renderer = nullptr;         // UnityEngine.Renderer
+UR::Class* K_Camera = nullptr;           // UnityEngine.Camera
 void* g_corners_arr = nullptr;           // Vector3[4] 复用缓冲（GetWorldCorners 出参）
 
 /* bootstrap 完成后置 1：handle_client 依此决定是否 ThreadAttach */
@@ -291,6 +293,7 @@ void ensure_pixel_handles() {
     if (!core) return;
     if (!K_Vector3) K_Vector3 = find_class_all("Vector3", "UnityEngine");
     auto* K_camera = find_class_all("Camera", "UnityEngine");
+    if (!K_Camera) K_Camera = K_camera;
     if (!K_Canvas) K_Canvas = find_class_all("Canvas", "UnityEngine");
     if (K_Vector3 && !g_corners_arr)
         g_corners_arr = UR::Invoke<void*>("il2cpp_array_new", K_Vector3->address, 4);
@@ -342,6 +345,11 @@ void ensure_pixel_handles() {
             if (m->address) M_cam_pixelw = m;
         if (auto* m = resolve_in_hierarchy(core, K_camera, "get_pixelHeight", 0))
             if (m->address) M_cam_pixelh = m;
+    }
+    if (K_camera && !M_beh_enabled) {
+        /* Behaviour.get_enabled：多相机场景按对象选相机时过滤未启用者 */
+        if (auto* m = resolve_in_hierarchy(core, K_camera, "get_enabled", 0))
+            if (m->address) M_beh_enabled = m;
     }
     LOGI("pixel handles: corners=%d arr=%d rmode=%d wcam=%d w2s=%d sprite=%d objname=%d bounds=%d cammain=%d",
          M_get_world_corners != nullptr, g_corners_arr != nullptr,
@@ -851,25 +859,42 @@ void* handle_client(void* arg) {
             const char* xp = strstr(req, "\"max\"");
             if (xp) fmax = atoi(strchr(xp + 5, ':') + 1);
             if (fmax > 500) fmax = 500;
-            void* cam = nullptr;
-            if (M_cam_main) cam = rt_invoke(M_cam_main, nullptr, nullptr);
-            if (cam) {
+            /* 相机列表：Camera.main 优先，其后全部启用的相机（多相机场景，
+               每个对象取"中心投影在屏内"的第一个相机——世界地图等
+               Layer 自带相机渲染，Camera.main 往往不是渲染者） */
+            std::vector<void*> cams;
+            if (M_cam_main) {
+                void* cm = rt_invoke(M_cam_main, nullptr, nullptr);
+                if (cm) cams.push_back(cm);
+            }
+            if (K_Camera) {
+                if (void* ctype = K_Camera->GetType()) {
+                    void* cparams[1] = { ctype };
+                    void* carr = rt_invoke(M_find_all, nullptr, cparams);
+                    if (carr) {
+                        const auto ccnt = *reinterpret_cast<uintptr_t*>(reinterpret_cast<char*>(carr) + 0x18);
+                        auto* citems = reinterpret_cast<void**>(reinterpret_cast<char*>(carr) + 0x20);
+                        for (uintptr_t k = 0; k < ccnt && cams.size() < 8; k++) {
+                            void* c = citems[k];
+                            if (std::find(cams.begin(), cams.end(), c) != cams.end()) continue;
+                            if (M_beh_enabled) {
+                                void* en = rt_invoke(M_beh_enabled, c, nullptr);
+                                if (!read_boxed_bool(en)) continue;
+                            }
+                            cams.push_back(c);
+                        }
+                    }
+                }
+            }
+            if (!cams.empty()) {
                 void* type_obj = K_Renderer ? K_Renderer->GetType() : nullptr;
                 void* arr = nullptr;
                 if (type_obj) {
                     void* params[1] = { type_obj };
                     arr = rt_invoke(M_find_all, nullptr, params);
                 }
-                ob_put(&o, "{\"ok\":true");
-                /* 相机像素空间（可能是 RT/更高分辨率）：宿主按
-                   viewport/cam 尺寸归一化到物理屏幕 */
-                int camw = -1, camh = -1;
-                if (M_cam_pixelw && M_cam_pixelh) {
-                    camw = read_boxed_int(rt_invoke(M_cam_pixelw, cam, nullptr));
-                    camh = read_boxed_int(rt_invoke(M_cam_pixelh, cam, nullptr));
-                    ob_put(&o, ",\"camw\":"); ob_put_int(&o, camw);
-                    ob_put(&o, ",\"camh\":"); ob_put_int(&o, camh);
-                }
+                ob_put(&o, "{\"ok\":true,\"ncam\":");
+                ob_put_int(&o, static_cast<long>(cams.size()));
                 ob_put(&o, ",\"items\":[");
                 int emitted = 0;
                 std::unordered_map<void*, int> seen_go;
@@ -890,25 +915,47 @@ void* handle_client(void* arg) {
                         const float* bf = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_b) + 0x10);
                         const float ctr[3] = { bf[0], bf[1], bf[2] };
                         const float ext[3] = { bf[3], bf[4], bf[5] };
+                        /* 逐相机试投：中心在相机像素空间内者才做 8 角全投 */
+                        int camw = -1, camh = -1;
                         float xmin = 0, xmax = -1, ymin = 0, ymax = 0;
-                        for (int ci = 0; ci < 8; ci++) {
-                            const float p[3] = {
-                                ctr[0] + ((ci & 1) ? ext[0] : -ext[0]),
-                                ctr[1] + ((ci & 2) ? ext[1] : -ext[1]),
-                                ctr[2] + ((ci & 4) ? ext[2] : -ext[2]),
-                            };
-                            void* boxed = invoke_w2s(cam, p);
-                            if (!boxed) { xmin = 0; xmax = -1; break; }
-                            const float* s = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed) + 0x10);
-                            if (ci == 0) { xmin = xmax = s[0]; ymin = ymax = s[1]; }
-                            else {
-                                xmin = xmin < s[0] ? xmin : s[0];
-                                xmax = xmax > s[0] ? xmax : s[0];
-                                ymin = ymin < s[1] ? ymin : s[1];
-                                ymax = ymax > s[1] ? ymax : s[1];
+                        void* hit_cam = nullptr;
+                        for (void* cam : cams) {
+                            int cw = -1, ch = -1;
+                            if (M_cam_pixelw && M_cam_pixelh) {
+                                cw = read_boxed_int(rt_invoke(M_cam_pixelw, cam, nullptr));
+                                ch = read_boxed_int(rt_invoke(M_cam_pixelh, cam, nullptr));
+                            }
+                            if (cw <= 0 || ch <= 0) continue;
+                            void* boxed_c = invoke_w2s(cam, ctr);
+                            if (!boxed_c) continue;
+                            const float* sc = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed_c) + 0x10);
+                            if (sc[0] < -cw * 0.5f || sc[0] > cw * 1.5f || sc[1] < -ch * 0.5f || sc[1] > ch * 1.5f)
+                                continue; /* 中心远超该相机视野 */
+                            xmin = 0; xmax = -1;
+                            for (int ci = 0; ci < 8; ci++) {
+                                const float p[3] = {
+                                    ctr[0] + ((ci & 1) ? ext[0] : -ext[0]),
+                                    ctr[1] + ((ci & 2) ? ext[1] : -ext[1]),
+                                    ctr[2] + ((ci & 4) ? ext[2] : -ext[2]),
+                                };
+                                void* boxed = invoke_w2s(cam, p);
+                                if (!boxed) { xmin = 0; xmax = -1; break; }
+                                const float* s = reinterpret_cast<const float*>(reinterpret_cast<char*>(boxed) + 0x10);
+                                if (ci == 0) { xmin = xmax = s[0]; ymin = ymax = s[1]; }
+                                else {
+                                    xmin = xmin < s[0] ? xmin : s[0];
+                                    xmax = xmax > s[0] ? xmax : s[0];
+                                    ymin = ymin < s[1] ? ymin : s[1];
+                                    ymax = ymax > s[1] ? ymax : s[1];
+                                }
+                            }
+                            if (xmax > xmin) {
+                                camw = cw; camh = ch;
+                                hit_cam = cam;
+                                break;
                             }
                         }
-                        if (xmax > xmin) {
+                        if (xmax > xmin && hit_cam) {
                             if (emitted) ob_put(&o, ",");
                             ob_put(&o, "{\"name\":");
                             ob_put_json_str(&o, nm);
@@ -917,7 +964,9 @@ void* handle_client(void* arg) {
                             ob_put_float(&o, ymin); ob_put(&o, ",");
                             ob_put_float(&o, xmax - xmin); ob_put(&o, ",");
                             ob_put_float(&o, ymax - ymin);
-                            ob_put(&o, "],\"go\":\"");
+                            ob_put(&o, "],\"camw\":"); ob_put_int(&o, camw);
+                            ob_put(&o, ",\"camh\":"); ob_put_int(&o, camh);
+                            ob_put(&o, ",\"go\":\"");
                             ob_put_int(&o, reinterpret_cast<long>(go));
                             ob_put(&o, "\"}");
                             emitted++;
@@ -929,7 +978,7 @@ void* handle_client(void* arg) {
                 ob_put_int(&o, emitted);
                 ob_put(&o, "}");
             } else {
-                ob_put(&o, "{\"ok\":false,\"err\":\"no camera (get_main unavailable)\"}");
+                ob_put(&o, "{\"ok\":false,\"err\":\"no cameras\"}");
             }
         }
     } else {

@@ -186,11 +186,13 @@ class UnityUITree:
             raise RuntimeError(f"find3d failed: {r.get('err')}")
         vw, vh = self.viewport
         camw, camh = r.get('camw', -1), r.get('camh', -1)
-        sx = vw / camw if camw and camw > 0 else 1.0
-        sy = vh / camh if camh and camh > 0 else 1.0
         items = []
         for it in r.get('items', []):
             x, y, w, h = it['px']
+            # 多相机：每项带渲染它的相机像素尺寸（缺省回退响应级）
+            iw, ih = it.get('camw', camw), it.get('camh', camh)
+            sx = vw / iw if iw and iw > 0 else 1.0
+            sy = vh / ih if ih and ih > 0 else 1.0
             x, y, w, h = x * sx, y * sy, w * sx, h * sy
             # 过滤离屏/退化矩形（Spine 静态绑骨等 bounds 异常巨大的对象）
             if w <= 1 or h <= 1 or w > vw * 2 or h > vh * 2:
