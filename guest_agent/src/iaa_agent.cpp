@@ -540,6 +540,7 @@ int dump_tree(struct obuf* o, const int max_nodes) {
     /* 逐节点收集 */
     int m = 0;
     int gip_fail = 0, pa_fail = 0, px_ok = 0;
+    int corners_exc_cnt = 0;
     for (int i = 0; i < n; i++) {
         void* t = transforms[i];
         node_rec* r = &recs[m];
@@ -608,6 +609,15 @@ int dump_tree(struct obuf* o, const int max_nodes) {
             if (!cam) continue;
             void* params[1] = { g_corners_arr };
             rt_invoke(M_get_world_corners, r->transform, params);
+            if (g_last_exc && corners_exc_cnt == 0) {
+                /* 诊断：GetWorldCorners 异常类名（只记第一次）——排查 3D 手机
+                   UI 等画布上 px 全为同一 stale 值的问题 */
+                void* klass = UR::Invoke<void*>("il2cpp_object_get_class", g_last_exc);
+                const char* nm = klass ? UR::Invoke<const char*>("il2cpp_class_get_name", klass) : nullptr;
+                LOGI("worldcorners exc: %s (node=%s)",
+                     nm ? nm : "(null)", r->name ? r->name : "?");
+            }
+            if (g_last_exc) corners_exc_cnt++;
             const float* f = reinterpret_cast<const float*>(reinterpret_cast<char*>(g_corners_arr) + 0x20);
             float xmin = 0, xmax = 0, ymin = 0, ymax = 0;
             for (int c2 = 0; c2 < 4; c2++) {
@@ -724,6 +734,7 @@ int dump_tree(struct obuf* o, const int max_nodes) {
     ob_put_int(o, m);
     ob_put(o, ",\"pxok\":");  ob_put_int(o, px_ok);
     ob_put(o, ",\"gipfail\":"); ob_put_int(o, gip_fail);
+    LOGI("dump: n=%d pxok=%d gipfail=%d pafail=%d corners_exc=%d", m, px_ok, gip_fail, pa_fail, corners_exc_cnt);
     ob_put(o, ",\"pafail\":"); ob_put_int(o, pa_fail);
     ob_put(o, ",\"nodes\":[");
     for (int j = 0; j < m; j++) {

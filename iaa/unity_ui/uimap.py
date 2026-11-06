@@ -128,6 +128,17 @@ MAP: dict[str, dict[str, Any]] = {    # ---- 首页 HUD（底栏菜单，ScreenL
     # 「当前位于交叉路口」（各区域首页同构，仅该文本不同）
     'Scene.Intersection.TextAreaName': dict(path_re=r'/ScreenLayerHome/ComponentRoot/TopLeft/AreaInfo/.*/text1$',
                                             text='スクランブル交差点'),
+    # ---- 选歌界面（ScreenLayerFreeLiveMusicSelect，3D 手机 UI）----
+    # 搜索框（曲名・クリエイター名から探す）：点击进入输入态
+    'Live.SongSelect.IconSearch': dict(path_re=r'/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField$'),
+    # 有搜索文本时才出现在树中的清除按钮（IconRoot/ClearTextButton）
+    'Live.SongSelect.ButtonClearSearch': dict(path_re=r'/ScreenLayerFreeLiveMusicSelect/ComponentRoot/MusicSelectList/ComponentRoot/UIPartsSearchField/IconRoot/ClearTextButton$'),
+    # ---- LIVE 结算（ScreenLayerFreeLiveResult；AUTO 演出实测）----
+    # SCORERANK 标签：大图阶段 RankTextImage / 成绩详情阶段 ScoreRankText，
+    # 两阶段同屏名异子树，一并匹配（成功/失败变体结构相同）
+    'Live.TextScoreRank': dict(path_re=r'/ScreenLayerFreeLiveResult/.*/(RankTextImage|ScoreRankText)$'),
+    # 结算详情页右下「次へ」绿钮（ProgressButton；模板 slice (1095,649) 同位）
+    'Live.ButtonLiveCompletedNext': dict(path_re=r'/ScreenLayerFreeLiveResult/ComponentRoot/BottomRight/ProgressButton$'),
 }
 
 # 挑战演出角色卡：CharacterRoot/characterN/content（N 为固定编号）。

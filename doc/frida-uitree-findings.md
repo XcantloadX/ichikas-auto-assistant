@@ -351,6 +351,45 @@ live.py 的 `_read_current_multiplier` 已改读 NumText（旧 OCR 的固定 ROI
 - **不迁移**：`Map.ButtonGoToReality/ButtonGoToSekai`（SekaiSwitchButton）
   ——两种模式下两节点均 active 在树中（视觉隐藏靠 CanvasGroup），
   rect 点击可能误触另一个按钮，模板的"可见即可点"语义更安全。
+### 11.7 选歌搜索 + LIVE 结算屏（2026-11-06 续）
+
+- **选歌界面（ScreenLayerFreeLiveMusicSelect，3D 手机 UI）**：
+  - 搜索框 `MusicSelectList/ComponentRoot/UIPartsSearchField`（占位文本
+    「曲名・クリエイター名から探す」，点击进输入态）→ 映射
+    `Live.SongSelect.IconSearch`。
+  - 清除按钮 `UIPartsSearchField/IconRoot/ClearTextButton`
+    （spr=btn_close_dbl）：**仅在搜索框有文本时才出现在树中**（active
+    切换），映射 `Live.SongSelect.ButtonClearSearch`；E2E 实测 rect
+    (595,28,29,29) 精确、点击后文本清空、按钮从树中消失。
+  - 搜索文本在 `Text Area/Text`（如 'mel'）， Placeholder 为占位符。
+- **LIVE 结算（ScreenLayerFreeLiveResult；AUTO 演出实测全流程）**：
+  - 成功/失败共用结构：SCORERANK 大图阶段
+    `SoloLiveScoreSummary/AnimationRoot/ScoreView/Rank/RankTextImage`
+    + `RankImage`（spr=txt_scoreRank_{rank}(Clone)，失败为
+    ResultImage spr=txt_livefailed_wh(Clone)）；点击进成绩详情阶段
+    `MusicInfo/AnimationRoot/Rank/ScoreRankText` +
+    `BottomRight/ProgressButton`（次へ）+ `AchievementButton`；
+    再点击进奖励 `LiveReward/.../LiveResultRewardBox(Clone)`。
+  - 映射：`Live.TextScoreRank`（两阶段 SCORERANK 标签一并匹配，实测
+    两 forest 命中）、`Live.ButtonLiveCompletedNext`（=ProgressButton，
+    模板 slice (1095,649) 同位）。
+  - 不迁移（未实测场景，保持模板回退）：`ButtonGoSongSelect`（選曲画面へ，
+    本次流程未出现）、`TextScoreRankReward/ButtonCloseScoreRankReward/
+    TextLevelUpBouns`（RANK UP 奖励弹窗，本次无升级未触发）、
+    `TextAutoLiveCompleted`（多次 AUTO 完成提示）、
+    `ChallengeLive.Award.*`（挑战演出结算）。
+- **AUTO 演出前置**：AUTO 开关要求 LB≥1（否则点开关只弹提示
+  「ライブボーナスを最低1つ消費する必要があります」）；LB 倍率经
+  LiveBoost 弹窗设置。**坑**：LiveBoost 的 UIPartsSettingButton 在
+  `ScreenLayerFreeLiveFinalConfirmation` 屏的 rect 实测偏移（点 (1149,43)
+  落到 ⚙ 上，真实入口在顶栏 25/25 图标 ≈(1057,40)）——转场后首 dump 的
+  坐标不可尽信（见下）。
+- **px 退化（未定根因，记录症状）**：agent 长会话中进入 3D 手机 UI 屏
+  （选歌/演出确认）时，整屏节点 dump 出恒定 px=[0,0,640,360] + rect
+  缩水（如 UIPartsSearchField rect=[-1.41,0.95,1.41,0.13]）；重启游戏+
+  重注入后同样屏幕 dump 全部正常（corners_exc=0）。怀疑长会话后
+  GetWorldCorners 的 runtime_invoke 偶发失败被吞（stale buffer 输出
+  恒定值）。缓解：dump 后抽查已知按钮位置合理性，异常时重注入/重启。
 - **运维**：agent .so 更新必须重启游戏（进程内 so 不能换）——本次会话
   重启 4 次，每次都要过 TAP TO START → 数据下载 → 通信エラーリトライ →
   新闻弹窗关闭，probe 脚本前先人工把页面导航到位最省事。
