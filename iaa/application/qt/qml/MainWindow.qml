@@ -74,35 +74,16 @@ ApplicationWindow {
     }
 
     function requestTelemetryConsent() {
-        App.Modal.message({
-            title: "数据收集",
-            content: "是否允许 iaa 自动发送匿名错误报告？发送的信息仅用于改善 iaa。",
-            buttons: [
-                { text: "拒绝", value: "deny" },
-                { text: "允许", value: "allow", highlighted: true }
-            ],
-            width: 420,
-            closePolicy: Popup.NoAutoClose
-        }, function(result) {
-            if (!window.appCtrl) {
-                return
-            }
-            if (result === "allow") {
-                window.appCtrl.setTelemetryConsent(true)
-            }
-            if (result === "deny") {
-                window.appCtrl.setTelemetryConsent(false)
-            }
-        })
+        telemetryConsentDialog.open()
     }
 
     function showMigrationMessage(text) {
         App.Modal.message({
-            title: "配置升级",
+            title: App.Globals.t("modal.migration.title"),
             content: text,
             textFormat: Text.RichText,
             buttons: [
-                { text: "确定", value: "ok", highlighted: true }
+                { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
             ],
             width: 520
         })
@@ -116,22 +97,22 @@ ApplicationWindow {
         }
         if (anyRunning) {
             App.Modal.message({
-                title: "确认退出",
-                content: "当前仍在执行任务，确定要退出吗？退出将先停止任务。",
+                title: App.Globals.t("modal.exit.title"),
+                content: App.Globals.t("modal.exit.content"),
                 buttons: [
-                    { text: "取消", value: "cancel" },
-                    { text: "退出", value: "ok", highlighted: true }
+                    { text: App.Globals.t("common.cancel"), value: "cancel" },
+                    { text: App.Globals.t("modal.exit.confirm"), value: "ok", highlighted: true }
                 ],
                 width: 420,
                 closePolicy: Popup.NoAutoClose
             }, function(result) {
                 if (result === "ok") {
-                    navigation.requestGuardedAction("关闭窗口", closeRunner)
+                    navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
                 }
             })
             return
         }
-        navigation.requestGuardedAction("关闭窗口", closeRunner)
+        navigation.requestGuardedAction(App.Globals.t("guard.close_window"), closeRunner)
     }
 
     NavigationCoordinator {
@@ -219,39 +200,48 @@ ApplicationWindow {
     Dialog {
         id: unsavedChangesDialog
         modal: true
-        title: "未保存更改"
+        title: App.Globals.t("modal.unsaved.title")
         standardButtons: Dialog.NoButton
-        width: 420
+        width: Math.max(360, Math.min(540, window.width - 48))
         anchors.centerIn: Overlay.overlay
 
-        property string actionLabel: "继续此操作"
+        property string actionLabel: App.Globals.t("common.continue_action")
 
         contentItem: ColumnLayout {
             spacing: 12
             Label {
                 Layout.fillWidth: true
                 wrapMode: Text.Wrap
-                text: "当前配置有未保存的更改。" + unsavedChangesDialog.actionLabel + "前，请先选择处理方式。"
+                text: App.Globals.t("modal.unsaved.content").replace("{action}", unsavedChangesDialog.actionLabel)
             }
             RowLayout {
-                Layout.alignment: Qt.AlignRight
+                Layout.fillWidth: true
                 spacing: 8
                 Button {
-                    text: "取消"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.cancel")
                     onClicked: {
                         navigation.clearPendingGuardedAction()
                         unsavedChangesDialog.close()
                     }
                 }
                 Button {
-                    text: "不保存并继续"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.do_not_save_and_continue")
                     onClicked: {
                         unsavedChangesDialog.close()
                         navigation.discardAndContinuePendingAction()
                     }
                 }
                 Button {
-                    text: "保存并继续"
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: implicitWidth
+                    Layout.preferredWidth: implicitWidth
+                    text: App.Globals.t("common.save_and_continue")
                     highlighted: true
                     onClicked: {
                         unsavedChangesDialog.close()
@@ -273,13 +263,13 @@ ApplicationWindow {
                 content: message,
                 buttons: [
                     {
-                        text: "复制",
+                        text: App.Globals.t("common.copy"),
                         onClick: function() {
                             App.Clipboard.copyText(message)
-                            App.Notice.show("success", "已复制到剪贴板")
+                            App.Notice.show("success", App.Globals.t("notice.copied_to_clipboard"))
                         }
                     },
-                    { text: "确定", highlighted: true, onClick: "close" }
+                    { text: App.Globals.t("common.ok"), highlighted: true, onClick: "close" }
                 ]
             })
         }
@@ -294,14 +284,14 @@ ApplicationWindow {
         var fields = JSON.parse(invalidFieldsJson)
         var fieldList = fields.map(function(f) { return "&nbsp;&nbsp;• " + f }).join("<br>")
         App.Modal.message({
-            title: "配置校验失败",
-            content: "配置 <b>" + configName + "</b> 中以下字段校验失败：<br>"
-                + fieldList
-                + "<br><br>错误详情：<br>" + errorDetails
-                + "<br><br>是否将这些字段重置为默认值？",
+            title: App.Globals.t("modal.config_reset.title"),
+            content: App.Globals.t("modal.config_reset.content")
+                .replace("{name}", configName)
+                .replace("{fields}", fieldList)
+                .replace("{details}", errorDetails),
             buttons: [
-                { text: "不重置", value: "cancel" },
-                { text: "重置", value: "reset", highlighted: true }
+                { text: App.Globals.t("modal.config_reset.no_reset"), value: "cancel" },
+                { text: App.Globals.t("modal.config_reset.reset"), value: "reset", highlighted: true }
             ],
             width: 480
         }, function(result) {
@@ -309,6 +299,88 @@ ApplicationWindow {
                 TabManager.resetAndOpenTab(configName, invalidFieldsJson)
             }
         })
+    }
+
+    // ── 匿名上报首次同意弹窗（启动时询问） ──────────────────────
+    Dialog {
+        id: telemetryConsentDialog
+        title: App.Globals.t("preferences.group.telemetry")
+        modal: true
+        closePolicy: Popup.NoAutoClose
+        anchors.centerIn: parent
+        width: Math.min(420, window.width - 80)
+        standardButtons: Dialog.NoButton
+
+        Column {
+            width: parent.width
+            spacing: 10
+            Text {
+                text: App.Globals.t("modal.telemetry.content")
+                font.pixelSize: 13
+                color: palette.windowText
+                wrapMode: Text.Wrap
+                width: parent.width
+                lineHeight: 1.4
+            }
+
+            Switch {
+                id: staticsSwitch
+                text: App.Globals.t("preferences.field.telemetry_statics")
+                checked: true
+            }
+
+            Switch {
+                id: sentrySwitch
+                text: App.Globals.t("preferences.field.telemetry_sentry")
+                checked: true
+            }
+
+            RowLayout {
+                Layout.fillWidth: true
+                spacing: 2
+
+                Switch {
+                    id: screenshotSwitch
+                    text: App.Globals.t("preferences.field.telemetry_upload_screenshot")
+                    checked: true
+                }
+
+                HelpTip {
+                    richText: App.Globals.t("modal.telemetry.screenshot_help")
+                    Layout.alignment: Qt.AlignVCenter
+                }
+            }
+        }
+
+        footer: Rectangle {
+            implicitHeight: 65
+            color: palette.window
+            Rectangle {
+                width: parent.width; height: 1
+                color: palette.windowText
+                opacity: 0.12
+            }
+            Row {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 24
+                spacing: 8
+                Button {
+                    text: App.Globals.t("common.ok")
+                    highlighted: true
+                    onClicked: {
+                        if (window.appCtrl) {
+                            window.appCtrl.setTelemetryConsent(
+                                sentrySwitch.checked,
+                                screenshotSwitch.checked,
+                                staticsSwitch.checked
+                            )
+                        }
+                        telemetryConsentDialog.close()
+                    }
+                }
+            }
+        }
     }
 
     Component.onCompleted: {
@@ -331,6 +403,20 @@ ApplicationWindow {
             var migrationMsg = window.appCtrl.checkMigrationMessages()
             if (migrationMsg) {
                 window.showMigrationMessage(migrationMsg)
+            }
+        }
+        // 路径问题自检
+        if (window.appCtrl) {
+            var hasPathIssue = window.appCtrl.checkPathIssues()
+            if (hasPathIssue) {
+                App.Modal.message({
+                    title: App.Globals.t("modal.path_warning.title"),
+                    content: App.Globals.t("modal.path_warning.content"),
+                    buttons: [
+                        { text: App.Globals.t("common.ok"), value: "ok", highlighted: true }
+                    ],
+                    width: 520
+                })
             }
         }
     }

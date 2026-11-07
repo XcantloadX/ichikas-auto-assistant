@@ -1,0 +1,32 @@
+{
+  "version": 3,
+  "definitions": {
+    "fffe1f3c-2c33-43cd-a08f-36eba07176dd": {
+      "type": "prefab",
+      "prefab_id": "TemplateMatchPrefab",
+      "name": "Cm.ButtonAdLoadErrorRetry",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 720,
+          "y1": 408,
+          "x2": 800,
+          "y2": 444
+        },
+        "region": {
+          "kind": "rect",
+          "x1": 560,
+          "y1": 350,
+          "x2": 960,
+          "y2": 500
+        }
+      },
+      "displayName": "Error loading ad. Retry",
+      "variant_policy": {
+        "tw": "exclude",
+        "cn": "exclude",
+        "en": "inherit"
+      }
+    }
+  }
+}

@@ -259,16 +259,6 @@ class ChallengeLiveAward(str, Enum):
     IntermediatePracticeScore = 'intermediate_practice_score'
     """中级练习乐谱"""
 
-    @staticmethod
-    def display_map_cn() -> dict['ChallengeLiveAward', str]:
-        return {
-            ChallengeLiveAward.Crystal: "水晶",
-            ChallengeLiveAward.MusicCard: "音乐卡",
-            ChallengeLiveAward.MiracleGem: "奇迹晶石",
-            ChallengeLiveAward.MagicCloth: "魔法之布",
-            ChallengeLiveAward.Coin: "硬币",
-            ChallengeLiveAward.IntermediatePracticeScore: "中级练习乐谱",
-        }
 
 
 class ShopItem(str, Enum):

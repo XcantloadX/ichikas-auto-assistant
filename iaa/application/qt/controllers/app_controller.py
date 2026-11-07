@@ -7,15 +7,19 @@ from PySide6.QtGui import QDesktopServices
 
 from iaa.config import manager as config_manager
 from iaa.application.service.iaa_service import IaaService
+from iaa.application.service.help_service import HelpService
+from iaa.i18n import translate
 from iaa.telemetry import setup as setup_telemetry
 
 
 from .log_bridge import LogBridge
+from .progress_bridge import ProgressBridge
 from .scrcpy_image_provider import ScrcpyImageProvider
 from .tab_manager import TabManager
 from .preferences_controller import PreferencesController
 from .help_controller import HelpController
 from .global_hotkey_controller import GlobalHotkeyController
+from .i18n_controller import I18nController
 
 
 class AppController(QObject):
@@ -23,17 +27,39 @@ class AppController(QObject):
     errorDialogRequested = Signal(str, str)    # title, message
     globalErrorChanged = Signal()
     telemetryConsentRequiredChanged = Signal()
+    sentryEnabledChanged = Signal()
+    screenshotEnabledChanged = Signal()
+    staticsEnabledChanged = Signal()
     windowStyleChanged = Signal()
+    pathWarningRequired = Signal(str)  # 路径问题警告
+    windowTitleChanged = Signal()
 
     def __init__(self, log_bridge: LogBridge) -> None:
         super().__init__(None)
         self.logBridge = log_bridge
         self.scrcpyImageProvider = ScrcpyImageProvider()
 
-        self.tabManager = TabManager(self, image_provider=self.scrcpyImageProvider)
+        # i18n：集中管理 GUI 语言，语言变化时通知需要刷新的组件。
+        # 须先于 TabManager 创建：恢复 tab 时 VirtualDeviceSession 需要 get_language。
+        self.i18nController = I18nController(config_manager.read_shared().interface.language, self)
+
+        self.tabManager = TabManager(
+            self,
+            image_provider=self.scrcpyImageProvider,
+            get_language=lambda: self.i18nController.language,
+        )
+        self.progressBridge = ProgressBridge(lambda: self.i18nController.language, self)
+        self.i18nController.languageChanged.connect(self.progressBridge.on_language_changed)
+        self.i18nController.languageChanged.connect(self.tabManager.on_language_changed)
 
         self.preferencesController = PreferencesController(self)
-        self.helpController = HelpController(self)
+        self.helpService = HelpService()
+        self.helpController = HelpController(
+            self.helpService,
+            lambda: self.i18nController.language,
+            self,
+        )
+        self.i18nController.languageChanged.connect(self.helpController.on_language_changed)
         self.globalHotkeyController = GlobalHotkeyController(
             self.tabManager,
             self.preferencesController,
@@ -41,7 +67,15 @@ class AppController(QObject):
         )
 
         self._global_error = ''
-        self._telemetry_consent_required = config_manager.read_shared().telemetry.sentry is None
+        telemetry_cfg = config_manager.read_shared().telemetry
+        self._sentry_enabled = telemetry_cfg.sentry is True
+        self._screenshot_enabled = telemetry_cfg.upload_screenshot is True
+        self._statics_enabled = telemetry_cfg.statics is True
+        self._telemetry_consent_required = (
+            telemetry_cfg.sentry is None
+            or telemetry_cfg.upload_screenshot is None
+            or telemetry_cfg.statics is None
+        )
         setup_telemetry()
 
         # 转发活跃 tab 的操作信号到 AppController
@@ -50,28 +84,44 @@ class AppController(QObject):
         self.tabManager.errorDialogRequested.connect(self.errorDialogRequested)
         self.preferencesController.operationSucceeded.connect(lambda text: self.notificationRaised.emit('success', text))
         self.preferencesController.operationFailed.connect(self.reportError)
+        self.preferencesController.languageChanged.connect(self._on_language_changed)
+
+    def _on_language_changed(self, language: str) -> None:
+        self.i18nController.setLanguage(language)
+        self.windowTitleChanged.emit()
+
+    def _tr(self, key: str, **kwargs: object) -> str:
+        text = translate(self.i18nController.language, key)
+        return text.format(**kwargs) if kwargs else text
 
     def _get_version(self) -> str:
         return IaaService.app_version()
 
     def _get_window_title(self) -> str:
-        if platform.system() == 'Windows':
-            return '一歌小助手'
-        elif platform.system() == 'Darwin':
-            return '一歌小助手 (on macOS)'
-        elif platform.system() == 'Linux':
-            return '一歌小助手 (on Linux)'
-        else:
-            return '一歌小助手'
+        if platform.system() == 'Darwin':
+            return self._tr('app.window_title_macos')
+        if platform.system() == 'Linux':
+            return self._tr('app.window_title_linux')
+        return self._tr('app.name')
 
     def _get_assets_root_path(self) -> str:
-        return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
+        from iaa.utils import assets_root
+        return assets_root().replace('\\', '/')
 
     def _get_global_error(self) -> str:
         return self._global_error
 
     def _get_telemetry_consent_required(self) -> bool:
         return self._telemetry_consent_required
+
+    def _get_sentry_enabled(self) -> bool:
+        return self._sentry_enabled
+
+    def _get_screenshot_enabled(self) -> bool:
+        return self._screenshot_enabled
+
+    def _get_statics_enabled(self) -> bool:
+        return self._statics_enabled
 
     def _get_window_style(self) -> str:
         style = config_manager.read_shared().interface.window_style
@@ -88,10 +138,13 @@ class AppController(QObject):
         return config_manager.read_shared().interface.startup_page
 
     version = Property(str, _get_version, constant=True)
-    windowTitle = Property(str, _get_window_title, constant=True)
+    windowTitle = Property(str, _get_window_title, notify=windowTitleChanged)
     assetsRootPath = Property(str, _get_assets_root_path, constant=True)
     globalError = Property(str, _get_global_error, notify=globalErrorChanged)
     telemetryConsentRequired = Property(bool, _get_telemetry_consent_required, notify=telemetryConsentRequiredChanged)
+    sentryEnabled = Property(bool, _get_sentry_enabled, notify=sentryEnabledChanged)
+    screenshotEnabled = Property(bool, _get_screenshot_enabled, notify=screenshotEnabledChanged)
+    staticsEnabled = Property(bool, _get_statics_enabled, notify=staticsEnabledChanged)
     windowStyle = Property(str, _get_window_style, notify=windowStyleChanged)
     startupPage = Property(str, _get_startup_page, constant=True)
 
@@ -112,17 +165,45 @@ class AppController(QObject):
         self._global_error = ''
         self.globalErrorChanged.emit()
 
-    @Slot(bool)
-    def setTelemetryConsent(self, allowed: bool) -> None:
-        self.preferencesController.setValue('telemetry.sentry', allowed)
-        self.preferencesController.save()
+    @Slot(bool, bool, bool)
+    def setTelemetryConsent(self, sentry: bool, screenshot: bool, statics: bool) -> None:
+        """写入用户对三个开关的选择，并清除"待同意"状态。
+
+        :param sentry: True 允许匿名错误上报。
+        :param screenshot: True 允许错误上报时附带截图。
+        :param statics: True 允许匿名收集统计数据。
+        """
+        from iaa.telemetry import set_consent  # noqa: PLC0415
+        set_consent(bool(sentry), bool(screenshot), bool(statics))
+        self._sentry_enabled = bool(sentry)
+        self._screenshot_enabled = bool(screenshot)
+        self._statics_enabled = bool(statics)
         self._telemetry_consent_required = False
+        self.sentryEnabledChanged.emit()
+        self.screenshotEnabledChanged.emit()
+        self.staticsEnabledChanged.emit()
         self.telemetryConsentRequiredChanged.emit()
-        self.notificationRaised.emit('success', '数据收集设置将于下次启动时生效。')
+        self.notificationRaised.emit('success', self._tr('notice.telemetry_effective'))
 
     @Slot()
     def refreshWindowStyle(self) -> None:
         self.windowStyleChanged.emit()
+
+    @Slot(result=bool)
+    def checkPathIssues(self) -> bool:
+        """检查程序安装路径或工作目录是否存在问题。
+
+        :return: 如果程序安装路径或工作目录包含 ``Program Files`` 或 ``OneDrive``，返回 True。
+        """
+        import iaa
+        package_dir = os.path.dirname(iaa.__file__).lower()
+        cwd = os.getcwd().lower()
+
+        for path in (package_dir, cwd):
+            if 'program files' in path or 'onedrive' in path:
+                return True
+
+        return False
 
     @Slot(result=bool)
     def confirmClose(self) -> bool:
@@ -142,7 +223,7 @@ class AppController(QObject):
             return ''
 
         version = self._get_version()
-        html = [f'<b>配置文件已升级到 v{version}。</b>']
+        html = [self._tr('modal.migration.content_title', version=version)]
         html.append('<ol>')
         for msg in messages:
             if msg.old_version and msg.new_version:

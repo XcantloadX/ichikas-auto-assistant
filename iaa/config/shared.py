@@ -1,12 +1,14 @@
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 VERSION = 2
 
 
 class TelemetryConfig(BaseModel):
     sentry: bool | None = None
+    upload_screenshot: bool | None = None
+    statics: bool | None = None
 
 
 class ProfilesConfig(BaseModel):
@@ -19,7 +21,10 @@ class InterfaceConfig(BaseModel):
     theme_color: str | None = None
     color_scheme: Literal['auto', 'light', 'dark'] = 'auto'
     startup_page: Literal['overview', 'last_opened'] = 'last_opened'
+    """启动时显示的页面。"""
 
+    language: Literal['auto', 'zh_CN', 'en_US'] = 'auto'
+    """GUI 界面语言。"""
 
 class CustomPushData(BaseModel):
     type: Literal['custom'] = 'custom'

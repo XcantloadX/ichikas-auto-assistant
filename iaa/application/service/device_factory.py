@@ -30,11 +30,32 @@ _SCRCPY_BUNDLED_VERSION = '3.3.1'
 if TYPE_CHECKING:
     from kotonebot.client.device import Device
     from kotonebot.client.host import AdbHostConfig
-    from kotonebot.client.host.protocol import HostProtocol
+    from kotonebot.client.host.protocol import HostProtocol, MaaAdbHostConfig
 
 ResolvedHostTarget = Instance[Any] | PlaycoverApp
 
 logger = logging.getLogger(__name__)
+
+
+def mumu_maa_adb_config() -> 'MaaAdbHostConfig':
+    """构造 MuMu 专用 Maa ADB 主机配置。
+
+    截图与输入都只启用 Maa 的 ``EmulatorExtras`` 实现，即 MuMu 自己的
+    ``external_renderer_ipc``（``nemu_ipc`` 控制方式的替代实现，改由
+    MaaFramework 调度）。不混入 ADB 截图/注入，避免两套通道画面不同步。
+
+    :return: 供 ``create_device('maa_adb', ...)`` 使用的主机配置。
+    """
+    from kotonebot.client.host.protocol import MaaAdbHostConfig
+    from kotonebot.client.maa_backend import (
+        MaaAdbInputMethodEnum,
+        MaaAdbScreencapMethodEnum,
+    )
+
+    return MaaAdbHostConfig(
+        screencap_methods=MaaAdbScreencapMethodEnum.EmulatorExtras,
+        input_methods=MaaAdbInputMethodEnum.EmulatorExtras,
+    )
 
 
 class LifecyclePolicy(Enum):
@@ -73,7 +94,7 @@ class DeviceFactory:
 
     两条轴：
       resolve_host()  —— 轴 1：lifecycle 解析（MuMu / Custom / NoDevice / Avd / PlayCover）
-      create_device() —— 轴 2：impl 选择（nemu_ipc / adb / scrcpy / uiautomator2 / qemu_grpc / playcover）
+      create_device() —— 轴 2：impl 选择（auto / nemu_ipc / scrcpy / qemu_grpc / playcover）
     """
 
     def __init__(self, config_service) -> None:
@@ -137,7 +158,7 @@ class DeviceFactory:
         假定 host 已 running（由 :meth:`resolve_host` 保证）。
 
         :param resolved: :meth:`resolve_host` 的返回结果。
-        :param impl: 控制实现，如 ``'nemu_ipc'`` / ``'adb'`` / ``'scrcpy'`` / ``'uiautomator'`` / ``'qemu_grpc'`` / ``'playcover'``。
+        :param impl: 控制实现，如 ``'auto'`` / ``'nemu_ipc'`` / ``'scrcpy'`` / ``'qemu_grpc'`` / ``'playcover'``。
         :param use_virtual_display: 是否启用 scrcpy 虚拟屏。
         :param game_server: 游戏服务器标识，用于虚拟屏启动包名解析。
         :return: 已构造、尚未 ``start()`` 的设备实例。
@@ -157,13 +178,16 @@ class DeviceFactory:
             return create_qemu_grpc_device(resolved.host)
 
         from kotonebot.client.host import AdbHostConfig
-        from kotonebot.client.host.mumu12_host import MuMu12HostConfig
+        from kotonebot.client.host.protocol import MaaAdbHostConfig
 
         host = cast(Instance[Any], resolved.host)
+        if impl == 'auto':
+            # 自动：交由 Maa ADB 后端。screencap_methods / input_methods 留空，
+            # 由 MaaToolkit 按模拟器类型与内核协商结果自动挑选最优组合。
+            return host.create_device('maa_adb', MaaAdbHostConfig())
         if impl == 'nemu_ipc':
-            return host.create_device('nemu_ipc', MuMu12HostConfig())
-        if impl == 'adb':
-            return host.create_device('adb', AdbHostConfig())
+            # Maa ADB 的 EmulatorExtras（MuMu external_renderer_ipc）。
+            return host.create_device('maa_adb', mumu_maa_adb_config())
         if impl == 'scrcpy':
             return host.create_device(
                 'scrcpy',
@@ -171,8 +195,6 @@ class DeviceFactory:
                     AdbHostConfig(), use_virtual_display, game_server
                 ),
             )
-        if impl == 'uiautomator':
-            return host.create_device('uiautomator2', AdbHostConfig())
 
         raise ValueError(f'Unknown control implementation: {impl}')
 
@@ -338,8 +360,8 @@ class DeviceFactory:
             )
 
         if impl_hint == 'nemu_ipc':
-            pass  # nemu_ipc 支持 MuMu
-        elif impl_hint in ('adb', 'scrcpy', 'uiautomator'):
+            pass  # nemu_ipc 由 Maa ADB EmulatorExtras 实现，支持 MuMu
+        elif impl_hint in ('auto', 'scrcpy'):
             pass
         else:
             raise ValueError(f'Unknown control implementation: {impl_hint}')
@@ -502,7 +524,7 @@ class DeviceFactory:
         # qemu_grpc 直接读取硬件帧缓冲，wm size 无法改变实际分辨率。
         if impl_hint == 'qemu_grpc' and device_conf.resolution_method != 'keep':
             raise UserFriendlyError(
-                'QEMU gRPC 模式不支持自动修改分辨率，请在「分辨率设置」中选择「保持原始分辨率」，'
+                'QEMU gRPC 模式不支持修改分辨率，请在「分辨率设置」中选择「保持原始分辨率」，'
                 '并在 AVD Manager 中预先将 LCD 分辨率配置为 1280x720。'
             )
 

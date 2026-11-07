@@ -1,6 +1,5 @@
 [project]
 name = "ichikas-auto-assistant"
-version = "26.06b2"
 description = """
 Ichika's Auto Assistant is a helper script
 for Project Sekai: Colorful Stage
@@ -8,8 +7,14 @@ that automates dailies.
 """
 readme = "README.md"
 requires-python = "~=3.10.0"
+license = "GPL-3.0-only"
+license-files = ["LICENSE.md"]
+authors = [
+    { name = "XcantloadX" },
+]
+dynamic = ["version"]
 dependencies = [
-    "kotonebot[android]==0.15.0",
+    "kotonebot[android]==0.21.0",
     "grpcio",
     "numpy<2.0",
     "onnxruntime==1.14.0 ; sys_platform == 'win32' or sys_platform == 'linux'",
@@ -23,17 +28,42 @@ dependencies = [
     "thefuzz>=0.22.1",
     "plyer>=2.1.0",
     "click",
-    "opencv-python @ https://github.com/kotonebot/slim-wheels/releases/download/opencv-v4.10.0-build-26389268581/opencv_python-4.10.0-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
-    "numpy @ https://github.com/kotonebot/slim-wheels/releases/download/numpy-v1.26.4-noblas-build-25709411083/numpy-1.26.4-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
-    "av @ https://github.com/kotonebot/slim-wheels/releases/download/pyav-v14.3.0-ffmpeg-n7.1-build-25709420121/av-14.3.0-cp310-cp310-win_amd64.whl ; sys_platform == 'win32'",
+    "opencv-python==4.10.0.84 ; sys_platform == 'win32'",
+    # PyPI 上的 av 14.3.0 是空发布（无任何文件），取最近的 14.2.0
+    "av==14.2.0 ; sys_platform == 'win32'",
 ]
+
+[project.scripts]
+iaa = "iaa.application.cli.index:main"
+
+[project.urls]
+Homepage = "https://github.com/XcantloadX/ichikas-auto-assistant"
+Repository = "https://github.com/XcantloadX/ichikas-auto-assistant"
+Changelog = "https://github.com/XcantloadX/ichikas-auto-assistant/blob/main/doc/CHANGELOG.md"
 
 [dependency-groups]
 dev = [
     "kotonebot[dev]",
-    "pyinstaller>=6.15.0",
     "ruff",
 ]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "iaa.__meta__.__VERSION__" }
+
+[tool.setuptools.packages.find]
+include = ["iaa*"]
+
+[tool.setuptools.package-data]
+iaa = ["assets/*", "assets/*/*", "assets/*/*/*", "res/*"]
+"iaa.application.qt" = ["qml/*", "qml/*/*", "qml/*/*/*"]
+
+[tool.setuptools.exclude-package-data]
+iaa = ["res/__pycache__/*", "assets/__pycache__/*"]
+"iaa.application.qt" = ["qml/__pycache__/*", "qml/*/__pycache__/*", "qml/*/*/__pycache__/*"]
 
 [tool.uv]
 required-environments = [
@@ -50,7 +80,7 @@ quote-style = "single"
 prefabs_module = "iaa.game_ui.elements"
 resource_path = "resources/"
 
-[tool.kotonebot.variant]                                                                                                                  
-variants = ["tw", "cn"]
+[tool.kotonebot.variant]
+variants = ["tw", "cn", "en"]
 base = "jp"
 path_pattern = "nest"

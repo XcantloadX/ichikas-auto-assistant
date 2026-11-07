@@ -18,7 +18,8 @@
       "displayName": "交换所",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     }
   }

@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import ".." as App
 import "../components"
 import IaaApp 1.0
 
 PageContainer {
     id: root
-    title: "帮助"
+    title: App.Globals.t("nav.help")
     showTitle: false
 
     property var topics: []
@@ -27,6 +28,13 @@ PageContainer {
 
     Component.onCompleted: {
         loadTopics()
+    }
+
+    Connections {
+        target: i18nController
+        function onLanguageChanged() {
+            root.loadTopics()
+        }
     }
 
     RowLayout {

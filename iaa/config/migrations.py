@@ -332,3 +332,112 @@ class ProfileV3ToV4(MigrationStep):
                     level='warning'
                 ))
                 logger.exception(f"Error migrating config {file.name}")
+
+
+class ProfileV4ToV5(MigrationStep):
+    """
+    移除 resolution_method 的 'auto' 选项，统一转换为 'keep'。
+    """
+
+    def check_needed(self, ctx: MigrationContext) -> bool:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) < 5:
+                    return True
+            except Exception:
+                continue
+        return False
+
+    def apply(self, ctx: MigrationContext) -> None:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) >= 5:
+                    continue
+
+                device = data.get('device', {})
+                if device.get('resolution_method') == 'auto':
+                    device['resolution_method'] = 'keep'
+                    data['device'] = device
+
+                data['version'] = 5
+                file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+                ctx.messages.append(MigrationMessage(
+                    text="移除分辨率 auto 选项",
+                    old_version="26.06 (v4)",
+                    new_version="26.07 (v5)"
+                ))
+            except Exception as e:
+                ctx.messages.append(MigrationMessage(
+                    text=f"迁移配置 {file.name} 时出错: {e}",
+                    level='warning'
+                ))
+                logger.exception(f"Error migrating config {file.name}")
+
+
+class ProfileV5ToV6(MigrationStep):
+    """
+    移除 adb / uiautomator2 控制方式，统一由「自动」（Maa ADB 后端）承接。
+
+    adb 与 uiautomator2 的实际能力是 Maa ADB 的子集，直接映射为 auto 即可，
+    无需按 lifecycle 细分。顺带做 lifecycle 兼容性兜底：早期版本在缺少
+    control_impl 时默认写入 nemu_ipc，对非 MuMu 设备已不合法。
+    """
+
+    _REMOVED_IMPLS = ('adb', 'uiautomator')
+    """v6 下线的控制方式取值。"""
+
+    _MUMU_LIFECYCLES = ('mumu', 'mumu_v5')
+
+    def check_needed(self, ctx: MigrationContext) -> bool:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) < 6:
+                    return True
+            except Exception:
+                continue
+        return False
+
+    def apply(self, ctx: MigrationContext) -> None:
+        for file in ctx.config_dir.glob('*.json'):
+            if file.stem == '_shared':
+                continue
+            try:
+                data = json.loads(file.read_text(encoding='utf-8'))
+                if data.get('version', 1) >= 6:
+                    continue
+
+                device = data.get('device', {})
+                impl = device.get('control_impl')
+                lc_type = (device.get('lifecycle') or {}).get('type')
+                if impl in self._REMOVED_IMPLS:
+                    impl = 'auto'
+                elif impl == 'nemu_ipc' and lc_type not in self._MUMU_LIFECYCLES:
+                    impl = 'auto'
+                elif impl == 'qemu_grpc' and lc_type != 'avd':
+                    impl = 'auto'
+                if impl is not None:
+                    device['control_impl'] = impl
+                    data['device'] = device
+
+                data['version'] = 6
+                file.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding='utf-8')
+                ctx.messages.append(MigrationMessage(
+                    text="移除 ADB / UIAutomator2 控制方式，改用「自动」",
+                    old_version="26.09 (v5)",
+                    new_version="26.10 (v6)"
+                ))
+            except Exception as e:
+                ctx.messages.append(MigrationMessage(
+                    text=f"迁移配置 {file.name} 时出错: {e}",
+                    level='warning'
+                ))
+                logger.exception(f"Error migrating config {file.name}")

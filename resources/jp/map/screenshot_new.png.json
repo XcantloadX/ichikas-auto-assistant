@@ -24,7 +24,8 @@
       "displayName": "区域未读对话 NEW 标志",
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       }
     },
     "2bcdac90-5adc-4137-a491-8bbeae113f92": {

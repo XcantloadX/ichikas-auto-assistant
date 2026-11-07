@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Optional, Any
 from iaa.input import AdbKeyboardInput
 
 from .config.base import IaaConfig
+from .definitions.consts import ServerName
 from .definitions.errors import ContextNotInitializedError
 from iaa.progress import DummyTaskReporter, ProgressHub, TaskReporter
 
@@ -36,7 +37,7 @@ def conf() -> IaaConfig:
         raise ContextNotInitializedError()
     return config
 
-def server():
+def server() -> ServerName:
     return conf().game.server
 
 

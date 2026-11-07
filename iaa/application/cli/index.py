@@ -1,17 +1,9 @@
 import json
 import os
-import sys
 from dataclasses import dataclass
 from typing import Callable
 
 import click
-
-from iaa.application.service.iaa_service import IaaService
-from iaa.config import manager
-from iaa.telemetry import setup as setup_telemetry
-from iaa.tasks.registry import TASK_INFOS, list_task_infos
-
-ALL_TASK_IDS = tuple(TASK_INFOS.keys())
 
 
 @dataclass
@@ -27,21 +19,17 @@ def configure(task_configs: dict[str, CliTaskConfig]) -> None:
     _task_configs.update(task_configs)
 
 
-def cli_root_dir() -> str:
-    if not os.path.basename(sys.executable).startswith('python'):
-        return os.path.dirname(sys.executable)
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
-
-def make_iaa(config: str | None) -> IaaService:
+def make_iaa(config: str | None):
+    from iaa.config import manager
     if config is None:
-        manager.config_path = os.path.join(cli_root_dir(), 'conf')
+        manager.config_path = os.path.abspath('./conf')
         configs = manager.list()
         if len(configs) > 1:
             names = ', '.join(configs)
             raise click.UsageError(
                 f'Multiple configs found ({names}). Please specify one with -c/--config.'
             )
+    from iaa.application.service.iaa_service import IaaService
     return IaaService(config_name=config)
 
 
@@ -54,6 +42,13 @@ def cli(ctx: click.Context, debug: bool, config: str | None) -> None:
     ctx.ensure_object(dict)
     ctx.obj['debug'] = debug
     ctx.obj['config'] = config
+
+
+@cli.command()
+def gui() -> None:
+    """Launch the desktop GUI"""
+    from iaa.application.qt.index import main as qt_main
+    qt_main()
 
 
 @cli.command()
@@ -70,9 +65,11 @@ def run(ctx: click.Context) -> None:
 @click.pass_context
 def invoke(ctx: click.Context, task_ids: tuple[str, ...], raw_kwargs: str | None) -> None:
     """Run one or more tasks explicitly"""
-    unknown = [t for t in task_ids if t not in ALL_TASK_IDS]
+    from iaa.tasks.registry import TASK_INFOS
+    all_ids = tuple(TASK_INFOS.keys())
+    unknown = [t for t in task_ids if t not in all_ids]
     if unknown:
-        available = ', '.join(ALL_TASK_IDS)
+        available = ', '.join(all_ids)
         raise click.UsageError(
             f'Unknown task id(s): {", ".join(unknown)}. Available: {available}'
         )
@@ -98,6 +95,7 @@ def list_group() -> None:
 @list_group.command('tasks')
 def list_tasks() -> None:
     """List available tasks"""
+    from iaa.tasks.registry import list_task_infos
     for info in list_task_infos():
         supports_kwargs = 'yes' if info.supports_kwargs else 'no'
         click.echo(
@@ -109,13 +107,15 @@ def list_tasks() -> None:
 @list_group.command('configs')
 def list_configs() -> None:
     """List available configs"""
-    manager.config_path = os.path.join(cli_root_dir(), 'conf')
+    from iaa.config import manager
+    manager.config_path = os.path.abspath('./conf')
     for name in manager.list():
         click.echo(name)
 
 
 def main() -> None:
-    click.echo(f'Arguments: {sys.argv}')
+    import iaa.application.cli.setup  # noqa: F401
+    from iaa.telemetry import setup as setup_telemetry
     setup_telemetry()
     cli()
 

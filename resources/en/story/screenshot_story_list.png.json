@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "definitions": {
+    "8f2149e7-d32c-45e2-b60f-b8b5f681b29b": {
+      "type": "prefab",
+      "name": "Story.StoryList.ButtonEnter",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 1090.8843101981154,
+          "y1": 648.6690994277319,
+          "x2": 1174.239187759551,
+          "y2": 682.7907116657309
+        }
+      },
+      "displayName": "Story list enter button"
+    },
+    "f7bad0cd-a60c-4d69-9db6-1e5731e69a58": {
+      "type": "prefab",
+      "name": "Story.StoryList.ButtonExpandUnit",
+      "variant": "en",
+      "props": {},
+      "displayName": "Story list left-side expand-by-unit button"
+    }
+  }
+}

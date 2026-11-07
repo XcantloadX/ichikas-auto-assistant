@@ -678,7 +678,7 @@ if __name__ == '__main__':
 
     from kotonebot.backend.context.context import init_context, manual_context
     from kotonebot.client.host import Mumu12V5Host
-    from kotonebot.client.host.mumu12_host import MuMu12HostConfig
+    from iaa.application.service.device_factory import mumu_maa_adb_config
 
     from iaa.config.base import IaaConfig
     from iaa.config.schemas import MuMuDevice, CustomDevice
@@ -709,7 +709,7 @@ if __name__ == '__main__':
         host.start()
         host.wait_available()
 
-    debug_device = host.create_device('nemu_ipc', MuMu12HostConfig())
+    debug_device = host.create_device('maa_adb', mumu_maa_adb_config())
     debug_device.orientation = 'landscape'
     init_context(target_device=debug_device, force=True)
 

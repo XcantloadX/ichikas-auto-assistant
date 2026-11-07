@@ -62,18 +62,18 @@ PageContainer {
                     Label {
                         text: {
                             var h = new Date().getHours()
-                            if (h < 6)  return "晚上好！"
-                            if (h < 11) return "早上好！"
-                            if (h < 13) return "中午好！"
-                            if (h < 18) return "下午好！"
-                            return "晚上好！"
+                            if (h < 6)  return App.Globals.t("overview.greeting.evening")
+                            if (h < 11) return App.Globals.t("overview.greeting.morning")
+                            if (h < 13) return App.Globals.t("overview.greeting.noon")
+                            if (h < 18) return App.Globals.t("overview.greeting.afternoon")
+                            return App.Globals.t("overview.greeting.evening")
                         }
                         font.pixelSize: 30
                         font.weight: Font.DemiBold
                     }
 
                     Label {
-                        text: "一歌小助手 v" + AppController.version
+                        text: App.Globals.t("app.name") + " v" + AppController.version
                         font.pixelSize: 16
                         opacity: 0.65
                     }
@@ -122,9 +122,9 @@ PageContainer {
                             Label {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: {
-                                    if (!seqBtn.isStopMode)    return "连续启动"
-                                    if (TabManager.stopAllBusy) return "停止中"
-                                    return "停止所有"
+                                    if (!seqBtn.isStopMode)    return App.Globals.t("overview.start_sequential")
+                                    if (TabManager.stopAllBusy) return App.Globals.t("control.stopping")
+                                    return App.Globals.t("overview.stop_all")
                                 }
                                 font.pixelSize: 14
                                 color: seqBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
@@ -162,9 +162,9 @@ PageContainer {
                             Label {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: {
-                                    if (!parBtn.isStopMode)    return "并行启动"
-                                    if (TabManager.stopAllBusy) return "停止中"
-                                    return "停止所有"
+                                    if (!parBtn.isStopMode)    return App.Globals.t("overview.start_parallel")
+                                    if (TabManager.stopAllBusy) return App.Globals.t("control.stopping")
+                                    return App.Globals.t("overview.stop_all")
                                 }
                                 font.pixelSize: 14
                                 color: parBtn.highlighted ? (App.IaaTheme.isDark ? "black" : "white") : App.IaaTheme.fg
@@ -177,7 +177,7 @@ PageContainer {
                 Label {
                     Layout.topMargin: 28
                     Layout.leftMargin: 40
-                    text: "配置"
+                    text: App.Globals.t("nav.config")
                     font.pixelSize: 13
                     font.weight: Font.Medium
                     opacity: 0.55
@@ -260,12 +260,12 @@ PageContainer {
 
                                     Label {
                                         text: {
-                                            if (!card.runCtrl) return "就绪"
-                                            if (card.runCtrl.isQueued) return "排队中"
-                                            if (card.runCtrl.isStarting) return "启动中"
-                                            if (card.runCtrl.isStopping) return "停止中"
-                                            if (card.runCtrl.running) return "运行中"
-                                            return "就绪"
+                                            if (!card.runCtrl) return App.Globals.t("status.ready")
+                                            if (card.runCtrl.isQueued) return App.Globals.t("control.queued")
+                                            if (card.runCtrl.isStarting) return App.Globals.t("control.starting")
+                                            if (card.runCtrl.isStopping) return App.Globals.t("control.stopping")
+                                            if (card.runCtrl.running) return App.Globals.t("status.running")
+                                            return App.Globals.t("status.ready")
                                         }
                                         font.pixelSize: 12
                                         opacity: 0.7
@@ -319,7 +319,7 @@ PageContainer {
                 spacing: 12
 
                 Label {
-                    text: "你还没有创建任何配置"
+                    text: App.Globals.t("overview.no_configs")
                     font.pixelSize: 14
                     opacity: 0.7
                 }
@@ -329,7 +329,7 @@ PageContainer {
 
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "点击"
+                        text: App.Globals.t("overview.empty.click")
                         font.pixelSize: 14
                         opacity: 0.7
                     }
@@ -337,7 +337,7 @@ PageContainer {
                     Button {
                         id: createBtn
                         highlighted: true
-                        text: "创建配置"
+                        text: App.Globals.t("overview.empty.create_button")
                         font.pixelSize: 14
                         topPadding: 4
                         bottomPadding: 4
@@ -349,7 +349,7 @@ PageContainer {
 
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "或顶部标签栏的"
+                        text: App.Globals.t("overview.empty.or_toolbar")
                         font.pixelSize: 14
                         opacity: 0.7
                     }
@@ -373,7 +373,7 @@ PageContainer {
 
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: "号创建新配置"
+                        text: App.Globals.t("overview.empty.create_suffix")
                         font.pixelSize: 14
                         opacity: 0.7
                     }

@@ -17,7 +17,8 @@
       },
       "variant_policy": {
         "tw": "inherit",
-        "cn": "inherit"
+        "cn": "inherit",
+        "en": "inherit"
       },
       "displayName": "烤森 布局按钮图标"
     }

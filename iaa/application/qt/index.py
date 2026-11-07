@@ -16,7 +16,8 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtQuickControls2 import QQuickStyle
 
 from iaa.config import manager as config_manager
-from iaa.application.service.iaa_service import IaaService
+from iaa.i18n import translate
+from iaa.utils import asset_path
 from .controllers import (
     AppController,
     HelpController,
@@ -45,6 +46,9 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     if not callable(set_color_scheme) and not callable(unset_color_scheme):
         return
 
+    # 切换色彩方案前先清除旧的自定义调色板；主题色会在之后重新应用。
+    app.setPalette(QPalette())
+
     if color_scheme == 'auto':
         if callable(unset_color_scheme):
             unset_color_scheme()
@@ -56,6 +60,8 @@ def apply_color_scheme(app: QApplication, color_scheme: str) -> None:
     else:
         if callable(set_color_scheme):
             set_color_scheme(Qt.ColorScheme.Dark)
+
+    app.setPalette(QPalette())
 
 
 def apply_theme_color(app: QApplication, color_value: str | None) -> None:
@@ -97,12 +103,13 @@ def main() -> None:
 
     engine = QQmlApplicationEngine()
     engine.addImageProvider('scrcpy', controller.scrcpyImageProvider)
+    # i18n：Globals.qml 通过该 context property 读取当前语言
+    engine.rootContext().setContextProperty('i18nController', controller.i18nController)
     # maxHoverBridge / tabBarBridge 平台条件可为 None，保留 context property
     engine.rootContext().setContextProperty('maxHoverBridge', max_hover_bridge)
     engine.rootContext().setContextProperty('tabBarBridge', tab_bar_bridge)
 
-    root_path = Path(IaaService.app_root())
-    icon_path = root_path / 'assets' / 'ichika.ico'
+    icon_path = Path(asset_path('ichika.ico'))
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 
@@ -137,9 +144,12 @@ def main() -> None:
         controller.refreshWindowStyle()
         if (interface_conf.color_scheme != _startup_color_scheme
                 or interface_conf.theme_color != _startup_theme_color):
-            controller.notificationRaised.emit('info', '配色方案将在重启后生效。')
+            controller.notificationRaised.emit(
+                'info',
+                translate(interface_conf.language, 'notice.color_scheme_restart'),
+            )
 
-    controller.preferencesController.runtimeChanged.connect(apply_runtime_preferences)
+    controller.preferencesController.configChanged.connect(apply_runtime_preferences)
     apply_interface_preferences()
 
     exit_code = app.exec()

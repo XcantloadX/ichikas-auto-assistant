@@ -1,0 +1,3 @@
+[submodule "bootstrap/LmmPyLauncher"]
+	path = bootstrap/LmmPyLauncher
+	url = https://github.com/kotonebot/LmmPyLauncher

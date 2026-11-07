@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import ".." as App
 import "../pages"
 import "../dialogs"
 
@@ -28,11 +29,18 @@ Item {
             id: sideNav
             Layout.fillHeight: true
             visible: !root.prefsMode
-            model: ["控制", "画面", "配置", "日志", "关于"]
+            // t() 内部读取 Globals.language，语言切换时本绑定会自动重求值
+            model: [
+                App.Globals.t("nav.control"),
+                App.Globals.t("nav.device"),
+                App.Globals.t("nav.config"),
+                App.Globals.t("nav.logs"),
+                App.Globals.t("nav.about")
+            ]
 
             onCurrentChanging: function(navIndex, previousIndex) {
                 if (root.navigation) {
-                    root.navigation.requestGuardedAction("切换页面", function() {
+                    root.navigation.requestGuardedAction(App.Globals.t("guard.switch_page"), function() {
                         sideNav.confirmSwitch(navIndex)
                     })
                 } else {

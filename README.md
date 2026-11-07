@@ -1,12 +1,14 @@
 # Ichika's Auto Assistant 一歌小助手
 
+[中文](./README.md) | [English](./README.en.md)
+
 <small>相关项目：[ 
     <a href="https://github.com/XcantloadX/kotones-auto-assistant">琴音小助手</a>、
     <a href="https://github.com/XcantloadX/kotonebot">kotonebot 自动化框架</a>
 ]
 </small>
 
-<center><img src="./assets/icon_round.png" width="128"/></center>
+<center><img src="./iaa/assets/icon_round.png" width="128"/></center>
 
 
 一歌小助手（简称 iaa）是一款适用于《世界计划：多彩舞台》的自动化日常脚本，基于 kotonebot 自动化框架编写而成，使用 OpenCV 对屏幕画面进行检测来实现自动化。
@@ -48,23 +50,44 @@
 
 继续下载、安装或使用本项目，即表示你已完全阅读、理解并同意承担以上所有风险和条款。如果你不同意，请立即停止使用并删除本项目的所有相关文件。
 
-## CLI 上手
-除了 GUI 外，iaa 也支持以命令行方式调用。
+## 安装
+
+需要 Python 3.10（Windows）。
+
+```bash
+pip install ichikas-auto-assistant
+```
+
+普通用户推荐使用 [LmmPyLauncher](https://github.com/kotonebot/LmmPyLauncher) 启动器：双击 exe 即可自动安装 Python 环境、安装并自动更新本程序，见[下方集成说明](#通过-lmmpylauncher-分发)。
+
+## 使用
+
+程序包含图形界面与命令行两种方式，统一从 `iaa` 命令进入。配置与日志保存在**当前工作目录**下的 `conf/` 与 `logs/` 中（启动器会自动把工作目录设为 exe 所在目录）。
+
+### 图形界面
+
+```bash
+iaa gui
+```
+
+### 命令行
 
 ```bash
 # 查看帮助信息
-iaa-cli.exe --help
+iaa --help
 # 查看可用任务
-iaa-cli.exe list tasks
+iaa list tasks
 # 按配置执行常规任务
-iaa-cli.exe run
+iaa run
 # 显式执行一个或多个任务
-iaa-cli.exe invoke start_game solo_live
+iaa invoke start_game solo_live
 # 执行单个任务
-iaa-cli.exe invoke main_story
+iaa invoke main_story
 # 带参数执行自动演出
-iaa-cli.exe invoke auto_live --count-mode specify --count 10 --loop-mode list --auto-mode game_auto
+iaa invoke auto_live --count-mode specify --count 10 --loop-mode list --auto-mode game_auto
 ```
+
+也可以用 `python -m iaa` 代替 `iaa`，两者等价。
 
 ## 开发
 首先安装 just，然后：
@@ -79,18 +102,104 @@ uv run launch_desktop.py
 # 或使用 VSCode 启动 「main (GUI)」
 
 # 启动 CLI
-python -m iaa.main ... # 参数参考上面的 CLI 上手
+uv run launch_cli.py ... # 参数参考上面的 使用 -> 命令行
 ```
 
 （后续文档暂时可以参考 琴音小助手 的开发文档）
 
-### 打包
-执行 `just build` 后，`dist_app` 目录中会同时包含：
-* `iaa.exe`：GUI 入口
-* `iaa-cli.exe`：CLI 入口
+### 构建与发布
+```bash
+# 构建 wheel（先清理 __pycache__、生成资源，再构建），产物在 dist/ 下
+just wheel
 
-### 发布
-见 [doc/LOCAL_RELEASE.md](./doc/LOCAL_RELEASE.md)。
+# 编译启动器 exe，产物 dist/iaa.exe（GUI）与 dist/iaa-cli.exe（CLI），需 Rust 工具链
+just launcher
+
+# 两者一起
+just build
+```
+
+发布到 PyPI：在 GitHub Actions 手动触发 **Publish to PyPI** 工作流（需要先在 PyPI 上注册 `ichikas-auto-assistant` 项目并配置 GitHub Trusted Publisher）。
+
+### 通过 LmmPyLauncher 分发
+
+分发给用户的是两个 exe，职责分离：
+
+| 产物 | 用途 |
+|---|---|
+| `dist/iaa.exe` | 图形界面，双击即用；不接受命令行参数 |
+| `dist/iaa-cli.exe` | 命令行，安装进度与任务输出直连控制台，参数与退出码透传 |
+
+两者放在同一目录时共享 `python-3.10.11/`、`conf/`、`logs/`，只需安装/更新一次。
+
+启动器源码以 git submodule 形式锁定在 `bootstrap/LmmPyLauncher`，编译期配置固定为 `bootstrap/launcher/launcher.json`：
+
+```json
+{
+  "app_name": "一歌小助手",
+  "python_version": "3.10.11",
+  "python_dist_dir": "",
+  "install_packages": ["ichikas-auto-assistant"],
+  "uninstall_packages": [],
+  "entry_point": "iaa",
+  "launch_command": "{python} -m {entry_point} gui",
+  "launch_command_cli": "{python} -m {entry_point} {extra_args}",
+  "icon": "icon.ico",
+  "logoPath": "logo.png"
+}
+```
+
+`launch_command` 供 GUI 版使用（不含 `{extra_args}`，即 GUI exe 不接受参数）；`launch_command_cli` 供 CLI 版使用，`{extra_args}` 会在该位置展开为用户传入的参数。
+
+`just launcher` 依次执行：初始化 submodule → 以 `LMM_LAUNCHER_JSON` 指向上述配置 `cargo build --release --bins` → 把两个产物分别复制为 `dist/iaa.exe`、`dist/iaa-cli.exe`。启动器仓库的源码树不会被写入任何文件，因此升级启动器只需改动 submodule 的检出提交：
+
+```bash
+git -C bootstrap/LmmPyLauncher fetch --tags
+git -C bootstrap/LmmPyLauncher checkout v0.1.x
+git add bootstrap/LmmPyLauncher   # 提交新的子模块指针
+```
+
+`bootstrap/launcher/` 下的 `icon.ico`、`logo.png` 分别是 `iaa/assets/ichika.ico`、`iaa/assets/icon.png` 的副本（启动器按配置文件所在目录解析这两个相对路径），更换图标时两处需同步。
+
+编译产物约 1GB，若仓库所在磁盘空间紧张，可用 `CARGO_TARGET_DIR` 把 target 目录挪到别的盘：
+
+```powershell
+$env:CARGO_TARGET_DIR = "D:\build\iaa-launcher"; just launcher
+```
+
+#### 命令行用法
+
+`iaa-cli.exe` 不封装任何命令：命令行内容**全部原样**交给 `iaa`，退出码也原样返回，可直接嵌进脚本：
+
+```powershell
+dist\iaa-cli.exe list tasks
+dist\iaa-cli.exe run
+dist\iaa-cli.exe invoke auto_live --count-mode specify --count 10
+dist\iaa-cli.exe --debug run > out.txt   # 输出可重定向
+```
+
+CLI 版**不承担任何环境准备**——不探镜像、不检查更新、不安装包、不部署 Python，找到解释器就直接启动，因此启动约 0.5 秒。**首次使用必须先双击一次 `iaa.exe`** 完成安装；否则 CLI 会提示「主程序尚未安装，请先运行图形界面版」并以退出码 1 结束。
+
+#### 运行时行为
+
+- 启动器会把工作目录切到 exe 所在目录，因此 `conf/`、`logs/` 落在 exe 旁边，与源码运行的目录约定一致。
+- 每次启动先对比 PyPI 上的最新版本，有更新则自动 `pip install`。
+- `--skip-update` 跳过更新检查；`--install-version=<ver>` 安装指定版本。
+
+#### 已知限制
+
+1. **包尚未发布到 PyPI 时**，启动会因查不到版本而失败。此时用本地 wheel 验证整条链路：
+
+   ```powershell
+   dist\iaa.exe --install-from-package=dist\ichikas_auto_assistant-26.10.1-py3-none-any.whl
+   ```
+
+   该参数安装完成后直接启动，并隐含跳过更新检查。
+
+2. **Python 版本约束**：本包要求 `requires-python ~=3.10.0`。启动器优先使用 exe 旁已部署的 `python-3.10.11`；若找不到则回退到 PATH 上的 `python`——若该 `python` 是 3.11/3.12，pip 会以「无匹配发行版」拒绝安装。需要规避时，把一份 Python 3.10 发行版目录随 exe 分发，并把 `python_dist_dir` 指向它（相对 exe 目录）。
+
+3. **两个 exe 不要同时运行**：它们共享 `python-3.10.11/` 与 `conf/`，同时启动可能在更新包或写配置时互相干扰。
+4. **GUI 版不接受参数**：传给 `dist\iaa.exe` 的未知开关会被丢弃，位置参数（如 `run`）会直接报错退出。命令行场景请用 `dist\iaa-cli.exe`。
 
 ### 贡献
 TODO

@@ -5,10 +5,20 @@ from kotonebot import logging
 from pydantic_core import ValidationError
 from iaa.config import manager
 from iaa.config.manager import ConfigValidationError
+from iaa.config.shared import SharedConfig
+from iaa.i18n import tstr
 
 logger = logging.getLogger(__name__)
 
 DEFAULT_CONFIG_NAME = 'default'
+
+
+def _default_config_dir() -> str:
+    """返回默认配置目录：当前工作目录下的 ``conf``。
+
+    :return: 配置目录的绝对路径。
+    """
+    return os.path.abspath('./conf')
 
 
 class ConfigService:
@@ -16,10 +26,8 @@ class ConfigService:
         # is_running: 可选的调度器运行状态查询函数，由 IaaService 在构造完 SchedulerService 后注入。
         # 可在此处通过替换 is_running 来自定义"切换配置前的前置检查"。
         self._is_running = is_running or (lambda: False)
-        from .iaa_service import IaaService
-        manager.config_path = os.path.join(IaaService.app_root(), 'conf')
-
-        self.shared = manager.read_shared()
+        # 配置目录默认位于当前工作目录下（源码运行 = 仓库根；launcher 运行 = exe 目录）
+        manager.config_path = _default_config_dir()
 
         def _use_default_name():
             configs = manager.list()
@@ -50,6 +58,18 @@ class ConfigService:
         self._config_name: str = _config_name
 
     @property
+    def shared(self) -> SharedConfig:
+        """当前共享配置。
+
+        总是返回 manager 的最新单例：偏好页保存会替换 manager 的缓存对象，
+        若在构造时固定引用，之后 ``save()``/``switch_config()`` 会把过期对象
+        写回磁盘，覆盖掉新保存的偏好（如界面语言）。
+
+        :return: manager 缓存中的最新 SharedConfig。
+        """
+        return manager.read_shared()
+
+    @property
     def current_config_name(self) -> str:
         return self._config_name
 
@@ -69,7 +89,7 @@ class ConfigService:
 
     def switch_config(self, name: str) -> None:
         if self._is_running():
-            raise RuntimeError("运行时不能切换配置，请先停止任务")
+            raise RuntimeError(tstr('error.config.switch_while_running'))
 
         self._config_name = name
         self.conf = manager.read(name)
@@ -111,7 +131,7 @@ class ConfigService:
         """
         configs = manager.list()
         if len(configs) <= 1:
-            raise RuntimeError('至少需要保留一个配置')
+            raise RuntimeError(tstr('error.config.keep_one_profile'))
 
         is_current = name == self._config_name
         manager.remove(name, not_exist='raise')

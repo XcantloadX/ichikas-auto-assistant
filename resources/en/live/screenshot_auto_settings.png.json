@@ -1,0 +1,27 @@
+{
+  "version": 3,
+  "definitions": {
+    "7eedd753-3dca-459c-be36-3d43a40031b4": {
+      "type": "prefab",
+      "name": "Live.TextAutoLiveUntilInsufficient",
+      "variant": "en",
+      "props": {},
+      "displayName": "Auto-play until AP runs out"
+    },
+    "04e53290-fc0d-4c03-acfa-f8f482deb54e": {
+      "type": "prefab",
+      "name": "Live.ButtonDecideAutoLive",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 713.0029906761273,
+          "y1": 641,
+          "x2": 795.9970093238726,
+          "y2": 672
+        }
+      },
+      "displayName": "Select"
+    }
+  }
+}

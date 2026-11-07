@@ -7,6 +7,7 @@ from iaa.definitions.enums import (
     ChallengeLiveAward,
     ShopItem,
 )
+from iaa.definitions.consts import ServerName
 
 
 # ── 设备生命周期 ──────────────────────────────────────────────────────────────
@@ -72,16 +73,24 @@ DeviceConnection = Annotated[
 class DeviceConfig(BaseModel):
     lifecycle: DeviceLifecycle = Field(default_factory=lambda: MuMuDevice(type='mumu_v5'))
     connection: DeviceConnection = Field(default_factory=lambda: AutoConnection(type='auto'))
-    control_impl: Literal['nemu_ipc', 'adb', 'uiautomator', 'scrcpy', 'qemu_grpc'] = 'nemu_ipc'
+    control_impl: Literal['auto', 'nemu_ipc', 'scrcpy', 'qemu_grpc', 'playcover'] = 'auto'
+    """控制方式。
+
+    * `"auto"`：自动。由 MaaFramework 的 ADB 后端按设备能力自动挑选截图/输入方式。
+    * `"nemu_ipc"`：MuMu 专用，Maa ADB 的 EmulatorExtras（`external_renderer_ipc`）。
+    * `"scrcpy"`：Scrcpy（同时用于画面页预览）。
+    * `"qemu_grpc"`：AVD 专用，直接读取模拟器帧缓冲。
+    * `"playcover"`：PlayCover（macOS）专用，由 lifecycle 固定，不走 ADB。
+    """
     scrcpy_virtual_display: bool = False
-    resolution_method: Literal['auto', 'keep', 'wm_size'] = 'auto'
+    resolution_method: Literal['keep', 'wm_size'] = 'keep'
     stop_on_finish: bool = False
 
 
 # ── 游戏配置（仅游戏层面） ────────────────────────────────────────────────────
 
 class GameConfig(BaseModel):
-    server: Literal['jp', 'tw', 'cn'] = 'jp'
+    server: ServerName = 'jp'
     link_account: LinkAccountOptions = 'no'
     """
     是否引继账号。
@@ -110,8 +119,8 @@ class LiveConfig(BaseModel):
     """
     auto_set_unit: bool = False
     """演出前是否自动编队"""
-    ap_multiplier: int | None = 10
-    """AP 倍率。None 表示保持现状。"""
+    ap_multiplier: int | Literal['maximum'] | None = 'maximum'
+    """AP 倍率。'maximum' 表示当前可用最大值，None 表示保持现状。"""
     append_fc: bool = False
     """是否在常规演出后追加一次 Full Combo 演出。"""
     prepend_random: bool = False

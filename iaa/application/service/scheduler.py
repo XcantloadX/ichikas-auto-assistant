@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Callable, Any
 
 from kotonebot.client.device import Device, Size
 from kotonebot.client.scaler import ProportionalScaler
-from kotonebot.errors import DeviceConnectionError
-from iaa.config.schemas import NoDevice, PlayCoverDevice, AvdDevice
+from kotonebot.errors import DeviceConnectionError, UserFriendlyError
+from iaa.config.schemas import PlayCoverDevice
 from iaa.application.service.device_factory import DeviceFactory, LifecyclePolicy
 from iaa.definitions.consts import package_by_server
 
@@ -16,6 +16,7 @@ if TYPE_CHECKING:
 from iaa.tasks.registry import TASK_INFOS, name_from_id
 from iaa.context import init as init_config_context
 from iaa.context import set_task_reporter, reset_task_reporter, hub as progress_hub
+from iaa.i18n import tstr
 from iaa.progress import TaskProgressEvent, TaskReporter
 
 logger = logging.getLogger(__name__)
@@ -40,7 +41,6 @@ def _parse_wm_size_output(output: str) -> str | None:
 
 def _setup_resolution(
     device: 'Device',
-    is_physical_device: bool,
     resolution_method: str,
     package_name: str
 ) -> str | None:
@@ -48,8 +48,7 @@ def _setup_resolution(
     设置设备分辨率。
 
     :param device: 设备实例
-    :param is_physical_device: 是否为物理设备（NoDevice lifecycle）
-    :param resolution_method: 分辨率设置方式 ('auto', 'keep', 'wm_size')
+    :param resolution_method: 分辨率设置方式 ('keep', 'wm_size')
     :param package_name: 游戏包名，用于 kill 游戏
     :return: 原始物理分辨率，用于恢复；如果不需修改则返回 None
     """
@@ -57,11 +56,6 @@ def _setup_resolution(
         logger.debug('Resolution method is "keep", skip resolution setup.')
         return None
 
-    if resolution_method == 'auto':
-        if not is_physical_device:
-            logger.debug('Resolution method is "auto" but not physical device, skip resolution setup.')
-            return None
-    
     result = device.commands.adb_shell('wm size')
     original = _parse_wm_size_output(result)
     
@@ -149,6 +143,62 @@ class SchedulerService:
             raise RuntimeError('DeviceFactory is not available.')
         return self._device_factory
 
+    def _sentry_capture_exception(self, exc: Exception, *, task_name: str | None = None) -> None:
+        """将异常上报到 Sentry，附加上下文标签、配置和截图。
+
+        用户可预见的错误（UserFriendlyError）不上报 Sentry，仅记日志。
+        所有失败静默降级，绝不阻断主流程。
+
+        :param exc: 捕获到的异常。
+        :param task_name: 当前任务名称（可选），附加为 Sentry tag。
+        """
+        from iaa.telemetry import use_sentry  # noqa: PLC0415
+        sentry_sdk = use_sentry()
+
+        # UserFriendlyError 是业务侧主动抛出的友好错误，不应上报 Sentry。
+        if isinstance(exc, UserFriendlyError):
+            return
+
+        with sentry_sdk.isolation_scope() as scope:
+            if task_name:
+                scope.set_tag('task_name', task_name)
+
+            # 动态上下文（设备平台、模拟器分辨率、进程内存等）
+            try:
+                from iaa.telemetry import collect_report_context  # noqa: PLC0415
+                for key, value in collect_report_context().items():
+                    scope.set_tag(key, value)
+            except Exception:
+                logger.warning('Failed to attach report context.', exc_info=True)
+
+            # 附加当前配置
+            try:
+                from iaa.context import conf as get_conf  # noqa: PLC0415
+                scope.set_extra('config', get_conf().model_dump_json())
+            except Exception:
+                logger.warning('Failed to attach config to Sentry report.', exc_info=True)
+
+            # 附加共享配置
+            try:
+                from iaa.config import manager as config_manager  # noqa: PLC0415
+                shared = config_manager.read_shared()
+                scope.set_extra('shared_config', shared.model_dump_json())
+            except Exception:
+                logger.warning('Failed to attach shared config to Sentry report.', exc_info=True)
+
+            # 上传截图（仅在用户同意截图上传时）
+            try:
+                from iaa.config import manager as config_manager  # noqa: PLC0415
+                if config_manager.read_shared().telemetry.upload_screenshot is True:
+                    from iaa.telemetry_screenshot import upload_report_screenshot
+                    screenshot_id = upload_report_screenshot()
+                    if screenshot_id:
+                        scope.set_tag('screenshot_id', screenshot_id)
+            except Exception:
+                logger.warning('Failed to upload screenshot to Sentry report.', exc_info=True)
+
+            sentry_sdk.capture_exception(exc)
+
     @property
     def running(self) -> bool:
         """调度器是否正在运行。"""
@@ -180,7 +230,7 @@ class SchedulerService:
                 logger.info("Preparing context...")
                 self.__prepare_context()
                 if self.device is None:
-                    raise RuntimeError("Device not initialized after context preparation.")
+                    raise RuntimeError(tstr('error.device.not_initialized'))
                 if not self._device_started:
                     self.device.start()
                     self._device_started = True
@@ -212,7 +262,7 @@ class SchedulerService:
                             timestamp=time.time(),
                             type='task_started',
                             payload={
-                                'message': '开始执行',
+                                'message': tstr('progress.executing'),
                                 'run_total_tasks': total_tasks,
                                 'run_completed_tasks': index,
                                 'run_current_task_index': index + 1,
@@ -239,7 +289,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_finished',
                                 payload={
-                                    'message': '执行完成',
+                                    'message': tstr('progress.executed'),
                                     'percent': 100,
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index + 1,
@@ -257,7 +307,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'任务中断：{task_name}',
+                                    'message': tstr('progress.interrupted_with_task').format(task=task_name),
                                     'error': 'KeyboardInterrupt',
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -277,7 +327,7 @@ class SchedulerService:
                                 timestamp=time.time(),
                                 type='task_failed',
                                 payload={
-                                    'message': f'执行失败：{task_name}',
+                                    'message': tstr('progress.failed_with_task').format(task=task_name),
                                     'error': str(e),
                                     'run_total_tasks': total_tasks,
                                     'run_completed_tasks': index,
@@ -286,6 +336,7 @@ class SchedulerService:
                             )
                         )
                         logger.exception(f"Task '{task_id}' raised an exception: {e}")
+                        self._sentry_capture_exception(e, task_name=task_name)
                         if self.on_error:
                             try:
                                 self.on_error(e)
@@ -303,6 +354,7 @@ class SchedulerService:
                     logger.exception("Device connection failed: %s", e)
                 else:
                     logger.exception("Scheduler runner crashed: %s", e)
+                self._sentry_capture_exception(e)
                 if self.on_error:
                     try:
                         self.on_error(e)
@@ -350,13 +402,14 @@ class SchedulerService:
                 # 发送通知
                 if completion_status != 'no_tasks':
                     from iaa.notify import NotificationType, send_notification
-                    from iaa.config.manager import read_shared
-                    shared_config = read_shared()
+                    from iaa.i18n import translate
+                    shared_config = self.iaa.config.shared
+                    language = shared_config.interface.language
                     message_map = {
-                        'success': '任务执行完成',
-                        'interrupted': '任务已中断',
-                        'failed': '任务执行失败',
-                        'crashed': '调度器发生错误',
+                        'success': translate(language, 'notice.tasks_completed'),
+                        'interrupted': translate(language, 'notice.tasks_interrupted'),
+                        'failed': translate(language, 'notice.tasks_failed'),
+                        'crashed': translate(language, 'notice.tasks_crashed'),
                     }
                     type_map: dict[str, NotificationType] = {
                         'success': 'success',
@@ -366,7 +419,7 @@ class SchedulerService:
                     }
                     send_notification(
                         'iaa',
-                        message_map.get(completion_status, '任务结束'),
+                        message_map.get(completion_status, translate(language, 'notice.tasks_finished')),
                         shared_config.notify,
                         type=type_map.get(completion_status, 'info'),
                     )
@@ -411,7 +464,7 @@ class SchedulerService:
     ) -> None:
         """运行单个任务。"""
         if task_id not in TASK_INFOS:
-            raise ValueError(f"Unknown manual task: {task_id}")
+            raise ValueError(tstr('error.task.unknown_manual').format(task_id=task_id))
         task_func = TASK_INFOS[task_id].func
         call_args = args or ()
         call_kwargs = kwargs or {}
@@ -515,10 +568,8 @@ class SchedulerService:
         # 设置分辨率（PlayCover 不走 ADB，直接跳过）
         device_conf = self.iaa.config.conf.device
         if not isinstance(device_conf.lifecycle, PlayCoverDevice):
-            # AvdDevice 和 NoDevice 均需走 wm size 路径（_setup_resolution 内部判重跳过）
-            is_physical = isinstance(device_conf.lifecycle, (NoDevice, AvdDevice))
             package_name = package_by_server(self.iaa.config.conf.game.server)
-            self._original_resolution = _setup_resolution(device, is_physical, device_conf.resolution_method, package_name)
+            self._original_resolution = _setup_resolution(device, device_conf.resolution_method, package_name)
         else:
             self._original_resolution = None
         

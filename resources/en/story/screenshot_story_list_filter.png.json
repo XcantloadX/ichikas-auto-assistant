@@ -1,0 +1,35 @@
+{
+  "version": 3,
+  "definitions": {
+    "cf35db62-eb92-493b-a620-77897740d9f6": {
+      "type": "prefab",
+      "name": "Story.StoryList.ButtonConfirmFilter",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 722.1784170977382,
+          "y1": 643.3966644295795,
+          "x2": 801.5946184318027,
+          "y2": 670.3736887675128
+        }
+      },
+      "displayName": "Story list filter popup confirm button"
+    },
+    "9b2c08fb-f2ff-4598-8974-819caac34249": {
+      "type": "prefab",
+      "name": "Story.StoryList.RadioUnread",
+      "variant": "en",
+      "props": {
+        "template": {
+          "kind": "image",
+          "x1": 626.1145,
+          "y1": 212.33794884874249,
+          "x2": 929.1110405405406,
+          "y2": 265.2928484750561
+        }
+      },
+      "displayName": "Story list filter popup Unread/Skipped radio button"
+    }
+  }
+}
