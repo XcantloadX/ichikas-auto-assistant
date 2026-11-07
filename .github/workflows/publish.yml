@@ -25,6 +25,7 @@ jobs:
     runs-on: windows-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
+      launcher_version: ${{ steps.launcher-version.outputs.version }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -52,7 +53,7 @@ jobs:
       - name: Build wheel
         run: uv build --wheel
 
-      # 版本号唯一来源是 iaa/__meta__.py，与 wheel 元数据、release tag、zip 名保持一致
+      # 版本号唯一来源是 iaa/__meta__.py，与 wheel 元数据、release tag 保持一致
       - name: Read version
         id: version
         shell: pwsh
@@ -60,6 +61,16 @@ jobs:
           $version = python tools/release_notes.py version
           Add-Content -Path $env:GITHUB_OUTPUT -Value "version=$version" -Encoding utf8
           Write-Host "version=$version"
+
+      # 启动器版本独立于 iaa（取自 bootstrap/LmmPyLauncher/Cargo.toml），
+      # 决定附件名 launcher.v<ver>.zip；iaa 升版本时它通常不变
+      - name: Read launcher version
+        id: launcher-version
+        shell: pwsh
+        run: |
+          $version = python tools/release_notes.py launcher-version
+          Add-Content -Path $env:GITHUB_OUTPUT -Value "version=$version" -Encoding utf8
+          Write-Host "launcher version=$version"
 
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
@@ -81,7 +92,8 @@ jobs:
       - name: Package launcher
         shell: pwsh
         run: |
-          $zip = "dist/launcher.v${{ steps.version.outputs.version }}.zip"
+          # zip 名带启动器版本，不带 iaa 版本：两者独立演进
+          $zip = "dist/launcher.v${{ steps.launcher-version.outputs.version }}.zip"
           Compress-Archive -Path dist/iaa.exe, dist/iaa-cli.exe -DestinationPath $zip -CompressionLevel Optimal
           Get-Item $zip | Select-Object Name, @{n = 'SizeMB'; e = { [math]::Round($_.Length / 1MB, 1) } }
 
@@ -138,14 +150,22 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Download launcher
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: launcher
+          # 不指定 name/pattern：本工作流只有 wheel 与 launcher 两个 artifact，全量下载即可。
+          # 两者解到同一目录，一个 release 同时附 zip 与 wheel——wheel 方便访问不了
+          # PyPI 时手动安装，也让 release 自成完整归档。
           path: dist
+          merge-multiple: true
 
       - name: Generate release body
-        run: python tools/release_notes.py body --output "$RUNNER_TEMP/release-body.md"
+        env:
+          LAUNCHER_VERSION: ${{ needs.build.outputs.launcher_version }}
+        run: |
+          python tools/release_notes.py body \
+            --output "$RUNNER_TEMP/release-body.md" \
+            --launcher-version "$LAUNCHER_VERSION"
 
       - name: Ensure release does not already exist
         env:
@@ -161,9 +181,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: v${{ needs.build.outputs.version }}
+          LAUNCHER_VERSION: ${{ needs.build.outputs.launcher_version }}
         run: |
           gh release create "$TAG" \
-            "dist/launcher.${TAG}.zip" \
+            "dist/launcher.v${LAUNCHER_VERSION}.zip" \
+            dist/*.whl \
             --draft \
             --target "$GITHUB_SHA" \
             --title "$TAG" \

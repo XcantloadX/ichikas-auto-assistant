@@ -124,15 +124,18 @@ just build
 | 开关 | 作用 |
 |---|---|
 | `publish_pypi` | 把当次构建的 wheel 发到 PyPI（需已注册 `ichikas-auto-assistant` 项目并配置 Trusted Publisher） |
-| `publish_release` | 创建**草稿** GitHub Release，tag/标题为 `v<版本>`，附件为 `launcher.v<版本>.zip`（内含 `iaa.exe` 与 `iaa-cli.exe`） |
+| `publish_release` | 创建**草稿** GitHub Release，tag/标题为 `v<iaa 版本>`，附件为 `launcher.v<launcher 版本>.zip`（内含 `iaa.exe` 与 `iaa-cli.exe`）与该版本的 wheel |
 
 构建阶段总是同时产出 wheel 与启动器，因此即使两个开关都不勾，也能从这次运行的 artifact 里拿到产物。
 
-版本号唯一来源是 `iaa/__meta__.py` 的 `__VERSION__`，发版前必须先改它——PyPI 不接受同一版本重复上传。Release 说明由 `tools/release_notes.py` 生成：`doc/CHANGELOG.md` 中 `## v<版本>` 的段落 + 上一发布 tag 到 HEAD 的提交列表 + 固定的下载说明。可本地预览：
+版本号有两个，互不影响：**iaa 版本**来自 `iaa/__meta__.py` 的 `__VERSION__`（决定 tag、标题与 wheel 版本，发版前必须先改它，PyPI 不接受同一版本重复上传）；**launcher 版本**来自 `bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version`（只决定 zip 附件名，启动器独立演进，iaa 升版本时它通常不变）。
+
+Release 说明由 `tools/release_notes.py` 生成，结构固定为「更新说明 → 下载说明 → 完整历史」：`doc/CHANGELOG.md` 中 `## v<iaa 版本>` 的段落、固定的下载提示、上一发布 tag 到 HEAD 的提交列表。可本地预览：
 
 ```bash
-python tools/release_notes.py version                  # 当前版本
-python tools/release_notes.py body --output body.md    # 完整说明
+python tools/release_notes.py version            # iaa 版本
+python tools/release_notes.py launcher-version   # launcher 版本
+python tools/release_notes.py body --output body.md
 ```
 
 草稿创建后需到 Releases 页面人工确认再点 Publish。

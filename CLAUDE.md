@@ -40,10 +40,10 @@ just build
 | 开关 | 作用 |
 |---|---|
 | `publish_pypi` | 当次构建的 wheel 发到 PyPI（`pypa/gh-action-pypi-publish` 是 Docker action，必须跑在 ubuntu job） |
-| `publish_release` | 创建**草稿** Release，tag/标题 `v<版本>`，附件 `launcher.v<版本>.zip`（`iaa.exe` + `iaa-cli.exe`） |
+| `publish_release` | 创建**草稿** Release，tag/标题 `v<iaa 版本>`，附件为 `launcher.v<launcher 版本>.zip`（`iaa.exe` + `iaa-cli.exe`）与该版本 wheel |
 
-- 版本唯一来源是 `iaa/__meta__.py` 的 `__VERSION__`；`tools/release_notes.py version` 读它，release tag 与 zip 名都由它派生。发版前必须 bump，PyPI 不接受覆盖同名版本。
-- Release 说明由 `tools/release_notes.py body` 生成，结构固定为「更新日志（CHANGELOG 中 `## v<版本>` 段）+ 完整历史（上一 tag..HEAD）+ 下载说明」。改文案改脚本常量 `DOWNLOAD_NOTE`，**不要**在 workflow 里拼字符串。
+- **两个版本号相互独立**：`iaa/__meta__.py` 的 `__VERSION__` 决定 tag、标题与 wheel 版本（发版前必须 bump，PyPI 不接受覆盖同名版本）；`bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version` 只决定 zip 附件名，iaa 升版本时它通常不变。
+- Release 说明由 `tools/release_notes.py body` 生成，标题顺序固定为「更新说明 → 下载说明 → 完整历史」。改文案改脚本常量 `DOWNLOAD_NOTE`，**不要**在 workflow 里拼字符串。`release` job 里 launcher 版本经 `needs.build.outputs.launcher_version` 传入（该 job 不拉 submodule）。
 - 构建 job 用 `submodules: recursive` 拉启动器源码（否则 `bootstrap/LmmPyLauncher` 为空目录），`LMM_LAUNCHER_JSON` 必须传绝对路径，`cargo build` 的 target 在 submodule 内因此 `rust-cache` 要写 `workspaces: bootstrap/LmmPyLauncher -> target`。
 - 若仓库的 Actions 默认权限被设为只读，`release` job 的 `contents: write` 会失效，需在仓库 Settings → Actions 放开。
 
