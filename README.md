@@ -119,7 +119,23 @@ just launcher
 just build
 ```
 
-发布到 PyPI：在 GitHub Actions 手动触发 **Publish to PyPI** 工作流（需要先在 PyPI 上注册 `ichikas-auto-assistant` 项目并配置 GitHub Trusted Publisher）。
+发布：在 GitHub Actions 手动触发 **Publish** 工作流，它一次产出全部发布物，两个开关默认都勾选：
+
+| 开关 | 作用 |
+|---|---|
+| `publish_pypi` | 把当次构建的 wheel 发到 PyPI（需已注册 `ichikas-auto-assistant` 项目并配置 Trusted Publisher） |
+| `publish_release` | 创建**草稿** GitHub Release，tag/标题为 `v<版本>`，附件为 `launcher.v<版本>.zip`（内含 `iaa.exe` 与 `iaa-cli.exe`） |
+
+构建阶段总是同时产出 wheel 与启动器，因此即使两个开关都不勾，也能从这次运行的 artifact 里拿到产物。
+
+版本号唯一来源是 `iaa/__meta__.py` 的 `__VERSION__`，发版前必须先改它——PyPI 不接受同一版本重复上传。Release 说明由 `tools/release_notes.py` 生成：`doc/CHANGELOG.md` 中 `## v<版本>` 的段落 + 上一发布 tag 到 HEAD 的提交列表 + 固定的下载说明。可本地预览：
+
+```bash
+python tools/release_notes.py version                  # 当前版本
+python tools/release_notes.py body --output body.md    # 完整说明
+```
+
+草稿创建后需到 Releases 页面人工确认再点 Publish。
 
 ### 通过 LmmPyLauncher 分发
 
