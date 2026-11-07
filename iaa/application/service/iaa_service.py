@@ -60,7 +60,7 @@ class IaaService:
         console_handler.addFilter(TabNameFilter())
 
         # 文件输出
-        logs_dir = os.path.join(IaaService.app_root(), 'logs')
+        logs_dir = os.path.abspath('./logs')
         os.makedirs(logs_dir, exist_ok=True)
         timestamp = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
         log_file_path = os.path.join(logs_dir, f'{timestamp}.log')
@@ -82,14 +82,6 @@ class IaaService:
         logger.debug("Logging configured. File: %s", log_file_path)
 
     @staticmethod
-    def app_root() -> str:
-        """软件根目录。与实例无关，可直接通过 IaaService.app_root() 调用。"""
-        if not os.path.basename(sys.executable).startswith('python'):
-            return os.path.dirname(sys.executable)
-        # 源码运行
-        return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
-    @staticmethod
     def app_version() -> str:
         """软件版本号。与实例无关，可直接通过 IaaService.app_version() 调用。若获取失败返回 'Unknown'。"""
         try:
@@ -106,9 +98,8 @@ class IaaService:
         生成报告 zip，包含 {root}/logs 与 {root}/conf。
         返回生成的临时 zip 文件的绝对路径。
         """
-        root_dir = IaaService.app_root()
-        logs_dir = os.path.join(root_dir, 'logs')
-        conf_dir = os.path.join(root_dir, 'conf')
+        logs_dir = os.path.abspath('./logs')
+        conf_dir = os.path.abspath('./conf')
 
         timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
         filename = f"iaa_report_{timestamp}.zip"

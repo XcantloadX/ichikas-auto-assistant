@@ -1,4 +1,3 @@
-import os
 import re
 from pathlib import Path
 
@@ -11,8 +10,8 @@ class HelpService:
 
     @property
     def help_dir(self) -> str:
-        from .iaa_service import IaaService
-        return os.path.join(IaaService.app_root(), 'assets', 'help')
+        from iaa.utils import asset_path
+        return asset_path('help')
 
     def _resolve_language(self, language: str) -> str:
         if language == 'auto':

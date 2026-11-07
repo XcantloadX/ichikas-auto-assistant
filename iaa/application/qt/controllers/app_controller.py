@@ -105,7 +105,8 @@ class AppController(QObject):
         return self._tr('app.name')
 
     def _get_assets_root_path(self) -> str:
-        return os.path.join(IaaService.app_root(), 'assets').replace('\\', '/')
+        from iaa.utils import assets_root
+        return assets_root().replace('\\', '/')
 
     def _get_global_error(self) -> str:
         return self._global_error
@@ -190,14 +191,15 @@ class AppController(QObject):
 
     @Slot(result=bool)
     def checkPathIssues(self) -> bool:
-        """检查程序路径或工作目录是否存在问题。
+        """检查程序安装路径或工作目录是否存在问题。
 
-        :return: 如果程序路径或工作目录包含 ``Program Files`` 或 ``OneDrive``，返回 True。
+        :return: 如果程序安装路径或工作目录包含 ``Program Files`` 或 ``OneDrive``，返回 True。
         """
-        app_root = IaaService.app_root().lower()
+        import iaa
+        package_dir = os.path.dirname(iaa.__file__).lower()
         cwd = os.getcwd().lower()
 
-        for path in (app_root, cwd):
+        for path in (package_dir, cwd):
             if 'program files' in path or 'onedrive' in path:
                 return True
 

@@ -13,13 +13,21 @@ logger = logging.getLogger(__name__)
 DEFAULT_CONFIG_NAME = 'default'
 
 
+def _default_config_dir() -> str:
+    """返回默认配置目录：当前工作目录下的 ``conf``。
+
+    :return: 配置目录的绝对路径。
+    """
+    return os.path.abspath('./conf')
+
+
 class ConfigService:
     def __init__(self, config_name: str | None = None, is_running: 'Callable[[], bool] | None' = None):
         # is_running: 可选的调度器运行状态查询函数，由 IaaService 在构造完 SchedulerService 后注入。
         # 可在此处通过替换 is_running 来自定义"切换配置前的前置检查"。
         self._is_running = is_running or (lambda: False)
-        from .iaa_service import IaaService
-        manager.config_path = os.path.join(IaaService.app_root(), 'conf')
+        # 配置目录默认位于当前工作目录下（源码运行 = 仓库根；launcher 运行 = exe 目录）
+        manager.config_path = _default_config_dir()
 
         def _use_default_name():
             configs = manager.list()

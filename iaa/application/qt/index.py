@@ -16,8 +16,8 @@ from PySide6.QtWidgets import QApplication
 from PySide6.QtQuickControls2 import QQuickStyle
 
 from iaa.config import manager as config_manager
-from iaa.application.service.iaa_service import IaaService
 from iaa.i18n import translate
+from iaa.utils import asset_path
 from .controllers import (
     AppController,
     HelpController,
@@ -109,8 +109,7 @@ def main() -> None:
     engine.rootContext().setContextProperty('maxHoverBridge', max_hover_bridge)
     engine.rootContext().setContextProperty('tabBarBridge', tab_bar_bridge)
 
-    root_path = Path(IaaService.app_root())
-    icon_path = root_path / 'assets' / 'ichika.ico'
+    icon_path = Path(asset_path('ichika.ico'))
     if icon_path.exists():
         app.setWindowIcon(QIcon(str(icon_path)))
 

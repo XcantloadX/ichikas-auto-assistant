@@ -27,9 +27,23 @@ uv run ruff format iaa/
 # Run tests
 uv run pytest tests/
 
-# Package executables
+# Package: wheel (dist/*.whl) and launcher exes (dist/iaa.exe, dist/iaa-cli.exe)
+just wheel
+just launcher
 just build
 ```
+
+## Launcher (LmmPyLauncher)
+
+分发物是两个 exe，由 `bootstrap/LmmPyLauncher`（启动器仓库的 submodule）在编译期嵌入 `bootstrap/launcher/launcher.json` 生成：
+
+- `dist/iaa.exe` —— GUI 版（windows 子系统），不接受命令行参数；
+- `dist/iaa-cli.exe` —— CLI 版（console 子系统），参数与退出码纯透传；**不做任何环境准备**（不装包、不更新、不部署 Python），未就绪时报错提示先跑 GUI 版。
+
+- 改启动器行为要改 submodule 源码/runtime 参数，**不要**改 iaa 的 Python 侧来适配；
+- 配置里两条命令模板分工固定：`launch_command`（GUI，`{python} -m {entry_point} gui`，不含 `{extra_args}`）、`launch_command_cli`（CLI，含 `{extra_args}`）；
+- 两个 exe 需同目录分发才能共享 `python-3.10.11/`、`conf/`、`logs/`，但不要同时运行；
+- 启动器把 cwd 设为 exe 目录，iaa 所有相对路径（`conf/`、`logs/`）依赖这一点，改动路径逻辑时须同时考虑源码运行与 exe 运行两种 cwd。
 
 ## Framework extraction
 

@@ -1,6 +1,5 @@
 import json
 import os
-import sys
 from dataclasses import dataclass
 from typing import Callable
 
@@ -20,16 +19,10 @@ def configure(task_configs: dict[str, CliTaskConfig]) -> None:
     _task_configs.update(task_configs)
 
 
-def cli_root_dir() -> str:
-    if not os.path.basename(sys.executable).startswith('python'):
-        return os.path.dirname(sys.executable)
-    return os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
-
 def make_iaa(config: str | None):
     from iaa.config import manager
     if config is None:
-        manager.config_path = os.path.join(cli_root_dir(), 'conf')
+        manager.config_path = os.path.abspath('./conf')
         configs = manager.list()
         if len(configs) > 1:
             names = ', '.join(configs)
@@ -49,6 +42,13 @@ def cli(ctx: click.Context, debug: bool, config: str | None) -> None:
     ctx.ensure_object(dict)
     ctx.obj['debug'] = debug
     ctx.obj['config'] = config
+
+
+@cli.command()
+def gui() -> None:
+    """Launch the desktop GUI"""
+    from iaa.application.qt.index import main as qt_main
+    qt_main()
 
 
 @cli.command()
@@ -108,13 +108,13 @@ def list_tasks() -> None:
 def list_configs() -> None:
     """List available configs"""
     from iaa.config import manager
-    manager.config_path = os.path.join(cli_root_dir(), 'conf')
+    manager.config_path = os.path.abspath('./conf')
     for name in manager.list():
         click.echo(name)
 
 
 def main() -> None:
-    click.echo(f'Arguments: {sys.argv}')
+    import iaa.application.cli.setup  # noqa: F401
     from iaa.telemetry import setup as setup_telemetry
     setup_telemetry()
     cli()

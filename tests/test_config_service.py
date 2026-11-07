@@ -4,7 +4,6 @@ from pathlib import Path
 from unittest.mock import patch
 
 from iaa.application.service.config_service import ConfigService
-from iaa.application.service.iaa_service import IaaService
 from iaa.config import manager
 from iaa.i18n import TStr
 
@@ -12,12 +11,16 @@ from iaa.i18n import TStr
 class ConfigServiceTests(unittest.TestCase):
     """针对 release 版 ConfigService（``config_name``/``is_running`` 签名）的测试。
 
-    ``ConfigService.__init__`` 会用 ``IaaService.app_root()`` 重置 ``manager.config_path``，
-    因此这里通过 patch ``app_root`` 把配置目录隔离到临时目录。
+    ``ConfigService.__init__`` 会把 ``manager.config_path`` 重置为当前工作目录下的
+    ``conf``，因此这里通过 patch 默认配置目录把配置隔离到临时目录。
     """
 
     def make_service(self, root: str) -> ConfigService:
-        with patch.object(IaaService, 'app_root', staticmethod(lambda: root)):
+        conf_dir = str(Path(root) / 'conf')
+        with patch(
+            'iaa.application.service.config_service._default_config_dir',
+            return_value=conf_dir,
+        ):
             return ConfigService()
 
     def test_missing_last_used_selects_first_existing_config_and_persists_it(self) -> None:
