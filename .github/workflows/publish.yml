@@ -5,12 +5,12 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
-  build-and-publish:
+  # 构建必须在 Windows 上：wheel 内含 win 专用二进制，资源生成工具也按 Windows 行为编写
+  build:
+    name: Build wheel
     runs-on: windows-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -34,6 +34,29 @@ jobs:
 
       - name: Build wheel
         run: uv build --wheel
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*.whl
+          if-no-files-found: error
+
+  # 发布必须在 Linux 上：pypa/gh-action-pypi-publish 是 Docker action，
+  # 在非 GNU/Linux 环境会直接 "This action is only able to run under GNU/Linux environments" 并 exit 1。
+  # 顺带把 OIDC 权限收敛到 publish job：构建阶段运行的第三方构建后端拿不到 id-token。
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
