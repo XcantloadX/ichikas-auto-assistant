@@ -55,6 +55,7 @@ just build
 - `dist/iaa-cli.exe` —— CLI 版（console 子系统），参数与退出码纯透传；**不做任何环境准备**（不装包、不更新、不部署 Python），未就绪时报错提示先跑 GUI 版。
 
 - 改启动器行为要改 submodule 源码/runtime 参数，**不要**改 iaa 的 Python 侧来适配；
+- `launcher.json` 的 `python_path`（必填，相对 exe）指向 `python-3.10.11\python.exe`；文件不存在时启动器会下载 embed 版到其父目录。启动器**只认这个路径**，不查 PATH——因此 iaa 的 `requires-python ~=3.10.0` 不会被机器上的 3.11/3.13 破坏；
 - 配置里两条命令模板分工固定：`launch_command`（GUI，`{python} -m {entry_point} gui`，不含 `{extra_args}`）、`launch_command_cli`（CLI，含 `{extra_args}`）；
 - 两个 exe 需同目录分发才能共享 `python-3.10.11/`、`conf/`、`logs/`，但不要同时运行；
 - 启动器把 cwd 设为 exe 目录，iaa 所有相对路径（`conf/`、`logs/`）依赖这一点，改动路径逻辑时须同时考虑源码运行与 exe 运行两种 cwd。

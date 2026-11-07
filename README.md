@@ -157,7 +157,7 @@ python tools/release_notes.py body --output body.md
 {
   "app_name": "一歌小助手",
   "python_version": "3.10.11",
-  "python_dist_dir": "",
+  "python_path": "python-3.10.11\\python.exe",
   "install_packages": ["ichikas-auto-assistant"],
   "uninstall_packages": [],
   "entry_point": "iaa",
@@ -215,7 +215,7 @@ CLI 版**不承担任何环境准备**——不探镜像、不检查更新、不
 
    该参数安装完成后直接启动，并隐含跳过更新检查。
 
-2. **Python 版本约束**：本包要求 `requires-python ~=3.10.0`。启动器优先使用 exe 旁已部署的 `python-3.10.11`；若找不到则回退到 PATH 上的 `python`——若该 `python` 是 3.11/3.12，pip 会以「无匹配发行版」拒绝安装。需要规避时，把一份 Python 3.10 发行版目录随 exe 分发，并把 `python_dist_dir` 指向它（相对 exe 目录）。
+2. **Python 环境完全由启动器自己准备**：`launcher.json` 的 `python_path`（必填，相对 exe 目录）指向 `python-3.10.11\python.exe`。该文件不存在时启动器会提示并下载 embed 版 Python 到它的父目录，**不会**使用系统 PATH 上的 Python——所以不会因为机器上装了 3.11/3.13 而装不上，也不会污染用户的全局 site-packages。若要随包分发自己的 Python 发行版，把 `python_path` 指向那份发行版的 `python.exe` 即可（目录与版本不受 `python_version` 限制）。
 
 3. **两个 exe 不要同时运行**：它们共享 `python-3.10.11/` 与 `conf/`，同时启动可能在更新包或写配置时互相干扰。
 4. **GUI 版不接受参数**：传给 `dist\iaa.exe` 的未知开关会被丢弃，位置参数（如 `run`）会直接报错退出。命令行场景请用 `dist\iaa-cli.exe`。

@@ -172,7 +172,7 @@ and its compile-time config lives at `bootstrap/launcher/launcher.json`:
 {
   "app_name": "一歌小助手",
   "python_version": "3.10.11",
-  "python_dist_dir": "",
+  "python_path": "python-3.10.11\\python.exe",
   "install_packages": ["ichikas-auto-assistant"],
   "uninstall_packages": [],
   "entry_point": "iaa",
@@ -243,11 +243,13 @@ GUI once" and exits with code 1.
 
    That flag installs and then launches immediately, and implies `--skip-update`.
 
-2. **Python version constraint**: this package declares `requires-python ~=3.10.0`. The launcher
-   prefers the `python-3.10.11` it deployed next to the exe, but falls back to the `python` on
-   PATH — if that is 3.11/3.12, pip rejects the install with "no matching distribution". To rule
-   this out, ship a Python 3.10 distribution directory alongside the exe and point
-   `python_dist_dir` at it (relative to the exe directory).
+2. **The launcher prepares Python entirely on its own**: `python_path` in `launcher.json` (required,
+   relative to the exe) points at `python-3.10.11\python.exe`. When that file is missing, the
+   launcher asks once and downloads the embeddable Python into its parent directory; it never uses
+   the Python on PATH. So a machine with 3.11/3.13 installed cannot break the install, and the
+   user's global site-packages is left untouched. To ship your own Python distribution instead,
+   point `python_path` at that distribution's `python.exe` (its directory and version are then
+   independent of `python_version`).
 
 3. **Do not run both exes at the same time**: they share `python-3.10.11/` and `conf/`, so
    concurrent starts can collide while updating packages or writing config.
