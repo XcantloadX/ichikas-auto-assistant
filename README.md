@@ -128,12 +128,13 @@ just build
 
 构建阶段总是同时产出 wheel 与启动器，因此即使两个开关都不勾，也能从这次运行的 artifact 里拿到产物。
 
-版本号有两个，互不影响：**iaa 版本**来自 `iaa/__meta__.py` 的 `__VERSION__`（决定 tag、标题与 wheel 版本，发版前必须先改它，PyPI 不接受同一版本重复上传）；**launcher 版本**来自 `bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version`（只决定 zip 附件名，启动器独立演进，iaa 升版本时它通常不变）。
+版本号有两个，互不影响：**iaa 版本**来自仓库里最新的 git tag（决定 tag、标题与 wheel 版本；发版流程是先在 `doc/CHANGELOG.md` 写好 `## v<版本>` 段落并打 tag 推送，再触发 Publish，PyPI 不接受同一版本重复上传）；**launcher 版本**来自 `bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version`（只决定 zip 附件名，启动器独立演进，iaa 升版本时它通常不变）。`iaa/__meta__.py` 由 `python tools/release_notes.py write-meta` 按 tag 生成，不在版本控制里；新 clone 后本地开发要先跑一次再 `uv sync`。
 
 Release 说明由 `tools/release_notes.py` 生成，结构固定为「更新说明 → 下载说明 → 完整历史」：`doc/CHANGELOG.md` 中 `## v<iaa 版本>` 的段落、固定的下载提示、上一发布 tag 到 HEAD 的提交列表。可本地预览：
 
 ```bash
-python tools/release_notes.py version            # iaa 版本
+python tools/release_notes.py version            # iaa 版本（来自最新 tag）
+python tools/release_notes.py write-meta         # 生成 iaa/__meta__.py（新 clone 后先跑一次）
 python tools/release_notes.py launcher-version   # launcher 版本
 python tools/release_notes.py body --output body.md
 ```
