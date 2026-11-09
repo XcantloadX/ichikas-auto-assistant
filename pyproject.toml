@@ -20,7 +20,9 @@ dependencies = [
     "onnxruntime==1.14.0 ; sys_platform == 'win32' or sys_platform == 'linux'",
     "onnxruntime ; sys_platform != 'win32'",
     "psutil",
-    "PySide6",
+    # 6.12.0 在创建 tab 内容页时原生崩溃（QML 里 QObjectWrapper 包无效对象，
+    # 0xC0000005）。6.11.0 正常，故锁到 6.11.x，勿随手放开上界。
+    "PySide6~=6.11.0",
     "pydantic",
     "pynput",
     "requests",
