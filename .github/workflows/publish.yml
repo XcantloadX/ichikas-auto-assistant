@@ -30,8 +30,17 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          # 启动器源码是 submodule，不拉取则 bootstrap/LmmPyLauncher 为空目录
+          # 版本号取自最新 tag，需要完整 tag 列表；启动器源码是 submodule，
+          # 不拉取则 bootstrap/LmmPyLauncher 为空目录
+          fetch-depth: 0
           submodules: recursive
+
+      # 版本号唯一来源是最新 git tag：先按 tag 生成 iaa/__meta__.py，
+      # pyproject.toml 的 dynamic version 依赖它，uv sync 缺它会直接报
+      # ModuleNotFoundError: No module named 'iaa'（见 e057998 的教训）。
+      # 该步骤用系统 python 跑（纯 stdlib），不依赖 uv。
+      - name: Write version from tag
+        run: python tools/release_notes.py write-meta
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -53,7 +62,7 @@ jobs:
       - name: Build wheel
         run: uv build --wheel
 
-      # 版本号唯一来源是 iaa/__meta__.py，与 wheel 元数据、release tag 保持一致
+      # 与 wheel 元数据、release tag 保持一致（同一 tag 推导）
       - name: Read version
         id: version
         shell: pwsh
@@ -173,7 +182,7 @@ jobs:
           TAG: v${{ needs.build.outputs.version }}
         run: |
           if gh release view "$TAG" > /dev/null 2>&1; then
-            echo "Release $TAG already exists; bump the version or delete the old release first." >&2
+            echo "Release $TAG already exists; tag a new version or delete the old release first." >&2
             exit 1
           fi
 

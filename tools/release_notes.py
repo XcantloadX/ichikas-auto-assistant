@@ -3,7 +3,7 @@
 标题顺序固定为：更新说明 → 下载说明 → 完整历史。
 
     ## 更新说明
-    <doc/CHANGELOG.md 中对应版本的段落>
+    <doc/CHANGELOG.md 中对应版本的段落；没有该段落时省略这一节>
 
     ## 下载说明
     <固定的分发指引，zip 名带 launcher 版本>
@@ -13,17 +13,20 @@
 
 这里有两个相互独立的版本号：
 
-- **iaa 版本**：`iaa/__meta__.py` 的 `__VERSION__`，决定 release 的 tag/标题，也是 wheel 的版本；
+- **iaa 版本**：仓库里最新的 git tag（如 ``v26.11``，去掉 ``v`` 前缀即版本号），
+  决定 release 的 tag/标题，也是 wheel 的版本。发版流程是：先在
+  ``doc/CHANGELOG.md`` 写好 ``## v<版本>`` 段落并打 tag 推送，再触发 Publish 工作流。
 - **launcher 版本**：`bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version`，
   决定附件名 `launcher.v<ver>.zip`。启动器独立演进，iaa 升版本时它通常不变，
   所以不能用 iaa 版本去命名。
 
-与旧的 release_draft.py 的另一处差别是版本来源：旧实现取"仓库里最新的 tag"，
-本实现直接读版本文件，因为现在的流程是"先跑工作流、由它顺手打 tag"，
-触发时 tag 可能还不存在。
+`iaa/__meta__.py` 不在版本控制里，由 `write-meta` 子命令按最新 tag 生成：
+`pyproject.toml` 的 dynamic version 走 ``attr: iaa.__meta__.__VERSION__``，
+`uv sync` / `uv build` 都需要这个文件存在，所以新 clone 后本地开发要先跑一次它。
 
 用法：
     python tools/release_notes.py version                      # iaa 版本，如 26.11
+    python tools/release_notes.py write-meta                   # 生成 iaa/__meta__.py
     python tools/release_notes.py launcher-version             # launcher 版本，如 0.1.7
     python tools/release_notes.py body --output body.md        # 完整说明
 """
@@ -71,13 +74,31 @@ def run_git(*args: str) -> str:
     return result.stdout.strip()
 
 
-def read_version(meta_path: Path = DEFAULT_META) -> str:
-    """从 iaa/__meta__.py 读取 iaa 版本号。"""
-    content = meta_path.read_text(encoding='utf-8')
-    match = re.search(r'^__VERSION__\s*=\s*[\'"]([^\'"]+)[\'"]', content, re.MULTILINE)
-    if match is None:
-        raise RuntimeError(f'Unable to find __VERSION__ in {meta_path}')
-    return match.group(1)
+def read_latest_tag() -> str:
+    """返回仓库里最新的 tag（如 ``v26.11``），没有任何 tag 时报错。"""
+    tags = list_tags()
+    if not tags:
+        raise RuntimeError('No git tags found in repository')
+    return tags[0]
+
+
+def read_version() -> str:
+    """从最新 tag 推导 iaa 版本号（去掉 ``v`` 前缀，如 ``26.11``）。"""
+    tag = read_latest_tag()
+    return tag[1:] if tag.startswith('v') else tag
+
+
+def write_meta(meta_path: Path = DEFAULT_META, version: str | None = None) -> str:
+    """按版本号生成 iaa/__meta__.py（pyproject.toml 的 dynamic version 依赖它）。
+
+    :param meta_path: 输出路径，默认 ``iaa/__meta__.py``。
+    :param version: 版本号；缺省取最新 tag 推导。
+    :return: 写入的版本号。
+    """
+    if version is None:
+        version = read_version()
+    meta_path.write_text(f'__VERSION__ = "{version}"\n', encoding='utf-8')
+    return version
 
 
 def read_launcher_version(manifest_path: Path = DEFAULT_LAUNCHER_MANIFEST) -> str:
@@ -134,7 +155,8 @@ def find_previous_tag(version: str) -> str | None:
     return max(older, key=version_key)
 
 
-def extract_changelog_section(changelog_path: Path, tag: str) -> str:
+def extract_changelog_section(changelog_path: Path, tag: str) -> str | None:
+    """取 CHANGELOG 里对应 tag 的段落；没有该段落或内容为空时返回 None。"""
     content = changelog_path.read_text(encoding='utf-8')
     pattern = re.compile(
         rf'^##\s+{re.escape(tag)}\s*$\n(?P<body>.*?)(?=^##\s+|\Z)',
@@ -142,11 +164,9 @@ def extract_changelog_section(changelog_path: Path, tag: str) -> str:
     )
     match = pattern.search(content)
     if match is None:
-        raise RuntimeError(f'Unable to find CHANGELOG section for tag {tag} in {changelog_path}')
+        return None
     body = match.group('body').strip()
-    if not body:
-        raise RuntimeError(f'CHANGELOG section for tag {tag} is empty')
-    return body
+    return body or None
 
 
 def format_commit_history(previous_tag: str | None) -> str:
@@ -169,19 +189,26 @@ def build_release_body(
     tag = f'v{version}'
     changelog = extract_changelog_section(changelog_path, tag)
     history = format_commit_history(find_previous_tag(version))
-    return '\n\n'.join(
-        [
-            '## 更新说明',
-            changelog,
-            DOWNLOAD_NOTE.format(launcher_version=launcher_version),
-            '## 完整历史',
-            history,
-        ]
-    ) + '\n'
+    parts = []
+    # CHANGELOG 里没有（或为空的）对应段落时直接省略「更新说明」，不视为错误
+    if changelog:
+        parts += ['## 更新说明', changelog]
+    parts += [
+        DOWNLOAD_NOTE.format(launcher_version=launcher_version),
+        '## 完整历史',
+        history,
+    ]
+    return '\n\n'.join(parts) + '\n'
 
 
 def command_version(args: argparse.Namespace) -> int:
     print(read_version())
+    return 0
+
+
+def command_write_meta(args: argparse.Namespace) -> int:
+    version = write_meta(version=args.version)
+    print(f'Wrote iaa/__meta__.py with __VERSION__ = "{version}"')
     return 0
 
 
@@ -203,8 +230,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description='Prepare release notes from CHANGELOG and git history.')
     subparsers = parser.add_subparsers(dest='command', required=True)
 
-    version_parser = subparsers.add_parser('version', help='Print the iaa version from iaa/__meta__.py.')
+    version_parser = subparsers.add_parser('version', help='Print the iaa version derived from the latest tag.')
     version_parser.set_defaults(func=command_version)
+
+    meta_parser = subparsers.add_parser(
+        'write-meta',
+        help='Generate iaa/__meta__.py (pyproject dynamic version depends on it; '
+        'run once after cloning before `uv sync`).',
+    )
+    meta_parser.add_argument(
+        '--version',
+        default=None,
+        help='Version to write (default: derived from the latest tag).',
+    )
+    meta_parser.set_defaults(func=command_write_meta)
 
     launcher_parser = subparsers.add_parser(
         'launcher-version',
@@ -217,7 +256,7 @@ def build_parser() -> argparse.ArgumentParser:
     body_parser.add_argument(
         '--version',
         default=None,
-        help='Override the iaa version (default: read from iaa/__meta__.py).',
+        help='Override the iaa version (default: derived from the latest tag).',
     )
     body_parser.add_argument(
         '--launcher-version',
