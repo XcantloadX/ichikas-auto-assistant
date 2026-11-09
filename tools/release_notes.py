@@ -3,7 +3,7 @@
 标题顺序固定为：更新说明 → 下载说明 → 完整历史。
 
     ## 更新说明
-    <doc/CHANGELOG.md 中对应版本的段落>
+    <doc/CHANGELOG.md 中对应版本的段落；没有该段落时省略这一节>
 
     ## 下载说明
     <固定的分发指引，zip 名带 launcher 版本>
@@ -155,7 +155,8 @@ def find_previous_tag(version: str) -> str | None:
     return max(older, key=version_key)
 
 
-def extract_changelog_section(changelog_path: Path, tag: str) -> str:
+def extract_changelog_section(changelog_path: Path, tag: str) -> str | None:
+    """取 CHANGELOG 里对应 tag 的段落；没有该段落或内容为空时返回 None。"""
     content = changelog_path.read_text(encoding='utf-8')
     pattern = re.compile(
         rf'^##\s+{re.escape(tag)}\s*$\n(?P<body>.*?)(?=^##\s+|\Z)',
@@ -163,11 +164,9 @@ def extract_changelog_section(changelog_path: Path, tag: str) -> str:
     )
     match = pattern.search(content)
     if match is None:
-        raise RuntimeError(f'Unable to find CHANGELOG section for tag {tag} in {changelog_path}')
+        return None
     body = match.group('body').strip()
-    if not body:
-        raise RuntimeError(f'CHANGELOG section for tag {tag} is empty')
-    return body
+    return body or None
 
 
 def format_commit_history(previous_tag: str | None) -> str:
@@ -190,15 +189,16 @@ def build_release_body(
     tag = f'v{version}'
     changelog = extract_changelog_section(changelog_path, tag)
     history = format_commit_history(find_previous_tag(version))
-    return '\n\n'.join(
-        [
-            '## 更新说明',
-            changelog,
-            DOWNLOAD_NOTE.format(launcher_version=launcher_version),
-            '## 完整历史',
-            history,
-        ]
-    ) + '\n'
+    parts = []
+    # CHANGELOG 里没有（或为空的）对应段落时直接省略「更新说明」，不视为错误
+    if changelog:
+        parts += ['## 更新说明', changelog]
+    parts += [
+        DOWNLOAD_NOTE.format(launcher_version=launcher_version),
+        '## 完整历史',
+        history,
+    ]
+    return '\n\n'.join(parts) + '\n'
 
 
 def command_version(args: argparse.Namespace) -> int:
