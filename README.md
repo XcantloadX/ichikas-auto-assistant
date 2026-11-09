@@ -119,7 +119,26 @@ just launcher
 just build
 ```
 
-发布到 PyPI：在 GitHub Actions 手动触发 **Publish to PyPI** 工作流（需要先在 PyPI 上注册 `ichikas-auto-assistant` 项目并配置 GitHub Trusted Publisher）。
+发布：在 GitHub Actions 手动触发 **Publish** 工作流，它一次产出全部发布物，两个开关默认都勾选：
+
+| 开关 | 作用 |
+|---|---|
+| `publish_pypi` | 把当次构建的 wheel 发到 PyPI（需已注册 `ichikas-auto-assistant` 项目并配置 Trusted Publisher） |
+| `publish_release` | 创建**草稿** GitHub Release，tag/标题为 `v<iaa 版本>`，附件为 `launcher.v<launcher 版本>.zip`（内含 `iaa.exe` 与 `iaa-cli.exe`）与该版本的 wheel |
+
+构建阶段总是同时产出 wheel 与启动器，因此即使两个开关都不勾，也能从这次运行的 artifact 里拿到产物。
+
+版本号有两个，互不影响：**iaa 版本**来自 `iaa/__meta__.py` 的 `__VERSION__`（决定 tag、标题与 wheel 版本，发版前必须先改它，PyPI 不接受同一版本重复上传）；**launcher 版本**来自 `bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version`（只决定 zip 附件名，启动器独立演进，iaa 升版本时它通常不变）。
+
+Release 说明由 `tools/release_notes.py` 生成，结构固定为「更新说明 → 下载说明 → 完整历史」：`doc/CHANGELOG.md` 中 `## v<iaa 版本>` 的段落、固定的下载提示、上一发布 tag 到 HEAD 的提交列表。可本地预览：
+
+```bash
+python tools/release_notes.py version            # iaa 版本
+python tools/release_notes.py launcher-version   # launcher 版本
+python tools/release_notes.py body --output body.md
+```
+
+草稿创建后需到 Releases 页面人工确认再点 Publish。
 
 ### 通过 LmmPyLauncher 分发
 
@@ -138,7 +157,7 @@ just build
 {
   "app_name": "一歌小助手",
   "python_version": "3.10.11",
-  "python_dist_dir": "",
+  "python_path": "python-3.10.11\\python.exe",
   "install_packages": ["ichikas-auto-assistant"],
   "uninstall_packages": [],
   "entry_point": "iaa",
@@ -196,7 +215,7 @@ CLI 版**不承担任何环境准备**——不探镜像、不检查更新、不
 
    该参数安装完成后直接启动，并隐含跳过更新检查。
 
-2. **Python 版本约束**：本包要求 `requires-python ~=3.10.0`。启动器优先使用 exe 旁已部署的 `python-3.10.11`；若找不到则回退到 PATH 上的 `python`——若该 `python` 是 3.11/3.12，pip 会以「无匹配发行版」拒绝安装。需要规避时，把一份 Python 3.10 发行版目录随 exe 分发，并把 `python_dist_dir` 指向它（相对 exe 目录）。
+2. **Python 环境完全由启动器自己准备**：`launcher.json` 的 `python_path`（必填，相对 exe 目录）指向 `python-3.10.11\python.exe`。该文件不存在时启动器会提示并下载 embed 版 Python 到它的父目录，**不会**使用系统 PATH 上的 Python——所以不会因为机器上装了 3.11/3.13 而装不上，也不会污染用户的全局 site-packages。若要随包分发自己的 Python 发行版，把 `python_path` 指向那份发行版的 `python.exe` 即可（目录与版本不受 `python_version` 限制）。
 
 3. **两个 exe 不要同时运行**：它们共享 `python-3.10.11/` 与 `conf/`，同时启动可能在更新包或写配置时互相干扰。
 4. **GUI 版不接受参数**：传给 `dist\iaa.exe` 的未知开关会被丢弃，位置参数（如 `run`）会直接报错退出。命令行场景请用 `dist\iaa-cli.exe`。

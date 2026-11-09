@@ -633,7 +633,7 @@ requires-dist = [
     { name = "psutil" },
     { name = "pydantic" },
     { name = "pynput" },
-    { name = "pyside6" },
+    { name = "pyside6", specifier = "~=6.11.0" },
     { name = "requests" },
     { name = "sentry-sdk" },
     { name = "thefuzz", specifier = ">=0.22.1" },

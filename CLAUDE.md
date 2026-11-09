@@ -33,6 +33,20 @@ just launcher
 just build
 ```
 
+## Releasing
+
+`.github/workflows/publish.yml`（**Publish**）一次产出全部发布物。两个 `workflow_dispatch` 开关默认都开：
+
+| 开关 | 作用 |
+|---|---|
+| `publish_pypi` | 当次构建的 wheel 发到 PyPI（`pypa/gh-action-pypi-publish` 是 Docker action，必须跑在 ubuntu job） |
+| `publish_release` | 创建**草稿** Release，tag/标题 `v<iaa 版本>`，附件为 `launcher.v<launcher 版本>.zip`（`iaa.exe` + `iaa-cli.exe`）与该版本 wheel |
+
+- **两个版本号相互独立**：`iaa/__meta__.py` 的 `__VERSION__` 决定 tag、标题与 wheel 版本（发版前必须 bump，PyPI 不接受覆盖同名版本）；`bootstrap/LmmPyLauncher/Cargo.toml` 的 `[package] version` 只决定 zip 附件名，iaa 升版本时它通常不变。
+- Release 说明由 `tools/release_notes.py body` 生成，标题顺序固定为「更新说明 → 下载说明 → 完整历史」。改文案改脚本常量 `DOWNLOAD_NOTE`，**不要**在 workflow 里拼字符串。`release` job 里 launcher 版本经 `needs.build.outputs.launcher_version` 传入（该 job 不拉 submodule）。
+- 构建 job 用 `submodules: recursive` 拉启动器源码（否则 `bootstrap/LmmPyLauncher` 为空目录），`LMM_LAUNCHER_JSON` 必须传绝对路径，`cargo build` 的 target 在 submodule 内因此 `rust-cache` 要写 `workspaces: bootstrap/LmmPyLauncher -> target`。
+- 若仓库的 Actions 默认权限被设为只读，`release` job 的 `contents: write` 会失效，需在仓库 Settings → Actions 放开。
+
 ## Launcher (LmmPyLauncher)
 
 分发物是两个 exe，由 `bootstrap/LmmPyLauncher`（启动器仓库的 submodule）在编译期嵌入 `bootstrap/launcher/launcher.json` 生成：
@@ -41,6 +55,7 @@ just build
 - `dist/iaa-cli.exe` —— CLI 版（console 子系统），参数与退出码纯透传；**不做任何环境准备**（不装包、不更新、不部署 Python），未就绪时报错提示先跑 GUI 版。
 
 - 改启动器行为要改 submodule 源码/runtime 参数，**不要**改 iaa 的 Python 侧来适配；
+- `launcher.json` 的 `python_path`（必填，相对 exe）指向 `python-3.10.11\python.exe`；文件不存在时启动器会下载 embed 版到其父目录。启动器**只认这个路径**，不查 PATH——因此 iaa 的 `requires-python ~=3.10.0` 不会被机器上的 3.11/3.13 破坏；
 - 配置里两条命令模板分工固定：`launch_command`（GUI，`{python} -m {entry_point} gui`，不含 `{extra_args}`）、`launch_command_cli`（CLI，含 `{extra_args}`）；
 - 两个 exe 需同目录分发才能共享 `python-3.10.11/`、`conf/`、`logs/`，但不要同时运行；
 - 启动器把 cwd 设为 exe 目录，iaa 所有相对路径（`conf/`、`logs/`）依赖这一点，改动路径逻辑时须同时考虑源码运行与 exe 运行两种 cwd。
